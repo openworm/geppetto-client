@@ -43,7 +43,8 @@ define(function (require) {
         'CONSOLE': 'interface/console/Console',
         'LINKBUTTON': 'interface/linkButton/LinkButton',
         'BUTTONBAR': 'interface/buttonBar/ButtonBar',
-        'DRAWER': 'interface/drawer/TabbedDrawer'
+        'DRAWER': 'interface/drawer/TabbedDrawer',
+        'PLOT': 'interface/plot/Plot'
       },
 
       loadSpinner: function () {
@@ -178,6 +179,8 @@ define(function (require) {
         return new Promise(resolve => {
           require.ensure([],function (require){
             var cb = function (loadedModule) {
+              if (typeof loadedModule === 'object')
+                loadedModule = loadedModule.default;
               var component = that._addComponent(loadedModule, componentType, properties, container, callback, isWidget);
               var renderedComponent = that._renderComponent(component, componentType, properties, container, callback, isWidget)
               resolve(renderedComponent);
@@ -214,6 +217,7 @@ define(function (require) {
             case 'LINKBUTTON': require(['./interface/linkButton/LinkButton'],cb); break;
             case 'BUTTONBAR': require(['./interface/buttonBar/ButtonBar'], cb); break;
             case 'DRAWER': require(['./interface/drawer/TabbedDrawer'], cb); break;
+            case 'PLOT': require(['./interface/plot/Plot'], cb); break;
             }
                   
           });
