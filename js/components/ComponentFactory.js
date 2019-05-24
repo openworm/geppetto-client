@@ -179,8 +179,6 @@ define(function (require) {
         return new Promise(resolve => {
           require.ensure([],function (require){
             var cb = function (loadedModule) {
-              if (typeof loadedModule === 'object')
-                loadedModule = loadedModule.default;
               var component = that._addComponent(loadedModule, componentType, properties, container, callback, isWidget);
               var renderedComponent = that._renderComponent(component, componentType, properties, container, callback, isWidget)
               resolve(renderedComponent);
