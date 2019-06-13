@@ -29,36 +29,6 @@ export default class ReduxPlot extends AbstractComponent {
     };
   }
 
-  /*
-   * addButtonToTitleBar () {
-   *   $("<div class='fa fa-home' title='Reset plot zoom'></div>")
-   *     .on('click', function (event) {
-   *       this.resetAxes();
-   *     }.bind(this)
-   *     )
-   * }
-   */
-
-  componentDidMount () {
-    /*
-     * FIXME: this jquery should be retired
-     * this.addButtonToTitleBar(
-     *   $("<div class='fa fa-home' title='Reset plot zoom'></div>")
-     *     .on('click', function (event) {
-     *       this.resetAxes();
-     *     }.bind(this)
-     *     )
-     * );
-     */
-    /*
-     * this.dialog.dialog({
-     *     resize: function (event, ui) {
-     *         this.resize(true);
-     *     }.bind(this)
-     * });
-     */
-  }
-
   getUnitLabel (unitSymbol) {
     if (unitSymbol != null || unitSymbol != undefined){
       unitSymbol = unitSymbol.replace(/_per_/gi, " / ");
@@ -233,15 +203,3 @@ export default class ReduxPlot extends AbstractComponent {
     )
   }
 }
-// 
-/*
- * onUpdate={figure => {
- *   this.setState(figure)
- * }}
- */
-
-/*
- * onRelayout={(a, b) => {
- *   console.log(a,b)
- * }}
- */
