@@ -1,12 +1,18 @@
 import React from 'react';
-import ReactPlotly from 'react-plotly.js';
+import Plotly from 'plotly.js/lib/core';
+import createPlotlyComponent from 'react-plotly.js/factory';
+
+Plotly.register([ require('plotly.js/lib/scatter') ]);
+const ScatterPlot = createPlotlyComponent(Plotly);
+
+
 /*
  * import update from 'immutability-helper';
  * import $ from 'jquery';
  */
-import math from 'mathjs';
+import { unit } from 'mathjs';
 import AbstractComponent from '../../AComponent';
-import { defaultLayout, defaultTrace, defaultLine } from './reduxConfiguration/plotConfiguration';
+import { defaultLayout, defaultTrace, defaultLine, defaultConfig } from './reduxConfiguration/plotConfiguration';
 import ExternalInstance from '../../../geppettoModel/model/ExternalInstance';
 
 
@@ -67,7 +73,7 @@ export default class ReduxPlot extends AbstractComponent {
       if (GEPPETTO.UnitsController.hasUnit(unitSymbol)){
         formattedUnitName = GEPPETTO.UnitsController.getUnitLabel(unitSymbol);
       } else {
-        var mathUnit = math.unit(1, unitSymbol);
+        var mathUnit = unit(1, unitSymbol);
 
         formattedUnitName = (mathUnit.units.length > 0) ? mathUnit.units[0].unit.base.key : "";
         (mathUnit.units.length > 1) ? formattedUnitName += " OVER " + mathUnit.units[1].unit.base.key : "";
@@ -108,19 +114,14 @@ export default class ReduxPlot extends AbstractComponent {
     
   }
 
-  updateAxisRanges (xData, yData) {
+  updateAxisRanges () {
     const { layout } = this.state;
     const { xaxis, yaxis } = layout;
 
-    const xmax = xData.reduce((value, max) => Math.max(value, max));
-    const xmin = xData.reduce((value, min) => Math.min(value, min));
-    const ymax = yData.reduce((value, max) => Math.max(value, max));
-    const ymin = yData.reduce((value, min) => Math.min(value, min));
-
     return { 
       ...layout,
-      xaxis: { ...xaxis, range: [xmin, xmax] },
-      yaxis: { ...yaxis, range: [ymin, ymax] }
+      xaxis: { ...xaxis, autorange: true },
+      yaxis: { ...yaxis, autorange: true }
     }
   }
 
@@ -172,7 +173,7 @@ export default class ReduxPlot extends AbstractComponent {
       [legendName]: instanceY 
     }
     
-    let newLayout = this.updateAxisRanges(instanceX.getTimeSeries(), instanceY.getTimeSeries());
+    let newLayout = this.updateAxisRanges();
     newLayout = this.updateAxisTitles(instanceX, instanceY, newLayout);
     
     const newData = [ ...data.concat(trace) ]
@@ -187,13 +188,6 @@ export default class ReduxPlot extends AbstractComponent {
 
   }
 
-  /*
-   * resetAxes () {
-   *   const { layout } = this.state;
-   *   this.setState({ layout: { ...layout } });
-   * }
-   */
-
   componentDidUpdate (prevProps){
     const { instancePath2Plot } = this.props;
 
@@ -205,6 +199,8 @@ export default class ReduxPlot extends AbstractComponent {
     
   }
   
+  doubleClick (){
+  }
 
   render () {
     const { data, layout, revision } = this.state;
@@ -218,18 +214,34 @@ export default class ReduxPlot extends AbstractComponent {
           height: '100%'
         }}
       >
-        <ReactPlotly
-          ref="plotly"
-          data={data}
-          revision={revision}
-          layout={layout}
-          useResizeHandler
-          style={{ width: '95%', height: '95%' }}
-          onUpdate={figure => this.setState(figure)}
-        />
+        {
+          data.length > 0 && (
+            <ScatterPlot
+              ref="plotly"
+              config={defaultConfig()}
+              data={data}
+              onDoubleClick={() => this.doubleClick()}
+              revision={revision}
+              layout={layout}
+              useResizeHandler
+              style={{ width: '95%', height: '95%' }}
+            />)
+        }
       </div>
 
       
     )
   }
 }
+// 
+/*
+ * onUpdate={figure => {
+ *   this.setState(figure)
+ * }}
+ */
+
+/*
+ * onRelayout={(a, b) => {
+ *   console.log(a,b)
+ * }}
+ */

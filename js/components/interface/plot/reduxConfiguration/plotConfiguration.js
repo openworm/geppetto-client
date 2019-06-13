@@ -1,3 +1,14 @@
+export const defaultConfig = () => ({ 
+  scrollZoom: false, 
+  displaylogo: false, 
+  modeBarButtonsToRemove: [
+    'resetScale2d', 
+    'hoverClosestCartesian', 
+    'hoverCompareCartesian', 
+    'toggleSpikelines'] 
+})
+
+
 export const defaultLine = () => ({
   dash: 'solid',
   width: '2'
@@ -21,8 +32,8 @@ const defaultAxisLayout = () => ({
   ticklen: 1,
   tickcolor: 'white',
   linecolor: 'white',
-  tickfont: { family: defaultFont(), size: 11, color: 'white' },
-  titlefont: { family: defaultFont(), size: 12, color: 'white' },
+  tickfont: { family: defaultFont(), size: 11, color: 'white!important' },
+  titlefont: { family: defaultFont(), size: 12, color: 'white!important' },
   ticks: 'outside'
 });
 
