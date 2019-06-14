@@ -10,6 +10,7 @@ const ScatterPlot = createPlotlyComponent(Plotly);
  * import update from 'immutability-helper';
  * import $ from 'jquery';
  */
+
 import { unit } from 'mathjs';
 import AbstractComponent from '../../AComponent';
 import { defaultLayout, defaultTrace, defaultLine, defaultConfig } from './reduxConfiguration/plotConfiguration';
@@ -43,10 +44,13 @@ export default class ReduxPlot extends AbstractComponent {
       if (GEPPETTO.UnitsController.hasUnit(unitSymbol)){
         formattedUnitName = GEPPETTO.UnitsController.getUnitLabel(unitSymbol);
       } else {
-        var mathUnit = unit(1, unitSymbol);
-
-        formattedUnitName = (mathUnit.units.length > 0) ? mathUnit.units[0].unit.base.key : "";
-        (mathUnit.units.length > 1) ? formattedUnitName += " OVER " + mathUnit.units[1].unit.base.key : "";
+        try {
+          var mathUnit = unit(1, unitSymbol);
+          formattedUnitName = (mathUnit.units.length > 0) ? mathUnit.units[0].unit.base.key : "";
+          (mathUnit.units.length > 1) ? formattedUnitName += " OVER " + mathUnit.units[1].unit.base.key : "";
+        } catch (error) {
+          console.log(`Unit symlob <${unitSymbol}> does not represent a physical quantity`)
+        }
       }
 
       if (formattedUnitName != "") {
@@ -68,10 +72,12 @@ export default class ReduxPlot extends AbstractComponent {
   updateAxisTitles (xInstance, yInstance, layout) {
     const { variables } = this.state;
     const { xaxis, yaxis, margin } = layout;
-    const { xtitle } = xaxis;
-    const { ytitle } = yaxis;
+    const title = 'title';
+    const { [title]: xtitle } = xaxis;
+    const { [title]: ytitle } = yaxis;
 
     const inhomogeneousUnits = new Set(Object.values(variables).map(v => v.getUnit())).size > 1;
+
     const labelY = inhomogeneousUnits ? "SI Units" : this.getUnitLabel(yInstance.getUnit());
     
     return { 
@@ -158,18 +164,20 @@ export default class ReduxPlot extends AbstractComponent {
 
   }
 
-  componentDidUpdate (prevProps){
-    const { instancePath2Plot } = this.props;
-
-    if (instancePath2Plot && instancePath2Plot != prevProps.instancePath2Plot) {
-      const instanceY = Instances.getInstance('nwbfile.acquisition.test_sine_1.data')
-      const instanceX = Instances.getInstance('nwbfile.acquisition.test_sine_1.time')
-      this.plotInstance(instanceY, {}, instanceX)
+  componentDidMount (){
+    const { instancePath } = this.props;
+    if (instancePath) {
+      try {
+        const instanceY = Instances.getInstance(`${instancePath}.data`)
+        const instanceX = Instances.getInstance(`${instancePath}.time`)
+        this.plotInstance(instanceY, {}, instanceX)
+      } catch (error) {
+        console.log(`Instance ${instancePath} does not seems to contain data or time instances.`)
+      }
+    } else {
+      console.log(`There is no instance path property defined for Plotly component.`)
     }
     
-  }
-  
-  doubleClick (){
   }
 
   render () {
@@ -190,7 +198,7 @@ export default class ReduxPlot extends AbstractComponent {
               ref="plotly"
               config={defaultConfig()}
               data={data}
-              onDoubleClick={() => this.doubleClick()}
+              onDoubleClick={() => {}}
               revision={revision}
               layout={layout}
               useResizeHandler
@@ -198,8 +206,6 @@ export default class ReduxPlot extends AbstractComponent {
             />)
         }
       </div>
-
-      
     )
   }
 }
