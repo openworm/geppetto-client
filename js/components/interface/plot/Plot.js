@@ -1,210 +1,236 @@
-define(function (require) {
-  var React = require('react');
-  var ReactPlotly = require('react-plotly.js').default;
-  var update = require('immutability-helper');
+import React from 'react';
+import Plotly from 'plotly.js/lib/core';
+import createPlotlyComponent from 'react-plotly.js/factory';
 
-  var $ = require('jquery');
-  var math = require('mathjs');
-  var AbstractComponent = require('../../AComponent');
-  var PlotConfig = require('./configuration/plotConfiguration');
-  var ExternalInstance = require('../../../geppettoModel/model/ExternalInstance');
+Plotly.register([require('plotly.js/lib/scatter')]);
+const ScatterPlot = createPlotlyComponent(Plotly);
 
-  // export default class Plot extends AbstractComponent {
-  return class Plot extends AbstractComponent {
 
-    constructor (props) {
-      super(props);
-      this.state = {
-        layout: PlotConfig.defaultLayout,
-        data: [],
-        frames: [],
-        variables: {}
-      };
+/*
+ * import update from 'immutability-helper';
+ * import $ from 'jquery';
+ */
+
+import { unit } from 'mathjs';
+import AbstractComponent from '../../AComponent';
+import { defaultLayout, defaultTrace, defaultLine, defaultConfig } from './reduxConfiguration/plotConfiguration';
+import ExternalInstance from '../../../geppettoModel/model/ExternalInstance';
+
+
+export default class ReduxPlot extends AbstractComponent {
+
+  constructor (props) {
+    super(props);
+    this.state = {
+      layout: defaultLayout(),
+      data: [],
+      frames: [],
+      variables: {},
+      revision: 0
+    };
+  }
+
+
+  componentDidMount () {
+    this.widgetCapabilityInit();
+    this.propsInit();
+  }
+
+  propsInit () {
+    if (!this.props.instancePath) {
+      return;
     }
-
-    componentDidMount () {
-      // FIXME: this jquery should be retired
-      this.addButtonToTitleBar($("<div class='fa fa-home' title='Reset plot zoom'></div>").on('click', function (event) {
-        this.resetAxes();
-      }.bind(this)));
-      this.dialog.dialog({
-        resize: function (event, ui) {
-          this.resize(true);
-        }.bind(this)
-      });
-    }
-
-    getUnitLabel (unitSymbol) {
-      if (unitSymbol != null || unitSymbol != undefined){
-        unitSymbol = unitSymbol.replace(/_per_/gi, " / ");
-      } else {
-        unitSymbol = "";
+    const { instancePath } = this.props;
+    if (instancePath) {
+      try {
+        const instanceY = Instances.getInstance(`${instancePath}.data`);
+        const instanceX = Instances.getInstance(`${instancePath}.time`);
+        this.plotInstance(instanceY, {}, instanceX);
+      } catch (error) {
+        console.log(`Instance ${instancePath} does not seems to contain data or time instances.`);
       }
+    } else {
+      console.log(`There is no instance path property defined for Plotly component.`);
+    }
+  }
 
-      var unitLabel = unitSymbol;
+  widgetCapabilityInit () {
+    if (!this.dialog) {
+      return;
+    }
+    // FIXME: this jquery should be retired
+    this.addButtonToTitleBar($("<div class='fa fa-home' title='Reset plot zoom'></div>").on('click', function (event) {
+      this.resetAxes();
+    }.bind(this)));
+    this.dialog.dialog({
+      resize: function (event, ui) {
+        this.resize(true);
+      }.bind(this)
+    });
+  }
 
-      if (unitSymbol != undefined && unitSymbol != null && unitSymbol != "") {
-        var formattedUnitName = "";
-        if (GEPPETTO.UnitsController.hasUnit(unitSymbol)){
-          formattedUnitName = GEPPETTO.UnitsController.getUnitLabel(unitSymbol);
-        } else {
-          var mathUnit = math.unit(1, unitSymbol);
 
+  getUnitLabel (unitSymbol) {
+    if (unitSymbol != null || unitSymbol != undefined) {
+      unitSymbol = unitSymbol.replace(/_per_/gi, " / ");
+    } else {
+      unitSymbol = "";
+    }
+
+    var unitLabel = unitSymbol;
+
+    if (unitSymbol != undefined && unitSymbol != null && unitSymbol != "") {
+      var formattedUnitName = "";
+      if (GEPPETTO.UnitsController.hasUnit(unitSymbol)) {
+        formattedUnitName = GEPPETTO.UnitsController.getUnitLabel(unitSymbol);
+      } else {
+        try {
+          var mathUnit = unit(1, unitSymbol);
           formattedUnitName = (mathUnit.units.length > 0) ? mathUnit.units[0].unit.base.key : "";
           (mathUnit.units.length > 1) ? formattedUnitName += " OVER " + mathUnit.units[1].unit.base.key : "";
-        }
-
-        if (formattedUnitName != "") {
-          formattedUnitName = formattedUnitName.replace(/_/g, " ");
-          formattedUnitName = formattedUnitName.charAt(0).toUpperCase() + formattedUnitName.slice(1).toLowerCase();
-          unitLabel = formattedUnitName + " (" + unitSymbol.replace(/-?[0-9]/g, function (letter) {
-            return letter.sup();
-          }) + ")";
-        }
-
-        return unitLabel;
-      }
-    }
-
-    resize () {
-      this.refs.plotly.resizeHandler();
-    }
-
-    updateAxisTitles (xInstance, yInstance) {
-      var inhomogeneousUnits = new Set(Object.values(this.state.variables).map(v => v.getUnit())).size > 1;
-      var labelY = inhomogeneousUnits ? "SI Units" : this.getUnitLabel(yInstance.getUnit());
-      let newLayout = update(this.state.layout, {
-        yaxis: { title: { text: { $set: labelY } } },
-        xaxis: { title: { text: { $set: this.getUnitLabel(xInstance.getUnit()) } } },
-        margin: { l: { $set: (labelY == null || labelY == "") ? 30 : 50 } }
-      });
-      this.setState({ layout: newLayout });
-    }
-
-    updateAxisRanges (xData, yData) {
-      // required to avoid stack overflow on big data
-      let arrayMin = function (arr) {
-        var len = arr.length, min = Infinity;
-        while (len--) {
-          if (Number(arr[len]) < min) {
-            min = Number(arr[len]);
-          }
-        }
-        return min;
-      };
-
-      let arrayMax = function (arr) {
-        var len = arr.length, max = -Infinity;
-        while (len--) {
-          if (Number(arr[len]) > max) {
-            max = Number(arr[len]);
-          }
-        }
-        return max;
-      };
-      var xmin = arrayMin(xData), xmax = arrayMax(xData);
-      var ymin = arrayMin(yData), ymax = arrayMax(yData);
-      var newLayout = update(this.state.layout, {
-        xaxis: { min: { $set: xmin }, max: { $set: xmax } },
-        yaxis: { min: { $set: ymin }, max: { $set: ymax } },
-      });
-      this.setState({ layout: newLayout });
-    }
-
-    getLegendName (projectId, experimentId, instance, sameProject) {
-      var legend = null;
-      // the variable's experiment belong to same project but it's not the active one
-      if (sameProject) {
-        for (var key in window.Project.getExperiments()) {
-          if (window.Project.getExperiments()[key].id == experimentId) {
-            // create legend with experiment name
-            legend = instance.getInstancePath() + " [" + window.Project.getExperiments()[key].name + "]";
-          }
+        } catch (error) {
+          console.log(`Unit symlob <${unitSymbol}> does not represent a physical quantity`)
         }
       }
-      // The variable's experiment and projects aren't the one that is active
-      else {
-        // get user projects
-        var projects = GEPPETTO.ProjectsController.getUserProjects();
 
-        for (var i = 0; i < projects.length; i++) {
-          // match variable project id
-          if ((projects[i].id == projectId)) {
-            // match variable experiment id
-            for (var key in projects[i].experiments) {
-              if (projects[i].experiments[key].id == experimentId) {
-                // create legend with project name and experiment
-                legend = instance.getInstancePath() + " [" + projects[i].name + " - " + projects[i].experiments[key].name + "]";
-              }
+      if (formattedUnitName != "") {
+        formattedUnitName = formattedUnitName.replace(/_/g, " ");
+        formattedUnitName = formattedUnitName.charAt(0).toUpperCase() + formattedUnitName.slice(1).toLowerCase();
+        unitLabel = formattedUnitName + " (" + unitSymbol.replace(/-?[0-9]/g, function (letter) {
+          return letter.sup();
+        }) + ")";
+      }
+
+      return unitLabel;
+    }
+  }
+
+  resize () {
+    this.refs.plotly.resizeHandler();
+  }
+
+  updateAxisTitles (xInstance, yInstance, layout) {
+    const { variables } = this.state;
+    const { xaxis, yaxis, margin } = layout;
+    const title = 'title';
+    const { [title]: xtitle } = xaxis;
+    const { [title]: ytitle } = yaxis;
+
+    const inhomogeneousUnits = new Set(Object.values(variables).map(v => v.getUnit())).size > 1;
+
+    const labelY = inhomogeneousUnits ? "SI Units" : this.getUnitLabel(yInstance.getUnit());
+
+    return {
+      ...layout,
+      xaxis: { ...xaxis, title: { ...xtitle, text: this.getUnitLabel(xInstance.getUnit()) } },
+      yaxis: { ...yaxis, title: { ...ytitle, text: labelY } },
+      margin: { ...margin, l: (labelY == null || labelY == "") ? 30 : 50 }
+    }
+
+
+  }
+
+  updateAxisRanges () {
+    const { layout } = this.state;
+    const { xaxis, yaxis } = layout;
+
+    return {
+      ...layout,
+      xaxis: { ...xaxis, autorange: true },
+      yaxis: { ...yaxis, autorange: true }
+    }
+  }
+
+  getLegendName (projectId, experimentId, instance, sameProject) {
+    const instancePath = instance.getInstancePath();
+
+    if (sameProject) {
+      window.Project.getExperiments().forEach(experiment => {
+        if (experiment.id == experimentId) {
+          return `${instancePath} [${experiment.name}]`;
+        }
+      })
+    } else {
+      GEPPETTO.ProjectsController.getUserProjects().forEach(project => {
+        if (project.id == projectId) {
+          project.experiments.forEach(experiment => {
+            if (experiment == experimentId) {
+              return `${instancePath} [${project.name} - ${experiment.name}]`;
             }
-          }
+          })
         }
-      }
+      })
+    }
+  }
 
-      return legend;
+  plotInstance (instanceY, lineOptions = {}, instanceX = window.time) {
+    const { data } = this.state
+    let legendName = instanceY.getInstancePath();
+    if (instanceY instanceof ExternalInstance) {
+      legendName = this.getLegendName(
+        instanceY.projectId,
+        instanceY.experimentId,
+        instanceY,
+        window.Project.getId() == instanceY.projectId
+      );
     }
 
-    plotInstance (instanceY, lineOptions, instanceX = window.time) {
-      var legendName = instanceY.getInstancePath();
-      if (instanceY instanceof ExternalInstance){
-        legendName = this.getLegendName(
-          instanceY.projectId,
-          instanceY.experimentId,
-          instanceY,
-          window.Project.getId() == instanceY.projectId
-        );
-      }
+    const trace = {
+      ...defaultTrace(),
+      x: instanceX.getTimeSeries(),
+      y: instanceY.getTimeSeries(),
+      path: instanceY.getInstancePath(),
+      name: legendName,
+      line: { ...defaultLine, ...lineOptions }
+    };
 
-      var trace = update(PlotConfig.defaultTrace, {
-        x: { $set: instanceX.getTimeSeries() },
-        y: { $set: instanceY.getTimeSeries() },
-        path: { $set: instanceY.getInstancePath() },
-        name: { $set: legendName },
-        line: { $merge: lineOptions ? lineOptions : {} }
-      });
-      this.addDatasetToPlot(trace);
-            
-      var newVariables = update(this.state.variables, { $merge: { [legendName]: instanceY } });
-      this.setState({ variables: newVariables });
-
-      this.updateAxisRanges(instanceX.getTimeSeries(), instanceY.getTimeSeries());
-      this.updateAxisTitles(instanceX, instanceY);
-        
-      /*
-         * // track change in state of the widget
-         * this.dirtyView = true;
-         */
-
-      return this;
+    const newVariables = {
+      ...this.state.variables,
+      [legendName]: instanceY
     }
 
-    resetAxes () {
-      this.setState({ 
-        layout: update(this.state.layout, {
-          xaxis: { range: { $set: [this.state.layout.xaxis.min, this.state.layout.xaxis.max] } },
-          yaxis: { range: { $set: [this.state.layout.yaxis.min, this.state.layout.yaxis.max] } },
-        })
-      });
-    }
+    let newLayout = this.updateAxisRanges();
+    newLayout = this.updateAxisTitles(instanceX, instanceY, newLayout);
 
-    addDatasetToPlot (dataset) {
-      this.setState(state => {
-        let data = state.data.concat(dataset);
-        return { data };
-      });
-    }
+    const newData = [...data.concat(trace)]
 
-    render () {
-      return (
-        <ReactPlotly
-          ref="plotly"
-          data={this.state.data}
-          layout={this.state.layout}
-          useResizeHandler={true}
-          style={{ width: "100%", height: "100%" }}
-          onUpdate={figure => this.setState(figure)}
-        />
-      )
-    }
-  };
-});
+    this.setState(({ revision, layout }) => ({
+      data: newData,
+      variables: newVariables,
+      revision: revision + 1,
+      layout: { ...newLayout, datarevision: layout.datarevision + 1 }
+
+    }))
+
+  }
+
+
+  render () {
+    const { data, layout, revision } = this.state;
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: '100%',
+          height: '100%'
+        }}
+      >
+        {
+          data.length > 0 && (
+            <ScatterPlot
+              ref="plotly"
+              config={defaultConfig()}
+              data={data}
+              onDoubleClick={() => { }}
+              revision={revision}
+              layout={layout}
+              useResizeHandler
+              style={{ width: '95%', height: '95%' }}
+            />)
+        }
+      </div>
+    )
+  }
+}
