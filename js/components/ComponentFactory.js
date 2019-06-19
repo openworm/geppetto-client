@@ -43,7 +43,8 @@ define(function (require) {
         'CONSOLE': 'interface/console/Console',
         'LINKBUTTON': 'interface/linkButton/LinkButton',
         'BUTTONBAR': 'interface/buttonBar/ButtonBar',
-        'DRAWER': 'interface/drawer/TabbedDrawer'
+        'DRAWER': 'interface/drawer/TabbedDrawer',
+        'PLOT': 'interface/plot/Plot'
       },
 
       loadSpinner: function () {
@@ -214,6 +215,7 @@ define(function (require) {
             case 'LINKBUTTON': require(['./interface/linkButton/LinkButton'],cb); break;
             case 'BUTTONBAR': require(['./interface/buttonBar/ButtonBar'], cb); break;
             case 'DRAWER': require(['./interface/drawer/TabbedDrawer'], cb); break;
+            case 'PLOT': require(['./interface/plot/Plot'], cb); break;
             }
                   
           });
