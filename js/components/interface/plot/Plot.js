@@ -13,11 +13,11 @@ const ScatterPlot = createPlotlyComponent(Plotly);
 
 import { unit } from 'mathjs';
 import AbstractComponent from '../../AComponent';
-import { defaultLayout, defaultTrace, defaultLine, defaultConfig } from './reduxConfiguration/plotConfiguration';
+import { defaultLayout, defaultTrace, defaultLine, defaultConfig } from './configuration/plotConfiguration';
 import ExternalInstance from '../../../geppettoModel/model/ExternalInstance';
 
 
-export default class ReduxPlot extends AbstractComponent {
+export default class Plot extends AbstractComponent {
 
   constructor (props) {
     super(props);
@@ -37,20 +37,20 @@ export default class ReduxPlot extends AbstractComponent {
   }
 
   propsInit () {
-    if (!this.props.instancePath) {
-      return;
-    }
     const { instancePath } = this.props;
     if (instancePath) {
       try {
-        const instanceY = Instances.getInstance(`${instancePath}.data`);
-        const instanceX = Instances.getInstance(`${instancePath}.time`);
+        // const instanceY = Instances.getInstance(`${instancePath}.data`);
+
+        // const instanceX = Instances.getInstance(`${instancePath}.time`);
+        const instanceY = Instances.getInstance(instancePath.y);
+        const instanceX = Instances.getInstance(instancePath.x);
         this.plotInstance(instanceY, {}, instanceX);
       } catch (error) {
         console.log(`Instance ${instancePath} does not seems to contain data or time instances.`);
       }
     } else {
-      console.log(`There is no instance path property defined for Plotly component.`);
+      console.log(`No instance path defined for Plot component.`);
     }
   }
 
@@ -206,7 +206,10 @@ export default class ReduxPlot extends AbstractComponent {
 
 
   render () {
+    const { plotConfig } = this.props;
     const { data, layout, revision } = this.state;
+    const config = { ...defaultConfig(), ...plotConfig }
+
     return (
       <div
         style={{
@@ -221,7 +224,7 @@ export default class ReduxPlot extends AbstractComponent {
           data.length > 0 && (
             <ScatterPlot
               ref="plotly"
-              config={defaultConfig()}
+              config={config}
               data={data}
               onDoubleClick={() => { }}
               revision={revision}
