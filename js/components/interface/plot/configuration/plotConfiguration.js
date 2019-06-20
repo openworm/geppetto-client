@@ -51,11 +51,8 @@ export const defaultLayout = () => ({
     font: {
       family: defaultFont(),
       size: 12,
-      color : '#000'
+      color : '#fff'
     },
-    bgcolor: '#E2E2E2',
-    bordercolor: '#AAAAAA',
-    borderwidth: 2,
     x : 1,
   },
   transition: { duration: 0 },
@@ -64,7 +61,7 @@ export const defaultLayout = () => ({
     redraw: false
   },
   paper_bgcolor: 'transparent',
-  plot_bgcolor: 'white',
+  plot_bgcolor: 'transparent',
   playAll : false,
   hovermode : 'none',
   datarevision: 0
