@@ -37,7 +37,7 @@ export default class Plot extends AbstractComponent {
   }
 
   propsInit () {
-    const { instancePath } = this.props;
+    const { instancePath, lineOptions } = this.props;
     if (instancePath) {
       try {
         // const instanceY = Instances.getInstance(`${instancePath}.data`);
@@ -45,7 +45,7 @@ export default class Plot extends AbstractComponent {
         // const instanceX = Instances.getInstance(`${instancePath}.time`);
         const instanceY = Instances.getInstance(instancePath.y);
         const instanceX = Instances.getInstance(instancePath.x);
-        this.plotInstance(instanceY, {}, instanceX);
+        this.plotInstance(instanceY, lineOptions, instanceX);
       } catch (error) {
         console.log(`Instance ${instancePath} does not seems to contain data or time instances.`);
       }
