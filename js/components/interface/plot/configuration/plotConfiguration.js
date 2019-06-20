@@ -11,7 +11,8 @@ export const defaultConfig = () => ({
   
 export const defaultLine = () => ({
   dash: 'solid',
-  width: '2'
+  width: '2',
+  color: 'rgb(0, 0, 0)',
 })
   
 export const defaultTrace = () => ({
