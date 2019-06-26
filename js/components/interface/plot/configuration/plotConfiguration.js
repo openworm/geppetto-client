@@ -33,8 +33,8 @@ const defaultAxisLayout = () => ({
   ticklen: 1,
   tickcolor: 'white',
   linecolor: 'white',
-  tickfont: { family: defaultFont(), size: 11, color: 'white!important' },
-  titlefont: { family: defaultFont(), size: 12, color: 'white!important' },
+  tickfont: { family: defaultFont(), size: 11, color: 'white' },
+  titlefont: { family: defaultFont(), size: 12, color: 'white' },
   ticks: 'outside'
 });
   
