@@ -202,6 +202,7 @@ export default class Plot extends AbstractComponent {
 
     }))
 
+    return this;
   }
 
 
