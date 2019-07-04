@@ -30,7 +30,7 @@ define(function (require) {
         'SHARE': 'interface/share/Share',
         'INFOMODAL': 'controls/modals/InfoModal',
         'MDMODAL': 'controls/modals/MarkDownModal',
-        'QUERY': 'interface/query/query',
+        'QUERY': 'interface/query/queryBuilder',
         'TUTORIAL': 'interface/tutorial/Tutorial',
         'PYTHONCONSOLE': 'interface/pythonConsole/PythonConsole',
         'DICOMVIEWER': 'interface/dicomViewer/DicomViewer',
@@ -201,7 +201,7 @@ define(function (require) {
             case 'SHARE': require(['./interface/share/Share'],cb); break;
             case 'INFOMODAL': require(['./controls/modals/InfoModal'],cb); break;
             case 'MDMODAL': require(['./controls/modals/MarkDownModal'],cb); break;
-            case 'QUERY': require(['./interface/query/query'],cb); break;
+            case 'QUERY': require(['./interface/query/queryBuilder'],cb); break;
             case 'TUTORIAL': require(['./interface/tutorial/Tutorial'],cb); break;
             case 'PYTHONCONSOLE': require(['./interface/pythonConsole/PythonConsole'],cb); break;
             case 'DICOMVIEWER': require(['./interface/dicomViewer/DicomViewer'],cb); break;

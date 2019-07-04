@@ -3,20 +3,16 @@ define(function (require) {
   require("./query.less");
   require("./react-simpletabs.less");
 
-  var CreateClass = require('create-react-class'), $ = require('jquery');
   var React = require('react');
-  var AppBar = require('@material-ui/core/AppBar').default;
-  var Tab = require('@material-ui/core/Tab').default;
-  var Tabs = require('@material-ui/core/Tabs').default;
-  var Typography = require('@material-ui/core/Typography').default;
-  var Griddle = require('griddle-0.6-fork');
-  var typeahead = require("typeahead.js/dist/typeahead.jquery.min.js");
-  var Bloodhound = require("typeahead.js/dist/bloodhound.min.js");
-  var Handlebars = require('handlebars');
   var GEPPETTO = require('geppetto');
-  var slick = require('slick-carousel');
-
+  var Handlebars = require('handlebars');
+  var Griddle = require('griddle-0.6-fork');
+  var QueryItem = require('./queryItem.js');
+  var QueryFooter = require('./queryFooter.js');
+  var Bloodhound = require("typeahead.js/dist/bloodhound.min.js");
+  var Typography = require('@material-ui/core/Typography').default;
   var MenuButton = require('../../controls/menuButton/MenuButton');
+  var typeahead = require("typeahead.js/dist/typeahead.jquery.min.js");
 
   var resultsViewState = false;
 
@@ -24,6 +20,7 @@ define(function (require) {
   var queryBuilderModel = {
     // list of change handlers called on change
     onChangeHandlers: [],
+    handlerContext: [],
     // query items present in the query builder
     items: [],
     // fetched results
@@ -32,18 +29,20 @@ define(function (require) {
     count: 0,
 
     // subscribe to model change notifications
-    subscribe: function (callback) {
+    subscribe (callback, context) {
       this.onChangeHandlers.push(callback);
+      this.handlerContext.push(context);
     },
 
     // notify to all listeners that the model has changed
-    notifyChange: function () {
+    notifyChange () {
       this.onChangeHandlers.forEach(function (cb) {
-        cb();
-      });
+        let boundCallback = cb.bind(this);
+        boundCallback();
+      }.bind(this.handlerContext[0]));
     },
 
-    itemSelectionChanged: function (item, selection, callback) {
+    itemSelectionChanged (item, selection, callback) {
       for (var i = 0; i < this.items.length; i++) {
         if (item.id == this.items[i].id) {
           this.items[i].selection = selection;
@@ -56,7 +55,7 @@ define(function (require) {
     },
 
     // add query item to model
-    addItem: function (item, callback) {
+    addItem (item, callback) {
       this.items.push(item);
 
       // get count triggers notify change once results are fetched
@@ -64,7 +63,7 @@ define(function (require) {
     },
 
     // delete single query item from model
-    deleteItem: function (item, callback) {
+    deleteItem (item, callback) {
       for (var i = 0; i < this.items.length; i++) {
         if (item.id == this.items[i].id) {
           this.items.splice(i, 1);
@@ -81,14 +80,14 @@ define(function (require) {
     },
 
     // clear all query items from model
-    clearItems: function () {
+    clearItems () {
       this.items = [];
       this.count = 0;
       this.notifyChange();
     },
 
     // Asynchronous call to the server to get the results count for the given query items
-    getCount: function (callback) {
+    getCount (callback) {
       var queryDTOs = [];
 
       for (var i = 0; i < this.items.length; i++) {
@@ -110,13 +109,13 @@ define(function (require) {
       GEPPETTO.QueriesController.getQueriesCount(queryDTOs, getCountDoneCallback.bind(this));
     },
 
-    setCount: function (count, callback) {
+    setCount (count, callback) {
       this.count = count;
       callback();
       this.notifyChange();
     },
 
-    addResults: function (results) {
+    addResults (results) {
       // loop results and unselect all
       for (var i = 0; i < this.results.length; i++) {
         this.results[i].selected = false;
@@ -127,7 +126,7 @@ define(function (require) {
       this.notifyChange();
     },
 
-    deleteResults: function (results) {
+    deleteResults (results) {
       GEPPETTO.CommandController.log("delete results", true);
       for (var i = 0; i < this.results.length; i++) {
         if (results.id == this.results[i].id) {
@@ -138,7 +137,7 @@ define(function (require) {
       this.notifyChange();
     },
 
-    resultSelectionChanged: function (resultsSetId) {
+    resultSelectionChanged (resultsSetId) {
       // loop results and change selection
       for (var i = 0; i < this.results.length; i++) {
         if (this.results[i].id == resultsSetId) {
@@ -156,356 +155,11 @@ define(function (require) {
     }
   };
 
-  GEPPETTO.QueryLinkComponent = CreateClass({
-    render: function () {
+  class QueryBuilder extends React.Component {
+    constructor (props) {
+      super(props);
 
-      var displayText = this.props.data;
-      var path = this.props.rowData.id;
-      var that = this;
-
-      var action = function (e) {
-        e.preventDefault();
-        e.nativeEvent.stopImmediatePropagation();
-        var actionStr = that.props.metadata.actions;
-        actionStr = actionStr.replace(/\$entity\$/gi, path);
-        GEPPETTO.CommandController.execute(actionStr);
-        $("#querybuilder").hide();
-      };
-
-      return (
-        <div>
-          <a href='#' onClick={action}>{displayText}</a>
-        </div>
-      )
-    }
-  });
-
-  GEPPETTO.SlideshowImageComponent = CreateClass({
-    isCarousel: false,
-
-    imageContainerId: '',
-    fullyLoaded: false,
-
-    getImageClickAction: function (path) {
-      var that = this;
-
-      var action = function (e) {
-        e.preventDefault();
-        e.nativeEvent.stopImmediatePropagation();
-        var actionStr = that.props.metadata.actions;
-        actionStr = actionStr.replace(/\$entity\$/gi, path);
-        GEPPETTO.CommandController.execute(actionStr);
-        $("#querybuilder").hide();
-      };
-
-      return action;
-    },
-
-    getInitialState: function () {
-      return { carouselFullyLoaded: false, };
-    },
-
-    componentDidMount: function () {
-      // apply carousel
-      if (this.isCarousel) {
-        var slickDivElement = $('#' + this.imageContainerId + '.slickdiv');
-        slickDivElement.slick();
-        var that = this;
-
-        // reload slick carousel if it's first time clicking on arrow in any direction
-        slickDivElement.find(".slick-arrow").on("click", function () {
-          if (!that.fullyLoaded) {
-            that.setState({ carouselFullyLoaded: true });
-            that.fullyLoaded = true;
-          }
-        }, { passive: true });
-      }
-    },
-
-    componentDidUpdate: function () {
-      // on component refresh, update slick carousel
-      $('#' + this.imageContainerId + '.slickdiv').slick('unslick').slick();
-    },
-
-    buildImage: function (thumbImage, imageContainerId) {
-      var action = this.getImageClickAction(thumbImage.reference);
-      const imgElement = <div id={imageContainerId} className="query-results-image collapse in">
-        <a href='' onClick={action}>
-          <img className="query-results-image invert" src={thumbImage.data} />
-        </a>
-      </div>
-      return imgElement;
-    },
-
-    buildCarousel: function () {
-      var jsonImageVariable = JSON.parse(this.props.data);
-      var imgElement = "";
-
-      if (jsonImageVariable.initialValues[0] != undefined) {
-        var imageContainerId = this.props.rowData.id + '-image-container';
-        this.imageContainerId = imageContainerId;
-
-        var value = jsonImageVariable.initialValues[0].value;
-        if (value.eClass == GEPPETTO.Resources.ARRAY_VALUE) {
-          if (value.elements.length > 1) {
-            this.isCarousel = true;
-            var imagesToLoad = 2;
-            if (this.state.carouselFullyLoaded) {
-              imagesToLoad = value.elements.length;
-            }
-
-            // set flag to fully loaded if total length of images to render is less or equal to 2
-            if (value.elements.length <= 2) {
-              this.fullyLoaded = true;
-            }
-
-            var that = this;
-            // if it's an array, create a carousel (relies on slick)
-            var elements = value.elements.map(function (item, key) {
-              if (key < imagesToLoad) {
-                var image = item.initialValue;
-                var action = that.getImageClickAction(image.reference);
-                return <div key={key} className="query-results-slick-image"> {image.name}
-                  <a href='' onClick={action}>
-                    <img className="popup-image invert" src={image.data} />
-                  </a>
-                </div>
-              }
-            });
-
-            elements = elements.slice(0, imagesToLoad);
-
-            imgElement = <div id={imageContainerId} className="slickdiv query-results-slick collapse in"
-              data-slick={JSON.stringify({ fade: true, centerMode: true, slidesToShow: 1, slidesToScroll: 1 })}>
-              {elements}
-            </div>
-          } else {
-            imgElement = this.buildImage(value.elements[0].initialValue, imageContainerId);
-          }
-        } else if (value.eClass == GEPPETTO.Resources.IMAGE) {
-          // otherwise we just show an image
-          imgElement = this.buildImage(value, imageContainerId);
-        }
-      }
-
-      return imgElement;
-    },
-        
-
-    render: function () {
-      var imgElement = "";
-      if (this.props.data != "" && this.props.data != undefined) {
-        imgElement = this.buildCarousel();
-      }
-
-      return (
-        <div>
-          {imgElement}
-        </div>
-      )
-    }
-  });
-
-  GEPPETTO.QueryResultsControlsComponent = CreateClass({
-
-    replaceTokensWithPath: function (inputStr, path) {
-      return inputStr.replace(/\$ID\$/gi, path);
-    },
-
-    getActionString: function (control, path) {
-      var actionStr = '';
-
-      if (control.actions.length > 0) {
-        for (var i = 0; i < control.actions.length; i++) {
-          actionStr += ((i != 0) ? ";" : "") + this.replaceTokensWithPath(control.actions[i], path);
-        }
-      }
-
-      return actionStr;
-    },
-
-    resolveCondition: function (control, path, negateCondition) {
-      if (negateCondition == undefined) {
-        negateCondition = false;
-      }
-
-      var resolvedConfig = control;
-
-      if (resolvedConfig.hasOwnProperty('condition')) {
-        // evaluate condition and reassign control depending on results
-        var conditionStr = this.replaceTokensWithPath(control.condition, path);
-        if (eval(conditionStr)) {
-          resolvedConfig = negateCondition ? resolvedConfig.false : resolvedConfig.true;
-        } else {
-          resolvedConfig = negateCondition ? resolvedConfig.true : resolvedConfig.false;
-        }
-      }
-
-      return resolvedConfig;
-    },
-
-    render: function () {
-      // TODO: would be nicer to pass controls and config straight from the parent component rather than assume
-      var config = GEPPETTO.QueryBuilder.state.resultsControlsConfig;
-      var resultItemId = this.props.rowData.id;
-      var ctrlButtons = [];
-
-      // Add common control buttons to list
-      for (var control in config.Common) {
-        var add = true;
-
-        // check show condition
-        if (config.Common[control].showCondition != undefined) {
-          var condition = this.replaceTokensWithPath(config.Common[control].showCondition, resultItemId);
-          add = eval(condition);
-        }
-
-        if (add) {
-          ctrlButtons.push(config.Common[control]);
-        }
-      }
-
-      var that = this;
-
-      return (
-        <div>
-          {ctrlButtons.map(function (control, id) {
-            // grab attributes to init button attributes
-            var controlConfig = that.resolveCondition(control, resultItemId);
-            var idVal = resultItemId.replace(/\./g, '_').replace(/\[/g, '_').replace(/\]/g, '_') + "_" + controlConfig.id + "_queryResults_btn";
-            var tooltip = controlConfig.tooltip;
-            var classVal = "btn queryresults-button fa " + controlConfig.icon;
-            var styleVal = {};
-
-            // define action function
-            var actionFn = function (param) {
-              // NOTE: there is a closure on 'control' so it's always the right one
-              var controlConfig = that.resolveCondition(control, resultItemId);
-
-              // take out action string
-              var actionStr = that.getActionString(controlConfig, resultItemId);
-
-              if (param != undefined) {
-                actionStr = actionStr.replace(/\$param\$/gi, param);
-              }
-
-              // run action
-              if (actionStr != '' && actionStr != undefined) {
-                GEPPETTO.CommandController.execute(actionStr);
-                // check custom action to run after configured command
-                if (that.props.metadata.action != '' && that.props.metadata.action != undefined) {
-                  // straight up eval as we don't want this to show on the geppetto console
-                  eval(that.props.metadata.action.replace(/\$ID\$/gi, resultItemId));
-                }
-              }
-
-              // if conditional, swap icon with the other condition outcome
-              if (control.hasOwnProperty('condition')) {
-                var otherConfig = that.resolveCondition(control, path);
-                var element = $('#' + idVal);
-                element.removeClass();
-                element.addClass("btn queryresults-button fa " + otherConfig.icon);
-              }
-            };
-
-            return (
-              <span key={id}>
-                <button id={idVal}
-                  className={classVal}
-                  style={styleVal}
-                  title={tooltip}
-                  onClick={actionFn}>
-                </button>
-              </span>
-            )
-          })}
-        </div>
-      )
-    }
-  });
-
-  var QueryItem = CreateClass({
-    displayName: 'QueryItem',
-
-    getDefaultProps: function () {
-      return {
-        "item": null,
-        "options": [],
-        "onSelectOption": undefined,
-        "onDeleteItem": undefined,
-      };
-    },
-
-    getInitialState: function () {
-      return {}; // TODO: add if any
-    },
-
-    render: function () {
-      var createItem = function (item, key) {
-        return <option key={key} value={item.value}>{item.name}</option>;
-      };
-
-      var that = this;
-      var onSelection = function (e) {
-        var val = parseInt(e.target.value);
-        that.props.onSelectOption(that.props.item, val);
-      };
-
-      var containerId = "queryitem-" + this.props.item.id;
-
-      return (
-        <div id={containerId} className="query-item">
-          <button className="fa fa-trash-o query-item-button" title="delete item" onClick={this.props.onDeleteItem} />
-          <select className="query-item-option" onChange={onSelection} value={this.props.item.selection}>
-            {this.props.item.options.map(createItem)}
-          </select>
-          <div className="clearer"></div>
-        </div>
-      );
-    }
-  });
-
-  var QueryFooter = CreateClass({
-    displayName: 'QueryFooter',
-
-    getDefaultProps: function () {
-      return {
-        "count": 0,
-        "onRun": undefined,
-        "containerClass": ''
-      };
-    },
-
-    render: function () {
-      return (
-        <div id="querybuilder-footer" className={this.props.containerClass}>
-          <button id="run-query-btn" className="fa fa-cogs querybuilder-button" title="Run query" onClick={this.props.onRun} />
-          <div id="query-results-label">{this.props.count.toString()} results</div>
-        </div>
-      );
-    }
-  });
-
-  var QueryBuilder = CreateClass({
-    displayName: 'QueryBuilder',
-    dataSourceResults: {},
-    updateResults: false,
-    initTypeAheadCreated: false,
-    configuration: { DataSources: {} },
-    mixins: [
-      require('../../controls/mixins/bootstrap/modal.js')
-    ],
-
-    defaultDataSources: function (q, sync) {
-      if (q === '') {
-        sync(this.dataSourceResults.index.all());
-      } else {
-        this.dataSourceResults.search(q, sync);
-      }
-    },
-
-    getInitialState: function () {
-      return {
+      this.state = {
         resultsView: false,
         errorMsg: '',
         showSpinner: false,
@@ -516,161 +170,221 @@ define(function (require) {
         resultsPerPate: undefined,
         refreshTrigger: false,
         value: 0,
-      };
-    },
+        display: false,
+        allColumnsToShow: null,
+      }
 
-    getDefaultProps: function () {
-      return { model: queryBuilderModel };
-    },
+      this.displayName = 'QueryBuilder';
+      this.dataSourceResults = {};
+      this.updateResults = false;
+      this.initTypeAheadCreated = false;
+      this.configuration = { DataSources: {} };
+      this.mixins = [
+        require('../../controls/mixins/bootstrap/modal.js')
+      ];
+      this.escape = 27;
+      this.qKey = 81;
 
-    componentWillMount: function () {
+      this.open = this.open.bind(this);
+      this.close = this.close.bind(this);
+      this.runQuery = this.runQuery.bind(this);
+      this.switchView = this.switchView.bind(this);
+      this.initTypeahead = this.initTypeahead.bind(this);
+      this.setWrapperRef = this.setWrapperRef.bind(this);
+      this.keyOpenHandler = this.keyOpenHandler.bind(this);
+      this.setErrorMessage = this.setErrorMessage.bind(this);
+      this.keyCloseHandler = this.keyCloseHandler.bind(this);
+      this.queryItemDeleted = this.queryItemDeleted.bind(this);
+      this.clearErrorMessage = this.clearErrorMessage.bind(this);
+      this.defaultDataSources = this.defaultDataSources.bind(this);
+      this.queryResultDeleted = this.queryResultDeleted.bind(this);
+      this.handleClickOutside = this.handleClickOutside.bind(this);
+      this.downloadQueryResults = this.downloadQueryResults.bind(this);
+      this.resultSetSelectionChange = this.resultSetSelectionChange.bind(this);
+      this.queryOptionSelected = this.queryOptionSelected.bind(this);
+    }
+
+    keyCloseHandler (event){
+      if (event.keyCode === this.escape) {
+        this.close();
+        GEPPETTO.trigger("query_closed");
+      }
+    }
+
+    keyOpenHandler (event) {
+      if (event.keyCode === this.qKey && GEPPETTO.isKeyPressed("ctrl")) {
+        if (this.state.display) {
+          this.close();
+        } else {
+          this.open();
+        }
+      }
+    }
+
+    setWrapperRef (node) {
+      this.wrapperRef = node;
+    }
+
+    handleClickOutside (event) {
+      if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+        this.close();
+        GEPPETTO.trigger("query_closed");
+      }
+    }
+
+    defaultDataSources (q, sync) {
+      if (q === '') {
+        sync(this.dataSourceResults.index.all());
+      } else {
+        this.dataSourceResults.search(q, sync);
+      }
+    }
+
+    componentWillMount () {
       // this.clearErrorMessage();
       GEPPETTO.QueryBuilder = this;
-    },
+      this.props.resultsColMeta.map(item => {
+        if (item["customComponent"] !== undefined) {
+          item["queryBuilder"] = this;
+        }
+      });
+      this.setResultsColumnMeta(this.props.resultsColMeta);
+      this.setResultsColumns(this.props.resultsColumns);
+      this.setResultsControlsConfig(this.props.resultsControlConfig);
+      this.addDataSource(this.props.datasourceConfig);
+    }
 
-    switchView: function (resultsView, clearQueryItems) {
+    componentWillUnmount () {
+      document.removeEventListener('mousedown', this.handleClickOutside);
+      document.removeEventListener("keydown", this.keyOpenHandler, false);
+      document.removeEventListener("keydown", this.keyCloseHandler, false);
+    }
+
+    switchView (resultsView, clearQueryItems) {
       if (clearQueryItems == true) {
         this.clearAllQueryItems();
       }
 
       this.setState({ resultsView: resultsView });
-    },
+    }
 
-    showBrentSpiner: function (spin) {
+    showBrentSpiner (spin) {
       this.setState({ showSpinner: spin });
-    },
+    }
 
-    open: function () {
-      // show query builder
-      $("#querybuilder").show();
-      var typeAhead = $("#query-typeahead");
-      typeAhead.focus();
-    },
+    open () {
+      /*
+       * show query builder
+       */
+      this.setState({ display: true }, () => {
+        var typeAhead = $("#query-typeahead");
+        typeAhead.focus();
+      });
+    }
 
-    close: function () {
-      // hide query builder
-      $("#querybuilder").hide();
-    },
+    close () {
+      /*
+       * hide query builder
+       */
+      this.setState({ display: false });
+    }
 
-    setResultsControlsConfig: function (controlsConfig) {
+    setResultsControlsConfig (controlsConfig) {
       this.setState({ resultsControlsConfig: controlsConfig });
-    },
+    }
 
-    setResultsColumns: function (columns) {
-      this.setState({ resultsColumns: columns });
-    },
+    setResultsColumns (columns) {
+      this.setState({
+        resultsColumns: columns,
+        allColumnsToShow: columns 
+      });
+    }
 
-    setResultsColumnMeta: function (colMeta) {
+    setResultsColumnMeta (colMeta) {
       this.setState({ resultsColumnMeta: colMeta });
-    },
+    }
 
-    initTypeahead: function () {
-      if (!this.initTypeAheadCreated) {
-        var that = this;
+    initTypeahead () {
 
-        $("#query-typeahead").unbind('keydown');
-        $("#query-typeahead").keydown(this, function (e) {
-          if (e.which == 9 || e.keyCode == 9) {
-            e.preventDefault();
-          }
-        });
+      var that = this;
 
-        var queryTypeAheadElem = $("#query-typeahead");
-
-        queryTypeAheadElem.unbind('keydown');
-        queryTypeAheadElem.keydown(this, function (e) {
-          if (e.which == 9 || e.keyCode == 9) {
-            e.preventDefault();
-          }
-        });
-
-        queryTypeAheadElem.unbind('keypress');
-        queryTypeAheadElem.keypress(this, function (e) {
-          if (e.which == 13 || e.keyCode == 13) {
-            that.confirmed($("#query-typeahead").val());
-          }
-          if (this.searchTimeOut !== null) {
-            clearTimeout(this.searchTimeOut);
-          }
-          this.searchTimeOut = setTimeout(function () {
-            for (var key in that.configuration.DataSources) {
-              if (that.configuration.DataSources.hasOwnProperty(key)) {
-                var dataSource = that.configuration.DataSources[key];
-                var searchQuery = $("#query-typeahead").val();
-                var url = dataSource.url.replace(/\$SEARCH_TERM\$/g, searchQuery);
-                that.updateResults = true;
-                that.requestDataSourceResults(key, url, dataSource.crossDomain);
-              }
-            }
-          }, 150);
-        });
-
-        // fire key event on paste
-        queryTypeAheadElem.off("paste");
-        queryTypeAheadElem.on("paste", function () {
-          $(this).trigger("keypress", { keyCode: 13 });
-        });
-
-        queryTypeAheadElem.unbind('typeahead:selected');
-        queryTypeAheadElem.bind('typeahead:selected', function (obj, datum, name) {
-          if (datum.hasOwnProperty("label")) {
-            that.confirmed(datum.label);
-          }
-        });
-
-        queryTypeAheadElem.typeahead({
-          hint: true,
-          highlight: true,
-          minLength: 1
-        },
-        {
-          name: 'dataSourceResults',
-          source: this.defaultDataSources,
-          limit: 50,
-          display: 'label',
-          templates: { suggestion: Handlebars.compile('<div>{{geticon icon}} {{label}}</div>') }
+      $("#query-typeahead").unbind('keydown');
+      $("#query-typeahead").keydown(this, function (e) {
+        if (e.which == 9 || e.keyCode == 9) {
+          e.preventDefault();
         }
-        );
-        that.initTypeAheadCreated = true;
+      });
+
+      var queryTypeAheadElem = $("#query-typeahead");
+
+      queryTypeAheadElem.unbind('keydown');
+      queryTypeAheadElem.keydown(this, function (e) {
+        if (e.which == 9 || e.keyCode == 9) {
+          e.preventDefault();
+        }
+      });
+
+      queryTypeAheadElem.unbind('keypress');
+      queryTypeAheadElem.keypress(this, function (e) {
+        if (e.which == 13 || e.keyCode == 13) {
+          that.confirmed($("#query-typeahead").val());
+        }
+        if (this.searchTimeOut !== null) {
+          clearTimeout(this.searchTimeOut);
+        }
+        this.searchTimeOut = setTimeout(function () {
+          for (var key in that.configuration.DataSources) {
+            if (that.configuration.DataSources.hasOwnProperty(key)) {
+              var dataSource = that.configuration.DataSources[key];
+              var searchQuery = $("#query-typeahead").val();
+              var url = dataSource.url.replace("$SEARCH_TERM$", searchQuery);
+              that.updateResults = true;
+              that.requestDataSourceResults(key, url, dataSource.crossDomain);
+            }
+          }
+        }, 150);
+      });
+
+      // fire key event on paste
+      queryTypeAheadElem.off("paste");
+      queryTypeAheadElem.on("paste", function () {
+        $(this).trigger("keypress", { keyCode: 13 });
+      });
+
+      queryTypeAheadElem.unbind('typeahead:selected');
+      queryTypeAheadElem.bind('typeahead:selected', function (obj, datum, name) {
+        if (datum.hasOwnProperty("label")) {
+          that.confirmed(datum.label);
+        }
+      });
+
+      queryTypeAheadElem.typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+      },
+      {
+        name: 'dataSourceResults',
+        source: this.defaultDataSources,
+        limit: 50,
+        display: 'label',
+        templates: { suggestion: Handlebars.compile('<div>{{geticon icon}} {{label}}</div>') }
       }
-    },
+      );
+      that.initTypeAheadCreated = true;
 
-    shouldComponentUpdate: function () {
-      if ($("#querybuilder").is(":visible")) {
-        return true;
-      } else {
-        return false;
-      }
-    },
+    }
 
-    componentDidMount: function () {
-      queryBuilderModel.subscribe(this.refresh);
-
+    componentDidMount () {
       var escape = 27;
       var qKey = 81;
 
       var that = this;
+      queryBuilderModel.subscribe(this.refresh, that);
 
-      $(document).keydown(function (e) {
-        if (GEPPETTO.isKeyPressed("ctrl") && e.keyCode == qKey) {
-          // show query builder
-          $("#querybuilder").show();
-        }
-      });
-
-      $(document).keydown(function (e) {
-        if ($("#querybuilder").is(':visible') && e.keyCode == escape) {
-          that.close();
-        }
-      });
-
-      $("#querybuilder").click(function (e) {
-        if (e.target == e.delegateTarget) {
-          // we want this only to happen if we clicked on the div directly and not on anything therein contained
-          that.close();
-          GEPPETTO.trigger("query_closed");
-        }
-      });
+      document.addEventListener('mousedown', this.handleClickOutside);
+      document.addEventListener("keydown", this.keyCloseHandler, false);
+      document.addEventListener("keydown", this.keyOpenHandler, false);
 
       Handlebars.registerHelper('geticon', function (icon) {
         if (icon) {
@@ -687,16 +401,24 @@ define(function (require) {
       if (GEPPETTO.ForegroundControls != undefined) {
         GEPPETTO.ForegroundControls.refresh();
       }
-    },
+    }
 
-    componentDidUpdate: function () {
+    componentDidUpdate () {
       if (!this.state.resultsView) {
         // re-init the search box on query builder
         this.initTypeahead();
       }
-    },
 
-    initDataSourceResults: function (datumToken, queryToken, sorter) {
+      if (!this.state.display) {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        document.removeEventListener("keydown", this.keyCloseHandler, false);
+      } else {
+        document.addEventListener('mousedown', this.handleClickOutside);
+        document.addEventListener("keydown", this.keyCloseHandler, false);
+      }
+    }
+
+    initDataSourceResults (datumToken, queryToken, sorter) {
       this.dataSourceResults = new Bloodhound({
         datumTokenizer: (datumToken != undefined) ? datumToken : Bloodhound.tokenizers.obj.whitespace('label'),
         queryTokenizer: (queryToken != undefined) ? queryToken : Bloodhound.tokenizers.whitespace,
@@ -705,13 +427,12 @@ define(function (require) {
         },
         sorter: sorter
       });
-    },
+    }
 
     /**
      * Requests external data sources.
-     *
      */
-    addDataSource: function (sources) {
+    addDataSource (sources) {
       try {
         for (var key in sources) {
           if (sources.hasOwnProperty(key)) {
@@ -731,12 +452,12 @@ define(function (require) {
       } catch (err) {
         throw ("Error parsing data sources " + err);
       }
-    },
+    }
 
     /**
      * Figure out if data source of same name is already in there. If it is create a new key for it.
      */
-    generateDataSourceKey: function (key, index) {
+    generateDataSourceKey (key, index) {
       var dataSource = this.configuration.DataSources[key]
       if (dataSource != null || dataSource != undefined) {
         key = key.concat(index);
@@ -744,7 +465,7 @@ define(function (require) {
       }
 
       return key;
-    },
+    }
 
     /**
      * Requests results for an external data source
@@ -753,7 +474,7 @@ define(function (require) {
      * @param data_source_url : URL used to request data source results
      * @param crossDomain : URL allows cross domain
      */
-    requestDataSourceResults: function (data_source_name, data_source_url, crossDomain) {
+    requestDataSourceResults (data_source_name, data_source_url, crossDomain) {
       var that = this;
       // not cross domain, get results via java servlet code
       if (!crossDomain) {
@@ -775,7 +496,7 @@ define(function (require) {
           }
         });
       }
-    },
+    }
 
     /**
      * Update the datasource results with results that come back
@@ -783,7 +504,7 @@ define(function (require) {
      * @param data_source_name
      * @param results
      */
-    updateDataSourceResults: function (data_source_name, results) {
+    updateDataSourceResults (data_source_name, results) {
       var that = this;
       var responses = results.response.docs;
       responses.forEach(function (response) {
@@ -797,12 +518,12 @@ define(function (require) {
         queryTypeAheadElem.typeahead('val', "init"); // this is required to make sure the query changes otherwise typeahead won't update
         queryTypeAheadElem.typeahead('val', value);
       }
-    },
+    }
 
     /**
      * Format incoming data source results into specified format in configuration script
      */
-    formatDataSourceResult: function (data_source_name, response) {
+    formatDataSourceResult (data_source_name, response) {
       // create searchable result for main label
       var labelTerm = this.configuration.DataSources[data_source_name].label.field;
       var idTerm = this.configuration.DataSources[data_source_name].id;
@@ -843,12 +564,12 @@ define(function (require) {
           }
         }
       }
-    },
+    }
 
     /**
      * Creates a searchable result from external data source response
      */
-    createDataSourceResult: function (data_source_name, response, formattedLabel, id) {
+    createDataSourceResult (data_source_name, response, formattedLabel, id) {
       var typeName = response.type;
 
       var obj = {};
@@ -864,9 +585,9 @@ define(function (require) {
       obj["actions"] = newActions;
       obj["icon"] = this.configuration.DataSources[data_source_name].type[typeName].icon;
       this.dataSourceResults.add(obj);
-    },
+    }
 
-    confirmed: function (item) {
+    confirmed (item) {
       if (item && item != "") {
         if (this.dataSourceResults.get(item)) {
           var found = this.dataSourceResults.get(item);
@@ -879,9 +600,9 @@ define(function (require) {
           }
         }
       }
-    },
+    }
 
-    queryOptionSelected: function (item, value, cb) {
+    queryOptionSelected (item, value, cb) {
       this.clearErrorMessage();
 
       var that = this;
@@ -899,9 +620,9 @@ define(function (require) {
 
       // Option has been selected
       this.props.model.itemSelectionChanged(item, value, callback.bind(this));
-    },
+    }
 
-    queryItemDeleted: function (item) {
+    queryItemDeleted (item) {
       this.clearErrorMessage();
 
       var callback = function () {
@@ -912,21 +633,21 @@ define(function (require) {
       this.showBrentSpiner(true);
 
       this.props.model.deleteItem(item, callback.bind(this));
-    },
+    }
 
     /**
      * Clears all query items from the query builder
      */
-    clearAllQueryItems: function () {
+    clearAllQueryItems () {
       this.clearErrorMessage();
       this.props.model.clearItems();
-    },
+    }
 
-    queryResultDeleted: function (resultsItem) {
+    queryResultDeleted (resultsItem) {
       this.props.model.deleteResults(resultsItem);
-    },
+    }
 
-    getCompoundQueryId: function (queryItems) {
+    getCompoundQueryId (queryItems) {
       var id = "";
 
       for (var i = 0; i < queryItems.length; i++) {
@@ -934,9 +655,9 @@ define(function (require) {
       }
 
       return id;
-    },
+    }
 
-    runQuery: function () {
+    runQuery () {
       this.clearErrorMessage();
       if (this.props.model.items.length > 0) {
 
@@ -988,27 +709,40 @@ define(function (require) {
               var verboseLabelPlain = "";
               for (var i = 0; i < that.props.model.items.length; i++) {
                 queryLabel += ((i != 0) ? "/" : "")
-                                    + that.props.model.items[i].term;
+                                        + that.props.model.items[i].term;
                 verboseLabel += ((i != 0) ? "<span> AND </span>" : "")
-                                    + that.props.model.items[i].options[that.props.model.items[i].selection + 1].name;
+                                        + that.props.model.items[i].options[that.props.model.items[i].selection + 1].name;
                 verboseLabelPlain += ((i != 0) ? " AND " : "")
-                                    + that.props.model.items[i].options[that.props.model.items[i].selection + 1].name;
+                                        + that.props.model.items[i].options[that.props.model.items[i].selection + 1].name;
               }
 
               // NOTE: assumption we only have one datasource configured
               var datasourceConfig = that.configuration.DataSources[Object.keys(that.configuration.DataSources)[0]];
               var headersDatasourceFormat = datasourceConfig.resultsFilters.getHeaders(JSON.parse(jsonResults));
+              var columnsPresent = headersDatasourceFormat.map(header => {
+                for (var counter = 0; counter < that.state.resultsColumnMeta.length; counter++) {
+                  if (that.state.resultsColumnMeta[counter].displayName == header) {
+                    return that.state.resultsColumnMeta[counter].columnName;
+                  }
+                }
+              });
               var recordsDatasourceFormat = datasourceConfig.resultsFilters.getRecords(JSON.parse(jsonResults));
               var formattedRecords = recordsDatasourceFormat.map(function (record) {
-                return {
-                  id: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "ID"),
-                  name: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Name"),
-                  description: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Definition"),
-                  type: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Type"),
-                  images: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Images"),
-                  controls: '',
-                  score: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Score")
+                var instance = new Object();
+                for (var counter = 0; counter < columnsPresent.length; counter++) {
+                  instance[columnsPresent[counter]] = datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, headersDatasourceFormat[counter]);
                 }
+                instance["controls"] = '';
+                return instance;
+              });
+
+              var columnsToShow = that.state.allColumnsToShow.filter(item => {
+                for (var counter = 0; counter < columnsPresent.length; counter++) {
+                  if (item == columnsPresent[counter]) {
+                    return true;
+                  }
+                }
+                return false;
               });
 
               that.props.model.addResults({
@@ -1018,7 +752,10 @@ define(function (require) {
                 verboseLabel: '<span>' + formattedRecords.length.toString() + '</span> ' + verboseLabel,
                 verboseLabelPLain: formattedRecords.length.toString() + ' ' + verboseLabelPlain,
                 records: formattedRecords,
-                selected: true
+                selected: true,
+                columnsToShow: columnsToShow,
+                columnsPresent: columnsPresent,
+                headersColumns: headersDatasourceFormat
               });
 
               // stop showing spinner
@@ -1057,7 +794,7 @@ define(function (require) {
         // show error message for empty query
         this.setErrorMessage('Please add query items to run a query.');
       }
-    },
+    }
 
     /**
      * Add a query item
@@ -1065,7 +802,7 @@ define(function (require) {
      * @param queryItem - Object with term and variable id properties
      * @param cb - optional callback function
      */
-    addQueryItem: function (queryItemParam, cb) {
+    addQueryItem (queryItemParam, cb) {
       this.clearErrorMessage();
 
       // grab datasource configuration (assumption we only have one datasource)
@@ -1160,26 +897,26 @@ define(function (require) {
        */
       this.dataSourceResults.clear();
       // }
-    },
+    }
 
-    setErrorMessage: function (message) {
+    setErrorMessage (message) {
       this.setState({ errorMsg: message });
-    },
+    }
 
-    clearErrorMessage: function () {
+    clearErrorMessage () {
       this.setErrorMessage('');
-    },
+    }
 
-    resultSetSelectionChange: function (val) {
+    resultSetSelectionChange (val) {
       this.props.model.resultSelectionChanged(val);
       this.props.model.results.map((resultItem, index) => {
         if (val === resultItem.label) {
           this.setState({ value: index });
         }
       });
-    },
+    }
 
-    downloadQueryResults: function (resultsItem) {
+    downloadQueryResults (resultsItem) {
       var convertArrayOfObjectsToCSV = function (args) {
         var result, ctr, keys, columnDelimiter, lineDelimiter, data;
 
@@ -1216,7 +953,18 @@ define(function (require) {
       var downloadCSV = function (args) {
         var data, filename, link, extension;
 
-        var csv = convertArrayOfObjectsToCSV({ data: args.data });
+        var records = args.data.map(function (record) {
+          var instance = new Object();
+          for (var counter = 0; counter < args.columnsPresent.length; counter++) {
+            if (args.columnsPresent[counter] == "controls" || args.columnsPresent[counter] == "images") {
+              continue;
+            }
+            instance[args.columnsPresent[counter]] = record[args.columnsPresent[counter]];
+          }
+          return instance;
+        });
+
+        var csv = convertArrayOfObjectsToCSV({ data: records });
         if (csv == null) {
           return;
         }
@@ -1240,25 +988,25 @@ define(function (require) {
       };
 
       downloadCSV({
-        filename: 'query-results',
-        data: resultsItem.records.map(function (record) {
-          return {
-            id: record.id,
-            name: record.name,
-            description: record.description.replace(/,/g, ' ')
-          }
-        }
-        )
+        filename: resultsItem.verboseLabelPLain.replace(/ /g, '_'),
+        data: resultsItem.records,
+        columnsPresent: resultsItem.columnsPresent,
+        headersColumns: resultsItem.headersColumns,
+        datasourceConfig: this.configuration.DataSources[Object.keys(this.configuration.DataSources)[0]],
       });
-    },
+    }
 
-    refresh: function () {
+    refresh () {
       this.setState({ refreshTrigger: !this.state.refreshTrigger });
-    },
+    }
 
-    render: function () {
+    render () {
       const { value } = this.state;
       var markup = null;
+
+      if (this.state.display === false) {
+        return markup;
+      }
       // once off figure out if we are to use infinite scrolling for results and store in state
       if (this.state.infiniteScroll === undefined) {
         this.state.infiniteScroll = !(this.props.enablePagination != undefined && this.props.enablePagination === true);
@@ -1288,14 +1036,21 @@ define(function (require) {
             return { __html: resultsItem.verboseLabel };
           };
 
-          return (value === index
-                        && <Typography component="div" key={index}>
-                          <div className="result-verbose-label" dangerouslySetInnerHTML={getVerboseLabelMarkup()}></div>
-                          <div className="clearer"></div>
-                          <Griddle columns={this.state.resultsColumns} results={resultsItem.records}
-                            showFilter={true} showSettings={false} enableInfiniteScroll={this.state.infiniteScroll} resultsPerPage={this.state.resultsPerPage} bodyHeight={(window.innerHeight - 280)}
-                            useGriddleStyles={false} columnMetadata={this.state.resultsColumnMeta} />
-                        </Typography>
+          return (focusTabIndex === index
+                            && <Typography component="div" key={index}>
+                              <div className="result-verbose-label" dangerouslySetInnerHTML={getVerboseLabelMarkup()}></div>
+                              <div className="clearer"></div>
+                              <Griddle
+                                showFilter={true}
+                                showSettings={false}
+                                useGriddleStyles={false}
+                                results={resultsItem.records}
+                                columns={resultsItem.columnsToShow}
+                                bodyHeight={(window.innerHeight - 280)}
+                                resultsPerPage={this.state.resultsPerPage}
+                                columnMetadata={this.state.resultsColumnMeta}
+                                enableInfiniteScroll={this.state.infiniteScroll} />
+                            </Typography>
           );
         }, this);
 
@@ -1332,7 +1087,7 @@ define(function (require) {
         this.initTypeAheadCreated = false;
 
         markup = (
-          <div id="query-results-container" className="center-content">
+          <div id="query-results-container" className="center-content" ref={this.setWrapperRef}>
             <MenuButton configuration={configuration} />
             {tabs}
             <button id="switch-view-btn" className="fa fa-angle-left querybuilder-button"
@@ -1380,7 +1135,7 @@ define(function (require) {
         var footerClass = this.state.showSpinner ? 'hide' : '';
 
         markup = (
-          <div id="query-builder-container">
+          <div id="query-builder-container" ref={this.setWrapperRef}>
             <div id="query-builder-items-container">
               {queryItems}
             </div>
@@ -1395,9 +1150,14 @@ define(function (require) {
         );
       }
 
-      return markup;
+      return (
+        <div id="querybuilder" style={{ top: 0, display: 'block' }}>
+          {markup}
+        </div> );
     }
-  });
+  }
+
+  QueryBuilder.defaultProps = { model: queryBuilderModel };
 
   return QueryBuilder;
 });
