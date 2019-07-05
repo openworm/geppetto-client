@@ -6,7 +6,7 @@ define(function (require) {
   var React = require('react');
   var GEPPETTO = require('geppetto');
   var Handlebars = require('handlebars');
-  var Griddle = require('griddle-0.6-fork');
+  var Griddle = require('griddle-react');
   var QueryItem = require('./queryItem.js');
   var QueryFooter = require('./queryFooter.js');
   var Bloodhound = require("typeahead.js/dist/bloodhound.min.js");
