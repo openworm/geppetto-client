@@ -14,12 +14,48 @@ function mapToObject ( aMap ) {
   return obj;
 }
 
+function isString (obj) {
+  return typeof obj === 'string' || obj instanceof String;
+}
+
+
+function extractGriddleData (data, listViewerColumnsConfiguration) {
+  return data.map(row => listViewerColumnsConfiguration.reduce(
+    reduceEntityToGriddleRow(row), {}
+  ));
+}
+function reduceEntityToGriddleRow (row) {
+  return (processedRow, { id, source }) => ({
+    ...processedRow,
+    [id]: mapSourceToRow(source, row)
+  });
+}
+
+
+function mapSourceToRow (source, row) {
+  if (row.get){ // is a map coming from griddle. instanceof Map does not work here
+    row = mapToObject(row);
+  }
+  return source === undefined ? row : source instanceof Function ? source(row) : row[source];
+}
+
 /**
  * Allows to group multiple components in a single column
  * @param {*} conf 
  */
 export const GroupComponent = conf => ({ value }) => conf.map(
-  ({ id, customComponent, configuration, source }) => {
+  ({ id, customComponent, configuration, source, visible }) => {
+
+    if (value.get){ // is a map coming from griddle. instanceof Map does not work here
+      value = mapToObject(value);
+    }
+    if (visible !== undefined) {
+      const isVisible = visible instanceof Function ? visible(value) : visible;
+      if (!isVisible){
+        return '';
+      }
+    }
+
     if (!customComponent) {
       customComponent = WrapperComponent;
     }
@@ -38,14 +74,13 @@ export const GroupComponent = conf => ({ value }) => conf.map(
  * Shows a fontAwesome icon. Allows an action to be specified
  * @param { icon, action, color, tooltip } 
  */
-export const IconComponent = ({ icon, action, color, tooltip, condition = value => true }) => 
+export const IconComponent = ({ icon, action, color, tooltip }) => 
   ({ value }) => 
-    condition(value) ? <BaseIconComponent 
+    <BaseIconComponent 
       color = {color} 
       title={tooltip}
       action={() => action(value)}
       icon={icon} />
-      : ''
 
 
 export const MultiStatusComponent = availableStatuses => class Comp extends React.Component {
@@ -117,9 +152,13 @@ export const ParameterInputComponent = ({ placeholder, onBlur, onKeyPress, readO
   </React.Fragment>
 
 
-export const ColorComponent = ({ action, defaultColor }) => ({ value }) => 
+export const ColorComponent = ({ action, defaultColor, icon }) => ({ value }) => 
   <React.Fragment>
-    <PopupColorPicker color={ defaultColor } action={ hex => action(value, hex) }/>
+    <PopupColorPicker 
+      color={ isString(defaultColor) ? defaultColor : defaultColor(value) } 
+      action={ hex => action({ ...(isString(value) ? { path: value } : value), color:hex }) }
+      icon={ icon }
+    />
   </React.Fragment>
 /**
  * Shows the data value as a link
@@ -146,27 +185,6 @@ export const defaultColumnConfiguration = [
 ];
 
 
-function extractGriddleData (data, listViewerColumnsConfiguration) {
-  return data.map(row => listViewerColumnsConfiguration.reduce(
-    reduceEntityToGriddleRow(row), {}
-  ));
-}
-function reduceEntityToGriddleRow (row) {
-  return (processedRow, { id, source }) => ({
-    ...processedRow,
-    [id]: mapSourceToRow(source, row)
-  });
-}
-
-
-function mapSourceToRow (source, row) {
-  if (row.get){ // is a map coming from griddle. instanceof Map does not work here
-    row = mapToObject(row);
-  }
-  return source === undefined ? row : source instanceof Function ? source(row) : row[source];
-}
-
-
 export default class ListViewer extends React.Component {
   
   builtInComponents = { GroupComponent, IconComponent, WrapperComponent, LinkComponent, ImageComponent }
@@ -175,21 +193,25 @@ export default class ListViewer extends React.Component {
     super(props, context);
     this.preprocessColumnConfiguration = this.preprocessColumnConfiguration.bind(this);
     this.handlerObject = this.props.handler;
-    this.init();
+
   }
 
   componentDidUpdate () {
-    this.init();
+ 
   }
 
-
-  init () {
-    this.columnConfiguration = this.preprocessColumnConfiguration(
+  getColumnConfiguration () {
+    return this.preprocessColumnConfiguration(
       this.props.columnConfiguration !== undefined
         ? this.props.columnConfiguration
         : defaultColumnConfiguration
     );
-    this.data = extractGriddleData(this.props.filter ? this.props.instances.filter(this.props.filter) : this.props.instances, this.columnConfiguration);
+  }
+
+  getData () {
+    return extractGriddleData(this.props.filter 
+      ? this.props.instances.filter(this.props.filter) 
+      : this.props.instances, this.getColumnConfiguration ());
   }
 
   /**
@@ -220,8 +242,9 @@ export default class ListViewer extends React.Component {
     };
 
   }
+
   preprocessAction (action) {
-    if (this.isString(action)){
+    if (isString(action)){
       if (!this.handlerObject[action]){
         throw new Error('Bad ListViewer configuration: the function ' + action + ' is not defined in the specified handler ' + this.handlerObject);
       }
@@ -231,12 +254,8 @@ export default class ListViewer extends React.Component {
     } 
   }
 
-  isString (obj) {
-    return typeof obj === 'string' || obj instanceof String;
-  }
-
   preprocessComponent (customComponent) {
-    if (this.isString(customComponent)) {
+    if (isString(customComponent)) {
       if (this.builtInComponents[customComponent]) {
         return this.builtInComponents[customComponent];
       } else if (window[customComponent]) {
@@ -264,7 +283,7 @@ export default class ListViewer extends React.Component {
       customComponent = customComponent(configuration);
     }
 
-    if ( action) {
+    if ( action && !customComponent) {
       customComponent = WrapperComponent(action, customComponent);
     }
      
@@ -272,7 +291,7 @@ export default class ListViewer extends React.Component {
   }
 
   getColumnDefinitions () {
-    return this.columnConfiguration.map(colConf => this.getColumnDefinition(colConf));
+    return this.getColumnConfiguration().map(colConf => this.getColumnDefinition(colConf));
   }
 
   getLayout () {
@@ -284,14 +303,12 @@ export default class ListViewer extends React.Component {
   }
 
   render () {
-    // const { data, currentPage, pageSize, recordCount } = this.state;
-    console.log("ColumnConfiguration", this.columnConfiguration);
     window.conf = this.columnConfiguration;
     return <section className="listviewer">
-
+ 
       <Griddle
 
-        data={this.data}
+        data={this.getData()}
 
         plugins={this.props.infiniteScroll 
           ? [plugins.LocalPlugin, plugins.PositionPlugin({})] 
@@ -313,7 +330,7 @@ export default class ListViewer extends React.Component {
           }
         </RowDefinition>
       </Griddle>
-
+      
     </section>
   }
   
