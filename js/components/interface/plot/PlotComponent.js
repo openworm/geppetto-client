@@ -25,7 +25,6 @@ export default class PlotComponent extends AbstractComponent {
    */
   constructor (props) {
     super(props);
-    this.initPlot();
     this.revision = 0;
 
   }
@@ -84,8 +83,8 @@ export default class PlotComponent extends AbstractComponent {
         const instanceData = this.getInstanceData(instanceY, instanceX, lineOptions);
         this.data.push(instanceData);
 
-        const instanceLabelX = this.getUnitLabel(instanceY.getUnit());
-        const instanceLabelY = this.getUnitLabel(instanceX.getUnit());
+        const instanceLabelX = this.getUnitLabel(instanceX.getUnit());
+        const instanceLabelY = this.getUnitLabel(instanceY.getUnit());
  
         labelY = !labelY || labelY != instanceLabelY ? instanceLabelY : "SI Units";
         labelX = !labelX || labelX != instanceLabelX ? instanceLabelX : "SI Units";
@@ -203,7 +202,7 @@ export default class PlotComponent extends AbstractComponent {
     let legendName = instanceY.getInstancePath();
     if (instanceY instanceof ExternalInstance) {
       legendName = this.getLegendName(instanceY.projectId, instanceY.experimentId, instanceY, window.Project.getId() == instanceY.projectId);
-    }
+    }  
     return legendName;
   }
 
