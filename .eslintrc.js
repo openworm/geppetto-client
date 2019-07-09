@@ -57,7 +57,12 @@ module.exports = {
     "object-curly-spacing": [2, "always"],
     "template-curly-spacing": [2, "never"],
     "space-before-function-paren": [1, "always"],
-    "jest/valid-describe": 1,
+    "semi": [1, "always"],
+    "padding-line-between-statements": [
+      "error",
+      { "blankLine": "always", "prev": "directive", "next": "*" }
+  ],
+
   },
   globals: {
     "G": true,
