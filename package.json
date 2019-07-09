@@ -81,7 +81,6 @@
     "react-dnd-html5-backend": "7.0.2",
     "react-dom": "^16.6.3",
     "react-dom-factories": "1.0.2",
-    "react-dropzone": "8.0.3",
     "react-jsonschema-form": "^1.0.6",
     "react-lazy-load": "^3.0.12",
     "react-modal": "^3.8.1",

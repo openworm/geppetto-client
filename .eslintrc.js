@@ -56,7 +56,13 @@ module.exports = {
     "arrow-body-style": [2, "as-needed"],
     "object-curly-spacing": [2, "always"],
     "template-curly-spacing": [2, "never"],
-    "space-before-function-paren": [1, "always"]
+    "space-before-function-paren": [1, "always"],
+    "semi": [1, "always"],
+    "padding-line-between-statements": [
+      "error",
+      { "blankLine": "always", "prev": "directive", "next": "*" }
+  ],
+
   },
   globals: {
     "G": true,

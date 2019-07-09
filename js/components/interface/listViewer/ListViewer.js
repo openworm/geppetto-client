@@ -4,40 +4,7 @@ import BaseIconComponent from './BaseIconComponent';
 
 import PopupColorPicker from './PopupColorPicker';
 import './listviewer.less';
-
-
-function mapToObject ( aMap ) {
-  const obj = {};
-  aMap.forEach ((v,k) => {
-    obj[k] = v 
-  });
-  return obj;
-}
-
-function isString (obj) {
-  return typeof obj === 'string' || obj instanceof String;
-}
-
-
-function extractGriddleData (data, listViewerColumnsConfiguration) {
-  return data.map(row => listViewerColumnsConfiguration.reduce(
-    reduceEntityToGriddleRow(row), {}
-  ));
-}
-function reduceEntityToGriddleRow (row) {
-  return (processedRow, { id, source }) => ({
-    ...processedRow,
-    [id]: mapSourceToRow(source, row)
-  });
-}
-
-
-function mapSourceToRow (source, row) {
-  if (row.get){ // is a map coming from griddle. instanceof Map does not work here
-    row = mapToObject(row);
-  }
-  return source === undefined ? row : source instanceof Function ? source(row) : row[source];
-}
+import { mapToObject, mapSourceToRow, extractGriddleData, isString } from './utils';
 
 /**
  * Allows to group multiple components in a single column
@@ -80,7 +47,7 @@ export const IconComponent = ({ icon, action, color, tooltip }) =>
       color = {color} 
       title={tooltip}
       action={() => action(value)}
-      icon={icon} />
+      icon={icon} />;
 
 
 export const MultiStatusComponent = availableStatuses => class Comp extends React.Component {
@@ -104,10 +71,10 @@ export const MultiStatusComponent = availableStatuses => class Comp extends Reac
         this.setState({ statusIdx: statusIdx + 1 < availableStatuses.length ? statusIdx + 1 : 0 });
         action(this.value);
       }}
-      icon={icon} />
+      icon={icon} />;
 
   }
-}
+};
 
 /**
  * Wraps a component implementing a click action on it.
@@ -116,7 +83,7 @@ export const MultiStatusComponent = availableStatuses => class Comp extends Reac
  */
 export const WrapperComponent = (action, customComponent) => ({ value }) => 
   (<span onClick={() => action(value)}>{customComponent ? React.createElement(customComponent, { value: value }) : value}
-  </span>)
+  </span>);
 
 /**
  * Shows an image from the data field. If the data field has no value, a default image is shown instead.
@@ -129,7 +96,7 @@ export const ImageComponent = ({ title, alt, defaultImg, action }) =>
       title={title} 
       alt={alt ? alt : title} 
       onClick={() => action(value)}
-      className="thumbnail-img" />
+      className="thumbnail-img" />;
 
 /**
  * Allows to specify an input field.
@@ -149,7 +116,7 @@ export const ParameterInputComponent = ({ placeholder, onBlur, onKeyPress, readO
       title=""
       readOnly={readOnly} />
     <span className="control-panel-parameter-unit">{unit}</span>
-  </React.Fragment>
+  </React.Fragment>;
 
 
 export const ColorComponent = ({ action, defaultColor, icon }) => ({ value }) => 
@@ -159,11 +126,11 @@ export const ColorComponent = ({ action, defaultColor, icon }) => ({ value }) =>
       action={ hex => action({ ...(isString(value) ? { path: value } : value), color:hex }) }
       icon={ icon }
     />
-  </React.Fragment>
+  </React.Fragment>;
 /**
  * Shows the data value as a link
  */
-export const LinkComponent = ({ text }) => ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">{text ? text : value }</a>
+export const LinkComponent = ({ text }) => ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">{text ? text : value }</a>;
 
 
 export const defaultColumnConfiguration = [
@@ -196,10 +163,6 @@ export default class ListViewer extends React.Component {
 
   }
 
-  componentDidUpdate () {
- 
-  }
-
   getColumnConfiguration () {
     return this.preprocessColumnConfiguration(
       this.props.columnConfiguration !== undefined
@@ -223,7 +186,7 @@ export default class ListViewer extends React.Component {
       this.incrementalId = 0;
     }
     if (conf instanceof Array) {
-      return conf.map(this.preprocessColumnConfiguration)
+      return conf.map(this.preprocessColumnConfiguration);
     }
 
     if (conf.configuration && !conf.customComponent) {
@@ -248,7 +211,7 @@ export default class ListViewer extends React.Component {
       if (!this.handlerObject[action]){
         throw new Error('Bad ListViewer configuration: the function ' + action + ' is not defined in the specified handler ' + this.handlerObject);
       }
-      return entity => this.handlerObject[action](entity)
+      return entity => this.handlerObject[action](entity);
     } else {
       return action.bind(this.handlerObject);
     } 
@@ -305,24 +268,13 @@ export default class ListViewer extends React.Component {
   render () {
     window.conf = this.columnConfiguration;
     return <section className="listviewer">
- 
       <Griddle
-
         data={this.getData()}
-
         plugins={this.props.infiniteScroll 
           ? [plugins.LocalPlugin, plugins.PositionPlugin({})] 
           : [plugins.LocalPlugin]
         }
-
         components={{ Layout: this.getLayout() }}
-        /*
-         * pageProperties={{
-         *     currentPage: currentPage,
-         *     pageSize: pageSize,
-         *     recordCount: recordCount,
-         * }} 
-         */
       >
         <RowDefinition>
           {
@@ -330,8 +282,7 @@ export default class ListViewer extends React.Component {
           }
         </RowDefinition>
       </Griddle>
-      
-    </section>
+    </section>;
   }
   
  
