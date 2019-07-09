@@ -839,10 +839,10 @@ define(function (require) {
         /**
          * Renders the widget dialog window
          */
-          render () {
-              var componentType = (this.props.componentType !== undefined) ? this.props.componentType.toLowerCase() + "-widget" : "";
-              return (
-            <div key={this.props.id} id={this.props.id} className={'dialog ' + componentType} title={this.props.title}>
+        render () {
+          return (
+            <div key={this.props.id} id={this.props.id} className={'dialog ' + (this.props.componentType != undefined) ? this.props.componentType.toLowerCase() + "-widget" : ''} title={this.props.title}>
+
               <Overlay
                 ref="overlay"
                 show={this.props.modalIsOpen}

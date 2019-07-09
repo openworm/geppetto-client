@@ -197,19 +197,23 @@ define(function (require) {
         if (inst != undefined && inst.getTimeSeries() != undefined) {
           // plot, we have data
           if (plotWidget != undefined) {
-            plotWidget.plotInstance(inst);
+            plotWidget.plotData(inst);
+            plotWidget.updateAxis(inst.getInstancePath());
           } else {
-            var widget = await G.addWidget('PLOT');
-            widget.plotInstance(inst).setName(path);
+            var widget = await G.addWidget(0);
+            widget.plotData(inst).setName(path);
+            widget.updateAxis(path);
           }
         } else {
           var cb = async function (){
             var i = window.Instances.getInstance(path);
             if (plotWidget != undefined){
-              plotWidget.plotInstance(i);
+              plotWidget.plotData(i);
+              plotWidget.updateAxis(i.getInstancePath());
             } else {
-              var plot = await G.addWidget('PLOT');
-              plot.plotInstance(i).setName(path);
+              var plot = await G.addWidget(0);
+              plot.plotData(i).setName(path);
+              plot.updateAxis(path);
             }
           };
           // trigger get experiment data with projectId, experimentId and path, and callback to plot
@@ -219,12 +223,16 @@ define(function (require) {
         // we are dealing with external instances, define re-usable callback for plotting external instances
         var plotExternalCallback = async function () {
           var i = GEPPETTO.ExperimentsController.getExternalInstance(projectId, experimentId, path);
+          // if xPath is not specified, assume time
+          if (xPath == undefined){
+            xPath = 'time(StateVariable)'; 
+          }
           var t = GEPPETTO.ExperimentsController.getExternalInstance(projectId, experimentId, xPath);
           if (plotWidget != undefined) {
-            plotWidget.plotInstance(i, null, t);
+            plotWidget.plotXYData(i, t);
           } else {
-            var plot = await G.addWidget('PLOT');
-            plot.plotInstance(i, null, t).setName(path);
+            var plot = await G.addWidget(0);
+            plot.plotXYData(i, t).setName(path);
           }
         };
 
