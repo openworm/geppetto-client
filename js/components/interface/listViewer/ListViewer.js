@@ -47,11 +47,7 @@ export const IconComponent = ({ icon, action, color, tooltip }) =>
       color = {color} 
       title={tooltip}
       action={() => action(value)}
-<<<<<<< HEAD
-      icon={icon} />
-=======
       icon={icon} />;
->>>>>>> feature/41
 
 
 export const MultiStatusComponent = availableStatuses => class Comp extends React.Component {
@@ -75,17 +71,10 @@ export const MultiStatusComponent = availableStatuses => class Comp extends Reac
         this.setState({ statusIdx: statusIdx + 1 < availableStatuses.length ? statusIdx + 1 : 0 });
         action(this.value);
       }}
-<<<<<<< HEAD
-      icon={icon} />
-
-  }
-}
-=======
       icon={icon} />;
 
   }
 };
->>>>>>> feature/41
 
 /**
  * Wraps a component implementing a click action on it.
@@ -94,11 +83,7 @@ export const MultiStatusComponent = availableStatuses => class Comp extends Reac
  */
 export const WrapperComponent = (action, customComponent) => ({ value }) => 
   (<span onClick={() => action(value)}>{customComponent ? React.createElement(customComponent, { value: value }) : value}
-<<<<<<< HEAD
-  </span>)
-=======
   </span>);
->>>>>>> feature/41
 
 /**
  * Shows an image from the data field. If the data field has no value, a default image is shown instead.
@@ -111,11 +96,7 @@ export const ImageComponent = ({ title, alt, defaultImg, action }) =>
       title={title} 
       alt={alt ? alt : title} 
       onClick={() => action(value)}
-<<<<<<< HEAD
-      className="thumbnail-img" />
-=======
       className="thumbnail-img" />;
->>>>>>> feature/41
 
 /**
  * Allows to specify an input field.
@@ -135,11 +116,7 @@ export const ParameterInputComponent = ({ placeholder, onBlur, onKeyPress, readO
       title=""
       readOnly={readOnly} />
     <span className="control-panel-parameter-unit">{unit}</span>
-<<<<<<< HEAD
-  </React.Fragment>
-=======
   </React.Fragment>;
->>>>>>> feature/41
 
 
 export const ColorComponent = ({ action, defaultColor, icon }) => ({ value }) => 
@@ -149,19 +126,11 @@ export const ColorComponent = ({ action, defaultColor, icon }) => ({ value }) =>
       action={ hex => action({ ...(isString(value) ? { path: value } : value), color:hex }) }
       icon={ icon }
     />
-<<<<<<< HEAD
-  </React.Fragment>
-/**
- * Shows the data value as a link
- */
-export const LinkComponent = ({ text }) => ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">{text ? text : value }</a>
-=======
   </React.Fragment>;
 /**
  * Shows the data value as a link
  */
 export const LinkComponent = ({ text }) => ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">{text ? text : value }</a>;
->>>>>>> feature/41
 
 
 export const defaultColumnConfiguration = [
@@ -194,13 +163,6 @@ export default class ListViewer extends React.Component {
 
   }
 
-<<<<<<< HEAD
-  componentDidUpdate () {
- 
-  }
-
-=======
->>>>>>> feature/41
   getColumnConfiguration () {
     return this.preprocessColumnConfiguration(
       this.props.columnConfiguration !== undefined
@@ -224,11 +186,7 @@ export default class ListViewer extends React.Component {
       this.incrementalId = 0;
     }
     if (conf instanceof Array) {
-<<<<<<< HEAD
-      return conf.map(this.preprocessColumnConfiguration)
-=======
       return conf.map(this.preprocessColumnConfiguration);
->>>>>>> feature/41
     }
 
     if (conf.configuration && !conf.customComponent) {
@@ -253,11 +211,7 @@ export default class ListViewer extends React.Component {
       if (!this.handlerObject[action]){
         throw new Error('Bad ListViewer configuration: the function ' + action + ' is not defined in the specified handler ' + this.handlerObject);
       }
-<<<<<<< HEAD
-      return entity => this.handlerObject[action](entity)
-=======
       return entity => this.handlerObject[action](entity);
->>>>>>> feature/41
     } else {
       return action.bind(this.handlerObject);
     } 
@@ -314,33 +268,13 @@ export default class ListViewer extends React.Component {
   render () {
     window.conf = this.columnConfiguration;
     return <section className="listviewer">
-<<<<<<< HEAD
- 
-      <Griddle
-
-        data={this.getData()}
-
-=======
       <Griddle
         data={this.getData()}
->>>>>>> feature/41
         plugins={this.props.infiniteScroll 
           ? [plugins.LocalPlugin, plugins.PositionPlugin({})] 
           : [plugins.LocalPlugin]
         }
-<<<<<<< HEAD
-
         components={{ Layout: this.getLayout() }}
-        /*
-         * pageProperties={{
-         *     currentPage: currentPage,
-         *     pageSize: pageSize,
-         *     recordCount: recordCount,
-         * }} 
-         */
-=======
-        components={{ Layout: this.getLayout() }}
->>>>>>> feature/41
       >
         <RowDefinition>
           {
@@ -348,18 +282,8 @@ export default class ListViewer extends React.Component {
           }
         </RowDefinition>
       </Griddle>
-<<<<<<< HEAD
-      
-    </section>
-=======
     </section>;
->>>>>>> feature/41
   }
   
  
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> feature/41
