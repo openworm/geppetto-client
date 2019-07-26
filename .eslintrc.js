@@ -56,7 +56,8 @@ module.exports = {
     "arrow-body-style": [2, "as-needed"],
     "object-curly-spacing": [2, "always"],
     "template-curly-spacing": [2, "never"],
-    "space-before-function-paren": [1, "always"]
+    "space-before-function-paren": [1, "always"],
+    "jest/valid-describe": 1,
   },
   globals: {
     "G": true,

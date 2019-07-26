@@ -174,16 +174,26 @@ export default class ListViewerShowcase extends React.Component {
     return <div id="example-scroll">
       <h1>Simple example with infinite scroll</h1>
       <p>Here we are filtering all data to be of metaType "CompositeType"</p>
+<<<<<<< HEAD
       <div style={{ height: "400px", width: "100%" }}>
+=======
+      <div style={{ height: "400px", width: "100%", display: "flex", flexDirection: "column" }}>
+>>>>>>> feature/41
         <ListViewer infiniteScroll={true} instances={instances} />
       </div>
     </div>;
   }
 
   exampleFull () {
+<<<<<<< HEAD
     return <div id="example-filter">
       <h1>Example with common features</h1>
       <div style={{ height: "900px", width: "100%" }}>
+=======
+    return <div id="example-features">
+      <h1>Example with common features</h1>
+      <div style={{ height: "900px", width: "100%", display: "flex", flexDirection: "column" }}>
+>>>>>>> feature/41
         <ListViewer columnConfiguration={conf} filter={() => true} infiniteScroll={true} instances={instances} handler={this} />
       </div>;
     </div>
