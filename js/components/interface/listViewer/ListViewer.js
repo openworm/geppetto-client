@@ -4,44 +4,7 @@ import BaseIconComponent from './BaseIconComponent';
 
 import PopupColorPicker from './PopupColorPicker';
 import './listviewer.less';
-<<<<<<< HEAD
-
-
-function mapToObject ( aMap ) {
-  const obj = {};
-  aMap.forEach ((v,k) => {
-    obj[k] = v 
-  });
-  return obj;
-}
-
-function isString (obj) {
-  return typeof obj === 'string' || obj instanceof String;
-}
-
-
-function extractGriddleData (data, listViewerColumnsConfiguration) {
-  return data.map(row => listViewerColumnsConfiguration.reduce(
-    reduceEntityToGriddleRow(row), {}
-  ));
-}
-function reduceEntityToGriddleRow (row) {
-  return (processedRow, { id, source }) => ({
-    ...processedRow,
-    [id]: mapSourceToRow(source, row)
-  });
-}
-
-
-function mapSourceToRow (source, row) {
-  if (row.get){ // is a map coming from griddle. instanceof Map does not work here
-    row = mapToObject(row);
-  }
-  return source === undefined ? row : source instanceof Function ? source(row) : row[source];
-}
-=======
 import { mapToObject, mapSourceToRow, extractGriddleData, isString } from './utils';
->>>>>>> feature/41
 
 /**
  * Allows to group multiple components in a single column
