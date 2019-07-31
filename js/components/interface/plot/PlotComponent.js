@@ -29,6 +29,7 @@ export default class PlotComponent extends AbstractComponent {
 
   }
 
+  revision = 0 
 
   componentDidMount () {
     
@@ -159,6 +160,8 @@ export default class PlotComponent extends AbstractComponent {
     this.layout.xaxis = { ...this.layout.xaxis, ...layoutConf.xaxis };
     this.layout.yaxis = { ...this.layout.yaxis, ...layoutConf.yaxis };
     this.layout.margin = { ...this.layout.margin, ...layoutConf.margin };
+    this.layout.datarevision = this.revision + 1
+    this.revision = this.revision + 1
   }
 
   getAxisLayoutConfiguration (labelX, labelY) {

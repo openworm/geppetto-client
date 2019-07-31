@@ -1,7 +1,7 @@
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
 
-const BaseIconComponent = ({ icon, action, color, tooltip}) => 
+const BaseIconComponent = ({ icon, action, color, tooltip }) => 
   <span 
     style={{ color: color }} 
     className='list-icon' 

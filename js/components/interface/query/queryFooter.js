@@ -9,7 +9,7 @@ define(function (require) {
       this.displayName = 'QueryFooter';
     }
     
-    render() {
+    render () {
       return (
         <div id="querybuilder-footer" className={this.props.containerClass}>
           <button id="run-query-btn" className="fa fa-cogs querybuilder-button" title="Run query" onClick={this.props.onRun} />
