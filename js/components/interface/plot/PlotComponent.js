@@ -25,11 +25,11 @@ export default class PlotComponent extends AbstractComponent {
    */
   constructor (props) {
     super(props);
-    this.revision = 0;
-
   }
 
-  revision = 0 
+  revision = 0
+  getLegendName = this.props.getLegendName ? this.props.getLegendName.bind(this) : this.getLegendName.bind(this)
+  extractLegendName = this.props.extractLegendName ? this.props.extractLegendName.bind(this) : this.extractLegendName.bind(this)
 
   componentDidMount () {
     

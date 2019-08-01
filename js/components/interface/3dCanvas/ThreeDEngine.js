@@ -163,8 +163,8 @@ define(['jquery'], function () {
           that.mouse.y = -((event.clientY - (that.renderer.domElement.getBoundingClientRect().top)) / that.renderer.domElement.getBoundingClientRect().height) * 2 + 1;
           that.mouse.x = ((event.clientX - (that.renderer.domElement.getBoundingClientRect().left)) / that.renderer.domElement.getBoundingClientRect().width) * 2 - 1;
 
-          // only for left click
           if (event.button == 0) {
+            // only for left click
             if (that.pickingEnabled) {
               var intersects = that.getIntersectedObjects();
 
@@ -209,8 +209,8 @@ define(['jquery'], function () {
                       }
                     } else {
                       /*
-                       * if there are more than one element intersected and opacity of the current one is less than 1
-                       * we skip it to realize a "pick through"
+                       *if there are more than one element intersected and opacity of the current one is less than 1
+                       *we skip it to realize a "pick through"
                        */
                       var opacity = that.meshes[instancePath].defaultOpacity;
                       if ((opacity == 1 && visible) || GEPPETTO.isKeyPressed("ctrl")) {
@@ -219,8 +219,8 @@ define(['jquery'], function () {
                         break;
                       } else if (visible && opacity < 1 && opacity > 0) {
                         /*
-                         * if only transparent objects intersected select first or the next down if
-                         * one is already selected in order to enable "burrow through" sample.
+                         *if only transparent objects intersected select first or the next down if
+                         *one is already selected in order to enable "burrow through" sample.
                          */
                         if (selected == "" && !eval(instancePath + '.selected')) {
                           selected = instancePath;
@@ -1789,10 +1789,12 @@ define(['jquery'], function () {
      * @param {boolean}
      *            apply - Turn on or off the transparency
      */
-    unselectedTransparent: function (apply) {
-      GEPPETTO.SceneController.unselectedTransparent(this.meshes, apply);
-      GEPPETTO.SceneController.unselectedTransparent(this.splitMeshes, apply);
-    },
+    /*
+     * unselectedTransparent: function (apply) {
+     *   GEPPETTO.SceneController.unselectedTransparent(this.meshes, apply);
+     *   GEPPETTO.SceneController.unselectedTransparent(this.splitMeshes, apply);
+     * },
+     */
 
     /**
      * Make unselected instances transparent or not
@@ -2472,7 +2474,7 @@ define(['jquery'], function () {
      */
     splitHighlightedMesh: function (targetObjects, aspects) {
       var groups = {};
-      for (var a in aspects) {
+      for (let a in aspects) {
         // create object to hold geometries used for merging objects in groups
         var geometryGroups = {};
 
@@ -2494,7 +2496,7 @@ define(['jquery'], function () {
          * loop through individual meshes, add them to group, set
          * new material to them
          */ 
-        for (var v in map) {
+        for (let v in map) {
           var m = this.visualModelMap[map[v]];
           if (m.instancePath in targetObjects) {
             // merged mesh into corresponding geometry
@@ -2530,7 +2532,7 @@ define(['jquery'], function () {
     highlight: function (targetObjects, aspects, mode) {
       var splitHighlightedGroups = this.splitHighlightedMesh(targetObjects, aspects);
 
-      for (var groupName in splitHighlightedGroups) {
+      for (let groupName in splitHighlightedGroups) {
         // get group mesh
         var groupMesh = this.splitMeshes[groupName];
 
@@ -2693,7 +2695,7 @@ define(['jquery'], function () {
       mergedMesh.visible = false;
       this.scene.remove(mergedMesh);
 
-      for (var g in groups) {
+      for (let g in groups) {
         var groupName = g;
         if (groupName.indexOf(instancePath) <= -1) {
           groupName = instancePath + "." + g;
@@ -2811,7 +2813,7 @@ define(['jquery'], function () {
      */
     showVisualGroupsRaw: function (visualGroups, instance, meshesContainer) {
       var instancePath = instance.getInstancePath();
-      for (var g in visualGroups) {
+      for (let g in visualGroups) {
         // retrieve visual group object
         var visualGroup = visualGroups[g];
 
