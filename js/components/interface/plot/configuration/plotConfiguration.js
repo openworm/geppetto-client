@@ -1,11 +1,7 @@
 export const defaultConfig = () => ({ 
   scrollZoom: false, 
   displaylogo: false, 
-  modeBarButtonsToRemove: [
-    'resetScale2d', 
-    'hoverClosestCartesian', 
-    'hoverCompareCartesian', 
-    'toggleSpikelines'] 
+  displayModeBar: false
 })
   
   
