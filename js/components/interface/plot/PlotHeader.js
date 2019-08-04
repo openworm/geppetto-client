@@ -44,9 +44,8 @@ class PlotHeader extends Component {
     return (
       <div className={classes.headerContainer}>
         {headerIcons.map(({ icon, action, options, tooltip }) => (
-          <Tooltip title={tooltip} placement="bottom" enterDelay={300} classes={{ tooltip: classes.tooltip }}>
+          <Tooltip key={tooltip} title={tooltip} placement="bottom" enterDelay={300} classes={{ tooltip: classes.tooltip }}>
             <Icon 
-              key={icon}
               className={'widget-title-bar-button ' + icon}
               style={{ cursor: "pointer", fontSize: "15px", width: "16px" }}
               onClick={options ? e => this.setState({ openHeaderIconOptions: e.currentTarget }) : action}
