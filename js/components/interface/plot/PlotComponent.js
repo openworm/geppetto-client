@@ -123,8 +123,8 @@ class PlotComponent extends AbstractComponent {
           const instanceLabelX = this.getUnitLabel(instanceX.getUnit());
           const instanceLabelY = this.getUnitLabel(instanceY.getUnit());
  
-          labelY = !labelY || labelY != instanceLabelY ? instanceLabelY : "SI Units";
-          labelX = !labelX || labelX != instanceLabelX ? instanceLabelX : "SI Units";
+          labelY = !labelY || labelY == instanceLabelY ? instanceLabelY : "SI Units";
+          labelX = !labelX || labelX == instanceLabelX ? instanceLabelX : "SI Units";
 
 
         } else {
