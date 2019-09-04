@@ -55,10 +55,10 @@ export default class Plot extends AbstractComponent {
   }
 
   widgetCapabilityInit () {
-    if (!this.dialog) {
+    if (!this.isWidget()) {
       return;
     }
-    // FIXME: this jquery should be retired
+    // FIXME: this jquery should be removed
     this.addButtonToTitleBar($("<div class='fa fa-home' title='Reset plot zoom'></div>").on('click', function (event) {
       this.resetAxes();
     }.bind(this)));
