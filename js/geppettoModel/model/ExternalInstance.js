@@ -1,4 +1,4 @@
-
+const Instance = require('./Instance').default;
 
 /**
  * Client class use to represent an instance object (instantiation of a variable)
@@ -7,19 +7,15 @@
  * @author Giovanni Idili
  * @author Matteo Cantarelli
  */
+class ExternalInstance extends Instance {
 
-define(function (require) {
-  var Instance = require('./Instance');
-
-  function ExternalInstance (options) {
-    Instance.prototype.constructor.call(this, options);
+  constructor (options) {
+    super(options);
     this.path = options.path;
     this.projectId = options.projectId;
     this.experimentId = options.experimentId;
   }
 
-  ExternalInstance.prototype = Object.create(Instance.prototype);
-  ExternalInstance.prototype.constructor = ExternalInstance;
 
   /**
    * Get the type for this instance
@@ -29,13 +25,13 @@ define(function (require) {
    * @returns {List<Type>} - array of types
    *
    */
-  ExternalInstance.prototype.getTypes = function () {
+  getTypes () {
     throw "Invalid operation with ExternalInstance";
-  };
+  }
 
-  ExternalInstance.prototype.getValues = function () {
+  getValues () {
     throw "Invalid operation with ExternalInstance";
-  };
+  }
   /**
    * Get the type of this variable, return a list if it has more than one
    *
@@ -44,21 +40,21 @@ define(function (require) {
    * @returns List<Type>} - array of types
    *
    */
-  ExternalInstance.prototype.getType = function () {
+  getType () {
     throw "Invalid operation with ExternalInstance";
-  };
+  }
 
-  ExternalInstance.prototype.getValue = function () {
+  getValue () {
     throw "Invalid operation with ExternalInstance";
-  };
+  }
 
   /**
    *
    * @returns {*|Object}
    */
-  ExternalInstance.prototype.getPosition = function () {
+  getPosition () {
     throw "Invalid operation with ExternalInstance";
-  };
+  }
 
   /**
    * Checks if this instance has a visual type
@@ -68,9 +64,9 @@ define(function (require) {
    * @returns {Boolean}
    *
    */
-  ExternalInstance.prototype.hasVisualType = function () {
+  hasVisualType () {
     return false;
-  };
+  }
 
   /**
    * Gets visual types for the instance if any
@@ -79,9 +75,9 @@ define(function (require) {
    *
    * @returns {*} - Type or list of Types if more than one is found
    */
-  ExternalInstance.prototype.getVisualType = function () {
+  getVisualType () {
     return undefined;
-  };
+  }
 
   /**
    * Get the variable for this instance
@@ -91,9 +87,9 @@ define(function (require) {
    * @returns {Variable} - Variable object for this instance
    *
    */
-  ExternalInstance.prototype.getVariable = function () {
+  getVariable () {
     return this.variable;
-  };
+  }
 
   /**
    * Get children instances
@@ -103,9 +99,9 @@ define(function (require) {
    * @returns {List<Instance>} - List of instances
    *
    */
-  ExternalInstance.prototype.getChildren = function () {
+  getChildren () {
     return this.children;
-  };
+  }
 
   /**
    * Get instance path
@@ -115,9 +111,9 @@ define(function (require) {
    * @returns {String} - Instance path
    *
    */
-  ExternalInstance.prototype.getInstancePath = function () {
+  getInstancePath () {
     return this.path;
-  };
+  }
 
   /**
    * Get raw instance path (without array shortening)
@@ -127,9 +123,9 @@ define(function (require) {
    * @returns {String} - Instance path
    *
    */
-  ExternalInstance.prototype.getRawInstancePath = function () {
+  getRawInstancePath () {
     throw "Invalid operation with ExternalInstance";
-  };
+  }
 
   /**
    * Get parent
@@ -139,18 +135,18 @@ define(function (require) {
    * @returns {Instance} - Parent instance
    *
    */
-  ExternalInstance.prototype.getParent = function () {
+  getParent () {
     throw "Invalid operation with ExternalInstance";
-  };
+  }
 
   /**
    * Get children instances
    *
    * @command Instance.addChild()
    */
-  ExternalInstance.prototype.addChild = function (child) {
+  addChild (child) {
     throw "Invalid operation with ExternalInstance";
-  };
+  }
 
   /**
    * Return connections, user GEPPETTO.Resources.INPUT / OUTPUT /
@@ -161,16 +157,20 @@ define(function (require) {
    * @returns {List<Instance>}
    *
    */
-  ExternalInstance.prototype.getConnections = function (direction) {
+  getConnections (direction) {
     return this.connections;
-  };
+  }
 
   /**
    * Deletes instance
    */
-  ExternalInstance.prototype.delete = function () {
+  delete () {
     throw "Invalid operation with ExternalInstance";
-  };
+  }
 
-  return ExternalInstance;
-});
+ 
+}
+
+// Compatibility with new imports and old require syntax
+ExternalInstance.default = ExternalInstance;
+module.exports = ExternalInstance;

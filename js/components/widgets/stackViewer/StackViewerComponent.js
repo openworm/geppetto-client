@@ -468,7 +468,7 @@ define(function (require) {
                   for (j in list) {
                     objects = objects + list[j] + '\n';
                   }
-                  if (objects !== '') {
+                  if (objects !== '' && index == 0) {
                     that.setHoverText(callX,callY,objects);
                   }
                 }
@@ -486,6 +486,7 @@ define(function (require) {
             });
           })(i, that);
         });
+        that.state.loadingLabels = false;
       }
     },
 
@@ -652,7 +653,7 @@ define(function (require) {
       }
 
       if (Object.keys(this.state.images).length > (this.state.stack.length * this.state.visibleTiles.length)) {
-        for (let i in Object.keys(this.state.images)) {
+        for (var i = 0; i < Object.keys(this.state.images).length; i++) {
           var id = Object.keys(this.state.images)[i].split(",")[0];
           if (id > (this.state.stack.length - 1)) {
             delete this.state.images[Object.keys(this.state.images)[i]];
@@ -917,7 +918,7 @@ define(function (require) {
           image = props.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + props.fxp.join(',') + '&scl=' + props.scl.toFixed(1) + '&dst=' + Number(props.dst).toFixed(1) + '&pit=' + Number(props.pit).toFixed(0) + '&yaw=' + Number(props.yaw).toFixed(0) + '&rol=' + Number(props.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
           d = i.toString() + ',' + this.state.visibleTiles[j].toString();
           if (this.state.images[d]) {
-            if (PIXI.loader.resources[image] && PIXI.loader.resources[image].texture) {
+            if (PIXI.loader.resources[image] && PIXI.loader.resources[image].texture && (PIXI.loader.resources[image].texture.baseTexture !== null)) {
               this.state.images[d].texture = PIXI.loader.resources[image].texture;
             } else {
               if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
@@ -1004,6 +1005,9 @@ define(function (require) {
       var oldEvent = this.state.oldEvent;
       if (!this.state.loadingLabels && !this.state.dragging) {
         repeat = typeof repeat !== 'undefined' ? repeat : true;
+        if (this.renderer === null ) {
+          return;
+        }
         var currentPosition = this.renderer.plugins.interaction.mouse.getLocalPosition(this.stack);
         currentPosition.x = Number(currentPosition.x.toFixed(0));
         currentPosition.y = Number(currentPosition.y.toFixed(0));

@@ -1,194 +1,196 @@
-define(function (require) {
 
-  require("./ButtonBarComponent.less");
+import React from 'react';
+import colorpicker from './vendor/bootstrap-colorpicker.min';
+import Tooltip from '@material-ui/core/Tooltip';
+import {
+  createMuiTheme,
+  MuiThemeProvider
+} from "@material-ui/core/styles";
 
-  var React = require('react');
-  var createClass = require('create-react-class');
-  var colorpicker = require('./vendor/bootstrap-colorpicker.min');
+require("./ButtonBarComponent.less");
 
-  var ButtonBarComponent = createClass({
-    colorPickerBtnId: '',
-    colorPickerActionFn: '',
+export default class ButtonBarComponent extends React.Component {
+  constructor (props) {
+    super(props);
 
-    getInitialState: function () {
-      return {};
-    },
+    this.colorPickerBtnId = '';
+    this.colorPickerActionFn = '';
+    this.theme = createMuiTheme({ overrides: { MuiTooltip: { tooltip: { fontSize: "12px" } } } });
+  }
 
-    componentDidMount: function () {
-      var that = this;
+  componentDidMount () {
+    var that = this;
 
-      if (that.props.instance != null || that.props.instance != undefined){
-        that.props.resize();
-      }
+    if (that.props.instance != null || that.props.instance != undefined){
+      that.props.resize();
+    }
 
-      // hookup color picker onChange
-      if (this.colorPickerBtnId != '') {
-        var path = this.props.instancePath;
-        var entity = eval(path);
-        var defColor = '0Xffffff';
-
-        // grab default color from instance
-        if (entity.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
-          defColor = entity.getColor();
-        }
-
-        // init dat color picker
-        var coloPickerElement = $('#' + this.colorPickerBtnId);
-        coloPickerElement.colorpicker({ format: 'hex', customClass: 'buttonbar-colorpicker' });
-        coloPickerElement.colorpicker('setValue', defColor.replace(/0X/i, "#"));
-
-        // closure on local scope at this point - hook on change event
-        coloPickerElement.on('changeColor', function (e) {
-          that.colorPickerActionFn(e.color.toHex().replace("#", "0x"));
-          $(this).css("color", e.color.toHex());
-        });
-      }
-
-      if (this.props.buttonBarConfig.Events != null || this.props.buttonBarConfig.Events != undefined){
-        this.props.geppetto.on(GEPPETTO.Events.Visibility_changed, function (instance) {
-          if (!$.isEmptyObject(that.props) || that.props != undefined){
-            if (instance.getInstancePath() == that.props.instancePath){
-              that.forceUpdate();
-            } else {
-              if ((that.props.instance != null || that.props.instance != undefined)
-                  && (instance.getParent() != null || instance.getParent() != undefined)){
-                if (that.props.instance.getInstancePath() == instance.getParent().getInstancePath()){
-                  that.forceUpdate();
-                }
-              }
-            }
-          }
-        });
-        this.props.geppetto.on(GEPPETTO.Events.Select, function (instance) {
-          if (!$.isEmptyObject(that.props) || that.props != undefined){
-            if (instance.getInstancePath() == that.props.instancePath){
-              that.forceUpdate();
-            } else {
-              if ((that.props.instance != null || that.props.instance != undefined)
-                  && (instance.getParent() != null || instance.getParent() != undefined)){
-                if (that.props.instance.getInstancePath() == instance.getParent().getInstancePath()){
-                  that.forceUpdate();
-                }
-              }
-            }
-          }
-        });
-        this.props.geppetto.on(GEPPETTO.Events.Color_set, function (instance) {
-          if (that.props != null || that.props != undefined){
-            if (instance.instance.getInstancePath() == that.props.instancePath){
-              that.forceUpdate();
-              if (that.props.instance != null || that.props.instance != undefined){
-                that.props.resize();
-              }
-            }
-          }
-        });
-      }
-    },
-
-
-    componentWillUnmount: function () {
-      console.log("unmount");
-      this.props = {};
-    },
-
-    replaceTokensWithPath: function (inputStr, path){
-      return inputStr.replace(/\$instance\$/gi, path).replace(/\$instances\$/gi, '[' + path + ']');
-    },
-
-    getActionString: function (control, path) {
-      var actionStr = '';
-
-      if (control.actions.length > 0) {
-        for (var i = 0; i < control.actions.length; i++) {
-          actionStr += ((i != 0) ? ";" : "") + this.replaceTokensWithPath(control.actions[i], path);
-        }
-      }
-
-      return actionStr;
-    },
-
-    resolveCondition: function (control, path, negateCondition) {
-      if (negateCondition == undefined) {
-        negateCondition = false;
-      }
-
-      var resolvedConfig = control;
-
-      if (Object.prototype.hasOwnProperty.call(resolvedConfig, 'condition')) {
-        // evaluate condition and reassign control depending on results
-        var conditionStr = this.replaceTokensWithPath(control.condition, path);
-        if (eval(conditionStr)) {
-          resolvedConfig = negateCondition ? resolvedConfig.false : resolvedConfig.true;
-        } else {
-          resolvedConfig = negateCondition ? resolvedConfig.true : resolvedConfig.false;
-        }
-      }
-
-      return resolvedConfig;
-    },
-
-    refresh: function () {
-      this.forceUpdate();
-    },
-
-    render: function () {
-      var showControls = this.props.showControls;
-      var config = this.props.buttonBarConfig;
+    // hookup color picker onChange
+    if (this.colorPickerBtnId != '') {
       var path = this.props.instancePath;
-      var ctrlButtons = [];
+      var entity = eval(path);
+      var defColor = '0Xffffff';
 
-      // retrieve entity/instance
-      var entity = undefined;
-      try {
-        // need to eval because this is a nested path - not simply a global on window
-        entity = eval(path)
-      } catch (e) {
-        throw ( "The instance " + path + " does not exist in the current model" );
+      // grab default color from instance
+      if (entity.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
+        defColor = entity.getColor();
       }
 
-      // Add common control buttons to list
-      for (var control in config.Common) {
-        if ($.inArray(control.toString(), showControls.Common) != -1) {
-          var add = true;
+      // init dat color picker
+      var coloPickerElement = $('#' + this.colorPickerBtnId);
+      coloPickerElement.colorpicker({ format: 'hex', customClass: 'buttonbar-colorpicker' });
+      coloPickerElement.colorpicker('setValue', defColor.replace(/0X/i, "#"));
 
-          // check show condition
-          if (config.Common[control].showCondition != undefined){
-            var condition = this.replaceTokensWithPath(config.Common[control].showCondition, path);
-            add = eval(condition);
-          }
+      // closure on local scope at this point - hook on change event
+      coloPickerElement.on('changeColor', function (e) {
+        that.colorPickerActionFn(e.color.toHex().replace("#", "0x"));
+        $(this).css("color", e.color.toHex());
+      });
+    }
 
-          if (add) {
-            ctrlButtons.push(config.Common[control]);
-          }
-        }
-      }
-
-      if (entity != null || entity != undefined){
-        if (entity.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
-          // Add visual capability controls to list
-          for (var control in config.VisualCapability) {
-            if ($.inArray(control.toString(), showControls.VisualCapability) != -1) {
-              var add = true;
-
-              // check show condition
-              if (config.VisualCapability[control].showCondition != undefined){
-                var condition = this.replaceTokensWithPath(config.VisualCapability[control].showCondition, path);
-                add = eval(condition);
-              }
-
-              if (add) {
-                ctrlButtons.push(config.VisualCapability[control]);
+    if (this.props.buttonBarConfig.Events != null || this.props.buttonBarConfig.Events != undefined){
+      this.props.geppetto.on(GEPPETTO.Events.Visibility_changed, function (instance) {
+        if (!$.isEmptyObject(that.props) || that.props != undefined){
+          if (instance.getInstancePath() == that.props.instancePath){
+            that.forceUpdate();
+          } else {
+            if ((that.props.instance != null || that.props.instance != undefined)
+                  && (instance.getParent() != null || instance.getParent() != undefined)){
+              if (that.props.instance.getInstancePath() == instance.getParent().getInstancePath()){
+                that.forceUpdate();
               }
             }
           }
         }
+      });
+      this.props.geppetto.on(GEPPETTO.Events.Select, function (instance) {
+        if (!$.isEmptyObject(that.props) || that.props != undefined){
+          if (instance.getInstancePath() == that.props.instancePath){
+            that.forceUpdate();
+          } else {
+            if ((that.props.instance != null || that.props.instance != undefined)
+                  && (instance.getParent() != null || instance.getParent() != undefined)){
+              if (that.props.instance.getInstancePath() == instance.getParent().getInstancePath()){
+                that.forceUpdate();
+              }
+            }
+          }
+        }
+      });
+      this.props.geppetto.on(GEPPETTO.Events.Color_set, function (instance) {
+        if (that.props != null || that.props != undefined){
+          if (instance.instance.getInstancePath() == that.props.instancePath){
+            that.forceUpdate();
+            if (that.props.instance != null || that.props.instance != undefined){
+              that.props.resize();
+            }
+          }
+        }
+      });
+    }
+  }
+
+  componentWillUnmount () {
+    this.props = {};
+  }
+
+  replaceTokensWithPath (inputStr, path) {
+    return inputStr.replace(/\$instance\$/gi, path).replace(/\$instances\$/gi, '[' + path + ']');
+  }
+
+  getActionString (control, path) {
+    var actionStr = '';
+
+    if (control.actions.length > 0) {
+      for (var i = 0; i < control.actions.length; i++) {
+        actionStr += ((i != 0) ? ";" : "") + this.replaceTokensWithPath(control.actions[i], path);
       }
+    }
 
-      var that = this;
+    return actionStr;
+  }
 
-      return (
-        <div className="buttonBarComponentDiv">
+  resolveCondition (control, path, negateCondition) {
+    if (negateCondition == undefined) {
+      negateCondition = false;
+    }
+
+    var resolvedConfig = control;
+
+    if (Object.prototype.hasOwnProperty.call(resolvedConfig, 'condition')) {
+      // evaluate condition and reassign control depending on results
+      var conditionStr = this.replaceTokensWithPath(control.condition, path);
+      if (eval(conditionStr)) {
+        resolvedConfig = negateCondition ? resolvedConfig.false : resolvedConfig.true;
+      } else {
+        resolvedConfig = negateCondition ? resolvedConfig.true : resolvedConfig.false;
+      }
+    }
+    return resolvedConfig;
+  }
+
+  refresh () {
+    this.forceUpdate();
+  }
+
+  render () {
+    var showControls = this.props.showControls;
+    var config = this.props.buttonBarConfig;
+    var path = this.props.instancePath;
+    var ctrlButtons = [];
+
+    // retrieve entity/instance
+    var entity = undefined;
+    try {
+      // need to eval because this is a nested path - not simply a global on window
+      entity = eval(path)
+    } catch (e) {
+      throw ( "The instance " + path + " does not exist in the current model" );
+    }
+
+    // Add common control buttons to list
+    for (var control in config.Common) {
+      if ($.inArray(control.toString(), showControls.Common) != -1) {
+        var add = true;
+
+        // check show condition
+        if (config.Common[control].showCondition != undefined){
+          var condition = this.replaceTokensWithPath(config.Common[control].showCondition, path);
+          add = eval(condition);
+        }
+
+        if (add) {
+          ctrlButtons.push(config.Common[control]);
+        }
+      }
+    }
+
+    if (entity != null || entity != undefined){
+      if (entity.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
+        // Add visual capability controls to list
+        for (var control in config.VisualCapability) {
+          if ($.inArray(control.toString(), showControls.VisualCapability) != -1) {
+            var add = true;
+
+            // check show condition
+            if (config.VisualCapability[control].showCondition != undefined){
+              var condition = this.replaceTokensWithPath(config.VisualCapability[control].showCondition, path);
+              add = eval(condition);
+            }
+
+            if (add) {
+              ctrlButtons.push(config.VisualCapability[control]);
+            }
+          }
+        }
+      }
+    }
+
+    var that = this;
+
+    return (
+      <div className="buttonBarComponentDiv">
+        <MuiThemeProvider theme={this.theme}>
           {ctrlButtons.map(function (control, id) {
             // grab attributes to init button attributes
             var controlConfig = that.resolveCondition(control, path);
@@ -246,21 +248,20 @@ define(function (require) {
 
             return (
               <span key={id}>
-                <button id={idVal}
-                  className={classVal}
-                  style={styleVal}
-                  title={tooltip}
-                  onClick={
-                    controlConfig.id == "color" ? function (){} : actionFn
-                  }>
-                </button>
+                <Tooltip placement="bottom" title={tooltip !== undefined ? tooltip : ""}>
+                  <button id={idVal}
+                    className={classVal}
+                    style={styleVal}
+                    onClick={
+                      controlConfig.id == "color" ? function (){} : actionFn
+                    }>
+                  </button>
+                </Tooltip>
               </span>
             )
           })}
-        </div>
-      )
-    }
-  });
-
-  return ButtonBarComponent;
-});
+        </MuiThemeProvider>
+      </div>
+    )
+  }
+}

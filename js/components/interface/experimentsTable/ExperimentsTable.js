@@ -519,38 +519,19 @@ define(function (require) {
         }
       });
 
-      GEPPETTO.on(GEPPETTO.Events.Project_loaded, function () {
-        self.populate();
-        self.updateStatus();
-      });
+      GEPPETTO.on(GEPPETTO.Events.Project_loaded, this.projectLoaded, this);
 
-      GEPPETTO.on(GEPPETTO.Events.Project_persisted, function () {
-        self.refresh();
-      });
+      GEPPETTO.on(GEPPETTO.Events.Project_persisted, this.refresh, this);
             
-      GEPPETTO.on(GEPPETTO.Events.Experiment_status_check, function () {
-        self.updateExperimentsTableStatus();
-      });
+      GEPPETTO.on(GEPPETTO.Events.Experiment_status_check, this.updateExperimentsTableStatus, this);
 
-      GEPPETTO.on(GEPPETTO.Events.Experiment_loaded, function () {
-        self.updateExperimentStatus();
-      });
+      GEPPETTO.on(GEPPETTO.Events.Experiment_loaded, this.updateExperimentStatus, this);
 
-      GEPPETTO.on(GEPPETTO.Events.Experiment_created, function (experiment) {
-        self.newExperiment(experiment);
-      });
+      GEPPETTO.on(GEPPETTO.Events.Experiment_created, this.newExperiment, this);
 
+      GEPPETTO.on(GEPPETTO.Events.Experiment_renamed, this.refresh, this);
 
-      GEPPETTO.on(GEPPETTO.Events.Experiment_renamed, function (experiment) {
-        self.refresh();
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_deleted, function (experiment) {
-        self.deleteExperiment(experiment);
-        if (!GEPPETTO.ExperimentsController.suppressDeleteExperimentConfirmation) {
-          GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.EXPERIMENT_DELETED, "Experiment " + experiment.name + " with id " + experiment.id + " was deleted successfully");
-        }
-      });
+      GEPPETTO.on(GEPPETTO.Events.Experiment_deleted, this.experimentDeleted , this);
             
 
       $("#experiments").resizable({
@@ -576,7 +557,29 @@ define(function (require) {
          
       $("#experimentsButton").show();
     },
-        
+    
+    componentWillUnmount () {
+      GEPPETTO.off(GEPPETTO.Events.Project_loaded, this.projectLoaded, this);
+      GEPPETTO.off(GEPPETTO.Events.Project_persisted, this.refresh, this);
+      GEPPETTO.off(GEPPETTO.Events.Experiment_deleted, this.experimentDeleted, this);
+      GEPPETTO.off(GEPPETTO.Events.Experiment_loaded, this.updateExperimentStatus, this);
+      GEPPETTO.off(GEPPETTO.Events.Experiment_status_check, this.updateExperimentsTableStatus, this);
+      GEPPETTO.off(GEPPETTO.Events.Experiment_created, this.newExperiment, this);
+      GEPPETTO.off(GEPPETTO.Events.Experiment_renamed, this.refresh, this);
+    },
+    
+    projectLoaded: function () {
+      this.populate();
+      this.updateStatus();
+    }, 
+
+    experimentDeleted: function (experiment) {
+      this.deleteExperiment(experiment);
+      if (!GEPPETTO.ExperimentsController.suppressDeleteExperimentConfirmation) {
+        GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.EXPERIMENT_DELETED, "Experiment " + experiment.name + " with id " + experiment.id + " was deleted successfully");
+      }
+    },
+    
     refresh: function (){
       this.forceUpdate();
       this.updateExperimentStatus();

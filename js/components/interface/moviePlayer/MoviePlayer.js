@@ -8,7 +8,7 @@ define(function (require) {
    * Creates a component using react-player
    */
   return class MoviePlayer extends AbstractComponent {
-
+ 
     constructor (props) {
       super(props);
       this.state = {
@@ -66,10 +66,10 @@ define(function (require) {
     render () {
       var width = "100%", height = "100%";
       if (this.props.width != undefined && this.props.width != null){
-        this.props.width = this.props.width;
+        width = this.props.width;
       }
       if (this.props.height != undefined && this.props.height != null){
-        this.props.height = this.props.height;
+        height = this.props.height;
       }
       return <ReactPlayer url={this.state.videoURL} playing={this.state.play} volume={this.state.volume}
         loop={this.state.loop} playbackRate={this.state.playbackRate} width ={width} height = {height}/>

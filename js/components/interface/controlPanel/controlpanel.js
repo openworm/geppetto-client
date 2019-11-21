@@ -372,9 +372,13 @@ define(function (require) {
           var add = true;
 
           // check show condition
-          if (controlsConfig[configPropertyName][control].showCondition != undefined) {
+          if (controlsConfig[configPropertyName][control].showCondition != undefined && Instances[targetPath] !== undefined) {
             var condition = this.replaceAllTokensKnownToMan(controlsConfig[configPropertyName][control].showCondition, targetPath, projectId, experimentId);
-            add = eval(condition);
+            try {
+              add = eval(condition);
+            } catch (error) {
+              add = false;
+            }
           }
 
           if (add) {
@@ -1584,19 +1588,22 @@ define(function (require) {
         // grab existing input
         var gridInput = this.state.data;
         var newGridInput = [];
-
+        var needsUpdate = false;
+        
         // remove unwanted instances from grid input
         for (var i = 0; i < instancePaths.length; i++) {
           for (var j = 0; j < gridInput.length; j++) {
-            if (instancePaths[i] != gridInput[j].path) {
-              newGridInput.push(gridInput[j]);
+            if (instancePaths[i].indexOf(gridInput[j].path) == -1) {
+              var index = gridInput.indexOf(gridInput[j].path);
+              gridInput.splice(index,1);
+              needsUpdate = true;
             }
           }
         }
 
         // set state to refresh grid
-        if (gridInput.length != newGridInput.length) {
-          this.setState({ data: newGridInput });
+        if (needsUpdate) {
+          this.setState({ data: gridInput });
         }
       }
     },

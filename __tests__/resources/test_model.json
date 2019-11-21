@@ -1,0 +1,400 @@
+{
+    "eClass": "GeppettoModel",
+    "libraries": [
+        {
+            "eClass": "GeppettoLibrary",
+            "types": [
+                {
+                    "eClass": "SimpleType",
+                    "superType": [
+                        {
+                            "eClass": "SimpleType",
+                            "$ref": "//@libraries.0/@types.1"
+                        }
+                    ],
+                    "name": "T",
+                    "id": "t"
+                },
+                {
+                    "eClass": "SimpleType",
+                    "superType": [
+                        {
+                            "eClass": "SimpleType",
+                            "$ref": "//@libraries.1/@types.14"
+                        }
+                    ],
+                    "name": "S",
+                    "id": "s"
+                },
+                {
+                    "eClass": "CompositeType",
+                    "variables": [
+                        {
+                            "eClass": "Variable",
+                            "types": [
+                                {
+                                    "eClass": "TextType",
+                                    "$ref": "//@libraries.1/@types.5"
+                                }
+                            ],
+                            "name": "CTV",
+                            "id": "ctv",
+                            "initialValues": [
+                                {
+                                    "eClass": "TypeToValueMap",
+                                    "key": {
+                                        "eClass": "CompositeType",
+                                        "$ref": "//@libraries.0/@types.2"
+                                    },
+                                    "value": {
+                                        "eClass": "Text",
+                                        "text": "aaa"
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "referencedVariables": [
+                        {
+                            "eClass": "Variable",
+                            "$ref": "//@variables.0"
+                        },
+                        {
+                            "eClass": "Variable",
+                            "$ref": "//@worlds.0/@variables.0"
+                        }
+                    ],
+                    "name": "CT",
+                    "id": "ct"
+                }
+            ],
+            "name": "My library",
+            "id": "mylib"
+        },
+        {
+            "eClass": "GeppettoLibrary",
+            "types": [
+                {
+                    "eClass": "ParameterType",
+                    "name": "Parameter",
+                    "id": "Parameter"
+                },
+                {
+                    "eClass": "DynamicsType",
+                    "name": "Dynamics",
+                    "id": "Dynamics"
+                },
+                {
+                    "eClass": "StateVariableType",
+                    "name": "State Variable",
+                    "id": "StateVariable"
+                },
+                {
+                    "eClass": "HTMLType",
+                    "name": "HTML",
+                    "id": "HTML"
+                },
+                {
+                    "eClass": "URLType",
+                    "name": "URL",
+                    "id": "URL"
+                },
+                {
+                    "eClass": "TextType",
+                    "referencedVariables": [
+                        {
+                            "eClass": "Variable",
+                            "$ref": "//@libraries.0/@types.2/@variables.0"
+                        }
+                    ],
+                    "name": "Text",
+                    "id": "Text"
+                },
+                {
+                    "eClass": "PointType",
+                    "name": "Point",
+                    "id": "Point"
+                },
+                {
+                    "eClass": "ExpressionType",
+                    "name": "Expression",
+                    "id": "Expression"
+                },
+                {
+                    "eClass": "VisualType",
+                    "name": "Visual",
+                    "id": "Visual"
+                },
+                {
+                    "eClass": "PointerType",
+                    "name": "Pointer",
+                    "id": "Pointer"
+                },
+                {
+                    "eClass": "ImageType",
+                    "name": "Image",
+                    "id": "Image"
+                },
+                {
+                    "eClass": "ConnectionType",
+                    "name": "Connection",
+                    "id": "connection"
+                },
+                {
+                    "eClass": "VisualType",
+                    "name": "Particles",
+                    "id": "particles"
+                },
+                {
+                    "eClass": "ConnectionType",
+                    "name": "Edge",
+                    "id": "edge"
+                },
+                {
+                    "eClass": "SimpleType",
+                    "name": "Node",
+                    "id": "node"
+                }
+            ],
+            "name": "Geppetto Common Library",
+            "id": "common"
+        }
+    ],
+    "worlds": [
+        {
+            "eClass": "World",
+            "variables": [
+                {
+                    "eClass": "Variable",
+                    "types": [
+                        {
+                            "eClass": "CompositeType",
+                            "$ref": "//@libraries.0/@types.2"
+                        }
+                    ],
+                    "name": "WV",
+                    "id": "wv"
+                }
+            ],
+            "instances": [
+                {
+                    "eClass": "SimpleInstance",
+                    "position": {
+                        "eClass": "Point",
+                        "y": 1,
+                        "x": 1,
+                        "z": 1
+                    },
+                    "value": {
+                        "eClass": "JSON",
+                        "json": "{\"l\": [\"x\", \"y\"]}"
+                    },
+                    "type": {
+                        "eClass": "SimpleType",
+                        "$ref": "//@libraries.0/@types.1"
+                    },
+                    "id": "a",
+                    "name": "A"
+                },
+                {
+                    "eClass": "SimpleConnectionInstance",
+                    "value": {
+                        "eClass": "StringArray",
+                        "elements": [
+                            "s1",
+                            "s2"
+                        ]
+                    },
+                    "a": {
+                        "eClass": "SimpleInstance",
+                        "$ref": "//@worlds.0/@instances.0"
+                    },
+                    "type": {
+                        "eClass": "ConnectionType",
+                        "$ref": "//@libraries.1/@types.13"
+                    },
+                    "id": "a2b",
+                    "tags": [
+                        {
+                            "eClass": "Tag",
+                            "$ref": "//@tags.0"
+                        }
+                    ],
+                    "b": {
+                        "eClass": "SimpleInstance",
+                        "$ref": "//@worlds.0/@instances.2"
+                    },
+                    "name": "A to B"
+                },
+                {
+                    "eClass": "SimpleInstance",
+                    "position": {
+                        "eClass": "Point",
+                        "y": 50
+                    },
+                    "value": {
+                        "eClass": "Expression",
+                        "expression": "exp"
+                    },
+                    "type": {
+                        "eClass": "SimpleType",
+                        "$ref": "//@libraries.0/@types.1"
+                    },
+                    "id": "b",
+                    "name": "B"
+                },
+                {
+                    "eClass": "SimpleInstance",
+                    "type": {
+                        "eClass": "SimpleType",
+                        "$ref": "//@libraries.1/@types.14"
+                    },
+                    "name": "E",
+                    "id": "E",
+                    "value": {
+                        "eClass": "TimeSeries",
+                        "value": [
+                            1,
+                            2,
+                            3
+                        ]
+                    }
+                },
+                {
+                    "eClass": "SimpleInstance",
+                    "position": {
+                        "eClass": "Point",
+                        "z": 100
+                    },
+                    "value": {
+                        "eClass": "Composite",
+                        "value": [
+                            {
+                                "eClass": "StringToValueMap",
+                                "key": "x",
+                                "value": {
+                                    "eClass": "Metadata",
+                                    "value": [
+                                        {
+                                            "eClass": "StringToValueMap",
+                                            "key": "y",
+                                            "value": {
+                                                "eClass": "Image",
+                                                "data": "imageData"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "type": {
+                        "eClass": "SimpleType",
+                        "$ref": "//@libraries.0/@types.1"
+                    },
+                    "id": "c",
+                    "name": "C"
+                },
+                {
+                    "eClass": "SimpleConnectionInstance",
+                    "value": {
+                        "eClass": "JSON",
+                        "json": "{\"events\": [\"speech\"]}"
+                    },
+                    "a": {
+                        "eClass": "SimpleInstance",
+                        "$ref": "//@worlds.0/@instances.2"
+                    },
+                    "type": {
+                        "eClass": "ConnectionType",
+                        "$ref": "//@libraries.1/@types.13"
+                    },
+                    "id": "b2c",
+                    "tags": [
+                        {
+                            "eClass": "Tag",
+                            "$ref": "//@tags.0"
+                        }
+                    ],
+                    "b": {
+                        "eClass": "SimpleInstance",
+                        "$ref": "//@worlds.0/@instances.4"
+                    },
+                    "name": "B to C"
+                },
+                {
+                    "eClass": "SimpleInstance",
+                    "type": {
+                        "eClass": "SimpleType",
+                        "$ref": "//@libraries.1/@types.14"
+                    },
+                    "name": "D",
+                    "id": "d",
+                    "value": {
+                        "eClass": "Metadata",
+                        "value": [
+                            {
+                                "eClass": "StringToValueMap",
+                                "key": "a",
+                                "value": {
+                                    "eClass": "Text",
+                                    "text": "Test"
+                                }
+                            },
+                            {
+                                "eClass": "StringToValueMap",
+                                "key": "b",
+                                "value": {
+                                    "eClass": "URL",
+                                    "url": "http://aaa.com"
+                                }
+                            },
+                            {
+                                "eClass": "StringToValueMap",
+                                "key": "c",
+                                "value": {
+                                    "eClass": "JSON",
+                                    "json": "{\"x\": 1}"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "name": "w",
+            "id": "w"
+        }
+    ],
+    "variables": [
+        {
+            "eClass": "Variable",
+            "types": [
+                {
+                    "eClass": "CompositeType",
+                    "$ref": "//@libraries.0/@types.2"
+                }
+            ],
+            "name": "V",
+            "id": "v"
+        }
+    ],
+    "dataSources": [
+        {
+            "eClass": "DataSource",
+            "targetLibrary": {
+                "eClass": "GeppettoLibrary",
+                "$ref": "//@libraries.0"
+            },
+            "id": "neo4JDataSourceService",
+            "url": "http://mg-neo4j/db/data/transaction",
+            "dataSourceService": "Neo4jDataSourceService",
+            "name": "neo4j Data Source"
+        }
+    ],
+    "tags": [
+        {
+            "eClass": "Tag",
+            "name": "ATag"
+        }
+    ]
+}

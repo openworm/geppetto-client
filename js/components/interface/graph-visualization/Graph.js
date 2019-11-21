@@ -1,42 +1,76 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { ForceGraph3D } from 'react-force-graph';
+import * as d3 from 'd3-force-3d'
+import * as THREE from 'three'
+import ForceGraph2D from 'react-force-graph-2d';
+import ForceGraph3D from 'react-force-graph-3d';
 
-import linkForce from './forces/link'
-import holdForce from './forces/hold'
-import centerForce from './forces/center'
-import manyBodyForce from './forces/manyBody'
-
-const fullSizeStyle = { width: '100%', height: '100%' }
+import { splitter, getDarkerColor } from './utils'
 
 export default class GeppettoGraphVisualization extends Component {
-  state = { nodeSize: 0.0001 }
-
-  dimensions = {}
 
   // Ref to GGV container
   ggv = React.createRef()
 
+  dimensions = { width: 1, height: 1 }
+
+  font = this.props.font ? this.props.font : "6px Source Sans Pro"
+  size = this.props.nodeRelSize ? this.props.nodeRelSize : 20
+  borderSize = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.1)
+
+  // Gap to leave between lines in text inside nodes in 2D graphs
+  doubleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.25)
+  tripleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.35)
+  
+  timeToCenter2DCamera = this.props.timeToCenter2DCamera ? this.props.timeToCenter2DCamera : 0
+
+  getNodeLabel = this.props.nodeLabel ? this.fnOrField(this.props.nodeLabel) : node => node.name
+  getLinkLabel = this.props.linkLabel ? this.fnOrField(this.props.linkLabel) : link => link.name
+
   componentDidMount (){
     const { data, url } = this.props
-    
-    this.ggv.current.d3Force("charge", manyBodyForce())
-    this.ggv.current.d3Force("link", linkForce(data.links))
-    this.ggv.current.d3Force("center", centerForce())
-    this.ggv.current.d3Force('hold', holdForce())
+
+    if (this.props.d2) {
+      const forceLinkDistance = this.props.forceLinkDistance ? this.props.forceLinkDistance : 90
+      const forceLinkStrength = this.props.forceLinkStrength ? this.props.forceLinkStrength : 0.7
+      const forceChargeStrength = this.props.forceChargeStrength ? this.props.forceChargeStrength : -200
+      this.ggv.current.d3Force('collide', d3.forceCollide(this.size));
+      this.ggv.current.d3Force('link').distance(forceLinkDistance).strength(forceLinkStrength)
+      this.ggv.current.d3Force('charge').strength(forceChargeStrength)
+      this.ggv.current.d3Force('radial', d3.forceRadial(this.props.forceRadial ? this.props.forceRadial : 1))
+    }
     if (url) {
       this.addToScene()
-    } else {
+    } else if (!this.props.d2) {
       this.zoomCameraToFitScene()
+    } else {
+      
+      this.forceUpdate()
+      
     }
   }
 
   componentDidUpdate () {
     const dimensions = ReactDOM.findDOMNode(this).parentNode.getBoundingClientRect()
+    if (this.props.d2) {
+      this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
+    }
     if (dimensions.width !== this.dimensions.width || dimensions.height !== this.dimensions.height) {
       this.dimensions = dimensions
       this.forceUpdate()
+      
     }
+  }
+
+  /**
+   * 
+   * @param {*} fnOrString 
+   */
+  fnOrField (fnOrString) {
+    if (typeof fnOrString === 'string' || fnOrString instanceof String) {
+      return obj => obj[fnOrString];
+    }
+    return fnOrString;
   }
 
   // add a obj file to the scene from url
@@ -123,7 +157,7 @@ export default class GeppettoGraphVisualization extends Component {
 
   // cameraSizeRatioToNodeSize controls how big nodes look compared to 
   zoomCameraToFitScene (object = undefined, cameraSizeRatioToNodeSize = 400) {
-    var offset = 1.25
+    var offset = this.props.offset ? this.props.offset : 1.25
     const size = new THREE.Vector3();
     const center = new THREE.Vector3();
     const boundingBox = new THREE.Box3();
@@ -132,7 +166,6 @@ export default class GeppettoGraphVisualization extends Component {
       // if we load a OBJ file, we need to get the size of the boundary box
       boundingBox.setFromObject( object );
     } else {
-      offset = 2
       // if we maunally set the position of nodes in the graph, we need to adjust the camera in order to see those fixed nodes.
       const [ minV, maxV, containsFixedPoints ] = this.getMaxAndMinVectors()
       if (!containsFixedPoints) { 
@@ -164,21 +197,183 @@ export default class GeppettoGraphVisualization extends Component {
     this.setState({ nodeSize: cameraZ / cameraSizeRatioToNodeSize })
   }
 
-  render () {
-    const { data, ...others } = this.props;
+  // nodes with defined position, will not be draggable
+  onNodeDrag = node => {
+    if (node.position) {
+      node.fx = node.position.x
+      node.fy = node.position.y
+      node.fz = node.position.z
+    }
+  }
 
-    return (
-      <ForceGraph3D
-        ref={this.ggv}
-        graphData={data}
-        width={this.dimensions.width}
-        height={this.dimensions.height}
-        backgroundColor="white"
-        nodeColor={() => "blue"}
-        nodeRelSize={this.state.nodeSize}
-        linkColor={link => link.source < link.target ? "red" : "green"}
-        { ...others }
-      />
-    )
+  // nodes with defined position, will not have forces applied to them
+  addFixedPositionToNodes = data => {
+    data.nodes.forEach(node => {
+      if (node.position) {
+        node.fx = node.position.x
+        node.fy = node.position.y
+        node.fz = node.position.z
+      }
+    })
+  }
+
+
+  // Draw this: ( n1 )--- link_Label --->( n2 )
+  linkCanvasObject (link, ctx, globalScale) {
+    const xs = link.source.x
+    const xt = link.target.x
+    const ys = link.source.y
+    const yt = link.target.y
+    const cx = (xs + xt) / 2
+    const cy = (ys + yt) / 2
+
+    var linkText = this.getLinkLabel(link)
+    var arrowSize = this.size * 0.2
+    const linkLength = Math.sqrt((xt - xs) * (xt - xs) + (yt - ys) * (yt - ys));
+    const availableSpaceForLinkLabel = linkLength - 2.1 * this.size - 6 * arrowSize
+
+    // [-PI/2 ; PI/2]
+    const angle = Math.atan((yt - ys) / (xt - xs))
+    // [-PI ; PI]
+    const angle2 = Math.atan2(yt - ys, xt - xs)
+
+    const textLength = ctx.measureText(link.id).width
+
+    
+    const doNotPlotLinkLabel = !linkText || availableSpaceForLinkLabel < ctx.measureText('Abc...').width
+
+    if (doNotPlotLinkLabel) {
+      
+      ctx.beginPath();
+      ctx.moveTo(xs, ys);
+      ctx.lineTo(xt, yt);
+      ctx.stroke();
+
+
+    } else {
+      if (linkText && textLength > availableSpaceForLinkLabel){
+        var i = linkText.length - 3 // for the ... at the end
+        while (ctx.measureText(linkText.substring(0, i) + '...').width > availableSpaceForLinkLabel) {
+          i--
+        }
+        linkText = linkText.substring(0, i) + '...'
+      }
+
+      const subX = Math.cos(angle2) * textLength / 2
+      const subY = Math.sin(angle2) * textLength / 2
+      
+      // Draw line from source node to link label
+      ctx.beginPath();
+      ctx.moveTo(xs, ys);
+      ctx.lineTo(cx - subX, cy - subY);
+      ctx.stroke();
+
+      // Draw line from link label to target node
+      ctx.beginPath();
+      ctx.moveTo(cx + subX, cy + subY);
+      ctx.lineTo(xt, yt);
+      ctx.stroke()
+      // Draw text for link label
+      
+    }
+    
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle)
+    if (linkText){
+      ctx.fillText(linkText, 0, 0);
+    }
+    // Draw arrow to indicate link direction
+    var dist = (linkLength / 2 - this.size) - arrowSize
+    ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+    ctx.beginPath();
+    if (angle2 >= Math.PI / 2 || angle2 <= -Math.PI / 2){
+      dist *= -1
+      arrowSize *= -1
+    }
+    ctx.moveTo(arrowSize + dist, 0);
+    ctx.lineTo(dist, 2.5);
+    ctx.lineTo(dist, -2.5);
+    ctx.fill()
+    
+    ctx.restore();
+    
+
+  }
+
+  /*
+   * Draw a node distributing the label in up to 3 lines with '...' in case the third line does not fit
+   *    _____
+   *   /  A  \
+   *  (  node )
+   *  ( label )
+   *   \_____/
+   */
+  nodeWithName (node, ctx, globalScale) {
+    const color = node.color || '#6520ff'
+    ctx.font = this.font
+    
+    var label = this.getNodeLabel(node);
+    
+    ctx.fillStyle = color
+    ctx.beginPath(); 
+    ctx.arc(node.x, node.y, this.size, 0, 2 * Math.PI, false)
+    ctx.fill();
+
+    ctx.fillStyle = getDarkerColor(color)
+    ctx.beginPath(); 
+    ctx.arc(node.x, node.y, this.size - this.borderSize, 0, 2 * Math.PI, false)
+    ctx.fill();
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+    
+    const maxCharsPerLine = Math.floor(this.size * 1.75 / ctx.measureText("a").width)
+      
+    const nodeLabel = splitter(label, maxCharsPerLine)
+    
+    // Use single, double or triple lines to put text inside node
+    if (nodeLabel.length == 1) {
+      ctx.fillText(nodeLabel[0], node.x, node.y);
+    } else if (nodeLabel.length == 2) {
+      ctx.fillText(nodeLabel[0], node.x, node.y - this.doubleGap);
+      ctx.fillText(nodeLabel[1], node.x, node.y + this.doubleGap);
+    } else if (nodeLabel.length == 3){
+      ctx.fillText(nodeLabel[0], node.x, node.y - this.tripleGap);
+      ctx.fillText(nodeLabel[1], node.x, node.y);
+      ctx.fillText(nodeLabel[2], node.x, node.y + this.tripleGap);
+    } else {
+      ctx.fillText(nodeLabel[0], node.x, node.y - this.tripleGap);
+      ctx.fillText(nodeLabel[1], node.x, node.y);
+      ctx.fillText(nodeLabel[2].slice(0, label.length - 2) + '...', node.x, node.y + this.tripleGap);
+    }
+
+  }
+
+  render () {
+    const { data, d2 = false, xGap = 20, yGap = 40, ...others } = this.props;
+    
+    this.addFixedPositionToNodes(data)
+     
+    const props = {
+      ref: this.ggv,
+      graphData: data,
+      width: this.dimensions.width - xGap,
+      height: this.dimensions.height - yGap,
+      onNodeDrag: node => this.onNodeDrag(node),
+      ...others
+    }
+    
+    if (d2) {
+      return <ForceGraph2D 
+        linkCanvasObjectMode={() => "replace"}
+        linkCanvasObject={this.linkCanvasObject.bind(this)} 
+        nodeCanvasObject={this.nodeWithName.bind(this)} 
+        nodeRelSize={this.size} 
+        {...props}/>
+    } else {
+      return <ForceGraph3D {...props} />
+    }
   }
 }

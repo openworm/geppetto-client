@@ -7,28 +7,27 @@
  * @author Giovanni Idili
  */
 
-define(['jquery'], function (require) {
-  return {
-    capabilityId: 'VisualGroupCapability',
-    visualGroups: [],
+export default {
+  capabilityId: 'VisualGroupCapability',
+  visualGroups: [],
 
-    /**
-     * Get VisualGroups
-     */
-    getVisualGroups: function () {
-      return this.visualGroups;
-    },
+  /**
+   * Get VisualGroups
+   */
+  getVisualGroups: function () {
+    return this.visualGroups;
+  },
 
 
-    applyVisualGroup: function (visualGroup, mode) {
-      visualGroup.show(mode, [this]);
-    },
+  applyVisualGroup: function (visualGroup, mode) {
+    visualGroup.show(mode, [this]);
+  },
 
-    /**
-     * Get VisualGroups
-     */
-    setVisualGroups: function (visualGroups) {
-      this.visualGroups = visualGroups;
-    },
-  }
-});
+  /**
+   * Get VisualGroups
+   */
+  setVisualGroups: function (visualGroups) {
+    this.visualGroups = visualGroups;
+  },
+}
+

@@ -95,8 +95,6 @@ define(function (require) {
               rowInfoIter.node.active = isActive;
               currentTreeData = changeNodeAtPath({ treeData: currentTreeData, path: rowInfoIter.path, newNode: rowInfoIter.node, getNodeKey: ({ treeIndex }) => treeIndex, ignoreCollapsed: true });
             }
-
-
           }
         });
       }
@@ -114,19 +112,23 @@ define(function (require) {
       var nodeProps = {};
       nodeProps['onClick'] = event => this.handleClick(event, rowInfo);
 
-      if (this.props.getButtons != undefined) {
+      if (this.props.getButtons !== undefined) {
         nodeProps['buttons'] = this.props.getButtons(rowInfo);
       }
-      if (rowInfo.node.instance != undefined) {
+      if (rowInfo.node.instance !== undefined) {
         nodeProps['style'] = { cursor: 'pointer' };
       }
       if (rowInfo.node.active) {
         nodeProps['className'] = 'activeNode';
       }
+      if (this.props.getNodesProps !== undefined) {
+        nodeProps['title'] = this.props.getNodesProps(rowInfo);
+      }
       return nodeProps;
     }
 
     render () {
+      var onlyExpandSearchedNodes = (this.props.searchQuery !== undefined && this.props.searchQuery !== null);
       return (
         <div key={this.props.id + "_component"} id={this.props.id + "_component"} className="treeViewer" style={this.props.style}>
           <SortableTree
@@ -137,6 +139,8 @@ define(function (require) {
             scaffoldBlockPxWidth={22}
             generateNodeProps={rowInfo => (this.getNodeProps(rowInfo))}
             onChange={treeData => this.updateTreeData(treeData)}
+            searchQuery={(this.props.searchQuery !== undefined) ? this.props.searchQuery : null}
+            onlyExpandSearchedNodes={this.props.onlyExpandSearchedNodes !== undefined ? this.props.onlyExpandSearchedNodes : false}
           />
         </div>
       )
