@@ -275,8 +275,6 @@ define(function (require) {
               return "Play Experiment";
             }
 
-          } else {
-            GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.CANT_PLAY_EXPERIMENT, "Experiment " + experiment.name + " with id " + experiment.id + " isn't completed, and can't be played.");
           }
         },
 

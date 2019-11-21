@@ -78,7 +78,6 @@ define(function (require) {
   require('../../common/GEPPETTO.UnitsController')(GEPPETTO);
     
 
-  GEPPETTO.ModalFactory = new(require('../../components/controls/modals/ModalFactory'))();
   GEPPETTO.SceneController = new(require('../../components/interface/3dCanvas/SceneController'))();
 
   require('../../common/GEPPETTO.Utility')(GEPPETTO);

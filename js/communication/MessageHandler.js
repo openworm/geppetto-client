@@ -95,7 +95,6 @@ define(function (require) {
       }
 
       GEPPETTO.trigger('geppetto:error', error.msg);
-      GEPPETTO.ModalFactory.errorDialog(GEPPETTO.Resources.ERROR, error.message, error.code, error.exception);
       GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
     };
 
@@ -186,7 +185,6 @@ define(function (require) {
     // handles the case where service doesn't support feature and shows message
     messageHandler[messageTypes.NO_FEATURE] = function (payload) {
       // Updates the simulation controls visibility
-      GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.NO_FEATURE, payload.message);
     };
 
     // received model tree from server
@@ -229,7 +227,6 @@ define(function (require) {
 
     messageHandler[messageTypes.DROPBOX_LINKED] = function (payload) {
       GEPPETTO.CommandController.log("Dropbox linked successfully",true);
-      GEPPETTO.ModalFactory.infoDialog("Success", "Dropbox linked successfully");
     };
 
     messageHandler[messageTypes.DROPBOX_UNLINKED] = function (payload) {

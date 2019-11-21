@@ -83,8 +83,6 @@ define(function (require) {
             GEPPETTO.MessageSocket.protocol = "ws://";
             GEPPETTO.MessageSocket.failsafe = true;
             GEPPETTO.MessageSocket.connect(GEPPETTO.MessageSocket.protocol + window.location.host + '/' + GEPPETTO_CONFIGURATION.contextPath + '/GeppettoServlet');
-          } else {
-            GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, message);
           }
         };
       },

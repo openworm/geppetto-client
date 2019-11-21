@@ -238,8 +238,6 @@ define(function (require) {
         }
 
         watchedVariables += "</ul>";
-
-        GEPPETTO.ModalFactory.infoDialog("Recorded variables ", watchedVariables);
       }
     },
         
@@ -255,7 +253,6 @@ define(function (require) {
            
            
       modifiedParameters += "</ul>";
-      GEPPETTO.ModalFactory.infoDialog("Set Parameters ", modifiedParameters);
     },
 
     render: function () {
@@ -343,7 +340,6 @@ define(function (require) {
         if (error != null || undefined){
           e.stopPropagation();
           e.nativeEvent.stopImmediatePropagation();
-          GEPPETTO.ModalFactory.infoDialog("Experiment Failed ", error.exception);
         }
       }
     },
@@ -395,26 +391,12 @@ define(function (require) {
       var login = GEPPETTO.UserController.isLoggedIn();
       if (login){
         GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_EXPERIMENT);
-      } else {
-        GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.ERROR,
-          GEPPETTO.Resources.OPERATION_NOT_SUPPORTED + GEPPETTO.Resources.USER_NOT_LOGIN);
       }
     },
         
     deleteExperiment : function (e){
       var experiment = this.props.experiment;
       var index = window.Project.getExperiments().indexOf(experiment);
-      GEPPETTO.ModalFactory.inputDialog(
-        "Are you sure?",
-        "Delete " + experiment.name + "?",
-        "Yes",
-        function (){
-          GEPPETTO.CommandController.execute("Project.getExperiments()[" + index + "].deleteExperiment();", true);
-        },
-        "Cancel",
-        function (){
-        }
-      );
       e.stopPropagation();
       e.nativeEvent.stopImmediatePropagation();
     },
@@ -575,9 +557,6 @@ define(function (require) {
 
     experimentDeleted: function (experiment) {
       this.deleteExperiment(experiment);
-      if (!GEPPETTO.ExperimentsController.suppressDeleteExperimentConfirmation) {
-        GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.EXPERIMENT_DELETED, "Experiment " + experiment.name + " with id " + experiment.id + " was deleted successfully");
-      }
     },
     
     refresh: function (){
