@@ -581,11 +581,11 @@ define(function (require) {
 
       return (
         <div key={this.props.id + "_component"} id={this.props.id + "_component"} className="dicomViewerContainer" style={this.props.style}>          <div className="dicomViewer">
-            <div data-id="r0" className="renderer r0" style={{ display: this.state.mode == 'single_view' && this.state.orientation != '3d' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == '3d' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == '3d' ? '100%' : '50%' }}></div>
-            <div data-id="r1" className="renderer r1" style={{ display: this.state.mode == 'single_view' && this.state.orientation != 'sagittal' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == 'sagittal' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == 'sagittal' ? '100%' : '50%' }}></div>
-            <div data-id="r2" className="renderer r2" style={{ display: this.state.mode == 'single_view' && this.state.orientation != 'axial' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == 'axial' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == 'axial' ? '100%' : '50%' }}></div>
-            <div data-id="r3" className="renderer r3" style={{ display: this.state.mode == 'single_view' && this.state.orientation != 'coronal' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == 'coronal' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == 'coronal' ? '100%' : '50%' }}></div>
-          </div>
+          <div data-id="r0" className="renderer r0" style={{ display: this.state.mode == 'single_view' && this.state.orientation != '3d' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == '3d' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == '3d' ? '100%' : '50%' }}></div>
+          <div data-id="r1" className="renderer r1" style={{ display: this.state.mode == 'single_view' && this.state.orientation != 'sagittal' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == 'sagittal' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == 'sagittal' ? '100%' : '50%' }}></div>
+          <div data-id="r2" className="renderer r2" style={{ display: this.state.mode == 'single_view' && this.state.orientation != 'axial' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == 'axial' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == 'axial' ? '100%' : '50%' }}></div>
+          <div data-id="r3" className="renderer r3" style={{ display: this.state.mode == 'single_view' && this.state.orientation != 'coronal' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == 'coronal' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == 'coronal' ? '100%' : '50%' }}></div>
+        </div>
 
         </div>
       )
