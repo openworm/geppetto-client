@@ -26,7 +26,6 @@ define(function (require) {
         'CAMERACONTROLS': 'interface/cameraControls/CameraControls',
         'SHARE': 'interface/share/Share',
         'INFOMODAL': 'controls/modals/InfoModal',
-        'MDMODAL': 'controls/modals/MarkDownModal',
         'QUERY': 'interface/query/queryBuilder',
         'TUTORIAL': 'interface/tutorial/Tutorial',
         'PYTHONCONSOLE': 'interface/pythonConsole/PythonConsole',
@@ -193,7 +192,6 @@ define(function (require) {
             case 'CAMERACONTROLS': require(['./interface/cameraControls/CameraControls'],cb); break;
             case 'SHARE': require(['./interface/share/Share'],cb); break;
             case 'INFOMODAL': require(['./controls/modals/InfoModal'],cb); break;
-            case 'MDMODAL': require(['./controls/modals/MarkDownModal'],cb); break;
             case 'QUERY': require(['./interface/query/queryBuilder'],cb); break;
             case 'TUTORIAL': require(['./interface/tutorial/Tutorial'],cb); break;
             case 'PYTHONCONSOLE': require(['./interface/pythonConsole/PythonConsole'],cb); break;
