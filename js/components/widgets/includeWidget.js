@@ -11,7 +11,6 @@ define(function (require) {
 
     require('./WidgetFactory')(GEPPETTO);
     require('./WidgetsListener')(GEPPETTO);
-    require("./ContextMenu")(GEPPETTO);
     require("./Widget.less");
   };
 });

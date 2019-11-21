@@ -71,23 +71,12 @@ define(function (require) {
         this.visible = options.visible;
         this.size = this.defaultSize();
         this.position = this.defaultPosition();
-        this.contextMenu = new GEPPETTO.ContextMenuView();
-        this.historyMenu = new GEPPETTO.ContextMenuView();
         this.widgetType = options.widgetType;
         this.stateless = (options.stateless != undefined) ? options.stateless : false;
         this.registeredEvents = [];
         this.dirtyView = false;
 
         var self = this;
-        $(self.historyMenu.el).on('click', function (event) {
-          var itemId = $(event.target).attr('id');
-          var registeredItem = self.historyMenu.getClickedItem(itemId);
-          if (registeredItem != null || registeredItem != undefined) {
-            var label = registeredItem["label"];
-            self.title = label;
-            $("#" + self.id).parent().find(".ui-dialog-title").html(self.title);
-          }
-        });
         window.addEventListener('resize', function (event) {
           if (self.maximize) {
             self.maximize = false;
@@ -393,48 +382,6 @@ define(function (require) {
         return data;
       },
 
-      showHistoryMenu: function (event) {
-        var that = this;
-        if (this.controller.history.length > 0) {
-          that.updateHistoryPosition = true;
-          this.historyMenu.show({
-            top: event.pageY,
-            left: event.pageX + 1,
-            groups: that.getItems(that.controller.history, "controller.history"),
-            data: that
-          });
-        }
-
-        if (event != null) {
-          event.preventDefault();
-        }
-        return false;
-      },
-
-      showContextMenu: function (event, data) {
-        var handlers = GEPPETTO.MenuManager.getCommandsProvidersFor(data.getMetaType());
-
-        if (handlers.length > 0) {
-          var groups = [];
-          for (var handlerIndex = 0; handlerIndex < handlers.length; handlerIndex++) {
-            groups = groups.concat(handlers[handlerIndex](data));
-          }
-
-          this.contextMenu.show({
-            top: event.pageY,
-            left: event.pageX + 1,
-            groups: groups,
-            // registeredItems: registeredItems,
-            data: data
-          });
-        }
-
-        if (event != null) {
-          event.preventDefault();
-        }
-
-        return false;
-      },
 
       /**
        * hides / shows the title bar
@@ -800,18 +747,6 @@ define(function (require) {
           }));
         } else {
           this.$el.parent().find(".help-icon").remove();
-        }
-      },
-
-      showHistoryIcon: function (show) {
-        var that = this;
-        if (show && this.$el.parent().find(".history-icon").length == 0) {
-          this.addButtonToTitleBar($("<div class='fa fa-history history-icon' title='Show Navigation History'></div>").click(function (event) {
-            that.showHistoryMenu(event);
-            event.stopPropagation();
-          }));
-        } else {
-          this.$el.parent().find(".history-icon").remove();
         }
       },
 

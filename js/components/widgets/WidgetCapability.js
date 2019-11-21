@@ -310,48 +310,6 @@ define(function (require) {
           return data;
         }
 
-        showHistoryMenu (event) {
-          var that = this;
-          if ((window.historyWidgetCapability !== undefined) && (window.historyWidgetCapability[this.props.id] !== undefined) && (window.historyWidgetCapability[this.props.id].length > 0)) {
-
-            this.historyMenu.show({
-              top: event.pageY,
-              left: event.pageX + 1,
-              groups: that.getItems(window.historyWidgetCapability[that.props.id], "window.updateHistoryWidget"),
-              data: that
-            });
-          }
-
-          if (event != null) {
-            event.preventDefault();
-          }
-          return false;
-        }
-
-        showContextMenu (event, data) {
-          var handlers = GEPPETTO.MenuManager.getCommandsProvidersFor(data.getMetaType());
-
-          if (handlers.length > 0) {
-            var groups = [];
-            for (var handlerIndex = 0; handlerIndex < handlers.length; handlerIndex++) {
-              groups = groups.concat(handlers[handlerIndex](data));
-            }
-
-            this.contextMenu.show({
-              top: event.pageY,
-              left: event.pageX + 1,
-              groups: groups,
-              // registeredItems: registeredItems,
-              data: data
-            });
-          }
-
-          if (event != null) {
-            event.preventDefault();
-          }
-
-          return false;
-        }
 
         /**
          * hides / shows the title bar
@@ -689,18 +647,7 @@ define(function (require) {
           // initialize content
           this.size = this.props.size;
           this.position = this.props.position;
-          this.contextMenu = new GEPPETTO.ContextMenuView();
-          this.historyMenu = new GEPPETTO.ContextMenuView();
           this.registeredEvents = [];
-          $(this.historyMenu.el).on('click', function (event) {
-            var itemId = $(event.target).attr('id');
-            var registeredItem = that.historyMenu.getClickedItem(itemId);
-            if (registeredItem != null || registeredItem != undefined) {
-              var label = registeredItem["label"];
-              that.title = label;
-              $("#" + that.props.id).parent().find(".ui-dialog-title").html(that.title);
-            }
-          });
 
           if (this.props.fixPosition) {
             dialogParent.detach().appendTo(originalParentContainer);
@@ -749,17 +696,6 @@ define(function (require) {
           });
         }
 
-        showHistoryIcon (show) {
-          var that = this;
-          if (show && this.$el.parent().find(".history-icon").length == 0) {
-            this.addButtonToTitleBar($("<div class='fa fa-history history-icon' title='Show Navigation History'></div>").click(function (event) {
-              that.showHistoryMenu(event);
-              event.stopPropagation();
-            }));
-          } else {
-            this.$el.parent().find(".history-icon").remove();
-          }
-        }
 
         getView () {
           var view = super.getView();
