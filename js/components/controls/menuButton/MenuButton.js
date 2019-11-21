@@ -117,14 +117,10 @@ define(function (require) {
   });
 
   var DropDownControlComp = CreateClass({
-    onClickHandler: null,
     menuPosition: null,
 
     getInitialState: function () {
-      return {
-        visible: this.props.configuration.openByDefault,
-        configuration: null
-      };
+      return { visible: this.props.configuration.openByDefault };
     },
 
     componentDidMount: function () {
@@ -183,8 +179,6 @@ define(function (require) {
             this.props.configuration.menuItems.unshift(item);
           }
         }
-
-        this.forceUpdate();
       }
     },
 
@@ -335,48 +329,41 @@ define(function (require) {
     selectionChanged: function (value) {
       if (this.props.configuration.closeOnClick) {
         this.toggleMenu();
-        if (this.onClickHandler != undefined && this.onClickHandler != null){
-          this.onClickHandler(value);
-        }
+      }
+      if (this.props.onClickHandler) {
+        this.props.onClickHandler(value);
       }
     },
 
     // Adds external load handler, gets notified when component is mounted and ready
     addExternalLoadHandler: function () {
-      var self = this;
-      self.onLoadHandler = self.props.configuration.onLoadHandler;
-      if (self.onLoadHandler != null || undefined) {
-        self.onLoadHandler(self);
+      this.onLoadHandler = this.props.configuration.onLoadHandler;
+      if (this.onLoadHandler) {
+        this.onLoadHandler(this);
       }
     },
 
     componentWillUnmount: function () {
       this.onLoadHandler = null;
-      this.onClickHandler = null;
     },
 
     componentDidMount: function () {
-      var self = this;
-
-      // attach external handler for loading events
-      self.onClickHandler = self.props.configuration.onClickHandler;
-
       // attach external handler for clicking events
-      self.addExternalLoadHandler();
+      this.addExternalLoadHandler();
       if (this.props.configuration.closeOnClick) {
         var container = $('#' + this.props.configuration.id + "-container");
         $('body').click(function (e) {
           // if the target of the click isn't the container nor a descendant of the container
           if (!container.is(e.target) && container.has(e.target).length === 0) {
-            if (self.props.configuration.closeOnClick) {
-              if (self.state.open) {
-                if (self.isMounted()) {
-                  self.hideMenu();
+            if (this.props.configuration.closeOnClick) {
+              if (this.state.open) {
+                if (this.isMounted()) {
+                  this.hideMenu();
                 }
               }
             }
           }
-        });
+        }.bind(this));
       }
     },
 
