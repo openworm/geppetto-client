@@ -2,7 +2,6 @@ define(function (require) {
 
   var React = require('react'),
     $ = require('jquery'),
-    Button = require('../../controls/mixins/bootstrap/button'),
     GEPPETTO = require('geppetto');
 
   require('./Tutorial.less');

@@ -22,10 +22,7 @@ define(function (require) {
         'CONTROLPANEL': 'interface/controlPanel/controlpanel',
         'SPOTLIGHT': 'interface/spotlight/spotlight',
         'MENUBUTTON': 'controls/menuButton/MenuButton',
-        'FOREGROUND': 'interface/foregroundControls/ForegroundControls',
         'EXPERIMENTSTABLE': 'interface/experimentsTable/ExperimentsTable',
-        'HOME': 'interface/home/HomeControl',
-        'SIMULATIONCONTROLS': 'interface/simulationControls/ExperimentControls',
         'CAMERACONTROLS': 'interface/cameraControls/CameraControls',
         'SHARE': 'interface/share/Share',
         'INFOMODAL': 'controls/modals/InfoModal',
@@ -192,10 +189,7 @@ define(function (require) {
             case 'CONTROLPANEL': require(['./interface/controlPanel/controlpanel'],cb); break;
             case 'SPOTLIGHT': require(['./interface/spotlight/spotlight'],cb); break;
             case 'MENUBUTTON': require(['./controls/menuButton/MenuButton'],cb); break;
-            case 'FOREGROUND': require(['./interface/foregroundControls/ForegroundControls'],cb); break;
             case 'EXPERIMENTSTABLE': require(['./interface/experimentsTable/ExperimentsTable'],cb); break;
-            case 'HOME': require(['./interface/home/HomeControl'],cb); break;
-            case 'SIMULATIONCONTROLS': require(['./interface/simulationControls/ExperimentControls'],cb); break;
             case 'CAMERACONTROLS': require(['./interface/cameraControls/CameraControls'],cb); break;
             case 'SHARE': require(['./interface/share/Share'],cb); break;
             case 'INFOMODAL': require(['./controls/modals/InfoModal'],cb); break;
