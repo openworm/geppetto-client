@@ -77,12 +77,6 @@ define(function (require) {
                 this.treeVisDatController = new TreeVisualiserControllerDAT();
               }
               resolve(this.treeVisDatController);
-            } else if (type == GEPPETTO.Widgets.VARIABLEVISUALISER) {
-              if (this.variableVisController == null || undefined) {
-                var VariableVisualizerController = require('./variablevisualiser/controllers/VariableVisualiserController');
-                this.variableVisController = new VariableVisualizerController();
-              }
-              resolve(this.variableVisController);
             } else if (type == GEPPETTO.Widgets.CONNECTIVITY) {
               if (this.connectivityController == null || undefined) {
                 var ConnectivityController = require('./connectivity/controllers/ConnectivityController');
