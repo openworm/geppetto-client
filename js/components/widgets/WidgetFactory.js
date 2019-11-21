@@ -17,8 +17,6 @@ define(function (require) {
      */
     GEPPETTO.Widgets = {
       PLOT: 0,
-      TREEVISUALISERDAT: 3,
-      VARIABLEVISUALISER: 5,
       CONNECTIVITY: 6,
       STACKVIEWER: 8 
       // WIDGETNAME: N
@@ -31,8 +29,6 @@ define(function (require) {
 
       plotsController: null,
       connectivityController: null,
-      variableVisController: null,
-      treeVisDatController: null,
       treeVis3DController: null,
       stackViewer3DController: null,
       // WIDGETNAMEController: null
@@ -71,12 +67,6 @@ define(function (require) {
                 this.plotsController = new PlotsController();
               }
               resolve(this.plotsController);
-            } else if (type == GEPPETTO.Widgets.TREEVISUALISERDAT) {
-              if (this.treeVisDatController == null || undefined) {
-                var TreeVisualiserControllerDAT = require('./treevisualiser/treevisualiserdat/controllers/TreeVisualiserControllerDAT');
-                this.treeVisDatController = new TreeVisualiserControllerDAT();
-              }
-              resolve(this.treeVisDatController);
             } else if (type == GEPPETTO.Widgets.CONNECTIVITY) {
               if (this.connectivityController == null || undefined) {
                 var ConnectivityController = require('./connectivity/controllers/ConnectivityController');
