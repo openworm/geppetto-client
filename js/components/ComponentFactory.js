@@ -13,8 +13,6 @@ define(function (require) {
 
       // All the components potentially instantiable go here
       components: {
-        'FORM': 'interface/form/Form',
-        'PANEL': 'controls/panel/Panel',
         'LOGO': 'interface/logo/Logo',
         'LOADINGSPINNER': 'interface/loadingSpinner/LoadingSpinner',
         'SAVECONTROL': 'interface/save/SaveControl',
@@ -176,8 +174,6 @@ define(function (require) {
               resolve(renderedComponent);
             }
             switch (componentType){
-            case 'FORM': require(['./interface/form/Form'], cb); break;
-            case 'PANEL': require(['./controls/panel/Panel'],cb); break; 
             case 'LOGO': require(['./interface/logo/Logo'],cb); break;
             case 'LOADINGSPINNER': require(['./interface/loadingSpinner/LoadingSpinner'],cb); break;
             case 'SAVECONTROL': require(['./interface/save/SaveControl'],cb); break;
