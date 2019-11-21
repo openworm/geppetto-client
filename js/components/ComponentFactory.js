@@ -24,7 +24,6 @@ define(function (require) {
         'MENUBUTTON': 'controls/menuButton/MenuButton',
         'EXPERIMENTSTABLE': 'interface/experimentsTable/ExperimentsTable',
         'CAMERACONTROLS': 'interface/cameraControls/CameraControls',
-        'SHARE': 'interface/share/Share',
         'QUERY': 'interface/query/queryBuilder',
         'TUTORIAL': 'interface/tutorial/Tutorial',
         'PYTHONCONSOLE': 'interface/pythonConsole/PythonConsole',
@@ -188,7 +187,6 @@ define(function (require) {
             case 'MENUBUTTON': require(['./controls/menuButton/MenuButton'],cb); break;
             case 'EXPERIMENTSTABLE': require(['./interface/experimentsTable/ExperimentsTable'],cb); break;
             case 'CAMERACONTROLS': require(['./interface/cameraControls/CameraControls'],cb); break;
-            case 'SHARE': require(['./interface/share/Share'],cb); break;
             case 'QUERY': require(['./interface/query/queryBuilder'],cb); break;
             case 'TUTORIAL': require(['./interface/tutorial/Tutorial'],cb); break;
             case 'PYTHONCONSOLE': require(['./interface/pythonConsole/PythonConsole'],cb); break;
