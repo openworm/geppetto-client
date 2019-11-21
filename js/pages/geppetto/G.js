@@ -11,7 +11,6 @@ define(function (require) {
     var debugMode = false;
     var $ = require('jquery');
     var React = require('react');
-    var ClipboardModal = require('../../components/interface/jsEditor/ClipboardModal');
 
     /**
      * @exports geppetto-objects/G

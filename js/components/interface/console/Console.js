@@ -3,7 +3,6 @@ define(function (require) {
   var AbstractComponent = require('../../AComponent');
   var $ = require('jquery');
   require('jquery-ui-bundle');
-  require('../jsEditor/GEPPETTO.JSEditor')(GEPPETTO);
   require('./SandboxConsole')(GEPPETTO);
   require('./console.less');
   require('./jsConsole.less');
@@ -259,13 +258,6 @@ define(function (require) {
           keyboard: false,
           title: message,
         }), document.getElementById('modal-region'));
-
-        $('#javascriptEditor').on('shown.bs.modal', function () {
-          if ($("#javascriptEditor").hasClass("in")) {
-            GEPPETTO.JSEditor.loadEditor();
-            GEPPETTO.JSEditor.loadCode(commandsString);
-          }
-        });
 
         return GEPPETTO.Resources.COPY_CONSOLE_HISTORY;
       } else {
