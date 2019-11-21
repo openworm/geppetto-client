@@ -11,7 +11,6 @@ define(function (require) {
 
   require('./DicomViewer.less');
   var DicomViewerUtils = require('./DicomViewerUtils');
-  var WidgetButtonBar = require('../../controls/widgetButtonBar/WidgetButtonBar');
   var AbstractComponent = require('../../AComponent');
 
   return class DicomViewer extends AbstractComponent {
@@ -578,20 +577,10 @@ define(function (require) {
     }
 
     render () {
-      // Add the button bar if it is a component, otherwise add buttons in widget tool bar
-      if (!this.isWidget()) {
-        var widgetButtonBar = <WidgetButtonBar>
-          {this.getCustomButtons().map(customButton =>
-            <button className={'btn fa ' + customButton.icon} onClick={customButton.action} title={customButton.title} />
-          )}
-        </WidgetButtonBar>
-      }
+
 
       return (
-        <div key={this.props.id + "_component"} id={this.props.id + "_component"} className="dicomViewerContainer" style={this.props.style}>
-          {widgetButtonBar}
-
-          <div className="dicomViewer">
+        <div key={this.props.id + "_component"} id={this.props.id + "_component"} className="dicomViewerContainer" style={this.props.style}>          <div className="dicomViewer">
             <div data-id="r0" className="renderer r0" style={{ display: this.state.mode == 'single_view' && this.state.orientation != '3d' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == '3d' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == '3d' ? '100%' : '50%' }}></div>
             <div data-id="r1" className="renderer r1" style={{ display: this.state.mode == 'single_view' && this.state.orientation != 'sagittal' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == 'sagittal' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == 'sagittal' ? '100%' : '50%' }}></div>
             <div data-id="r2" className="renderer r2" style={{ display: this.state.mode == 'single_view' && this.state.orientation != 'axial' ? 'none' : '', width: this.state.mode == 'single_view' && this.state.orientation == 'axial' ? '100%' : '50%', height: this.state.mode == 'single_view' && this.state.orientation == 'axial' ? '100%' : '50%' }}></div>

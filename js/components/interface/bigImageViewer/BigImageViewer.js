@@ -4,7 +4,6 @@ define(function (require) {
 
   var React = require('react');
   var OpenSeaDragon = require('openseadragon');
-  var WidgetButtonBar = require('../../controls/widgetButtonBar/WidgetButtonBar');
   var AbstractComponent = require('../../AComponent');
 
   return class BigImageViewer extends AbstractComponent {
@@ -123,17 +122,9 @@ define(function (require) {
 
     render () {
       // Add the button bar if it is a component, otherwise add buttons in widget tool bar
-      if (!this.isWidget()) {
-        var widgetButtonBar = <WidgetButtonBar>
-          {this.getCustomButtons().map(customButton =>
-            <button className={'btn fa ' + customButton.icon} id={customButton.id} title={customButton.title} />
-          )}
-        </WidgetButtonBar>
-      }
 
       return (
         <div className="bigImageViewer">
-          {widgetButtonBar}
           <div id={this.props.id + "_component"} className="bigImageViewer" />
         </div>
       )
