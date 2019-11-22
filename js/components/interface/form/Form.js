@@ -2,6 +2,7 @@ define(function (require) {
 
   require('./Form.less')
 
+  var React = require('react');
   var CreateClass = require('create-react-class');
   var reactJsonSchemaForm = require('react-jsonschema-form');
 
