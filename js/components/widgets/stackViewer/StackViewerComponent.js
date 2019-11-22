@@ -468,7 +468,7 @@ define(function (require) {
                   for (j in list) {
                     objects = objects + list[j] + '\n';
                   }
-                  if (objects !== '' && index == 0) {
+                  if (objects !== '' && i == 0) {
                     that.setHoverText(callX,callY,objects);
                   }
                 }
