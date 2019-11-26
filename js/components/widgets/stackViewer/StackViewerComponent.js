@@ -469,7 +469,7 @@ define(function (require) {
                     objects = objects + list[j] + '\n';
                   }
                   if (objects !== '' && i == 0) {
-                    that.setHoverText(callX,callY,objects);
+                    that.setHoverText(callX,callY,list[0]);
                   }
                 }
                 // update slice view
