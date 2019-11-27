@@ -163,6 +163,7 @@ define(function (require) {
     componentDidMount: function () {
       // listen to experiment status change and trigger a re-render to refresh input / read-only status
       GEPPETTO.on(GEPPETTO.Events.Experiment_completed, this.refresh, this);
+      GEPPETTO.on(GEPPETTO.Events.Experiment_loaded, this.refresh, this);
       GEPPETTO.on(GEPPETTO.Events.Experiment_running, this.refresh, this);
       GEPPETTO.on(GEPPETTO.Events.Experiment_failed, this.refresh, this);
       var status = window.Project.getActiveExperiment().getStatus();
@@ -600,36 +601,35 @@ define(function (require) {
       activeExperimentFilterVisibleArg,
       anyExperimentFilterVisibleArg,
       anyProjectFilterVisibleArg,
-      recordedFilterVisibleArg) {
+      recordedFilterVisibleArg, callback) {
 
       /*
        * manually set so it's available immediately after calling this method without waiting for next render
        * NOTE: doing set state the state is not available till the next render cycle
        */
-      this.state.visualFilterToggled = visualFilterToggledArg;
-      this.state.stateVarsFilterToggled = stateVarsFilterToggledArg;
-      this.state.paramsFilterToggled = paramsFilterToggledArg;
-      this.state.activeExperimentFilterToggled = activeExperimentFilterToggledArg;
-      this.state.anyExperimentFilterToggled = anyExperimentFilterToggledArg;
-      this.state.anyProjectFilterToggled = anyProjectFilterToggledArg;
-      this.state.recordedFilterToggled = recordedFilterToggledArg;
-      this.state.visualFilterEnabled = visualFilterEnabledArg;
-      this.state.stateVarsFilterEnabled = stateVarsFilterEnabledArg;
-      this.state.paramsFilterEnabled = paramsFilterEnabledArg;
-      this.state.activeExperimentFilterEnabled = activeExperimentFilterEnabledArg;
-      this.state.anyExperimentFilterEnabled = anyExperimentFilterEnabledArg;
-      this.state.anyProjectFilterEnabled = anyProjectFilterEnabledArg;
-      this.state.recordedFilterEnabled = recordedFilterEnabledArg;
-      this.state.visualFilterVisible = visualFilterVisibleArg;
-      this.state.stateVarsFilterVisible = stateVarsFilterVisibleArg;
-      this.state.paramsFilterVisible = paramsFilterVisibleArg;
-      this.state.activeExperimentFilterVisible = activeExperimentFilterVisibleArg;
-      this.state.anyExperimentFilterVisible = anyExperimentFilterVisibleArg;
-      this.state.anyProjectFilterVisible = anyProjectFilterVisibleArg;
-      this.state.recordedFilterVisible = recordedFilterVisibleArg;
-
-      // force an update because we do want to re-render the filter component
-      this.forceUpdate();
+      this.setState({
+        visualFilterToggled: visualFilterToggledArg,
+        stateVarsFilterToggled : stateVarsFilterToggledArg,
+        paramsFilterToggled : paramsFilterToggledArg,
+        activeExperimentFilterToggled : activeExperimentFilterToggledArg,
+        anyExperimentFilterToggled : anyExperimentFilterToggledArg,
+        anyProjectFilterToggled : anyProjectFilterToggledArg,
+        recordedFilterToggled : recordedFilterToggledArg,
+        visualFilterEnabled : visualFilterEnabledArg,
+        stateVarsFilterEnabled : stateVarsFilterEnabledArg,
+        paramsFilterEnabled : paramsFilterEnabledArg,
+        activeExperimentFilterEnabled : activeExperimentFilterEnabledArg,
+        anyExperimentFilterEnabled : anyExperimentFilterEnabledArg,
+        anyProjectFilterEnabled : anyProjectFilterEnabledArg,
+        recordedFilterEnabled : recordedFilterEnabledArg,
+        visualFilterVisible : visualFilterVisibleArg,
+        stateVarsFilterVisible : stateVarsFilterVisibleArg,
+        paramsFilterVisible : paramsFilterVisibleArg,
+        activeExperimentFilterVisible : activeExperimentFilterVisibleArg,
+        anyExperimentFilterVisible : anyExperimentFilterVisibleArg,
+        anyProjectFilterVisible : anyProjectFilterVisibleArg,
+        recordedFilterVisible : recordedFilterVisibleArg
+      }, callback);
     },
 
     refreshToggleState: function (){
@@ -661,6 +661,31 @@ define(function (require) {
 
     computeResult: function (controlId) {
       // logic for disable/enable stuff here
+      var callback = function () {
+        // this will cause the control panel to refresh data based on injected filter handler
+        var filterHandler = this.props.filterHandler;
+        if (this.state.visualFilterToggled) {
+          filterHandler(controlPanelFilterOptions.VISUAL_INSTANCES);
+        } else if (this.state.stateVarsFilterToggled) {
+          if (this.state.activeExperimentFilterToggled && this.state.recordedFilterToggled) {
+            filterHandler(controlPanelFilterOptions.ACTIVE_RECORDED_STATE_VARIABLES);
+          } else if (this.state.activeExperimentFilterToggled && !this.state.recordedFilterToggled) {
+            filterHandler(controlPanelFilterOptions.ACTIVE_STATE_VARIABLES);
+          } else if (this.state.anyExperimentFilterToggled) {
+            filterHandler(controlPanelFilterOptions.ANY_EXPERIMENT_RECORDED_STATE_VARIABLES);
+          } else if (this.state.anyProjectFilterToggled) {
+            filterHandler(controlPanelFilterOptions.ANY_PROJECT_GLOBAL_STATE_VARIABLES);
+          }
+        } else if (this.state.paramsFilterToggled) {
+          if (this.state.activeExperimentFilterToggled) {
+            filterHandler(controlPanelFilterOptions.ACTIVE_PARAMETERS);
+          } else if (this.state.anyExperimentFilterToggled) {
+            filterHandler(controlPanelFilterOptions.ANY_EXPERIMENT_PARAMETERS);
+          } else if (this.state.anyProjectFilterToggled) {
+            filterHandler(controlPanelFilterOptions.ANY_PROJECT_PARAMETERS);
+          }
+        }
+      };
       switch (controlId) {
       case 'visualInstancesFilterBtn':
         if (!this.state.visualFilterToggled) {
@@ -670,7 +695,8 @@ define(function (require) {
             // disable itself (so cannot be untoggled), enable state vars and params, disable the rest
             false, true, true, false, false, false, false,
             // set visibility only to visual instances, state vars and params as the rest doesnt apply
-            true, true, true, false, false, false, false
+            true, true, true, false, false, false, false,
+            callback
           );
         }
         break;
@@ -688,7 +714,8 @@ define(function (require) {
             // whatever is toggled is disabled
             true, false, true, !activeExperimentToggleStatus, !this.state.anyExperimentFilterToggled, !this.state.anyProjectFilterToggled, activeExperimentToggleStatus,
             // set visibility only to buttons that apply
-            true, true, true, true, true, true, activeExperimentToggleStatus
+            true, true, true, true, true, true, activeExperimentToggleStatus,
+            callback
           );
         }
         break;
@@ -706,7 +733,8 @@ define(function (require) {
             // whatever is toggled is also disabled
             true, true, false, !activeExperimentToggleStatus, !this.state.anyExperimentFilterToggled, !this.state.anyProjectFilterToggled, false,
             // set visibility only to buttons that apply
-            true, true, true, true, true, true, false
+            true, true, true, true, true, true, false,
+            callback
           );
         }
         break;
@@ -724,7 +752,8 @@ define(function (require) {
             // whatever is toggled needs to be disabled except recorded which is independent
             true, !this.state.stateVarsFilterToggled, !this.state.paramsFilterToggled, false, true, true, recordedVisibility,
             // keep visibility as is for record filter, the rest always visible
-            true, true, true, true, true, true, recordedVisibility
+            true, true, true, true, true, true, recordedVisibility,
+            callback
           );
         }
         break;
@@ -739,8 +768,8 @@ define(function (require) {
             // enable everything except recording disabled is and disable itself (it can only be untoggled by clicking something else)
             !this.state.visualFilterToggled, !this.state.stateVarsFilterToggled, !this.state.paramsFilterToggled, true, false, true, false,
             // recorded never applies so hide (external stuff is always recorded)
-            true, true, true, true, true, true, recordingToggleStatus
-          );
+            true, true, true, true, true, true, recordingToggleStatus,
+            callback);
         }
         break;
       case 'anyProjectFilterBtn':
@@ -754,39 +783,14 @@ define(function (require) {
             // enable everything except recording disabled and disable itself (it can only be untoggled by clicking something else)
             !this.state.visualFilterToggled, !this.state.stateVarsFilterToggled, !this.state.paramsFilterToggled, true, true, false, false,
             // recorded is visible is state vars are selected but disabled (external stuff is always recorded)
-            true, true, true, true, true, true, recordingToggleStatus
-          );
+            true, true, true, true, true, true, recordingToggleStatus,
+            callback);
         }
         break;
       case 'recordedFilterBtn':
         // just flip the toggle status on click, this filter is independent, if it's enabled it can toggle/untoggle itself
-        this.state.recordedFilterToggled = !this.state.recordedFilterToggled;
-        this.forceUpdate();
+        this.setState({ recordedFilterToggled: !this.state.recordedFilterToggled }, callback);
         break;
-      }
-
-      // this will cause the control panel to refresh data based on injected filter handler
-      var filterHandler = this.props.filterHandler;
-      if (this.state.visualFilterToggled) {
-        filterHandler(controlPanelFilterOptions.VISUAL_INSTANCES);
-      } else if (this.state.stateVarsFilterToggled) {
-        if (this.state.activeExperimentFilterToggled && this.state.recordedFilterToggled) {
-          filterHandler(controlPanelFilterOptions.ACTIVE_RECORDED_STATE_VARIABLES);
-        } else if (this.state.activeExperimentFilterToggled && !this.state.recordedFilterToggled) {
-          filterHandler(controlPanelFilterOptions.ACTIVE_STATE_VARIABLES);
-        } else if (this.state.anyExperimentFilterToggled) {
-          filterHandler(controlPanelFilterOptions.ANY_EXPERIMENT_RECORDED_STATE_VARIABLES);
-        } else if (this.state.anyProjectFilterToggled) {
-          filterHandler(controlPanelFilterOptions.ANY_PROJECT_GLOBAL_STATE_VARIABLES);
-        }
-      } else if (this.state.paramsFilterToggled) {
-        if (this.state.activeExperimentFilterToggled) {
-          filterHandler(controlPanelFilterOptions.ACTIVE_PARAMETERS);
-        } else if (this.state.anyExperimentFilterToggled) {
-          filterHandler(controlPanelFilterOptions.ANY_EXPERIMENT_PARAMETERS);
-        } else if (this.state.anyProjectFilterToggled) {
-          filterHandler(controlPanelFilterOptions.ANY_PROJECT_PARAMETERS);
-        }
       }
     },
 
@@ -1588,22 +1592,19 @@ define(function (require) {
         // grab existing input
         var gridInput = this.state.data;
         var newGridInput = [];
-        var needsUpdate = false;
-        
+
         // remove unwanted instances from grid input
         for (var i = 0; i < instancePaths.length; i++) {
           for (var j = 0; j < gridInput.length; j++) {
-            if (instancePaths[i].indexOf(gridInput[j].path) == -1) {
-              var index = gridInput.indexOf(gridInput[j].path);
-              gridInput.splice(index,1);
-              needsUpdate = true;
+            if (instancePaths[i] != gridInput[j].path) {
+              newGridInput.push(gridInput[j]);
             }
           }
         }
 
         // set state to refresh grid
-        if (needsUpdate) {
-          this.setState({ data: gridInput });
+        if (gridInput.length != newGridInput.length) {
+          this.setState({ data: newGridInput });
         }
       }
     },
@@ -1681,7 +1682,7 @@ define(function (require) {
       GEPPETTO.off(null, null, this);
     },
 
-    setTab: function (filterTabOption){
+    setTab: function (filterTabOption, f){
       // only do something if builtin filters are being used
       if (this.props.useBuiltInFilters === true) {
         // default goes to visual instances
@@ -1689,11 +1690,13 @@ define(function (require) {
           filterTabOption = this.filterOptions.VISUAL_INSTANCES;
         }
 
-        this.setState({ filterOption: filterTabOption });
         var that = this;
-        setTimeout(function () {
+        this.setState({ filterOption: filterTabOption }, function () {
           that.refs.filterComponent.refreshToggleState();
-        }, 25);
+          if (typeof f !== 'undefined') {
+            return f();
+          }
+        });
       }
     },
 
@@ -1706,12 +1709,15 @@ define(function (require) {
         filterText = '';
       }
 
-      // set state this like this to avoid double refresh, open will trigger a refresh
-      this.state.filterOption = filterTabOption;
-
       // show control panel
-      this.open();
-      var that = this;
+      this.setState({ filterOption: filterTabOption }, function () {
+        // show control panel
+        this.open();
+        this.refs.filterComponent.refreshToggleState();
+        this.setTab(filterTabOption, (function () {
+          this.setFilter(filterText);
+        }).bind(this));
+      });
     },
 
     open: function () {
@@ -1740,243 +1746,272 @@ define(function (require) {
       filterElement[0].dispatchEvent(new Event('input', { bubbles: true }));
     },
 
-    resetControlPanel: function (columns, colMeta, controls, controlsConfig) {
-      // reset filter and wipe data
+    resetControlPanel: function (columns, colMeta, controls, controlsConfig, callback) {
+      // reset filter
       this.setFilter('');
-      this.clearData();
-
       // reset control panel parameters for display of tabular data
-      this.setColumns(columns);
-      this.setColumnMeta(colMeta);
-      this.setControlsConfig(controlsConfig);
-      this.setControls(controls);
+      this.setState({
+        data: [], columns: columns,
+        controls: controls,
+        columnMeta: colMeta,
+        controlsConfig: controlsConfig
+      }, callback);
     },
 
     filterOptionsHandler: function (value) {
       // set like this to avoid triggering an extra refresh
-      this.state.filterOption = value;
-      switch (value) {
-      case this.filterOptions.VISUAL_INSTANCES:
-        // displays actual instances
-        this.resetControlPanel(instancesCols, instancesColumnMeta, instancesControls, instancesControlsConfiguration);
+      this.setState({ filterOption: value }, function () {
+        switch (value) {
+        case this.filterOptions.VISUAL_INSTANCES:
+          // displays actual instances
+          this.resetControlPanel(instancesCols, instancesColumnMeta, instancesControls, instancesControlsConfiguration, function (){
 
-        // do filtering (always the same)
-        var visualInstances = [];
-        if (window.Project.getActiveExperiment() != undefined) {
-          visualInstances = GEPPETTO.ModelFactory.getAllInstancesWithCapability(GEPPETTO.Resources.VISUAL_CAPABILITY, window.Instances).map(
-            function (item) {
-              return {
-                path: item.getPath(),
-                name: item.getPath(),
-                type: [item.getType().getPath()],
-                projectId: window.Project.getId(),
-                experimentId: window.Project.getActiveExperiment().getId(),
-                getPath: function () {
-                  return this.path;
-                }
-              }
-            }
-          );
-        }
-
-        // set data (delay update to avoid race conditions with react dealing with new columns)
-        var that = this;
-        setTimeout(function () {
-          that.setData(visualInstances);
-        }, 5);
-        break;
-      case this.filterOptions.ACTIVE_STATE_VARIABLES:
-        // displays potential instances
-        this.resetControlPanel(stateVariablesCols, stateVariablesColMeta, stateVariablesControls, stateVariablesControlsConfig);
-
-        var potentialStateVarInstances = [];
-        if (window.Project.getActiveExperiment() != undefined) {
-          // take all potential state variables instances
-          var filteredPaths = GEPPETTO.ModelFactory.getAllPotentialInstancesOfMetaType('StateVariableType', undefined, true).filter(
-            function (item) {
-              // only include paths without stars (real paths)
-              return item.path.indexOf('*') == -1;
-            }
-          );
-          potentialStateVarInstances = filteredPaths.map(
-            function (item) {
-              return {
-                path: item.path,
-                name: item.path,
-                type: ['Model.common.StateVariable'],
-                projectId: window.Project.getId(),
-                experimentId: window.Project.getActiveExperiment().getId(),
-                getPath: function () {
-                  return this.path;
-                }
-              }
-            }
-          );
-        }
-
-        // set data (delay update to avoid race conditions with react dealing with new columns)
-        var that = this;
-        setTimeout(function () {
-          that.setData(potentialStateVarInstances);
-        }, 5);
-        break;
-      case this.filterOptions.ACTIVE_RECORDED_STATE_VARIABLES:
-        // displays actual instances
-        this.resetControlPanel(instancesColsWithoutType, instancesColumnMeta, instancesControls, instancesControlsConfiguration);
-
-        var recordedStateVars = [];
-        if (window.Project.getActiveExperiment() != undefined) {
-          /*
-           * show all state variable instances (means they are recorded)
-           * if experiment is completed, need to check that they have been watched
-           */
-
-          recordedStateVars = GEPPETTO.ModelFactory.getAllInstancesWithCapability(GEPPETTO.Resources.STATE_VARIABLE_CAPABILITY, window.Instances)
-            .filter(
-              function (instance) {
-                if (window.Project.getActiveExperiment().getStatus() == GEPPETTO.Resources.ExperimentStatus.COMPLETED) {
-                  if (instance.getPath() != "time") {
-                    return GEPPETTO.ExperimentsController.isLocalWatchedInstanceOrExternal(window.Project.id, window.Project.activeExperiment.id, instance.getPath());
-                  } else {
-                    return true;
+            // do filtering (always the same)
+            var visualInstances = [];
+            if (window.Project.getActiveExperiment() != undefined) {
+              visualInstances = GEPPETTO.ModelFactory.getAllInstancesWithCapability(GEPPETTO.Resources.VISUAL_CAPABILITY, window.Instances).map(
+                function (item) {
+                  return {
+                    path: item.getPath(),
+                    name: item.getPath(),
+                    type: [item.getType().getPath()],
+                    projectId: window.Project.getId(),
+                    experimentId: window.Project.getActiveExperiment().getId(),
+                    getPath: function () {
+                      return this.path;
+                    }
                   }
-                } else {
-                  return true;
                 }
+              );
+            }
+
+            // set data (delay update to avoid race conditions with react dealing with new columns)
+            var that = this;
+            setTimeout(function () {
+              that.setData(visualInstances);
+            }, 5);
+          });
+          break;
+        case this.filterOptions.ACTIVE_STATE_VARIABLES:
+          // displays potential instances
+          this.resetControlPanel(stateVariablesCols, stateVariablesColMeta, stateVariablesControls, stateVariablesControlsConfig, function () {
+
+            var potentialStateVarInstances = [];
+            if (window.Project.getActiveExperiment() != undefined) {
+              // take all potential state variables instances
+              var filteredPaths = GEPPETTO.ModelFactory.getAllPotentialInstancesOfMetaType('StateVariableType', undefined, true).filter(
+                function (item) {
+                  // only include paths without stars (real paths)
+                  return item.path.indexOf('*') == -1;
+                }
+              );
+              potentialStateVarInstances = filteredPaths.map(
+                function (item) {
+                  return {
+                    path: item.path,
+                    name: item.path,
+                    type: ['Model.common.StateVariable'],
+                    projectId: window.Project.getId(),
+                    experimentId: window.Project.getActiveExperiment().getId(),
+                    getPath: function () {
+                      return this.path;
+                    }
+                  }
+                }
+              );
+            }
+
+            // set data (delay update to avoid race conditions with react dealing with new columns)
+            var that = this;
+            setTimeout(function () {
+              that.setData(potentialStateVarInstances);
+            }, 5);
+          });
+          break;
+        case this.filterOptions.ACTIVE_RECORDED_STATE_VARIABLES:
+          // displays actual instances
+          this.resetControlPanel(instancesColsWithoutType, instancesColumnMeta, instancesControls, instancesControlsConfiguration, function () {
+
+            var recordedStateVars = [];
+            if (window.Project.getActiveExperiment() != undefined) {
+              /*
+               * show all state variable instances (means they are recorded)
+               * if experiment is completed, need to check that they have been watched
+               */
+
+              recordedStateVars = GEPPETTO.ModelFactory.getAllInstancesWithCapability(GEPPETTO.Resources.STATE_VARIABLE_CAPABILITY, window.Instances)
+                .filter(
+                  function (instance) {
+                    if (window.Project.getActiveExperiment().getStatus() == GEPPETTO.Resources.ExperimentStatus.COMPLETED) {
+                      if (instance.getPath() != "time") {
+                        return GEPPETTO.ExperimentsController.isLocalWatchedInstanceOrExternal(window.Project.id, window.Project.activeExperiment.id, instance.getPath());
+                      } else {
+                        return true;
+                      }
+                    } else {
+                      return true;
+                    }
+                  }
+                )
+                .map(
+                  function (item) {
+                    return {
+                      path: item.getPath(),
+                      name: item.getPath(),
+                      type: ['Model.common.StateVariable'],
+                      projectId: window.Project.getId(),
+                      experimentId: window.Project.getActiveExperiment().getId(),
+                      getPath: function () {
+                        return this.path;
+                      }
+                    }
+                  }
+                );
+            }
+
+            // set data (delay update to avoid race conditions with react dealing with new columns)
+            var that = this;
+            setTimeout(function () {
+              that.setData(recordedStateVars);
+            }, 5);
+          });
+          break;
+        case this.filterOptions.ANY_EXPERIMENT_RECORDED_STATE_VARIABLES:
+          // this will display potential instances with state variables col meta / controls
+          this.resetControlPanel(stateVariablesColsWithExperiment, stateVariablesColMeta, stateVariablesControls, stateVariablesControlsConfig, function () {
+
+            var projectStateVars = null;
+            if (window.Project.persisted) {
+              projectStateVars = GEPPETTO.ProjectsController.getProjectStateVariables(window.Project.getId());
+            } else {
+              projectStateVars = [].concat(...window.Project.experiments.map(function (exp) {
+                return exp.variables.map(function (v) {
+                  return {
+                    experimentName: exp.name,
+                    path: v,
+                    name: v,
+                    type: ['Model.common.StateVariable'],
+                    projectId: exp.parent.id,
+                    experimentId: exp.id,
+                    getPath: function () {
+                      return this.path;
+                    }
+                  }
+                })
+              }));
+            }
+
+
+            // set data (delay update to avoid race conditions with react dealing with new columns)
+            var that = this;
+            setTimeout(function () {
+              that.setData(projectStateVars);
+            }, 5);
+          });
+          break;
+        case this.filterOptions.ANY_PROJECT_GLOBAL_STATE_VARIABLES:
+          // this will display potential instances with state variables col meta / controls
+          this.resetControlPanel(stateVariablesColsWithProjectAndExperiment, stateVariablesColMeta, stateVariablesControls, stateVariablesControlsConfig, function () {
+
+            var globalStateVars = GEPPETTO.ProjectsController.getGlobalStateVariables(window.Project.getId(), false);
+
+            // set data (delay update to avoid race conditions with react dealing with new columns)
+            var that = this;
+            setTimeout(function () {
+              that.setData(globalStateVars);
+            }, 5);
+          });
+          break;
+        case this.filterOptions.ACTIVE_PARAMETERS:
+          // displays indexed parameters / similar to potential instances
+          this.resetControlPanel(paramsCols, parametersColMeta, parametersControls, parametersControlsConfig,function () {
+
+            var potentialParamInstances = [];
+            if (window.Project.getActiveExperiment() != undefined) {
+              // take all parameters potential instances
+              potentialParamInstances = GEPPETTO.ModelFactory.getAllPotentialInstancesOfMetaType('ParameterType', undefined, true).map(
+                function (item) {
+                  return {
+                    path: item.path,
+                    name: item.path.replace(/Model\.neuroml\./gi, ''),
+                    type: ['Model.common.Parameter'],
+                    projectId: window.Project.getId(),
+                    experimentId: window.Project.getActiveExperiment().getId(),
+                    getPath: function () {
+                      return this.path;
+                    }
+                  }
+                }
+              );
+            }
+
+            // set data (delay update to avoid race conditions with react dealing with new columns)
+            var that = this;
+            setTimeout(function () {
+              that.setData(potentialParamInstances);
+            }, 5);
+          });
+          break;
+        case this.filterOptions.ANY_EXPERIMENT_PARAMETERS:
+          // this will display potential instances with parameters col meta / controls
+          this.resetControlPanel(paramsColsWithExperiment, parametersColMeta, parametersControls, parametersControlsConfig, function () {
+
+            var projectEditedParameters = GEPPETTO.ProjectsController.getProjectParameters(window.Project.getId());
+
+            // add any parameters edited in the current experiment that haven't been fetched
+            var parametersDictionary = {};
+            for (var i = 0; i < projectEditedParameters.length; i++) {
+              // if matching project/experiment id add to dictionary
+              if (projectEditedParameters[i].projectId == window.Project.getId()
+                            && projectEditedParameters[i].experimentId == window.Project.getActiveExperiment().getId()) {
+                parametersDictionary[projectEditedParameters[i].path] = projectEditedParameters[i];
               }
-            )
-            .map(
-              function (item) {
-                return {
-                  path: item.getPath(),
-                  name: item.getPath(),
-                  type: ['Model.common.StateVariable'],
+            }
+
+            // loop through parameters current experiment state to check if any parameters have been edited
+            var localParamEdit = window.Project.getActiveExperiment().setParameters;
+            for (var key in localParamEdit) {
+              // query the other dictionary, anything not found add to projectEditedParameters in the same format
+              if (parametersDictionary[key] == undefined) {
+                projectEditedParameters.unshift({
+                  path: key,
+                  name: key,
+                  fetched_value: localParamEdit[key],
+                  unit: undefined,
+                  type: ['Model.common.Parameter'],
                   projectId: window.Project.getId(),
+                  projectName: window.Project.getName(),
                   experimentId: window.Project.getActiveExperiment().getId(),
+                  experimentName: window.Project.getActiveExperiment().getName(),
                   getPath: function () {
                     return this.path;
                   }
-                }
-              }
-            );
-        }
-
-        // set data (delay update to avoid race conditions with react dealing with new columns)
-        var that = this;
-        setTimeout(function () {
-          that.setData(recordedStateVars);
-        }, 5);
-        break;
-      case this.filterOptions.ANY_EXPERIMENT_RECORDED_STATE_VARIABLES:
-        // this will display potential instances with state variables col meta / controls
-        this.resetControlPanel(stateVariablesColsWithExperiment, stateVariablesColMeta, stateVariablesControls, stateVariablesControlsConfig);
-
-        var projectStateVars = GEPPETTO.ProjectsController.getProjectStateVariables(window.Project.getId());
-
-        // set data (delay update to avoid race conditions with react dealing with new columns)
-        var that = this;
-        setTimeout(function () {
-          that.setData(projectStateVars);
-        }, 5);
-        break;
-      case this.filterOptions.ANY_PROJECT_GLOBAL_STATE_VARIABLES:
-        // this will display potential instances with state variables col meta / controls
-        this.resetControlPanel(stateVariablesColsWithProjectAndExperiment, stateVariablesColMeta, stateVariablesControls, stateVariablesControlsConfig);
-
-        var globalStateVars = GEPPETTO.ProjectsController.getGlobalStateVariables(window.Project.getId(), false);
-
-        // set data (delay update to avoid race conditions with react dealing with new columns)
-        var that = this;
-        setTimeout(function () {
-          that.setData(globalStateVars);
-        }, 5);
-        break;
-      case this.filterOptions.ACTIVE_PARAMETERS:
-        // displays indexed parameters / similar to potential instances
-        this.resetControlPanel(paramsCols, parametersColMeta, parametersControls, parametersControlsConfig);
-
-        var potentialParamInstances = [];
-        if (window.Project.getActiveExperiment() != undefined) {
-          // take all parameters potential instances
-          potentialParamInstances = GEPPETTO.ModelFactory.getAllPotentialInstancesOfMetaType('ParameterType', undefined, true).map(
-            function (item) {
-              return {
-                path: item.path,
-                name: item.path.replace(/Model\.neuroml\./gi, ''),
-                type: ['Model.common.Parameter'],
-                projectId: window.Project.getId(),
-                experimentId: window.Project.getActiveExperiment().getId(),
-                getPath: function () {
-                  return this.path;
-                }
+                });
               }
             }
-          );
+
+            // set data (delay update to avoid race conditions with react dealing with new columns)
+            var that = this;
+            setTimeout(function () {
+              that.setData(projectEditedParameters);
+            }, 5);
+          });
+          break;
+        case this.filterOptions.ANY_PROJECT_PARAMETERS:
+          // this will display potential instances with parameters col meta / controls
+          this.resetControlPanel(paramsColsWithProjectAndExperiment, parametersColMeta, parametersControls, parametersControlsConfig, function () {
+
+            var globalEditedParameters = GEPPETTO.ProjectsController.getGlobalParameters(window.Project.getId(), false);
+
+            // set data (delay update to avoid race conditions with react dealing with new columns)
+            var that = this;
+            setTimeout(function () {
+              that.setData(globalEditedParameters);
+            }, 5);
+          });
+          break;
         }
-
-        // set data (delay update to avoid race conditions with react dealing with new columns)
-        var that = this;
-        setTimeout(function () {
-          that.setData(potentialParamInstances);
-        }, 5);
-        break;
-      case this.filterOptions.ANY_EXPERIMENT_PARAMETERS:
-        // this will display potential instances with parameters col meta / controls
-        this.resetControlPanel(paramsColsWithExperiment, parametersColMeta, parametersControls, parametersControlsConfig);
-
-        var projectEditedParameters = GEPPETTO.ProjectsController.getProjectParameters(window.Project.getId());
-
-        // add any parameters edited in the current experiment that haven't been fetched
-        var parametersDictionary = {};
-        for (var i = 0; i < projectEditedParameters.length; i++) {
-          // if matching project/experiment id add to dictionary
-          if (projectEditedParameters[i].projectId == window.Project.getId()
-                            && projectEditedParameters[i].experimentId == window.Project.getActiveExperiment().getId()) {
-            parametersDictionary[projectEditedParameters[i].path] = projectEditedParameters[i];
-          }
-        }
-
-        // loop through parameters current experiment state to check if any parameters have been edited
-        var localParamEdit = window.Project.getActiveExperiment().setParameters;
-        for (var key in localParamEdit) {
-          // query the other dictionary, anything not found add to projectEditedParameters in the same format
-          if (parametersDictionary[key] == undefined) {
-            projectEditedParameters.unshift({
-              path: key,
-              name: key,
-              fetched_value: localParamEdit[key],
-              unit: undefined,
-              type: ['Model.common.Parameter'],
-              projectId: window.Project.getId(),
-              projectName: window.Project.getName(),
-              experimentId: window.Project.getActiveExperiment().getId(),
-              experimentName: window.Project.getActiveExperiment().getName(),
-              getPath: function () {
-                return this.path;
-              }
-            });
-          }
-        }
-
-        // set data (delay update to avoid race conditions with react dealing with new columns)
-        var that = this;
-        setTimeout(function () {
-          that.setData(projectEditedParameters);
-        }, 5);
-        break;
-      case this.filterOptions.ANY_PROJECT_PARAMETERS:
-        // this will display potential instances with parameters col meta / controls
-        this.resetControlPanel(paramsColsWithProjectAndExperiment, parametersColMeta, parametersControls, parametersControlsConfig);
-
-        var globalEditedParameters = GEPPETTO.ProjectsController.getGlobalParameters(window.Project.getId(), false);
-
-        // set data (delay update to avoid race conditions with react dealing with new columns)
-        var that = this;
-        setTimeout(function () {
-          that.setData(globalEditedParameters);
-        }, 5);
-        break;
-      }
+      });
     },
 
     isOpen: function () {
