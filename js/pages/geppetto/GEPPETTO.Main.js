@@ -12,6 +12,7 @@ define(function (require) {
     var React = require('react');
     var path = require('path');
     var urljoin = require('url-join');
+    var InfoModal = require('../../components/controls/modals/InfoModal');
     var ProjectNode = require('../../geppettoProject/model/ProjectNode');
     var ReactDOM = require('react-dom');
 
@@ -130,11 +131,45 @@ define(function (require) {
           var allowedTime = 2, timeOut = 4;
           if (!GEPPETTO.Main.disconnected) {
             GEPPETTO.Main.idleTime = GEPPETTO.Main.idleTime + 1;
-            // user isn't there or didn't click yes, disconnect
+            // first time check, asks if user is still there
+            if (GEPPETTO.Main.idleTime > allowedTime) { // 5 minutes
+
+              // TODO Matteo: Make a function to create a custom Info modal inside ModalFactory and use it from here.
+              var infoFactory = React.createFactory(InfoModal);
+              ReactDOM.render(infoFactory({ show: true, keyboard: false }), document.getElementById('modal-region'));
+
+              $('#infomodal-title').html("Zzz");
+              $('#infomodal-text').html(GEPPETTO.Resources.IDLE_MESSAGE);
+              $('#infomodal-btn').html("Yes");
+
+              $('#infomodal-btn').html("Yes").click(function () {
+                $('#infomodal').modal('hide');
+                GEPPETTO.Main.idleTime = 0;
+
+                // unbind click event so we can reuse same modal for other alerts
+                $('#infomodal-btn').unbind('click');
+              });
+            }
+
+            // second check, user isn't there or didn't click yes, disconnect
             if (GEPPETTO.Main.idleTime > timeOut) {
+
+              // TODO Matteo: Make a function to create a custom Info modal inside ModalFactory and use it from here.
+              var infoFactory = React.createFactory(InfoModal);
+              ReactDOM.render(infoFactory({
+                show: true,
+                keyboard: false,
+                title: "",
+                text: GEPPETTO.Resources.DISCONNECT_MESSAGE,
+              }), document.getElementById('modal-region'));
+
+              $('#infomodal-footer').remove();
+              $('#infomodal-header').remove();
+
               GEPPETTO.Main.idleTime = 0;
               GEPPETTO.Main.disconnected = true;
               GEPPETTO.MessageSocket.close();
+
             }
           }
         }

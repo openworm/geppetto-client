@@ -81,7 +81,6 @@ define(function (require) {
   GEPPETTO.SceneController = new(require('../../components/interface/3dCanvas/SceneController'))();
 
   require('../../common/GEPPETTO.Utility')(GEPPETTO);
-  require('../../components/widgets/MenuManager')(GEPPETTO);
   require('../../communication/MessageSocket')(GEPPETTO);
   require('../../communication/GEPPETTO.GlobalHandler')(GEPPETTO);
 
