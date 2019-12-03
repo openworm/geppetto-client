@@ -1050,7 +1050,7 @@ define(function (require) {
               if (JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements) {
                 instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements[0].initialValue.data;
                 continue;
-              }else if (JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.data){
+              } else if (JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.data) {
                 instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.data;
                 continue;
               }
