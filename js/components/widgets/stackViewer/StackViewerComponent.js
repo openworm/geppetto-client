@@ -348,7 +348,7 @@ define(function (require) {
       while (GEPPETTO.SceneController.getSelection()[0] != undefined) {
         GEPPETTO.SceneController.getSelection()[0].deselect();
       }
-      $.each(this.state.stack, function (i, item) {
+      $.each([this.state.stack[0]], function (i, item) {
         (function (i, that, shift) {
           var shift = GEPPETTO.isKeyPressed("shift");
           var image = that.state.serverUrl.toString() + '?wlz=' + item + '&sel=0,255,255,255&mod=zeta&fxp=' + that.props.fxp.join(',') + '&scl=' + that.props.scl.toFixed(1) + '&dst=' + Number(that.state.dst).toFixed(1) + '&pit=' + Number(that.state.pit).toFixed(0) + '&yaw=' + Number(that.state.yaw).toFixed(0) + '&rol=' + Number(that.state.rol).toFixed(0);
@@ -429,7 +429,7 @@ define(function (require) {
         var i, j, result;
         var that = this;
         var callX = that.state.posX.toFixed(0), callY = that.state.posY.toFixed(0);
-        $.each(this.state.stack, function (i, item) {
+        $.each([this.state.stack[0]], function (i, item) {
           (function (i, that, shift) {
             if (i == 0) {
               that.state.loadingLabels = true;
