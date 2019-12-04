@@ -128,6 +128,7 @@ class MenuSection extends React.Component {
         <Button
           style={buttonClasses}
           size='small'
+          id={this.props.button.label}
           variant="contained"
           aria-describedby={id}
           onClick={this.handleClick}

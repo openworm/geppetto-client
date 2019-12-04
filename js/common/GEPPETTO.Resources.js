@@ -471,6 +471,8 @@ export default function (GEPPETTO) {
     INSTANCE_NODE: "Instance",
     ARRAY_INSTANCE_NODE: "ArrayInstance",
     ARRAY_ELEMENT_INSTANCE_NODE: "ArrayElementInstance",
+    SIMPLE_INSTANCE_NODE: "SimpleInstance",
+    SIMPLE_CONNECTION_INSTANCE_NODE: "SimpleConnectionInstance",
     // COMMON LIBRARY
     PARAMETER: "Parameter",
     STATE_VARIABLE: "StateVariable",
