@@ -124,7 +124,7 @@ define(function (require) {
      * @private
      */
     getSelector: function (name) {
-      return $(this.root.selector + " ." + name);
+      return this.root.find(" ." + name);
     },
 
     getView: function (){
