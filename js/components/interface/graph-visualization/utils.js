@@ -46,8 +46,10 @@ export function getDarkerColor (col, amt = -30) {
   
   } else if (col.startsWith('rgba')) {
     col = col.replace('rgba', '').replace('(', '').replace(')', '').split(',')
+    col = col.map(c => +c)
   } else if (col.startsWith('rgb')) {
     col = col.replace('rgb', '').replace('(', '').replace(')', '').split(',').push[1]
+    col = col.map(c => +c)
   } else {
     throw "Color format error. Accepted formats: #dddddd, rgba(ddd,ddd,ddd,f), rgb(ddd,ddd,ddd). Check parameters on GeppettoGraphVisualization";
   }
