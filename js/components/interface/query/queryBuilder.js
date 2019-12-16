@@ -1047,15 +1047,8 @@ define(function (require) {
               continue;
             }
             if (args.columnsPresent[counter] == "images") {
-              if (record[args.columnsPresent[counter]].indexOf('{') > -1){
-                if (JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements) {
-                  instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements[0].initialValue.data;
-                  continue;
-                } else if (JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.data) {
-                  instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.data;
-                  continue;
-                }
-              }
+              instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements[0].initialValue.data;
+              continue;
             }
             instance[args.columnsPresent[counter]] = record[args.columnsPresent[counter]];
           }

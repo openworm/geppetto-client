@@ -348,7 +348,7 @@ define(function (require) {
       while (GEPPETTO.SceneController.getSelection()[0] != undefined) {
         GEPPETTO.SceneController.getSelection()[0].deselect();
       }
-      $.each([this.state.stack[0]], function (i, item) {
+      $.each(this.state.stack, function (i, item) {
         (function (i, that, shift) {
           var shift = GEPPETTO.isKeyPressed("shift");
           var image = that.state.serverUrl.toString() + '?wlz=' + item + '&sel=0,255,255,255&mod=zeta&fxp=' + that.props.fxp.join(',') + '&scl=' + that.props.scl.toFixed(1) + '&dst=' + Number(that.state.dst).toFixed(1) + '&pit=' + Number(that.state.pit).toFixed(0) + '&yaw=' + Number(that.state.yaw).toFixed(0) + '&rol=' + Number(that.state.rol).toFixed(0);
@@ -429,7 +429,7 @@ define(function (require) {
         var i, j, result;
         var that = this;
         var callX = that.state.posX.toFixed(0), callY = that.state.posY.toFixed(0);
-        $.each([this.state.stack[0]], function (i, item) {
+        $.each(this.state.stack, function (i, item) {
           (function (i, that, shift) {
             if (i == 0) {
               that.state.loadingLabels = true;
@@ -443,33 +443,39 @@ define(function (require) {
               success: function (data) {
                 result = data.trim().split(':')[1].trim().split(' ');
                 if (result !== '') {
-                  for (j in result) {
-                    if (result[j].trim() !== '') {
-                      var index = Number(result[j]);
-                      if (i !== 0 || index !== 0) { // don't select template
-                        if (index == 0) {
-                          if (!shift) {
-                            that.state.objects.push(that.state.label[i]);
-                          }
-                        } else {
-                          if (typeof that.props.templateDomainIds !== 'undefined' && typeof that.props.templateDomainNames !== 'undefined' && typeof that.props.templateDomainIds[index] !== 'undefined' && typeof that.props.templateDomainNames[index] !== 'undefined' && that.props.templateDomainNames[index] !== null) {
-                            that.state.objects.push(that.props.templateDomainNames[index]);
-                            break;
+                  var currentPosition = that.renderer.plugins.interaction.mouse.getLocalPosition(that.stack);
+                  if (callX == currentPosition.x.toFixed(0) && callY == currentPosition.y.toFixed(0)) {
+                    for (j in result) {
+                      if (result[j].trim() !== '') {
+                        var index = Number(result[j]);
+                        if (i !== 0 || index !== 0) { // don't select template
+                          if (index == 0) {
+                            if (!shift) {
+                              that.state.objects.push(that.state.label[i]);
+                            }
+                          } else {
+                            if (typeof that.props.templateDomainIds !== 'undefined' && typeof that.props.templateDomainNames !== 'undefined' && typeof that.props.templateDomainIds[index] !== 'undefined' && typeof that.props.templateDomainNames[index] !== 'undefined' && that.props.templateDomainNames[index] !== null) {
+                              that.state.objects.push(that.props.templateDomainNames[index]);
+                              break;
+                            }
                           }
                         }
                       }
                     }
-                  }
-                  var list = $.unique(that.state.objects).sort();
-                  var objects = '';
-                  if (shift) {
-                    objects = 'Click to add: ';
-                  }
-                  for (j in list) {
-                    objects = objects + list[j] + '\n';
-                  }
-                  if (objects !== '' && i == 0) {
-                    that.setHoverText(callX,callY,list[0]);
+                    var list = $.unique(that.state.objects).sort();
+                    var objects = '';
+                    if (shift) {
+                      objects = 'Click to add: ';
+                    }
+                    for (j in list) {
+                      objects = objects + list[j] + '\n';
+                    }
+                    if (objects !== '') {
+                      that.setStatusText(objects);
+                    }
+                  } else if (i == 0) {
+                    that.state.loadingLabels = false;
+                    that.onHoverEvent();
                   }
                 }
                 // update slice view
@@ -486,7 +492,6 @@ define(function (require) {
             });
           })(i, that);
         });
-        that.state.loadingLabels = false;
       }
     },
 
@@ -891,16 +896,6 @@ define(function (require) {
     },
 
     setStatusText: function (text) {
-      this.state.buffer[-1].x = (-this.stage.position.x + 35);
-      this.state.buffer[-1].y = (-this.stage.position.y + 8);
-      this.state.buffer[-1].text = text;
-      this.state.text = text;
-      this.state.txtUpdated = Date.now();
-    },
-    
-    setHoverText: function (x,y,text) {
-      this.state.buffer[-1].x = -this.stage.position.x + -10 + (this.stack.parent.position.x + (this.stack.position.x * this.disp.scale.x)) + (Number(x) * this.disp.scale.x);
-      this.state.buffer[-1].y = -this.stage.position.y + 15 + (this.stack.parent.position.y + (this.stack.position.y * this.disp.scale.y)) + (Number(y) * this.disp.scale.y);
       this.state.buffer[-1].text = text;
       this.state.text = text;
       this.state.txtUpdated = Date.now();
