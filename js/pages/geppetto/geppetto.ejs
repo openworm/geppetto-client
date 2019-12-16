@@ -45,7 +45,10 @@ $content
 
 
 <div id="mainContainer">
-	<div id="loadingText" style="text-align:center; font-family: consolas; margin-top: 50px;} ">LOADING... [~3MB]</div>
+	<div id="loadingText" style="text-align:center; font-family: consolas; margin-top: 50px;} ">
+		<img src="geppetto/build/loadingSpinner.gif" alt="" onerror='document.getElementById("loadingMessage").style.display="block"' >
+		<span id="loadingMessage" style="display : none" >LOADING... [~3MB]</span>
+	</div>
     <div id="controls" class="noSelection">
 		<div id="DownloadProjectButton" class="row"></div>
         <div id="SaveButton" class="row"></div>
