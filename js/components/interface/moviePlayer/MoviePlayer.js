@@ -8,7 +8,7 @@ define(function (require) {
    * Creates a component using react-player
    */
   return class MoviePlayer extends AbstractComponent {
-
+ 
     constructor (props) {
       super(props);
       this.state = {

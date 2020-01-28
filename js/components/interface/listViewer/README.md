@@ -238,3 +238,24 @@ const conf = [
   }
 ];
 ```
+
+---
+
+## Customize Filter Component
+
+```javascript
+class CustomFilter extends Component {
+  render() {
+    return <h3>Do 🧙‍♀️<h3/>
+  }
+}
+```
+
+```javascript
+render () {
+    return <ListViewer
+      {...}
+      customComponents={{ Filter: CustomFilter }}
+    />
+  }
+```

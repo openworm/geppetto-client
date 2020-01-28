@@ -219,7 +219,9 @@ define(function (require) {
           .then(function (blob) {
             FileSaver.saveAs(blob, zipName);
           });
-      }
+      },
+
+      
     };
 
     /**
@@ -242,7 +244,11 @@ define(function (require) {
         });
       };
     }
+
+    
   };
 
 
 });
+
+

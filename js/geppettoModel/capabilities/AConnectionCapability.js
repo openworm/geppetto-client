@@ -7,38 +7,38 @@
  * @author Matteo Cantarelli
  */
 
-define(['jquery'], function (require) {
-  return {
-    capabilityId: 'ConnectionCapability',
-    A: null,
-    B: null,
 
-    /**
-     * Get A
-     */
-    getA: function (){
-      return this.A;
-    },
+export default {
+  capabilityId: 'ConnectionCapability',
+  A: null,
+  B: null,
 
-    /**
-     * Get B
-     */
-    getB: function (){
-      return this.B;
-    },
+  /**
+   * Get A
+   */
+  getA: function (){
+    return this.A;
+  },
 
-    /**
-     * Set A
-     */
-    setA: function (a){
-      this.A = a;
-    },
+  /**
+   * Get B
+   */
+  getB: function (){
+    return this.B;
+  },
 
-    /**
-     * Set B
-     */
-    setB: function (b){
-      this.B = b;
-    }
+  /**
+   * Set A
+   */
+  setA: function (a){
+    this.A = a;
+  },
+
+  /**
+   * Set B
+   */
+  setB: function (b){
+    this.B = b;
   }
-});
+}
+

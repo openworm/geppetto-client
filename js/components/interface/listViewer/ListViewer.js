@@ -267,6 +267,7 @@ export default class ListViewer extends React.Component {
 
   render () {
     window.conf = this.columnConfiguration;
+    const customComponents = this.props.customComponents ? this.props.customComponents : {}
     return <section className="listviewer">
       <Griddle
         data={this.getData()}
@@ -274,7 +275,7 @@ export default class ListViewer extends React.Component {
           ? [plugins.LocalPlugin, plugins.PositionPlugin({})] 
           : [plugins.LocalPlugin]
         }
-        components={{ Layout: this.getLayout() }}
+        components={{ Layout: this.getLayout(), ...customComponents }}
       >
         <RowDefinition>
           {

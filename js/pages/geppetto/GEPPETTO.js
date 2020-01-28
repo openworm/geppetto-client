@@ -68,10 +68,10 @@ define(function (require) {
 
   _.extend(GEPPETTO, Backbone.Events);
 
-  require('../../common/GEPPETTO.Resources')(GEPPETTO);
+  require('../../common/GEPPETTO.Resources').default(GEPPETTO);
   require('../../common/GEPPETTO.ViewController')(GEPPETTO);
   require('../../common/GEPPETTO.CommandController')(GEPPETTO);
-  require('./GEPPETTO.Events')(GEPPETTO);
+  require('./GEPPETTO.Events').default(GEPPETTO);
   require('../../common/GEPPETTO.UserController')(GEPPETTO);
   require('./GEPPETTO.Flows')(GEPPETTO);
   require('../../common/GEPPETTO.ScriptRunner')(GEPPETTO);
@@ -84,14 +84,14 @@ define(function (require) {
   require('../../communication/MessageSocket')(GEPPETTO);
   require('../../communication/GEPPETTO.GlobalHandler')(GEPPETTO);
 
-  GEPPETTO.Manager = new(require('../../common/Manager'))();
+  GEPPETTO.Manager = new(require('../../common/Manager').default)();
 
   require('../../communication/MessageHandler')(GEPPETTO);
   require('./G')(GEPPETTO);
   require('./GEPPETTO.Main')(GEPPETTO);
   require("../../components/widgets/includeWidget")(GEPPETTO);
   require('../../geppettoProject/ProjectFactory')(GEPPETTO);
-  require('../../geppettoModel/ModelFactory')(GEPPETTO);
+  require('../../geppettoModel/ModelFactory').default(GEPPETTO);
   require('../../geppettoProject/ExperimentsController')(GEPPETTO);
   require('../../geppettoModel/QueriesController')(GEPPETTO);
   require('../../geppettoProject/ProjectsController')(GEPPETTO);
