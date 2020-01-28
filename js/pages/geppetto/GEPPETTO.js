@@ -93,7 +93,7 @@ define(function (require) {
   require('../../geppettoProject/ProjectFactory')(GEPPETTO);
   require('../../geppettoModel/ModelFactory').default(GEPPETTO);
   require('../../geppettoProject/ExperimentsController')(GEPPETTO);
-  require('../../geppettoModel/QueriesController')(GEPPETTO);
+  require('../../common/QueriesController')(GEPPETTO);
   require('../../geppettoProject/ProjectsController')(GEPPETTO);
 
   return GEPPETTO;
