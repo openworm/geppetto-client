@@ -17,12 +17,12 @@ module.exports = function (env) {
     plugins: [
       new MiniCssExtractPlugin(),
       new HtmlWebPackPlugin({
-        template: "./src/index.html",
+        template: "./showcase/index.html",
         filename: "./index.html"
       })
     ],
     
-    entry: "./src/index.js",
+    entry: "./showcase/index.js",
  
     module: {
       rules: [
