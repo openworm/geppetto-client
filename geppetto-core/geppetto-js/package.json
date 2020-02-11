@@ -1,0 +1,28 @@
+{
+  "name": "@geppettoengine/geppetto-js",
+  "version": "0.0.1",
+  "description": "Geppetto js common library. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
+  "repository": "http://git.geppetto.org",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^25.1.0",
+    "eslint": "^6.0.1",
+    "jest": "^24.9.0"
+  },
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "compile": {
+      "exclude": [
+        "node_modules"
+      ]
+    }
+  }
+}

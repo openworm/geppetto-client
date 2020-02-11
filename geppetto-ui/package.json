@@ -1,0 +1,49 @@
+{
+  "name": "@geppettoengine/geppetto-ui",
+  "version": "0.0.1",
+  "description": "Geppetto UI components. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
+  "repository": "http://git.geppetto.org",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "griddle-react": "^1.13.1",
+    "plotly.js": "^1.42.5",
+    "prop-types": "latest",
+    "react": "^16.8.6",
+    "react-color": "^2.17.3",
+    "react-dnd": "^7.7.0",
+    "react-dnd-html5-backend": "^7.0.2",
+    "react-dom": "^16.8.6",
+    "react-dom-factories": "^1.0.2",
+    "react-dropzone": "^8.0.3",
+    "react-fontawesome": "^1.6.1",
+    "react-force-graph": "^1.26.2",
+    "react-jsonschema-form": "^1.0.6",
+    "react-lazy-load": "^3.0.13",
+    "react-modal": "^3.8.1",
+    "react-overlays": "^0.8.0",
+    "react-player": "^0.18.0",
+    "react-plotly.js": "^2.3.0",
+    "react-rnd": "^7.3.0",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.0",
+    "react-slick": "^0.23.2",
+    "react-sortable-tree": "^2.6.2",
+    "react-tabtab": "^2.0.0",
+    "remarkable": "^1.7.3"
+  },
+  "devDependencies": {
+    "eslint": "^6.0.1",
+    "babel-eslint": "^10.0.1"
+  },
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "compile": {
+      "exclude": [
+        "node_modules"
+      ]
+    }
+  }
+}

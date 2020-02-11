@@ -13,7 +13,7 @@ node/
 *~
 .imdone/
 /.externalToolBuilders/
-
+ 
 #WormSim specific stuff
 *.css-e
 *.less-e
@@ -32,3 +32,4 @@ org.geppetto.simulation/
 
 # redis cache files
 *.rdb
+build

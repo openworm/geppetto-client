@@ -1,11 +1,10 @@
-[![Build Status](https://travis-ci.org/openworm/org.geppetto.frontend.png?branch=master)](https://travis-ci.org/openworm/org.geppetto.frontend)
+[![Build Status](https://travis-ci.org/openworm/geppetto-application.png?branch=development)](https://travis-ci.org/openworm/geppetto-application)
 
 <p align="center">
   <img src="https://github.com/tarelli/bucket/blob/master/geppetto%20logo.png?raw=true" alt="Geppetto logo"/>
 </p>
 
-# Geppetto Client
+# Geppetto Sample Lean Application
 
-This is the client library of Geppetto which includes all the frontend components and widgets, the WebSocket API implementation to talk to the backend and all the infrastructure to manage the Geppetto Model in Javascript.
+This repository contains a sample application built using Geppetto. If you want to create a new Geppetto application this is your template and starting point, for documentation see [here](http://docs.geppetto.org/en/latest/build.html).
 
-For information about how this fits into [Geppetto](http://www.geppetto.org/) refer to the umbrella project [org.geppetto](https://github.com/openworm/org.geppetto) on GitHub.
