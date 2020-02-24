@@ -483,6 +483,7 @@
 	text-align: center;
 	color: white;
 	clear: both;
+	position : relative;
 }
 
 #querybuilder .query-results-slick {
@@ -524,4 +525,34 @@
 
 #hide {
 	display: none;
+}
+
+.query-results-checkbox {
+  bottom : 0px;
+  right : 0px;
+  position : absolute;
+}
+
+.loader {
+  position : absolute;
+  bottom : 0;
+  right : 0;
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 16px;
+  height: 16px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
