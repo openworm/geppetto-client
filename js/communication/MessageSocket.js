@@ -30,9 +30,23 @@ define(function (require) {
       // flag used to connect using ws protocol if wss failed
       failsafe: false,
 
+      // vars used for reconnection
+      attempts: 0,
+      host: undefined,
+      projectId: undefined,
+      lostConnectionId: undefined,
+      reconnectionLimit: 10,
+      autoReconnectInterval: 5 * 1000,
+      socketStatus: GEPPETTO.Resources.SocketStatus.CLOSE,
+
       connect: function (host) {
+        var that = this;
+        if (GEPPETTO.MessageSocket.socket !== null) {
+          delete GEPPETTO.MessageSocket.socket;
+        }
         if ('WebSocket' in window) {
           GEPPETTO.MessageSocket.socket = new WebSocket(host);
+          GEPPETTO.MessageSocket.host = host;
           GEPPETTO.MessageSocket.socket.binaryType = "arraybuffer";
         } else if ('MozWebSocket' in window) {
           GEPPETTO.MessageSocket.socket = new MozWebSocket(host);
@@ -41,16 +55,44 @@ define(function (require) {
           return;
         }
 
-        GEPPETTO.MessageSocket.socket.onopen = function () {
+        GEPPETTO.MessageSocket.socket.onopen = function (e) {
           GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_OPENED, true);
 
-          // attach the handlers once socket is opened
-          messageHandlers.push(GEPPETTO.MessageHandler);
-          messageHandlers.push(GEPPETTO.GlobalHandler);
+          /*
+           * attach the handlers once socket is opened on the first connection
+           * differently handle the reconnection scenario
+           */
+          if (messageHandlers.length > 0) {
+            GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_PROJECT);
+            var parameters = {};
+            parameters["connectionID"] = GEPPETTO.MessageSocket.lostConnectionId;
+            parameters["projectId"] = GEPPETTO.MessageSocket.projectId;
+            GEPPETTO.MessageSocket.send("reconnect", parameters);
+            GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+          } else {
+            messageHandlers.push(GEPPETTO.MessageHandler);
+            messageHandlers.push(GEPPETTO.GlobalHandler);
+          }
+          GEPPETTO.MessageSocket.lostConnectionId = undefined;
+
+          // Reset the counter for reconnection
+          GEPPETTO.MessageSocket.attempts = 0;
+          GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.OPEN;
+          console.log("%c WebSocket Status - Opened ", 'background: #444; color: #bada55')
         };
 
-        GEPPETTO.MessageSocket.socket.onclose = function () {
-          GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
+        GEPPETTO.MessageSocket.socket.onclose = function (e) {
+          switch (e.code) {
+          case 1000:
+            GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+            GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
+            break;
+          default:
+            if (GEPPETTO.MessageSocket.lostConnectionId === undefined) {
+              GEPPETTO.MessageSocket.lostConnectionId = GEPPETTO.MessageSocket.getClientID();
+            }
+            GEPPETTO.MessageSocket.reconnect(e);
+          }
         };
 
         GEPPETTO.MessageSocket.socket.onmessage = function (msg) {
@@ -66,14 +108,14 @@ define(function (require) {
 
             // otherwise, for a text message, parse it and notify listeners
           } else {
-            // a non compresed message
+            // a non compressed message
             parseAndNotify(messageData);
           }
 
         };
 
         // Detects problems when connecting to Geppetto server
-        GEPPETTO.MessageSocket.socket.onerror = function (evt) {
+        GEPPETTO.MessageSocket.socket.onerror = function (e) {
           var message = GEPPETTO.Resources.SERVER_CONNECTION_ERROR;
           /*
            * Attempt to connect using ws first time wss fails,
@@ -84,15 +126,57 @@ define(function (require) {
             GEPPETTO.MessageSocket.failsafe = true;
             GEPPETTO.MessageSocket.connect(GEPPETTO.MessageSocket.protocol + window.location.host + '/' + GEPPETTO_CONFIGURATION.contextPath + '/GeppettoServlet');
           } else {
-            GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, message);
+            switch (e.code) {
+            case 'ECONNREFUSED':
+              console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
+              GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, true);
+              // GEPPETTO.MessageSocket.reconnect(e);
+              break;
+            case undefined:
+              console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
+              GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_RECONNECTION, true);
+              break;
+            default:
+              console.log("%c WebSocket Status - Closed ", 'background: #000; color: red');
+              GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+              GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, message);
+              break;
+            }
           }
         };
+      },
+
+      /**
+       * Attempt to reconnect to the backend
+       */
+      reconnect: function (e) {
+        var that = this;
+        if (GEPPETTO.MessageSocket.attempts < GEPPETTO.MessageSocket.reconnectionLimit) {
+          GEPPETTO.MessageSocket.attempts++;
+          GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.RECONNECTING;
+          console.log(`WebSocket Status - retry in ${GEPPETTO.MessageSocket.autoReconnectInterval}ms`, e);
+          setTimeout(function () {
+            console.log("%c WebSocket Status - reconnecting... ", 'background: #444; color: #bada55');
+            GEPPETTO.MessageSocket.connect(that.host);
+          }, this.autoReconnectInterval);
+        } else {
+          GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+          GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
+          GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, GEPPETTO.Resources.SERVER_CONNECTION_ERROR);
+          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+        }
       },
 
       /**
        * Sends messages to the server
        */
       send: function (command, parameter, callback) {
+        if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.RECONNECTING && command !== "reconnect") {
+          GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR,
+            "Websocket connection currently not available, wait for reconnection and try again.");
+          GEPPETTO.trigger('stop_spin_logo');
+          return;
+        }
         var requestID = this.createRequestID();
 
         // if there's a script running let it know the requestID it's using to send one of it's commands
@@ -172,6 +256,14 @@ define(function (require) {
        */
       setClientID: function (id) {
         clientID = id;
+      },
+
+
+      /**
+       * Gets the id of the client
+       */
+      getClientID: function () {
+        return clientID;
       },
 
       /**

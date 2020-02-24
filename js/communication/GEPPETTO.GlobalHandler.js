@@ -18,7 +18,8 @@ function GlobalHandler (GEPPETTO) {
           DATASOURCE_FETCHED: "data_source_results_fetched",
           SERVER_AVAILABLE: "server_available",
           SERVER_UNAVAILABLE: "server_unavailable",
-          USER_PRIVILEGES : "user_privileges"
+          USER_PRIVILEGES : "user_privileges",
+          RECONNECTION_ERROR: "reconnection_error"
         };
 
   var messageHandler
@@ -28,7 +29,7 @@ function GlobalHandler (GEPPETTO) {
   messageHandler[messageTypes.CLIENT_ID] = function (payload) {
     GEPPETTO.MessageSocket.setClientID(payload.clientID);
   };
-        
+
   messageHandler[messageTypes.USER_PRIVILEGES] = function (payload) {
     var user_privileges = JSON.parse(payload.user_privileges);
     GEPPETTO.UserController.setUserPrivileges(user_privileges);
@@ -86,7 +87,7 @@ function GlobalHandler (GEPPETTO) {
   messageHandler[messageTypes.SCRIPT_FETCHED] = function (payload) {
     GEPPETTO.ScriptRunner.runScript(payload.script_fetched);
   };
-        
+
   messageHandler[messageTypes.DATASOURCE_FETCHED] = function (payload) {
     var message = JSON.parse(payload.data_source_results_fetched);
     GEPPETTO.Spotlight.updateDataSourceResults(message.data_source_name,JSON.parse(message.results));
@@ -96,6 +97,13 @@ function GlobalHandler (GEPPETTO) {
   messageHandler[messageTypes.SERVER_AVAILABLE] = function (payload) {
     GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.SERVER_AVAILABLE, payload.message);
     GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+  };
+
+  messageHandler[messageTypes.RECONNECTION_ERROR] = function (payload) {
+    GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.RECONNECTION_ERROR, payload.message);
+    GEPPETTO.MessageSocket.SocketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
   };
 
   GEPPETTO.GlobalHandler

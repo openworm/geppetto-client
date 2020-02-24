@@ -51,7 +51,13 @@ function MessageHandler (GEPPETTO) {
 
   messageHandler[messageTypes.PROJECT_LOADED] = function (payload) {
     var message = JSON.parse(payload.project_loaded);
-    GEPPETTO.Manager.loadProject(message.project, message.persisted);
+    if (GEPPETTO.MessageSocket.projectId === undefined) {
+      GEPPETTO.MessageSocket.projectId = message.project.id;
+      GEPPETTO.Manager.loadProject(message.project, message.persisted);
+    } else {
+      console.log("Project reloaded after reconnection.");
+      GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    }
   };
 
   messageHandler[messageTypes.GET_DROPBOX_TOKEN] = function (payload) {
@@ -279,5 +285,3 @@ function MessageHandler (GEPPETTO) {
 // Compatibility with new imports and old require syntax
 MessageHandler.default = MessageHandler;
 module.exports = MessageHandler;
-
-
