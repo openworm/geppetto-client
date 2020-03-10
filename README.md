@@ -16,4 +16,4 @@ Geppetto's showcase of components & features
 
 # Geppetto UI
 
-The next generation of Geppetto Client (work in progress)
+The UI components of Geppetto Client (work in progress)
