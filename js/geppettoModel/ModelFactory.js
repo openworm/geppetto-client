@@ -57,6 +57,15 @@ export default function (GEPPETTO) {
 
       /**
        * Creates and populates Geppetto model
+       */
+      cleanModel: function() {
+        this.allPaths = [];
+        this.allStaticVarsPaths = {};
+        this.allPathsIndexing = [];
+      },
+
+      /**
+       * Creates and populates Geppetto model
        *
        * @param jsonModel
        * @param storeRaw - store the raw and object models in the model factory

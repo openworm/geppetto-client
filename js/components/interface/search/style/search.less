@@ -1,0 +1,85 @@
+@import "../../../../../style/less/components/colors";
+
+#searchInput {
+    top: 15%;
+    left: 10%;
+    width: 80%;
+    padding: 12px 20px 12px 20px;
+    margin: 10px 10px 10px 10px;
+    border-radius: 25px;
+    box-sizing: border-box;
+    font-size: 22px;
+    z-index: 1;
+    position: absolute;
+}
+
+#filterIcon {
+    position: absolute;
+    top: 15%;
+    left: 88%;
+    font-size: 25px;
+    margin-top: 25px;
+    margin-left: 5px;
+    color: #11bffe;
+    cursor: pointer;
+    z-index: 5;
+}
+
+#closeIcon {
+    position: absolute;
+    color: #11bffe;
+    top: 10%;
+    right: 8%;
+    font-weight: bold;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+#paperResults {
+    left: 10.5%;
+    height: 50%;
+    width: 80%;
+    position: absolute;
+    text-align: center;
+    background-color: rgba(51, 51, 51, 1);
+    overflow: scroll;
+    z-index: 5;
+}
+
+/* can be used to customise the scroller
+* #paperResults::-webkit-scrollbar-thumb {
+*     background-color: @primary_color;
+* }
+*/
+
+#paperFilters {
+    top: 22%;
+    right: 10%;
+    min-height: 280px;
+    min-width: 240px;
+    position: absolute;
+    background-color: #404040;
+    color: #11bffe;
+    overflow: scroll;
+    z-index: 6;
+}
+
+#singleResult {
+    color: white;
+}
+
+#singleResult:hover {
+    color: @primary_color;
+    background-color: @background_color_body_0;
+}
+
+#mainPaper {
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    text-align: center;
+    background-color: rgba(51, 51, 51, 0.7);
+    z-index: 3;
+}

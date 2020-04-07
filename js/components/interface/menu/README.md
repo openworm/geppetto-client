@@ -6,7 +6,7 @@ In order to work, the Menu component needs to be given in input 2 props:
   contained in the action object is and then execute this action with the value provided.
   Later will give you an example of the menu handler with one of the objects contained in list.
 
-* configuration, below an example and then an exaplantion of how this works.
+* configuration, below an example and then an explanation of how this works.
 
 ```
 var menuConfiguration = {
