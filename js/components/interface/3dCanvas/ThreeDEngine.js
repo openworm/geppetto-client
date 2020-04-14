@@ -637,7 +637,6 @@ define(['jquery'], function () {
       if (traversedInstances.length > 0) {
         this.setAllGeometriesType(this.getDefaultGeometryType());
         this.scene.updateMatrixWorld(true);
-        this.resetCamera();
       }
     },
 
