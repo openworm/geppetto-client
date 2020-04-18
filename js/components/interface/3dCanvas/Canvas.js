@@ -34,7 +34,8 @@ define(function (require) {
         },
         instances: []
       }
-
+      
+      this.initialCameraReset = false;
     }
 
     /**
@@ -59,6 +60,8 @@ define(function (require) {
       }
       if (added.length > 0) {
         this.engine.updateSceneWithNewInstances(added);
+        // Trigger Update_camera event, camera position is reset when project is first loaded with initial instances
+        GEPPETTO.trigger(GEPPETTO.Events.Update_camera);
         this.setDirty(true);
       }
 
@@ -763,6 +766,7 @@ define(function (require) {
       GEPPETTO.WidgetsListener.unsubscribe(this.engine);
       GEPPETTO.off(GEPPETTO.Events.Instances_created, null, this);
       GEPPETTO.off(GEPPETTO.Events.Instance_deleted, null, this);
+      GEPPETTO.off(GEPPETTO.Events.Update_camera, null, this);
     }
 
     componentDidMount () {
@@ -790,7 +794,29 @@ define(function (require) {
           var [width, height] = that.setContainerDimensions();
           that.engine.setSize(width, height);
         }, false);
-
+        
+        /*
+         * Update camera position call.
+         */
+        GEPPETTO.on(GEPPETTO.Events.Update_camera, () => {
+          let instancesFetched = window.Instances.length;
+          // Instances fetched were stored in window.Instances variable, get number of those with visual capability. 
+          for ( var i = 0; i < window.Instances.length ; i++ ){
+            if ( !window.Instances[i].hasCapability('VisualCapability') ){
+              instancesFetched--;
+            }
+          }
+          /*
+           * Reset camera call, only done once after instances are rendered. Needed to position camera after initial loading
+           * instead of resetting the camera every time something is added to the Canvas.
+           */
+          if ( instancesFetched === Object.keys(this.engine.meshes).length && this.initialCameraReset){
+            this.resetCamera();
+            this.initialCameraReset = false;
+          }
+        }, this);
+        
+        this.initialCameraReset = true;
       }
     }
 
