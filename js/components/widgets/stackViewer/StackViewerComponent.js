@@ -28,6 +28,7 @@ define(function (require) {
         tileY: 1025,
         imageX: 1024,
         imageY: 1024,
+        scl: Number(this.props.scl),
         voxelX: this.props.voxelX,
         voxelY: this.props.voxelY,
         voxelZ: this.props.voxelZ,
@@ -64,7 +65,8 @@ define(function (require) {
       // signal component mounted (used to avoid calling isMounted() deprecated method)
       this._isMounted = true;
 
-      console.log('Loading....');
+      // console.log('Loading....');
+      
       // Setup PIXI Canvas in componentDidMount
       this.renderer = PIXI.autoDetectRenderer(this.props.width, this.props.height);
       // maintain full window size
@@ -80,14 +82,14 @@ define(function (require) {
       this.disp = new PIXI.Container();
       this.disp.pivot.x = 0;
       this.disp.pivot.y = 0;
-      this.disp.scale.x = this.props.zoomLevel;
-      this.disp.scale.y = this.props.zoomLevel;
+      this.disp.scale.x = this.props.zoomLevel / this.props.scl;
+      this.disp.scale.y = this.props.zoomLevel / this.props.scl;
       this.stage.addChild(this.disp);
       this.stack = new PIXI.Container();
       this.stack.pivot.x = 0;
       this.stack.pivot.y = 0;
-      this.stack.position.x = -10000;
-      this.stack.position.y = -10000;
+      this.stack.position.x = 0;
+      this.stack.position.y = 0;
       this.state.recenter = true;
 
       this.createStatusText();
@@ -165,7 +167,7 @@ define(function (require) {
     },
 
     callDstRange: function () {
-      var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
+      var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=10.0&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
       /*
        * this.state.buffer[-1].text = 'Buffering stack...';
        *get distance range;
@@ -181,11 +183,13 @@ define(function (require) {
             this.setState({ minDst: min, maxDst: max });
             var extent = { minDst: min, maxDst: max };
             this.props.setExtent(extent);
-            this.bufferStack(extent);
+            // console.log('Stack Depth: ' + ((max - min) / 10.0).toFixed(0));
+            this.checkStack();
+            this.callPlaneEdges();
+            this.bufferStack();
             if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
               this.state.buffer[-1].text = '';
             }
-            this.callPlaneEdges();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -195,7 +199,7 @@ define(function (require) {
     },
 
     callTileSize: function () {
-      var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
+      var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=1.0&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
       // get tile size;
       $.ajax({
         url: image + '&obj=Tile-size',
@@ -206,9 +210,9 @@ define(function (require) {
             var tileX = Number(result[0]);
             var tileY = Number(result[1]);
             this.setState({ tileX: tileX, tileY: tileY });
-
-            // update slice view
+            // console.log('Tile Size: ' + tileX + ', ' + tileY);
             this.state.lastUpdate = 0;
+            // update slice view
             this.checkStack();
             this.callPlaneEdges();
           }
@@ -220,7 +224,7 @@ define(function (require) {
     },
 
     callImageSize: function () {
-      var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
+      var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=10.0&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
       // get image size;
       $.ajax({
         url: image + '&obj=Max-size',
@@ -228,13 +232,14 @@ define(function (require) {
         success: function (data) {
           if (data.indexOf('html') < 0) {
             var result = data.trim().split(':')[1].split(' ');
-            var imageX = Number(result[0]);
-            var imageY = Number(result[1]);
+            var imageX = Math.ceil( Number(result[0] ));
+            var imageY = Math.ceil( Number(result[1] ));
             var extent = { imageX: imageX, imageY: imageY };
             this.setState(extent);
             this.props.setExtent(extent);
-            // update slice view
+            // console.log('Image Size: ' + (imageX / 10.0).toFixed(0) + ', ' + (imageY / 10.0).toFixed(0));
             this.state.lastUpdate = 0;
+            // update slice view
             this.checkStack();
             this.callPlaneEdges();
           }
@@ -253,19 +258,19 @@ define(function (require) {
           var x, y, z;
           // update widget window extents (X,Y):
           if (this.state.orth == 2) {
-            x = (this.stack.position.x) + (-this.disp.position.x / this.disp.scale.x);
+            x = (this.stack.position.x / this.state.scl) - (this.disp.position.x / (this.disp.scale.x * this.state.scl));
           } else {
-            x = (-this.stack.position.x) + (-this.disp.position.x / this.disp.scale.x);
+            x = -(this.stack.position.x / this.state.scl) - (this.disp.position.x / (this.disp.scale.x * this.state.scl));
           }
           if (this.state.orth == 1) {
-            y = (this.stack.position.y) + (-this.disp.position.y / this.disp.scale.x);
+            y = (this.stack.position.y / this.state.scl) - (this.disp.position.y / (this.disp.scale.y * this.state.scl));
           } else {
-            y = (-this.stack.position.y) + (-this.disp.position.y / this.disp.scale.x);
+            y = -(this.stack.position.y / this.state.scl) - (this.disp.position.y / (this.disp.scale.y * this.state.scl));
           }
           coordinates[0] = x.toFixed(0);
           coordinates[1] = y.toFixed(0);
-          x = x + (this.renderer.width / this.disp.scale.x);
-          y = y + (this.renderer.height / this.disp.scale.y);
+          x = x + (this.renderer.width / (this.disp.scale.x * this.state.scl));
+          y = y + (this.renderer.height / (this.disp.scale.y * this.state.scl));
           coordinates[2] = x.toFixed(0);
           coordinates[3] = y.toFixed(0);
           if (this.state.orth == 0) { // frontal
@@ -298,7 +303,7 @@ define(function (require) {
           }
         }
         // Pass Z coordinates
-        z = this.props.dst - (this.state.minDst);
+        z = ((this.props.dst - ((this.state.minDst / 10.0) * this.state.scl)) / this.state.scl);
         if (this.state.orth == 0) { // frontal
           this.state.plane[2] = z;
           this.state.plane[5] = z;
@@ -351,7 +356,7 @@ define(function (require) {
       $.each([this.state.stack[0]], function (i, item) {
         (function (i, that, shift) {
           var shift = GEPPETTO.isKeyPressed("shift");
-          var image = that.state.serverUrl.toString() + '?wlz=' + item + '&sel=0,255,255,255&mod=zeta&fxp=' + that.props.fxp.join(',') + '&scl=' + that.props.scl.toFixed(1) + '&dst=' + Number(that.state.dst).toFixed(1) + '&pit=' + Number(that.state.pit).toFixed(0) + '&yaw=' + Number(that.state.yaw).toFixed(0) + '&rol=' + Number(that.state.rol).toFixed(0);
+          var image = that.state.serverUrl.toString() + '?wlz=' + item + '&sel=0,255,255,255&mod=zeta&fxp=' + that.props.fxp.join(',') + '&scl=' + Number(that.state.scl).toFixed(1) + '&dst=' + Number(that.state.dst).toFixed(1) + '&pit=' + Number(that.state.pit).toFixed(0) + '&yaw=' + Number(that.state.yaw).toFixed(0) + '&rol=' + Number(that.state.rol).toFixed(0);
           // get image size;
           $.ajax({
             url: image + '&prl=-1,' + that.state.posX.toFixed(0) + ',' + that.state.posY.toFixed(0) + '&obj=Wlz-foreground-objects',
@@ -435,7 +440,7 @@ define(function (require) {
               that.state.loadingLabels = true;
             }
             var shift = GEPPETTO.isKeyPressed("shift");
-            var image = that.state.serverUrl.toString() + '?wlz=' + item + '&sel=0,255,255,255&mod=zeta&fxp=' + that.props.fxp.join(',') + '&scl=' + that.props.scl.toFixed(1) + '&dst=' + Number(that.state.dst).toFixed(1) + '&pit=' + Number(that.state.pit).toFixed(0) + '&yaw=' + Number(that.state.yaw).toFixed(0) + '&rol=' + Number(that.state.rol).toFixed(0);
+            var image = that.state.serverUrl.toString() + '?wlz=' + item + '&sel=0,255,255,255&mod=zeta&fxp=' + that.props.fxp.join(',') + '&scl=' + Number(that.state.scl).toFixed(1) + '&dst=' + Number(that.state.dst).toFixed(1) + '&pit=' + Number(that.state.pit).toFixed(0) + '&yaw=' + Number(that.state.yaw).toFixed(0) + '&rol=' + Number(that.state.rol).toFixed(0);
             // get image size;
             $.ajax({
               url: image + '&prl=-1,' + callX + ',' + callY + '&obj=Wlz-foreground-objects',
@@ -490,11 +495,11 @@ define(function (require) {
       }
     },
 
-    bufferStack: function (extent) {
+    bufferStack: function () {
       var i, j, dst, image;
-      var min = extent.minDst;
-      var max = extent.maxDst;
-      var buffMax = 1000;
+      var min = (this.state.minDst / 10.0) * this.state.scl;
+      var max = (this.state.maxDst / 10.0) * this.state.scl;
+      var buffMax = 2000;
       var imageLoader = PIXI.loader;
       var loaderOptions = {
         loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
@@ -503,7 +508,7 @@ define(function (require) {
 
       for (j = 0; j < this.state.numTiles; j++) {
         for (i in this.state.stack) {
-          image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+          image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
           if (!PIXI.loader.resources[image] && !imageLoader.loading) {
             // console.log('buffering ' + this.state.stack[i].toString() + '...');
             imageLoader.add(image, image, loaderOptions);
@@ -517,7 +522,7 @@ define(function (require) {
       if (this.state.numTiles < 10) {
         for (j in this.state.visibleTiles) {
           for (i in this.state.stack) {
-            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=0.0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=0.0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
             if (!PIXI.loader.resources[image] && !imageLoader.loading) {
               // console.log('buffering ' + this.state.stack[i].toString() + '...');
               imageLoader.add(image, image, loaderOptions);
@@ -537,12 +542,12 @@ define(function (require) {
           }
           for (dst = 0; -dst > min || dst < max; dst += step) {
             for (i in this.state.stack) {
-              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
               if (dst < max && !PIXI.loader.resources[image] && !imageLoader.loading) {
                 imageLoader.add(image, image, loaderOptions);
                 buffMax -= 1;
               }
-              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(-dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(-dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
               if (-dst > min && !PIXI.loader.resources[image] && !imageLoader.loading) {
                 imageLoader.add(image, image, loaderOptions);
                 buffMax -= 1;
@@ -554,10 +559,10 @@ define(function (require) {
           }
         }
       } else {
-        console.log('Buffering neighbouring layers (' + this.state.numTiles.toString() + ') tiles...');
+        // console.log('Buffering neighbouring layers (' + this.state.numTiles.toString() + ') tiles...');
         for (j = 0; j < this.state.numTiles && j < this.state.stack.length; j++) {
           for (i in this.state.stack) {
-            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(this.state.dst - 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst - 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
             if (!PIXI.loader.resources[image] && !imageLoader.loading) {
               // console.log('buffering ' + this.state.stack[i].toString() + '...');
               imageLoader.add(image, image, loaderOptions);
@@ -566,7 +571,7 @@ define(function (require) {
             if (buffMax < 1) {
               break;
             }
-            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(this.state.dst + 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst + 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
             if (!PIXI.loader.resources[image] && !imageLoader.loading) {
               // console.log('buffering ' + this.state.stack[i].toString() + '...');
               imageLoader.add(image, image, loaderOptions);
@@ -617,15 +622,8 @@ define(function (require) {
       }
 
       if (this.disp.width > 1) {
-        if (this.state.recenter) {
-          // console.log('centering image ' + this.disp.width + ' inside window ' + this.props.width + ' wide');
-          this.disp.position.x = ((this.props.width / 2) - (this.disp.width / 2));
-          this.disp.position.y = ((this.props.height / 2) - (this.disp.height / 2));
-          this.stack.position.x = 0;
-          this.stack.position.y = 0;
-          this.state.recenter = false;
-          this.props.setExtent({ stackX: this.stack.position.x, stackY: this.stack.position.y });
-        }
+        this.disp.position.x = ((this.props.width / 2) - ((((this.state.imageX / 10.0) * this.state.scl) * this.disp.scale.x) / 2));
+        this.disp.position.y = ((this.props.height / 2) - ((((this.state.imageY / 10.0) * this.state.scl) * this.disp.scale.y) / 2));
       }
 
       if (this.state.stack.length < 1) {
@@ -641,8 +639,7 @@ define(function (require) {
         // console.log('Updating scene...');
         this.createImages();
         this.updateImages(this.props);
-        var extent = { minDst: this.state.minDst, maxDst: this.state.maxDst };
-        this.bufferStack(extent);
+        this.bufferStack();
       } else if (!this.state.updating) {
         this.state.updating = true;
         var that = this;
@@ -679,14 +676,14 @@ define(function (require) {
 
     createImages: function () {
       if (this.state.stack.length > 0) {
-        var i, x, y, w, h, d, offX, offY, t, image;
+        var i, x, y, w, h, d, offX, offY, t, image, Xpos, Ypos, XboundMax, YboundMax, XboundMin, YboundMin;
         /*
          * move through tiles
          * console.log('Creating slice view...');
          */
         this.state.visibleTiles = [];
-        w = Math.ceil(this.state.imageX / this.state.tileX);
-        h = Math.ceil(this.state.imageY / this.state.tileY);
+        w = Math.ceil(((this.state.imageX / 10.0) * this.state.scl) / this.state.tileX);
+        h = Math.ceil(((this.state.imageY / 10.0) * this.state.scl) / this.state.tileY);
         // console.log('Tile grid is ' + w.toString() + ' wide by ' + h.toString() + ' high');
         this.state.numTiles = w * h;
 
@@ -701,13 +698,19 @@ define(function (require) {
           x += offX * this.state.tileX;
           y += offY * this.state.tileY;
           // console.log('Tiling: ' + [t,offX,offY,x,y,w,h]);
-          if ((w * h == 1) || (((x * this.disp.scale.x) + this.stack.position.x) > (-((this.renderer.view.width * 1) + (this.state.tileX * 2)) + this.stack.position.x) && ((x * this.disp.scale.x) + this.stack.position.x) < ((this.renderer.view.width * 1) + ((this.state.tileX * 1) + this.stack.position.x)) && ((y * this.disp.scale.y) + this.stack.position.y) > (-((this.renderer.view.height * 1) + (this.state.tileY * 2)) + this.stack.position.y) && ((y * this.disp.scale.y) + this.stack.position.y) < ((this.renderer.view.height * 1) + ((this.state.tileY * 1) + this.stack.position.y)))) {
+          Xpos = (this.stack.parent.position.x / (this.disp.scale.x)) + this.stack.position.x;
+          XboundMin = Xpos - (2 * (this.state.tileX * this.state.scl));
+          XboundMax = (this.props.width / (this.disp.scale.x)) + Xpos + (2 * (this.state.tileX * this.state.scl));
+          Ypos = (this.stack.parent.position.y / (this.disp.scale.y)) + this.stack.position.y;
+          YboundMin = Ypos - (2 * (this.state.tileY * this.state.scl));
+          YboundMax = (this.renderer.view.height / (this.disp.scale.y)) + Ypos + (2 * (this.state.tileY * this.state.scl));
+          if ((w * h < 3) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
               d = i.toString() + ',' + t.toString();
               if (!this.state.images[d]) {
                 // console.log('Adding ' + this.state.stack[i].toString());
-                image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + t.toString();
+                image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + t.toString();
                 // console.log(image);
                 this.state.images[d] = PIXI.Sprite.fromImage(image);
                 this.state.images[d].anchor.x = 0;
@@ -746,8 +749,9 @@ define(function (require) {
             for (i in this.state.stack) {
               d = i.toString() + ',' + t.toString();
               if (this.state.images[d] && this.state.images[d].visible) {
+                // console.log('Hiding tile ' + d);
                 this.state.images[d].visible = false;
-                console.log('Hiding tile ' + d);
+                // console.log([x,y,w,h,XboundMin,XboundMax,YboundMin,YboundMax,Xpos,Ypos]);
               }
             }
             // console.log('Tile ' + [offX,offY] + ' off screen.');
@@ -802,53 +806,44 @@ define(function (require) {
         this.updateImages(nextProps);
         this.checkStack();
       }
-      if (nextProps.zoomLevel !== this.props.zoomLevel) {
+      if (nextProps.scl !== this.state.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextProps.stackX !== this.stack.position.x || nextProps.stackY !== this.stack.position.y){
+        if (nextProps.scl < this.state.scl) {
+          // wipe the stack if image is getting smaller
+          this.state.images = [];
+          this.stack.removeChildren();
+        }
+        this.stack.position.x = nextProps.stackX;
+        this.stack.position.y = nextProps.stackY;
+        this.state.scl = nextProps.scl;
+        this.setState({ scl: nextProps.scl });
         this.updateZoomLevel(nextProps);
-        // recenter display for new image size keeping any stack offset.
-        this.disp.position.x = ((this.props.width / 2) - (this.disp.width / 2));
-        this.disp.position.y = ((this.props.height / 2) - (this.disp.height / 2));
+        updDst = true;
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
+        this.setState({ dst: nextProps.dst });
         updDst = true;
       }
       if (nextProps.statusText !== this.props.statusText && nextProps.statusText.trim() !== '') {
         this.updateStatusText(nextProps);
       }
-      if (nextProps.stackX !== this.stack.position.x || nextProps.stackY !== this.stack.position.y) {
-        this.stack.position.x = nextProps.stackX;
-        this.stack.position.y = nextProps.stackY;
-        if (nextProps.stackX == -10000 && nextProps.stackY == -10000) {
+      
+      if (nextProps.orth !== this.state.orth || nextProps.pit !== this.state.pit || nextProps.yaw !== this.state.yaw || nextProps.rol !== this.state.rol) {
+        if (nextProps.orth !== this.state.orth) {
           this.state.recenter = true;
-          this.checkStack();
         }
-      }
-      if (nextProps.orth !== this.state.orth) {
-        this.changeOrth(nextProps.orth);
-        this.state.recenter = true;
-        this.callImageSize();
-        this.callDstRange();
+        this.changeOrth(nextProps);
+        updDst = true;
       }
       if (nextProps.dst !== this.state.dst) {
         this.state.dst = nextProps.dst;
-        updDst = true;
-      }
-      if (nextProps.pit !== this.state.pit) {
-        this.state.pit = nextProps.pit;
-        updDst = true;
-      }
-      if (nextProps.yaw !== this.state.yaw) {
-        this.state.yaw = nextProps.yaw;
-        updDst = true;
-      }
-      if (nextProps.rol !== this.state.rol) {
-        this.state.rol = nextProps.rol;
+        this.setState({ dst: nextProps.dst });
         updDst = true;
       }
       if (updDst) {
-        this.callDstRange();
-        this.callImageSize();
         this.updateImages(nextProps);
+        this.checkStack();
+        this.callPlaneEdges();
       }
     },
     /**
@@ -856,10 +851,14 @@ define(function (require) {
      *
      */
     updateZoomLevel: function (props) {
-      this.disp.scale.x = props.zoomLevel;
-      this.disp.scale.y = props.zoomLevel;
+      var scale = props.zoomLevel / props.scl;
+      this.disp.scale.x = scale;
+      this.disp.scale.y = scale;
       // update slice view
       this.checkStack();
+      // recenter display for new image size keeping any stack offset.
+      this.disp.position.x = Math.ceil((props.width / 2) - (((this.state.imageX / 10.0) * props.zoomLevel) / 2));
+      this.disp.position.y = Math.ceil((props.height / 2) - (((this.state.imageY / 10.0) * props.zoomLevel) / 2));
     },
 
     /**
@@ -870,24 +869,36 @@ define(function (require) {
       this.setStatusText(props.statusText);
     },
 
-    changeOrth: function (orth) {
+    changeOrth: function (props) {
       // console.log('Orth: ' + orth);
-      this.state.orth = orth;
+      this.state.orth = props.orth;
+      this.state.pit = props.pit;
+      this.state.yaw = props.yaw;
+      this.state.rol = props.rol;
+      // forcing the state change before size calls as setstate take time. 
+      this.setState({
+        pit: props.pit,
+        yaw: props.yaw,
+        rol: props.rol,
+        orth: props.orth
+      }); 
       this.state.images = [];
       this.stack.removeChildren();
-      if (orth == 0) {
+      if (props.orth == 0) {
         console.log('Frontal');
         this.setStatusText('Frontal');
-      } else if (orth == 1) {
+      } else if (props.orth == 1) {
         console.log('Transverse');
         this.setStatusText('Transverse');
-      } else if (orth == 2) {
+      } else if (props.orth == 2) {
         console.log('Sagittal');
         this.setStatusText('Sagittal');
       } else {
-        console.log('Orth:' + orth);
+        console.log('Orth:' + props.orth);
         this.setStatusText('...');
       }
+      this.callDstRange();
+      this.callImageSize();
     },
 
     setStatusText: function (text) {
@@ -899,8 +910,8 @@ define(function (require) {
     },
     
     setHoverText: function (x,y,text) {
-      this.state.buffer[-1].x = -this.stage.position.x + -10 + (this.stack.parent.position.x + (this.stack.position.x * this.disp.scale.x)) + (Number(x) * this.disp.scale.x);
-      this.state.buffer[-1].y = -this.stage.position.y + 15 + (this.stack.parent.position.y + (this.stack.position.y * this.disp.scale.y)) + (Number(y) * this.disp.scale.y);
+      this.state.buffer[-1].x = -this.stage.position.x + this.disp.position.x + (this.stack.position.x * this.disp.scale.x) + (Number(x) * this.disp.scale.x) - 10;
+      this.state.buffer[-1].y = -this.stage.position.y + this.disp.position.y + (this.stack.position.y * this.disp.scale.y) + (Number(y) * this.disp.scale.y) + 15;
       this.state.buffer[-1].text = text;
       this.state.text = text;
       this.state.txtUpdated = Date.now();
@@ -915,14 +926,14 @@ define(function (require) {
       // console.log(this.state.visibleTiles);
       for (j in this.state.visibleTiles) {
         for (i in this.state.stack) {
-          image = props.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + props.fxp.join(',') + '&scl=' + props.scl.toFixed(1) + '&dst=' + Number(props.dst).toFixed(1) + '&pit=' + Number(props.pit).toFixed(0) + '&yaw=' + Number(props.yaw).toFixed(0) + '&rol=' + Number(props.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+          image = props.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + props.fxp.join(',') + '&scl=' + Number(props.scl).toFixed(1) + '&dst=' + Number(props.dst).toFixed(1) + '&pit=' + Number(props.pit).toFixed(0) + '&yaw=' + Number(props.yaw).toFixed(0) + '&rol=' + Number(props.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
           d = i.toString() + ',' + this.state.visibleTiles[j].toString();
           if (this.state.images[d]) {
             if (PIXI.loader.resources[image] && PIXI.loader.resources[image].texture && (PIXI.loader.resources[image].texture.baseTexture !== null)) {
               this.state.images[d].texture = PIXI.loader.resources[image].texture;
             } else {
               if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-                this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - this.state.minDst).toFixed(1) + '...';
+                this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
               }
               this.state.images[d].texture = PIXI.Texture.fromImage(image);
               if (!PIXI.loader.resources[image] && !PIXI.loader.loading) {
@@ -998,6 +1009,7 @@ define(function (require) {
         this.state.data = null;
         this.state.dragging = false;
         this.props.setExtent({ stackX: this.stack.position.x, stackY: this.stack.position.y });
+        this.createImages();
       }
     },
 
@@ -1086,13 +1098,13 @@ define(function (require) {
     
     getInitialState: function () {
       return {
-        zoomLevel: 0.5,
+        zoomLevel: 1.0,
         dst: 0,
         text: '',
-        stackX: -10000,
-        stackY: -10000,
-        imageX: 1024,
-        imageY: 1024,
+        stackX: 0,
+        stackY: 0,
+        imageX: 10240,
+        imageY: 10240,
         fxp: [511, 255, 108],
         pit: 0,
         yaw: 0,
@@ -1131,19 +1143,19 @@ define(function (require) {
         // Max step of imposed
         if (step > 0) {
           if (this.state.orth == 0) {
-            step = this.state.voxelZ;
+            step = this.state.voxelZ * this.state.scl;
           } else if (this.state.orth == 1) {
-            step = this.state.voxelY;
+            step = this.state.voxelY * this.state.scl;
           } else if (this.state.orth == 2) {
-            step = this.state.voxelX;
+            step = this.state.voxelX * this.state.scl;
           }
         } else if (step < 0) {
           if (this.state.orth == 0) {
-            step = -this.state.voxelZ;
+            step = -this.state.voxelZ * this.state.scl;
           } else if (this.state.orth == 1) {
-            step = -this.state.voxelY;
+            step = -this.state.voxelY * this.state.scl;
           } else if (this.state.orth == 2) {
-            step = -this.state.voxelX;
+            step = -this.state.voxelX * this.state.scl;
           }
         }
         if (e.shiftKey) {
@@ -1152,13 +1164,13 @@ define(function (require) {
           newdst += step;
         }
 
-        if (newdst < this.state.maxDst && newdst > this.state.minDst) {
-          this.setState({ dst: newdst, text: 'Slice:' + (newdst - this.state.minDst).toFixed(1) });
-        } else if (newdst < this.state.maxDst) {
-          newdst = this.state.minDst;
+        if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+          this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
+        } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
+          newdst = ((this.state.minDst / 10.0) * this.state.scl);
           this.setState({ dst: newdst, text: 'First slice!' });
-        } else if (newdst > this.state.minDst) {
-          newdst = this.state.maxDst;
+        } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+          newdst = ((this.state.maxDst / 10.0) * this.state.scl);
           this.setState({ dst: newdst, text: 'Last slice!' });
         }
       }
@@ -1251,7 +1263,7 @@ define(function (require) {
         var server = this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
         for (instance in instances) {
           try {
-            if ((instances[instance].id != undefined) && (instances[instance].parent != null) && (typeof instances[instance].parent.isSelected === "function")){
+            if ((instances[instance].id != undefined) && (instances[instance].parent != null) && (typeof instances[instance].parent.isSelected === "function") && (typeof instances[instance].parent.isVisible === "function" && instances[instance].parent.isVisible())){
               vals = instances[instance].getVariable().getInitialValue().value;
               data = JSON.parse(vals.data);
               server = data.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
@@ -1309,20 +1321,39 @@ define(function (require) {
      *
      */
     onZoomIn: function () {
-      var zoomLevel = 1;
+      var zoomLevel = this.state.zoomLevel;
+      var scale = this.state.scl;
+      var text = "";
+      var newDst = Number(this.state.dst);
+      var stackX = this.state.stackX;
+      var stackY = this.state.stackY;
       if (GEPPETTO.isKeyPressed("shift")) {
         zoomLevel = Number((this.state.zoomLevel += 1).toFixed(1));
       } else {
         zoomLevel = Number((this.state.zoomLevel += 0.1).toFixed(1));
       }
       if (zoomLevel < 10.0) {
-        this.setState({
-          zoomLevel: zoomLevel,
-          text: 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')'
-        });
+        scale = Number(Math.ceil(zoomLevel).toFixed(1));
+        text = 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')'; 
       } else {
-        this.setState({ zoomLevel: 10.0, text: 'Max zoom! (X10)' });
+        zoomLevel = 10;
+        scale = 10;
+        text = 'Max zoom! (X10)';
       }
+      if (Number(this.state.scl) < scale) {
+        var baseDst = this.state.dst / this.state.scl;
+        newDst = baseDst * scale;
+        stackX = Math.ceil((this.state.stackX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
+        stackY = Math.ceil((this.state.stackY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
+      }
+      this.setState({
+        zoomLevel: zoomLevel,
+        scl: scale,
+        text: text,
+        dst: newDst,
+        stackX: stackX, 
+        stackY: stackY 
+      });
     },
 
     toggleOrth: function () {
@@ -1345,7 +1376,7 @@ define(function (require) {
         yaw = 0;
         rol = 0;
       }
-      this.setState({ orth: orth, pit: pit, yaw: yaw, rol: rol, dst: 0, stackX: -10000, stackY: -10000 });
+      this.setState({ orth: orth, pit: pit, yaw: yaw, rol: rol, dst: 0, stackX: 0, stackY: 0 });
     },
 
     toggleSlice: function () {
@@ -1361,20 +1392,39 @@ define(function (require) {
      *
      */
     onZoomOut: function () {
-      var zoomLevel = 1;
+      var zoomLevel = this.state.zoomLevel;
+      var scale = this.state.scl;
+      var text = "";
+      var newDst = Number(this.state.dst);
+      var stackX = this.state.stackX;
+      var stackY = this.state.stackY;
       if (GEPPETTO.isKeyPressed("shift")) {
         zoomLevel = Number((this.state.zoomLevel -= 1).toFixed(1));
       } else {
-        zoomLevel = Number((this.state.zoomLevel -= .1).toFixed(1));
+        zoomLevel = Number((this.state.zoomLevel -= 0.1).toFixed(1));
       }
       if (zoomLevel > 0.1) {
-        this.setState({
-          zoomLevel: zoomLevel,
-          text: 'Zooming out to (X' + Number(zoomLevel).toFixed(1) + ')'
-        });
+        scale = Number(Math.ceil(zoomLevel).toFixed(1));
+        text = 'Zooming out to (X' + Number(zoomLevel).toFixed(1) + ')'; 
       } else {
-        this.setState({ zoomLevel: 0.1, text: 'Min zoom! (X0.1)' });
+        zoomLevel = 0.1;
+        scale = 1.0;
+        text = 'Min zoom! (X0.1)';
       }
+      if (Number(this.state.scl) > scale) {
+        var baseDst = this.state.dst / this.state.scl;
+        newDst = baseDst * scale;
+        stackX = Math.ceil((this.state.stackX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
+        stackY = Math.ceil((this.state.stackY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
+      }
+      this.setState({
+        zoomLevel: zoomLevel,
+        scl: scale,
+        text: text,
+        dst: newDst,
+        stackX: stackX, 
+        stackY: stackY
+      });
     },
 
     /**
@@ -1385,17 +1435,17 @@ define(function (require) {
       var shift = GEPPETTO.isKeyPressed("shift");
       var newdst = this.state.dst
       if (shift) {
-        newdst += this.state.voxelZ * 10;
+        newdst += (this.state.voxelZ * this.state.scl) * 10;
       } else {
-        newdst += this.state.voxelZ;
+        newdst += (this.state.voxelZ * this.state.scl);
       }
-      if (newdst < this.state.maxDst && newdst > this.state.minDst) {
-        this.setState({ dst: newdst, text: 'Slice:' + (newdst - this.state.minDst).toFixed(1) });
-      } else if (newdst < this.state.maxDst) {
-        newdst = this.state.minDst;
+      if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+        this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
+      } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
+        newdst = ((this.state.minDst / 10.0) * this.state.scl);
         this.setState({ dst: newdst, text: 'First slice!' });
-      } else if (newdst > this.state.minDst) {
-        newdst = this.state.maxDst;
+      } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+        newdst = ((this.state.maxDst / 10.0) * this.state.scl);
         this.setState({ dst: newdst, text: 'Last slice!' });
       }
     },
@@ -1407,17 +1457,17 @@ define(function (require) {
       var shift = GEPPETTO.isKeyPressed("shift");
       var newdst = this.state.dst
       if (shift) {
-        newdst -= this.state.voxelZ * 10;
+        newdst -= (this.state.voxelZ * this.state.scl) * 10;
       } else {
-        newdst -= this.state.voxelZ;
+        newdst -= (this.state.voxelZ * this.state.scl);
       }
-      if (newdst < this.state.maxDst && newdst > this.state.minDst) {
-        this.setState({ dst: newdst, text: 'Slice:' + (newdst - this.state.minDst).toFixed(1) });
-      } else if (newdst < this.state.maxDst) {
-        newdst = this.state.minDst;
+      if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+        this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
+      } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
+        newdst = ((this.state.minDst / 10.0) * this.state.scl);
         this.setState({ dst: newdst, text: 'First slice!' });
-      } else if (newdst > this.state.minDst) {
-        newdst = this.state.maxDst;
+      } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+        newdst = ((this.state.maxDst / 10.0) * this.state.scl);
         this.setState({ dst: newdst, text: 'Last slice!' });
       }
     },
@@ -1427,8 +1477,9 @@ define(function (require) {
      *
      */
     onHome: function () {
-      var autoScale = Number(Math.min(this.props.data.height / this.state.imageY, this.props.data.width / this.state.imageX).toFixed(1));
-      this.setState({ dst: 0, stackX: -10000, stackY: -10000, text: 'Stack Centred', zoomLevel: autoScale });
+      var autoScale = Number(Math.min((this.props.data.height / (this.state.imageY / 10.0 )), (this.props.data.width / (this.state.imageX / 10.0 ))).toFixed(1));
+      var scale = Math.ceil(autoScale);
+      this.setState({ dst: 0, stackX: 0, stackY: 0, text: 'Stack Centred', zoomLevel: autoScale, scl: scale });
     },
 
     onExtentChange: function (data) {
