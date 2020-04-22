@@ -130,9 +130,9 @@ define(function (require) {
 
     },
 
-    componentDidUpdate: function () {
+    componentDidUpdate: function (prevProps, prevState) {
       // console.log('Canvas update');
-      if (this.renderer.width !== this.props.width || this.renderer.height !== this.props.height) {
+      if (this.renderer.width !== Math.floor(this.props.width) || this.renderer.height !== Math.floor(this.props.height)) {
         this.renderer.resize(this.props.width, this.props.height);
         this.props.onHome();
       }
