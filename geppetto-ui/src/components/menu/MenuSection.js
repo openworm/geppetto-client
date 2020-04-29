@@ -102,7 +102,7 @@ class MenuSection extends React.Component {
         <Button
           style={buttonClasses}
           size='small'
-          id={this.props.button.label}
+          id={typeof this.props.button.label === 'string' ? this.props.button.label : 'geppetto-menu-btn'}
           variant="contained"
           aria-describedby={id}
           onClick={this.handleClick}
@@ -121,6 +121,7 @@ class MenuSection extends React.Component {
           position={(this.props.button.position !== undefined) ? this.props.button.position : "right"}
           drawersStyle={this.props.drawersStyle}
           labelsStyle={this.props.labelsStyle}
+          itemOptions={this.props.itemOptions}
         />
       </span>
     );

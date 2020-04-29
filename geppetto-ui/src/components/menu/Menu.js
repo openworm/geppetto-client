@@ -118,26 +118,12 @@ class Menu extends React.Component {
   }
 
   render () {
-    var buttonsStyle = menuStyle.buttonsStyle;
-    var drawersStyle = menuStyle.drawersStyle;
-    var labelsStyle = menuStyle.labelsStyle;
-    if (this.props.configuration.global.buttonsStyle !== undefined
-        && this.props.configuration.global.buttonsStyle.standard !== undefined
-        && this.props.configuration.global.buttonsStyle.hover !== undefined) {
-      buttonsStyle = this.props.configuration.global.buttonsStyle;
-    }
 
-    if (this.props.configuration.global.drawersStyle !== undefined
-        && this.props.configuration.global.drawersStyle.standard !== undefined
-        && this.props.configuration.global.drawersStyle.hover !== undefined) {
-      drawersStyle = this.props.configuration.global.drawersStyle;
-    }
 
-    if (this.props.configuration.global.labelsStyle !== undefined
-        && this.props.configuration.global.labelsStyle.standard !== undefined
-        && this.props.configuration.global.labelsStyle.hover !== undefined) {
-      labelsStyle = this.props.configuration.global.labelsStyle;
-    }
+    const buttonsStyle = {...menuStyle.buttonsStyle, ...this.props.configuration.global.buttonsStyle};
+    const drawersStyle = {...menuStyle.drawersStyle, ...this.props.configuration.global.drawersStyle};
+    const labelsStyle = {...menuStyle.labelsStyle, ...this.props.configuration.global.labelsStyle};
+    const itemOptions = this.props.configuration.itemOptions;
 
     var buttonsToRender = this.props.configuration.buttons.map((button, index) => (
       <MenuSection
@@ -153,6 +139,7 @@ class Menu extends React.Component {
         buttonsStyle={buttonsStyle}
         drawersStyle={drawersStyle}
         labelsStyle={labelsStyle}
+        itemOptions={itemOptions}
       />
     ));
 

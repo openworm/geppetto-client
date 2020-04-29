@@ -35,6 +35,7 @@ class MenuPopper extends React.Component {
                       awayClickHandler={this.props.awayClickHandler}
                       drawersStyle={this.props.drawersStyle}
                       labelsStyle={this.props.labelsStyle}
+                      {...this.props.itemOptions}
                     />
                   </MenuList>
                 </Paper>

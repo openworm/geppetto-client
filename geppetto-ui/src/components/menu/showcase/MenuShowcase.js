@@ -6,7 +6,7 @@ export default class MenuShowcase extends Component {
   constructor (props) {
     super(props);
     GEPPETTO.Manager.loadModel(model);
-    this.menuConfiguration = require('./menuConfiguration').toolbarMenu;
+    this.menuConfiguration = require('./menuConfiguration').default;
     this.menuHandler = this.menuHandler.bind(this);
   }
 
