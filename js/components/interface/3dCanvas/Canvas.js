@@ -36,6 +36,7 @@ define(function (require) {
       }
       
       this.initialCameraReset = false;
+      this.animationRunning = false;
     }
 
     /**
@@ -44,6 +45,7 @@ define(function (require) {
      * @returns {Canvas}
      */
     display (instances) {
+      var that = this;
       if (this.isWidget()) {
         this.showOverlay(<div className="spinner-container">
           <div className={"fa fa-circle-o-notch fa-spin"}></div>
@@ -63,6 +65,17 @@ define(function (require) {
         // Trigger Update_camera event, camera position is reset when project is first loaded with initial instances
         GEPPETTO.trigger(GEPPETTO.Events.Update_camera);
         this.setDirty(true);
+        // Handle the update for the prop onLoad
+        if (this.props.onLoad !== undefined) {
+          added.map(instance => {
+            let parent = instance.getParent();
+            if (parent !== null) {
+              that.props.onLoad(parent.getId());
+            } else {
+              that.props.onLoad(instance.getId());
+            }
+          });
+        }
       }
 
       if (this.isWidget()) {
@@ -773,7 +786,6 @@ define(function (require) {
       if (!isWebglEnabled) {
         Detector.addGetWebGLMessage();
       } else {
-        // this.container = $("#" + this.props.id + "_component").get(0);
         var [width, height] = this.setContainerDimensions();
         this.engine = new ThreeDEngine(this.getContainer(), this.props.id);
         this.engine.setSize(width, height);
@@ -785,16 +797,22 @@ define(function (require) {
         GEPPETTO.WidgetsListener.subscribe(this.engine, this.id);
 
         var that = this;
-        $("#" + this.props.id).on("dialogresizestop resizeEnd", function (event, ui) {
-          var [width, height] = that.setContainerDimensions();
-          that.engine.setSize(width, height);
+
+        $("#" + this.props.id + "_component").on("mouseover", function (event, ui) {
+          that.engine.animationRunning = true;
+          that.engine.animate();
+        });
+
+        $("#" + this.props.id + "_component").on("mouseout", function (event, ui) {
+          that.engine.animationRunning = false;
+          that.engine.animate();
         });
 
         window.addEventListener('resize', function () {
           var [width, height] = that.setContainerDimensions();
           that.engine.setSize(width, height);
         }, false);
-        
+
         /*
          * Update camera position call.
          */
@@ -814,8 +832,10 @@ define(function (require) {
             this.resetCamera();
             this.initialCameraReset = false;
           }
+          this.engine.animationRunning = true;
+          this.engine.animate();
         }, this);
-        
+
         this.initialCameraReset = true;
       }
     }
