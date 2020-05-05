@@ -65,6 +65,7 @@ export default function (GEPPETTO) {
     Receive_Python_Message: "receive_python_message",
     Websocket_disconnected : "websocket_disconnected",
     Error_while_exec_python_command: "error_while_exec_python_command",
+    Update_camera : "update_camera",
 
     listen: function () {
       GEPPETTO.on(this.Select, function () {

@@ -64,6 +64,7 @@ define(['jquery'], function () {
       this.needsUpdate = false;
       this.pickingEnabled = true; // flag to enable disable 3d picking
       this.linesUserInput = false;
+      this.animationRunning = true;
       this.linesUserPreference = undefined;
       this.hoverListeners = undefined;
       this.THREE = THREE;
@@ -73,7 +74,6 @@ define(['jquery'], function () {
       this.setupLights();
       this.setupControls();
       this.setupListeners();
-      this.animate();
     }
   }
 
@@ -637,7 +637,6 @@ define(['jquery'], function () {
       if (traversedInstances.length > 0) {
         this.setAllGeometriesType(this.getDefaultGeometryType());
         this.scene.updateMatrixWorld(true);
-        this.resetCamera();
       }
     },
 
@@ -1535,6 +1534,9 @@ define(['jquery'], function () {
       var that = this;
       that.debugUpdate = that.needsUpdate;
       // so that we log only the cycles when we are updating the scene
+      if (!this.animationRunning) {
+        return;
+      }
 
       that.controls.update();
 
