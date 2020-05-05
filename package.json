@@ -1,6 +1,6 @@
 {
   "name": "@geppettoengine/geppetto-client",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Geppetto web frontend. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
   "repository": "http://git.geppetto.org",
   "license": "MIT",

@@ -40,6 +40,12 @@ define(function (require) {
     },
 
     render: function () {
+      if (this.props.data == undefined) {
+        return (
+          <div>
+          </div>
+        )
+      }
       var imgId = this.props.rowData.path.replace(/\./g, '_') + "_thumbnail";
       var titleValue = "<img src='" + this.props.data + "' class='thumbnail-img-tooltip'/>";
 
