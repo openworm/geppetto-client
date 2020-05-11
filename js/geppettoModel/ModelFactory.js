@@ -1334,7 +1334,15 @@ export default function (GEPPETTO) {
           window[topInstances[k].getId()] = topInstances[k];
           window.Instances[topInstances[k].getId()] = topInstances[k];
         }
-        // TODO Should we trigger that instances were added?
+
+        newInstancesPaths.map(newInstance => {
+          if (newInstance !== "time") {
+            let instanceStrings = newInstance.split(".");
+            if (window.Instances[instanceStrings[0]][instanceStrings[1]] !== undefined) {
+              GEPPETTO.trigger(GEPPETTO.Events.Instance_added, newInstance);
+            }
+          }
+        });
       },
 
       /**
@@ -3025,4 +3033,3 @@ function createInstancePathObj (instance) {
     static: true
   };
 }
-
