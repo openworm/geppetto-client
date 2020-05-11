@@ -74,6 +74,7 @@ define(['jquery'], function () {
       this.setupLights();
       this.setupControls();
       this.setupListeners();
+      this.animate();
     }
   }
 

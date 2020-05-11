@@ -39,6 +39,20 @@ define(function (require) {
       this.animationRunning = false;
     }
 
+    startAnimation () {
+      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
+        this.engine.animationRunning = true;
+        this.engine.animate();
+      }
+    }
+
+    stopAnimation () {
+      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
+        this.engine.animationRunning = false;
+        this.engine.animate();
+      }
+    }
+
     /**
      * Displays all the passed instances in this canvas component
      * @param instances an array of instances
@@ -140,6 +154,7 @@ define(function (require) {
      * @return {Canvas}
      */
     selectInstance (instancePath, geometryIdentifier) {
+      this.startAnimation();
       this.engine.selectInstance(instancePath, geometryIdentifier);
       return this;
     }
@@ -151,6 +166,7 @@ define(function (require) {
      * @returns {Canvas}
      */
     deselectInstance (instancePath) {
+      this.startAnimation();
       this.engine.deselectInstance(instancePath);
       return this;
     }
@@ -780,6 +796,10 @@ define(function (require) {
       GEPPETTO.off(GEPPETTO.Events.Instances_created, null, this);
       GEPPETTO.off(GEPPETTO.Events.Instance_deleted, null, this);
       GEPPETTO.off(GEPPETTO.Events.Update_camera, null, this);
+      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
+        GEPPETTO.off(GEPPETTO.Events.selectInstance, null, this);
+        GEPPETTO.off(GEPPETTO.Events.deselectInstance, null, this);
+      }
     }
 
     componentDidMount () {
@@ -798,15 +818,23 @@ define(function (require) {
 
         var that = this;
 
-        $("#" + this.props.id + "_component").on("mouseover", function (event, ui) {
-          that.engine.animationRunning = true;
-          that.engine.animate();
-        });
+        if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
+          $("#" + this.props.id + "_component").on("mouseover", function (event, ui) {
+            that.startAnimation();
+          });
 
-        $("#" + this.props.id + "_component").on("mouseout", function (event, ui) {
-          that.engine.animationRunning = false;
-          that.engine.animate();
-        });
+          $("#" + this.props.id + "_component").on("mouseout", function (event, ui) {
+            that.stopAnimation();
+          });
+
+          GEPPETTO.on(GEPPETTO.Events.selectInstance, () => {
+            this.stopAnimation();
+          }, this);
+
+          GEPPETTO.on(GEPPETTO.Events.deselectInstance, () => {
+            this.stopAnimation();
+          }, this);
+        }
 
         window.addEventListener('resize', function () {
           var [width, height] = that.setContainerDimensions();
@@ -818,7 +846,7 @@ define(function (require) {
          */
         GEPPETTO.on(GEPPETTO.Events.Update_camera, () => {
           let instancesFetched = window.Instances.length;
-          // Instances fetched were stored in window.Instances variable, get number of those with visual capability. 
+          // Instances fetched were stored in window.Instances variable, get number of those with visual capability.
           for ( var i = 0; i < window.Instances.length ; i++ ){
             if ( !window.Instances[i].hasCapability('VisualCapability') ){
               instancesFetched--;
@@ -832,8 +860,7 @@ define(function (require) {
             this.resetCamera();
             this.initialCameraReset = false;
           }
-          this.engine.animationRunning = true;
-          this.engine.animate();
+          this.startAnimation();
         }, this);
 
         this.initialCameraReset = true;
