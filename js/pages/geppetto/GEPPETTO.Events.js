@@ -43,6 +43,7 @@ export default function (GEPPETTO) {
     Spotlight_loaded: "spotlight:loaded",
     Instance_deleted: "instance:deleted",
     Instances_created: "instances:created",
+    Instance_added: "instance:added",
     Show_Tutorial: "show_tutorial",
     Hide_Tutorial: "hide_tutorial",
     Show_spinner: "spinner:show",
