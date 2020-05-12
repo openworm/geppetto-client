@@ -506,7 +506,7 @@ define(function (require) {
         xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
       };
 
-      console.log('Started buffering... ');
+      // console.log('Started buffering... ');
 
       for (j = 0; j < this.state.numTiles; j++) {
         for (i in this.state.stack) {
@@ -615,7 +615,7 @@ define(function (require) {
           this.state.buffer[-1].text = '';
         }
       }
-      console.log('Finished buffering');
+      console.log('Buffered ' + (20000-buffMax).toString() + ' tiles');
     },
 
     checkStack: function () {
