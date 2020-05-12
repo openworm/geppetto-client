@@ -506,6 +506,8 @@ define(function (require) {
         xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
       };
 
+      console.log('Started buffering... ');
+
       for (j = 0; j < this.state.numTiles; j++) {
         for (i in this.state.stack) {
           image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
@@ -613,6 +615,7 @@ define(function (require) {
           this.state.buffer[-1].text = '';
         }
       }
+      console.log('Finished buffering');
     },
 
     checkStack: function () {
