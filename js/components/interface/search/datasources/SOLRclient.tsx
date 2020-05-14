@@ -148,39 +148,43 @@ function refineResults(e) {
     self.spotlightString = e.data.params.value;
     var refinedResults:Array<any> = [];
     e.data.params.results.map(item => {
-        let labelInSynonym:boolean = false;
         if (item.hasOwnProperty("synonym")) {
             item.synonym.map(innerItem => {
                 let newRecord:any = {}
-                Object.keys(item).map(key => {
-                    switch(key) {
-                        case "label":
-                            newRecord[key] = innerItem;
-                            break;
-                        case "synonym":
-                            break;
-                        default:
-                            newRecord[key] = item[key];
-                    }
-                });
-                refinedResults.push(newRecord);
-                if (innerItem === item.label) {
-                    labelInSynonym = true;
+                if (innerItem !== item.label) {
+                    Object.keys(item).map(key => {
+                        switch(key) {
+                            case "label":
+                                newRecord[key] = innerItem + " (" + item.label + ")";
+                                break;
+                            case "synonym":
+                                break;
+                            default:
+                                newRecord[key] = item[key];
+                        }
+                    });
+                    refinedResults.push(newRecord);
                 }
             });
-            if (!labelInSynonym) {
-                let newRecord:any = {}
-                Object.keys(item).map(key => {
-                    if (key !== "synonym") {
+            let newRecord:any = {}
+            Object.keys(item).map(key => {
+                if (key !== "synonym") {
+                    if (key === "label") {
+                        newRecord[key] = item[key] + " (" + item["short_form"] + ")";
+                    } else {
                         newRecord[key] = item[key];
                     }
-                });
-                refinedResults.push(newRecord);
-            }
+                }
+            });
+            refinedResults.push(newRecord);
         } else {
             let newRecord:any = {}
             Object.keys(item).map(key => {
-                newRecord[key] = item[key];
+                if (key === "label") {
+                    newRecord[key] = item[key] + " (" + item["short_form"] + ")";
+                } else {
+                    newRecord[key] = item[key];
+                }
             });
             refinedResults.push(newRecord);
         }
