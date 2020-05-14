@@ -288,8 +288,14 @@ export default class GeppettoGraphVisualization extends Component {
       ctx.fillText(linkText, 0, 0);
     }
 
+    let nodeBorderDistance = this.size;
+    // Some nodes are bigger than others, find distance from node center to corner and use this as size
+    if ( link.target.width && link.target.height ){
+      nodeBorderDistance = Math.sqrt((link.target.width / 2 ) * (link.target.width / 2 ) + (link.target.height / 2 ) * (link.target.height / 2 ));
+    }
+    
     // Draw arrow to indicate link direction
-    var dist = (linkLength / 2 - this.size) - arrowSize
+    var dist = (linkLength / 2 - nodeBorderDistance) - arrowSize
     ctx.fillStyle = color;
     ctx.beginPath();
     if (angle2 >= Math.PI / 2 || angle2 <= -Math.PI / 2){
@@ -373,12 +379,27 @@ export default class GeppettoGraphVisualization extends Component {
     }
 
     if (d2) {
-      return <ForceGraph2D 
-        linkCanvasObjectMode={() => "replace"}
-        linkCanvasObject={this.linkCanvasObject.bind(this)} 
-        nodeCanvasObject={this.nodeWithName.bind(this)} 
-        nodeRelSize={this.size} 
-        {...commonProps}/>
+      return <div id={this.props.id ? this.props.id : "graph-2d"} style={this.props.containerStyle ? this.props.containerStyle : null} >
+        { this.props.controls ? this.props.controls : null }
+        <ForceGraph2D 
+          linkCanvasObjectMode={ this.props.linkCanvasObjectMode ? this.props.linkCanvasObjectMode : () => "replace" }
+          linkCanvasObject={ this.props.linkCanvasObject ? this.props.linkCanvasObject : this.linkCanvasObject.bind(this) }
+          linkWidth = { this.props.linkWidth ? this.props.linkWidth : 1 }
+          nodeCanvasObject={this.props.nodeCanvasObject ? this.props.nodeCanvasObject : this.nodeWithName.bind(this)}
+          nodeCanvasObjectMode={this.props.nodeCanvasObjectMode ? this.props.nodeCanvasObjectMode : null}
+          nodeRelSize={this.props.nodeRelSize ? this.props.nodeRelSize : this.size} 
+          nodeVal={this.props.nodeVal ? this.props.nodeVal : node => 100 / (node.level + 1)}
+          backgroundColor = {this.props.backgroundColor ? this.props.backgroundColor : "transparent"}
+          dagMode = {this.props.dagMode ? this.props.dagMode : null}
+          dagLevelDistance={this.props.dagLevelDistance ? this.props.dagLevelDistance : 100}  
+          enableNavigationControls = { this.props.enableNavigationControls ? this.props.enableNavigationControls : false }
+          enableZoomPanInteraction = { this.props.enableZoomPanInteraction ? this.props.enableZoomPanInteraction : false }
+          enableNodeDrag = { this.props.enableNodeDrag ? this.props.enableNodeDrag : true} 
+          onLinkHover = { this.props.onLinkHover ? this.props.onLinkHover : null }
+          onNodeHover = { this.props.onNodeHover ? this.props.onNodeHover : null }
+          onNodeClick = {this.props.onNodeClick ? this.props.onNodeClick : null }
+          {...commonProps}/>
+      </div>
     } 
     return <ForceGraph3D {...commonProps} />
   }
