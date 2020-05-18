@@ -1,67 +1,67 @@
 @import "../../../../../style/less/components/colors";
 
-#searchInput {
-    top: 15%;
-    left: 10%;
-    width: 80%;
-    padding: 12px 20px 12px 20px;
-    margin: 10px 10px 10px 10px;
-    border-radius: 25px;
-    box-sizing: border-box;
-    font-size: 22px;
-    z-index: 1;
+#inputContainer {
     position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 15%;
+}
+
+#searchInput {
+    width: 100vh;
+    z-index: 1;
+    font-size: 22px;
+    background-color: white;
+    padding: 12px 20px 12px 20px;
+    border: 3px solid @primary_color;
 }
 
 #filterIcon {
-    position: absolute;
-    top: 15%;
-    left: 88%;
-    font-size: 25px;
-    margin-top: 25px;
-    margin-left: 5px;
-    color: #11bffe;
-    cursor: pointer;
+    right: 25px;
+    bottom: 15px;
     z-index: 5;
+    cursor: pointer;
+    font-size: 25px;
+    position: absolute;
+    color: black;
 }
 
 #closeIcon {
-    position: absolute;
-    color: #11bffe;
-    top: 10%;
-    right: 8%;
+    position: relative;
+    color: @primary_color;
+    bottom: 50px;
+    right: 22px;
     font-weight: bold;
-    font-size: 25px;
+    font-size: 20px;
     cursor: pointer;
 }
 
 #paperResults {
-    left: 10.5%;
+    left: 15%;
     height: 50%;
-    width: 80%;
+    width: 70%;
     position: absolute;
     text-align: center;
-    background-color: rgba(51, 51, 51, 1);
+    background-color: #333333;
+    margin: 10px 10px 10px 10px;
+    padding: 12px 20px 12px 20px;
     overflow: scroll;
     z-index: 5;
 }
 
-/* can be used to customise the scroller
-* #paperResults::-webkit-scrollbar-thumb {
-*     background-color: @primary_color;
-* }
-*/
-
 #paperFilters {
-    top: 22%;
-    right: 10%;
     min-height: 280px;
     min-width: 240px;
     position: absolute;
-    background-color: #404040;
-    color: #11bffe;
+    background-color: #141313;
+    color: white;
     overflow: scroll;
     z-index: 6;
+    border: 3px solid @primary_color;
+    font-family: 'Khand', sans-serif;
+    font-size: 16px;
+    top: 58px;
+    right: 10px;
 }
 
 #singleResult {
