@@ -887,15 +887,9 @@ define(function (require) {
       }); 
       this.state.images = [];
       this.stack.removeChildren();
-      if (props.orth == 0) {
-        console.log('Frontal');
-        this.setStatusText('Frontal');
-      } else if (props.orth == 1) {
-        console.log('Transverse');
-        this.setStatusText('Transverse');
-      } else if (props.orth == 2) {
-        console.log('Sagittal');
-        this.setStatusText('Sagittal');
+      if (props.orth > -1 &&  props.orth < 3) {
+        console.log(props.orthLabel[props.orth]);
+        this.setStatusText(props.orthLabel[props.orth]);
       } else {
         console.log('Orth:' + props.orth);
         this.setStatusText('...');
@@ -1119,6 +1113,7 @@ define(function (require) {
         minDst: -100,
         maxDst: 100,
         orth: 0,
+        orthLabel: (this.props.orthLabel || ['Frontal','Transverse','Sagittal']),
         color: [],
         stack: [],
         label: [],
@@ -1619,7 +1614,7 @@ define(function (require) {
               fxp={this.state.fxp} pit={this.state.pit} yaw={this.state.yaw} rol={this.state.rol}
               stack={this.state.stack} color={this.state.color} setExtent={this.onExtentChange}
               statusText={this.state.text} stackX={this.state.stackX} stackY={this.state.stackY}
-              scl={this.state.scl} orth={this.state.orth}
+              scl={this.state.scl} orth={this.state.orth} orthLabel={this.state.orthLabel}
               label={this.state.label} id={this.state.id} height={this.props.data.height}
               width={this.props.data.width} voxelX={this.state.voxelX}
               voxelY={this.state.voxelY} voxelZ={this.state.voxelZ} displayArea={displayArea}
