@@ -615,7 +615,7 @@ define(function (require) {
           this.state.buffer[-1].text = '';
         }
       }
-      console.log('Buffered ' + (20000-buffMax).toString() + ' tiles');
+      console.log('Buffered ' + (20000 - buffMax).toString() + ' tiles');
     },
 
     checkStack: function () {
@@ -887,7 +887,7 @@ define(function (require) {
       }); 
       this.state.images = [];
       this.stack.removeChildren();
-      if (props.orth > -1 &&  props.orth < 3) {
+      if (props.orth > -1 && props.orth < 3) {
         console.log(props.orthLabel[props.orth]);
         this.setStatusText(props.orthLabel[props.orth]);
       } else {
