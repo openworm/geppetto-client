@@ -58,7 +58,7 @@ export default function (GEPPETTO) {
       /**
        * Creates and populates Geppetto model
        */
-      cleanModel: function() {
+      cleanModel: function () {
         this.allPaths = [];
         this.allStaticVarsPaths = {};
         this.allPathsIndexing = [];
