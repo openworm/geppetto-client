@@ -86,7 +86,7 @@
     "three-render-objects" : "1.13.3",
     "typeahead.js": "^0.11.1",
     "typeface-roboto": "^0.0.54",
-    "underscore": "^1.8.3",
+    "underscore": "~1.9.1",
     "url-join": "^4.0.0",
     "velocity.java": "^1.3.1"
   },
