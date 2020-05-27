@@ -374,11 +374,14 @@ define(function (require) {
 
         callPythonMethod = value => {
           Utils.evalPythonMessage(this.props.method, []).then(response => {
-            if (Object.keys(response).length != 0) {
-              this.setState({ pythonData: response });
-            } else {
-              this.setState({ pythonData: [] });
+            if (this._isMounted) {
+              if (Object.keys(response).length != 0) {
+                this.setState({ pythonData: response });
+              } else {
+                this.setState({ pythonData: [] });
+              }
             }
+            
           });
         }
 
