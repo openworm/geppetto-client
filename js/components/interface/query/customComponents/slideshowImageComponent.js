@@ -17,11 +17,20 @@ define(function (require) {
 
       let initialCheckBoxState = this.getImageInstanceVisibility(this.props.rowData.id)
 
-      this.state = { carouselFullyLoaded: false, checked: initialCheckBoxState , imageID : '', imageInstanceLoading : false };
+      this.state = { 
+        carouselFullyLoaded: false, 
+        checked: initialCheckBoxState, 
+        imageID : '', 
+        imageInstanceLoading : false,
+        initialSlide : 0 
+      };
 
       this.isCarousel = false;
       this.imageContainerId = '';
       this.fullyLoaded = false;
+      this.initialSlide = 0;
+
+      this.slickIndexes = {};
     }
 
     getImageInstanceVisibility (path) {
@@ -31,7 +40,9 @@ define(function (require) {
         if (imageVariable !== undefined) {
           initialCheckBoxState = imageVariable.isVisible();
         }
-      } catch (e) { }
+      } catch (e) {
+        console.info("Instance Variable not Found : " + path); 
+      }
 
       return initialCheckBoxState;
     }
@@ -44,7 +55,8 @@ define(function (require) {
         e.nativeEvent.stopImmediatePropagation();
 
         if (!that.state.imageInstanceLoading) {
-          that.setState({ checked: true, imageInstanceLoading: true, imageID: path }, () => {
+          var index = that.slickIndexes[path];
+          that.setState({ checked: true, imageInstanceLoading: true, imageID: path , initialSlide : index }, () => {
             var actionStr = that.props.metadata.actions.addInstance;
             actionStr = actionStr.replace(/\$entity\$/gi, that.state.imageID);
             GEPPETTO.CommandController.execute(actionStr);
@@ -71,10 +83,15 @@ define(function (require) {
      * Instance added, update state to re-render checbox
      */
     addedInstance (instances) {
+      let that = this;
       if (instances.length > 0) {
         if (this.state.imageID !== "") {
           if (instances[0].getInstancePath().startsWith(this.state.imageID)) {
-            this.setState ( { imageInstanceLoading : false } );
+            // Give a second before updating the checkbox state, otherwise set State happens too fast
+            setTimeout(
+              function() { 
+                that.setState ( { imageInstanceLoading : false } ); 
+              }, 1000);
           }
         }
       }
@@ -107,11 +124,6 @@ define(function (require) {
       GEPPETTO.off(GEPPETTO.Events.Instances_created, this.addedInstance, this);
     }
 
-    componentDidUpdate () {
-      // on component refresh, update slick carousel
-      $('#' + this.imageContainerId + '.slickdiv').slick('unslick').slick();
-    }
-
     /**
      * Fire action associated with image, can't reuse same method as image click 'getImageClickAction'
      * to avoid events error from 'onclick' and 'onchange'
@@ -132,7 +144,8 @@ define(function (require) {
       const value = target.type === 'checkbox' ? target.checked : target.value;
       
       let that = this;
-      this.setState({ checked: value, imageID: path, imageInstanceLoading: true }, () => {
+      var index = that.slickIndexes[path];
+      this.setState({ checked: value, imageID: path, imageInstanceLoading: true , initialSlide : index }, () => {
         let add = true;
         try {
           let imageVariable = eval(that.state.imageID);
@@ -141,7 +154,10 @@ define(function (require) {
               add = false;
             }
           }
-        } catch (e) { }
+        } catch (e) {
+          console.info("Instance Variable not Available for Toggling Visibility ");
+        }
+
         that.fireImageAction(add, that.state.imageID);
       });
     }
@@ -185,7 +201,7 @@ define(function (require) {
 
             var that = this;
             // if it's an array, create a carousel (relies on slick)
-            var elements = value.elements.map(function (item, key) {
+            var elements = value.elements.map(function (item, key, index) {
               if (key < imagesToLoad) {
                 var image = item.initialValue;
                 var action = that.getImageClickAction(image.reference);
@@ -198,6 +214,9 @@ define(function (require) {
 
                 // Retrieve image variable visibility to determine state of checkbox
                 var checked = that.getImageInstanceVisibility(image.reference);
+
+                // Store images in slick container in a map, need to know their indexes for position
+                that.slickIndexes[image.reference] = key;
 
                 return <div key={key} className="query-results-slick-image"> {image.name}
                   <a href='' onClick={action}>
@@ -215,7 +234,7 @@ define(function (require) {
             elements = elements.slice(0, imagesToLoad);
 
             imgElement = <div id={imageContainerId} className="slickdiv query-results-slick collapse in"
-              data-slick={JSON.stringify({ fade: true, centerMode: true, slidesToShow: 1, slidesToScroll: 1 })}>
+              data-slick={JSON.stringify({ fade: true, centerMode: true, slidesToShow: 1, slidesToScroll: 1 , initialSlide : parseInt(that.state.initialSlide) })}>
               {elements}
             </div>
           } else {

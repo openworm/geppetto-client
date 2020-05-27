@@ -130,7 +130,6 @@ define(function (require) {
             case 'ECONNREFUSED':
               console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
               GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, true);
-              // GEPPETTO.MessageSocket.reconnect(e);
               break;
             case undefined:
               console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
