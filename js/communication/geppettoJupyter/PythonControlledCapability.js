@@ -30,7 +30,7 @@ define(function (require) {
             this.state = {};
           }
           this.state.model = props.model;
-          this.state.componentType = WrappedComponent.name || WrappedComponent.Naked.render.name;
+          this.state.componentType = getNameFromWrappedComponent(WrappedComponent);
           this.id = (this.props.id == undefined) ? this.props.model : this.props.id;
           
           this._isMounted = false;
@@ -133,7 +133,7 @@ define(function (require) {
         }
 
         componentDidUpdate (prevProps, prevState) {
-          switch (WrappedComponent.name || WrappedComponent.Naked.render.name) {
+          switch (getNameFromWrappedComponent(WrappedComponent)) {
           case 'AutoComplete':
             if (this.state.searchText !== prevState.searchText && this.props.onChange) {
               this.props.onChange(this.state.searchText);
@@ -253,11 +253,11 @@ define(function (require) {
           if (wrappedComponentProps.realType == 'func' || wrappedComponentProps.realType == 'float') {
             wrappedComponentProps['helperText'] = this.state.errorMsg;
           }
-          if (WrappedComponent.name != 'ListComponent') {
+          if (getNameFromWrappedComponent(WrappedComponent) != 'ListComponent') {
             delete wrappedComponentProps.realType;
           }
 
-          switch (WrappedComponent.name || WrappedComponent.Naked.render.name) {
+          switch (getNameFromWrappedComponent(WrappedComponent)) {
           case 'AutoComplete':
             wrappedComponentProps['onUpdateInput'] = this.handleUpdateInput;
             wrappedComponentProps['searchText'] = this.state.searchText;
@@ -272,8 +272,11 @@ define(function (require) {
             break;
           default:
             wrappedComponentProps['onChange'] = this.handleChange;
-            wrappedComponentProps['value'] = (typeof this.state.value === 'object' && this.state.value !== null && !Array.isArray(this.state.value)) ? JSON.stringify(this.state.value) : this.state.value;
-            wrappedComponentProps.value = wrappedComponentProps.multiple && wrappedComponentProps.value !== undefined && !wrappedComponentProps.value ? [] : wrappedComponentProps.value;
+            wrappedComponentProps.value = (typeof this.state.value === 'object' && this.state.value !== null && !Array.isArray(this.state.value)) ? JSON.stringify(this.state.value) : this.state.value;
+            // Fix case with multiple values: need to set an empty list in case the value is undefined
+            wrappedComponentProps.value = (wrappedComponentProps.multiple && 
+              wrappedComponentProps.value !== undefined 
+              && !wrappedComponentProps.value) ? [] : wrappedComponentProps.value;
             delete wrappedComponentProps.searchText;
             delete wrappedComponentProps.dataSource;
             break;
@@ -435,3 +438,7 @@ define(function (require) {
     },
   }
 })
+function getNameFromWrappedComponent(WrappedComponent) {
+  return WrappedComponent.name || WrappedComponent.Naked.render.name;
+}
+
