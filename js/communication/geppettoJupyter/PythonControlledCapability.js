@@ -274,8 +274,8 @@ define(function (require) {
             wrappedComponentProps['onChange'] = this.handleChange;
             wrappedComponentProps.value = (typeof this.state.value === 'object' && this.state.value !== null && !Array.isArray(this.state.value)) ? JSON.stringify(this.state.value) : this.state.value;
             // Fix case with multiple values: need to set an empty list in case the value is undefined
-            wrappedComponentProps.value = (wrappedComponentProps.multiple && 
-              wrappedComponentProps.value !== undefined 
+            wrappedComponentProps.value = (wrappedComponentProps.multiple 
+              && wrappedComponentProps.value !== undefined 
               && !wrappedComponentProps.value) ? [] : wrappedComponentProps.value;
             delete wrappedComponentProps.searchText;
             delete wrappedComponentProps.dataSource;
@@ -438,7 +438,7 @@ define(function (require) {
     },
   }
 })
-function getNameFromWrappedComponent(WrappedComponent) {
+function getNameFromWrappedComponent (WrappedComponent) {
   return WrappedComponent.name || WrappedComponent.Naked.render.name;
 }
 
