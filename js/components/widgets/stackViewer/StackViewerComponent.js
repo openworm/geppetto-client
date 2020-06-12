@@ -1087,7 +1087,7 @@ define(function (require) {
 
   var StackViewerComponent = createClass({
     _isMounted: false,
-    
+
     getInitialState: function () {
       return {
         zoomLevel: 1.0,
@@ -1097,7 +1097,7 @@ define(function (require) {
         stackY: 0,
         imageX: 10240,
         imageY: 10240,
-        fxp: [511, 255, 108],
+        fxp: (JSON.parse(this.props.config.subDomains[4][0]) || [511, 255, 108]),
         pit: 0,
         yaw: 0,
         rol: 0,
@@ -1112,9 +1112,9 @@ define(function (require) {
         stack: [],
         label: [],
         id: [],
-        tempId: [],
-        tempName: [],
-        tempType: [],
+        tempId: (this.props.config.subDomains[1] || []),
+        tempName: (this.props.config.subDomains[2] || []),
+        tempType: (this.props.config.subDomains[3] || []),
         plane: null,
         initalised: false,
         slice: false
@@ -1195,50 +1195,9 @@ define(function (require) {
     componentDidUpdate: function (prevProps, prevState) {
       if (this.props.data && this.props.data != null) {
         var newState = {}
-        if (this.props.data.height && this.props.data.height != null) {
-          newState.height = this.props.data.height;
-        }
-        if (this.props.data.width && this.props.data.width != null) {
-          newState.width = this.props.data.width;
-        }
-        if (this.props.config && this.props.config != null && this.props.config.subDomains && this.props.config.subDomains != null && this.props.config.subDomains.length && this.props.config.subDomains.length > 0 && this.props.config.subDomains[0] && this.props.config.subDomains[0].length && this.props.config.subDomains[0].length > 2) {
-          newState.voxelX = Number(this.props.config.subDomains[0][0] || 0.622088);
-          newState.voxelY = Number(this.props.config.subDomains[0][1] || 0.622088);
-          newState.voxelZ = Number(this.props.config.subDomains[0][2] || 0.622088);
-        }
-        if (this.props.config && this.props.config != null) {
-          if (this.props.config.subDomains && this.props.config.subDomains != null && this.props.config.subDomains.length) {
-            if (this.props.config.subDomains.length > 0 && this.props.config.subDomains[0] && this.props.config.subDomains[0].length && this.props.config.subDomains[0].length > 2) {
-              newState.voxelX = Number(this.props.config.subDomains[0][0] || 0.622088);
-              newState.voxelY = Number(this.props.config.subDomains[0][1] || 0.622088);
-              newState.voxelZ = Number(this.props.config.subDomains[0][2] || 0.622088);
-            }
-            if (this.props.config.subDomains.length > 4 && this.props.config.subDomains[1] != null) {
-              newState.tempName = this.props.config.subDomains[2];
-              newState.tempId = this.props.config.subDomains[1];
-              newState.tempType = this.props.config.subDomains[3];
-              if (this.props.config.subDomains[4] && this.props.config.subDomains[4].length && this.props.config.subDomains[4].length > 0) {
-                newState.fxp = JSON.parse(this.props.config.subDomains[4][0]);
-              }
-            }
-          }
-        }
-        if (this.props.voxel && this.props.voxel != null) {
 
-          newState.voxelX = this.props.voxel.x;
-          newState.voxelY = this.props.voxel.y;
-          newState.voxelZ = this.props.voxel.z;
-        }
         if (this.props.data.instances && this.props.data.instances != null) {
-          if (JSON.stringify(newState) !== "{}"){
-            this.setState(newState, () => {
-              this.handleInstances(this.props.data.instances);
-            });
-          } else {
-            this.handleInstances(this.props.data.instances);
-          }
-        } else if (JSON.stringify(newState) !== "{}"){
-          this.setState(newState);
+          this.handleInstances(this.props.data.instances);
         }
       }
     },
@@ -1279,7 +1238,7 @@ define(function (require) {
             console.log(err.stack);
           }
         }
-        
+
         if (server != this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) && server != null) {
           newState.serverURL = server;
         }
