@@ -1097,7 +1097,7 @@ define(function (require) {
         stackY: 0,
         imageX: 10240,
         imageY: 10240,
-        fxp: (JSON.parse(this.props.config.subDomains[4][0]) || [511, 255, 108]),
+        fxp: JSON.parse(this.props.config.subDomains[4][0] || '[511, 255, 108]'),
         pit: 0,
         yaw: 0,
         rol: 0,
