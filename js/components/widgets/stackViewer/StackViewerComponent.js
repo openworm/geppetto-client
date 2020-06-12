@@ -130,14 +130,64 @@ define(function (require) {
 
     },
 
-    componentDidUpdate: function () {
+    componentDidUpdate: function (prevProps, prevState) {
       // console.log('Canvas update');
       if (this.renderer.width !== this.props.width || this.renderer.height !== this.props.height) {
         this.renderer.resize(this.props.width, this.props.height);
         this.props.onHome();
       }
-      this.checkStack();
-      this.callPlaneEdges();
+      var updDst = false;
+      if (this.props.stack !== this.state.stack || this.props.color !== this.state.color || this.state.serverUrl !== this.props.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) || this.state.id !== this.props.id) {
+        this.setState({
+          stack: this.props.stack,
+          color: this.props.color,
+          label: this.props.label,
+          id: this.props.id,
+          serverUrl: this.props.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol)
+        });
+        this.createImages();
+        this.updateImages(this.props);
+        this.checkStack();
+      }
+      if (this.props.scl !== this.state.scl || this.props.zoomLevel !== prevProps.zoomLevel || this.props.width !== prevProps.width || this.props.height !== prevProps.height || this.props.stackX !== this.stack.position.x || this.props.stackY !== this.stack.position.y){
+        if (this.props.scl < this.state.scl) {
+          // wipe the stack if image is getting smaller
+          this.state.images = [];
+          this.stack.removeChildren();
+        }
+        this.stack.position.x = this.props.stackX;
+        this.stack.position.y = this.props.stackY;
+        this.state.scl = this.props.scl;
+        this.setState({ scl: this.props.scl });
+        this.updateZoomLevel(nextProps);
+        updDst = true;
+      }
+      if (this.props.fxp[0] !== prevProps.fxp[0] || this.props.fxp[1] !== prevProps.fxp[1] || this.props.fxp[2] !== prevProps.fxp[2]) {
+        this.state.dst = this.props.dst;
+        this.setState({ dst: this.props.dst });
+        updDst = true;
+      }
+      if (this.props.statusText !== prevProps.statusText && this.props.statusText.trim() !== '') {
+        this.updateStatusText(nextProps);
+      }
+      
+      if (this.props.orth !== this.state.orth || this.props.pit !== this.state.pit || this.props.yaw !== this.state.yaw || this.props.rol !== this.state.rol) {
+        if (this.props.orth !== this.state.orth) {
+          this.state.recenter = true;
+        }
+        this.changeOrth(nextProps);
+        updDst = true;
+      }
+      if (this.props.dst !== this.state.dst) {
+        this.state.dst = this.props.dst;
+        this.setState({ dst: this.props.dst });
+        updDst = true;
+      }
+      if (updDst) {
+        this.updateImages(nextProps);
+        this.checkStack();
+        this.callPlaneEdges();
+      }
     },
 
     componentWillUnmount: function () {
@@ -789,64 +839,6 @@ define(function (require) {
     },
 
     /**
-     * When we get new props, run the appropriate imperative functions
-     *
-     */
-    componentWillReceiveProps: function (nextProps) {
-      var updDst = false;
-      if (nextProps.stack !== this.state.stack || nextProps.color !== this.state.color || this.state.serverUrl !== nextProps.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) || this.state.id !== nextProps.id) {
-        this.setState({
-          stack: nextProps.stack,
-          color: nextProps.color,
-          label: nextProps.label,
-          id: nextProps.id,
-          serverUrl: nextProps.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol)
-        });
-        this.createImages();
-        this.updateImages(nextProps);
-        this.checkStack();
-      }
-      if (nextProps.scl !== this.state.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextProps.stackX !== this.stack.position.x || nextProps.stackY !== this.stack.position.y){
-        if (nextProps.scl < this.state.scl) {
-          // wipe the stack if image is getting smaller
-          this.state.images = [];
-          this.stack.removeChildren();
-        }
-        this.stack.position.x = nextProps.stackX;
-        this.stack.position.y = nextProps.stackY;
-        this.state.scl = nextProps.scl;
-        this.setState({ scl: nextProps.scl });
-        this.updateZoomLevel(nextProps);
-        updDst = true;
-      }
-      if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
-        this.state.dst = nextProps.dst;
-        this.setState({ dst: nextProps.dst });
-        updDst = true;
-      }
-      if (nextProps.statusText !== this.props.statusText && nextProps.statusText.trim() !== '') {
-        this.updateStatusText(nextProps);
-      }
-      
-      if (nextProps.orth !== this.state.orth || nextProps.pit !== this.state.pit || nextProps.yaw !== this.state.yaw || nextProps.rol !== this.state.rol) {
-        if (nextProps.orth !== this.state.orth) {
-          this.state.recenter = true;
-        }
-        this.changeOrth(nextProps);
-        updDst = true;
-      }
-      if (nextProps.dst !== this.state.dst) {
-        this.state.dst = nextProps.dst;
-        this.setState({ dst: nextProps.dst });
-        updDst = true;
-      }
-      if (updDst) {
-        this.updateImages(nextProps);
-        this.checkStack();
-        this.callPlaneEdges();
-      }
-    },
-    /**
      * Update the stage "zoom" level by setting the scale
      *
      */
@@ -1200,50 +1192,50 @@ define(function (require) {
       }
     },
 
-    componentWillReceiveProps: function (nextProps) {
-      if (nextProps.data && nextProps.data != null) {
+    componentDidUpdate: function (prevProps, prevState) {
+      if (this.props.data && this.props.data != null) {
         var newState = {}
-        if (nextProps.data.height && nextProps.data.height != null) {
-          newState.height = nextProps.data.height;
+        if (this.props.data.height && this.props.data.height != null) {
+          newState.height = this.props.data.height;
         }
-        if (nextProps.data.width && nextProps.data.width != null) {
-          newState.width = nextProps.data.width;
+        if (this.props.data.width && this.props.data.width != null) {
+          newState.width = this.props.data.width;
         }
-        if (nextProps.config && nextProps.config != null && nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length && nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-          newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
-          newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
-          newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
+        if (this.props.config && this.props.config != null && this.props.config.subDomains && this.props.config.subDomains != null && this.props.config.subDomains.length && this.props.config.subDomains.length > 0 && this.props.config.subDomains[0] && this.props.config.subDomains[0].length && this.props.config.subDomains[0].length > 2) {
+          newState.voxelX = Number(this.props.config.subDomains[0][0] || 0.622088);
+          newState.voxelY = Number(this.props.config.subDomains[0][1] || 0.622088);
+          newState.voxelZ = Number(this.props.config.subDomains[0][2] || 0.622088);
         }
-        if (nextProps.config && nextProps.config != null) {
-          if (nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length) {
-            if (nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-              newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
-              newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
-              newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
+        if (this.props.config && this.props.config != null) {
+          if (this.props.config.subDomains && this.props.config.subDomains != null && this.props.config.subDomains.length) {
+            if (this.props.config.subDomains.length > 0 && this.props.config.subDomains[0] && this.props.config.subDomains[0].length && this.props.config.subDomains[0].length > 2) {
+              newState.voxelX = Number(this.props.config.subDomains[0][0] || 0.622088);
+              newState.voxelY = Number(this.props.config.subDomains[0][1] || 0.622088);
+              newState.voxelZ = Number(this.props.config.subDomains[0][2] || 0.622088);
             }
-            if (nextProps.config.subDomains.length > 4 && nextProps.config.subDomains[1] != null) {
-              newState.tempName = nextProps.config.subDomains[2];
-              newState.tempId = nextProps.config.subDomains[1];
-              newState.tempType = nextProps.config.subDomains[3];
-              if (nextProps.config.subDomains[4] && nextProps.config.subDomains[4].length && nextProps.config.subDomains[4].length > 0) {
-                newState.fxp = JSON.parse(nextProps.config.subDomains[4][0]);
+            if (this.props.config.subDomains.length > 4 && this.props.config.subDomains[1] != null) {
+              newState.tempName = this.props.config.subDomains[2];
+              newState.tempId = this.props.config.subDomains[1];
+              newState.tempType = this.props.config.subDomains[3];
+              if (this.props.config.subDomains[4] && this.props.config.subDomains[4].length && this.props.config.subDomains[4].length > 0) {
+                newState.fxp = JSON.parse(this.props.config.subDomains[4][0]);
               }
             }
           }
         }
-        if (nextProps.voxel && nextProps.voxel != null) {
-          
-          newState.voxelX = nextProps.voxel.x;
-          newState.voxelY = nextProps.voxel.y; 
-          newState.voxelZ = nextProps.voxel.z; 
+        if (this.props.voxel && this.props.voxel != null) {
+
+          newState.voxelX = this.props.voxel.x;
+          newState.voxelY = this.props.voxel.y;
+          newState.voxelZ = this.props.voxel.z;
         }
-        if (nextProps.data.instances && nextProps.data.instances != null) {
+        if (this.props.data.instances && this.props.data.instances != null) {
           if (JSON.stringify(newState) !== "{}"){
             this.setState(newState, () => {
-              this.handleInstances(nextProps.data.instances);
+              this.handleInstances(this.props.data.instances);
             });
           } else {
-            this.handleInstances(nextProps.data.instances);
+            this.handleInstances(this.props.data.instances);
           }
         } else if (JSON.stringify(newState) !== "{}"){
           this.setState(newState);
