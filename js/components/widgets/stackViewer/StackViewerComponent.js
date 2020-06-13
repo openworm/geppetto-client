@@ -1193,9 +1193,7 @@ define(function (require) {
     },
 
     componentDidUpdate: function (prevProps, prevState) {
-      if (this.props.data && this.props.data != null) {
-        var newState = {}
-
+      if (prevProps.data != undefined && prevProps.data != null && prevProps.data.instances != undefined && this.props.data.instances.length <> prevProps.data.instances.length ) {
         if (this.props.data.instances && this.props.data.instances != null) {
           this.handleInstances(this.props.data.instances);
         }
@@ -1258,7 +1256,7 @@ define(function (require) {
         newState = { label: [], stack: [], id: [], color: [] };
       }
       if (JSON.stringify(newState) !== "{}") {
-        this.setState(newState);  
+        this.setState(newState);
       }
     },
 
@@ -1302,8 +1300,8 @@ define(function (require) {
         scl: scale,
         text: text,
         dst: newDst,
-        stackX: stackX, 
-        stackY: stackY 
+        stackX: stackX,
+        stackY: stackY
       });
     },
 
