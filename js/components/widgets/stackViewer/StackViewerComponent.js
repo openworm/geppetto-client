@@ -1193,7 +1193,7 @@ define(function (require) {
     },
 
     componentDidUpdate: function (prevProps, prevState) {
-      if (prevProps.data != undefined && prevProps.data != null && prevProps.data.instances != undefined && this.props.data.instances.length <> prevProps.data.instances.length ) {
+      if (prevProps.data != undefined && prevProps.data != null && prevProps.data.instances != undefined && this.props.data.instances.length != prevProps.data.instances.length ) {
         if (this.props.data.instances && this.props.data.instances != null) {
           this.handleInstances(this.props.data.instances);
         }
