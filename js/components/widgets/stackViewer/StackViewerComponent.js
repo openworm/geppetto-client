@@ -1168,7 +1168,7 @@ define(function (require) {
 
           newdst += Number((stepDepth * step).toFixed(1));
           if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
-            this.setState({ dst: newdst, text: 'Depth:' + ((newdst/this.state.scl) - (this.state.minDst / 10.0)).toFixed(1) });
+            this.setState({ dst: newdst, text: 'Depth:' + ((newdst / this.state.scl) - (this.state.minDst / 10.0)).toFixed(1) });
           } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
             newdst = ((this.state.minDst / 10.0) * this.state.scl);
             this.setState({ dst: newdst, text: 'First slice!' });
