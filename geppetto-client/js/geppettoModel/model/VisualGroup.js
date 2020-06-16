@@ -8,20 +8,18 @@
  * @author Matteo Cantarelli
  */
 
+const ObjectWrapper = require('./ObjectWrapper').default;
+const VisualGroupElement = require('./VisualGroupElement').default;
 
-var ObjectWrapper = require('./ObjectWrapper').default;
-var VisualGroupElement = require('./VisualGroupElement').default;
-
-
-function VisualGroup (options) {
+function VisualGroup(options) {
   ObjectWrapper.prototype.constructor.call(this, options);
-  this.visualGroupElements = (options.visualGroupElements != undefined) ? options.visualGroupElements : [];
-  this.tags = (options.tags != undefined) ? options.tags : [];
+  this.visualGroupElements =
+    options.visualGroupElements != undefined ? options.visualGroupElements : [];
+  this.tags = options.tags != undefined ? options.tags : [];
 }
 
 VisualGroup.prototype = Object.create(ObjectWrapper.prototype);
 VisualGroup.prototype.constructor = VisualGroup;
-
 
 /**
  * Get low spectrum color
@@ -67,10 +65,9 @@ VisualGroup.prototype.getChildren = function () {
   return this.visualGroupElements;
 };
 
-
 VisualGroup.prototype.show = function (mode, instances) {
-  var message;
-  var elements = this.getVisualGroupElements();
+  let message;
+  const elements = this.getVisualGroupElements();
 
   if (instances == undefined) {
     var instances = GEPPETTO.ModelFactory.getAllInstancesOf(this.getParent());
@@ -91,16 +88,19 @@ VisualGroup.prototype.show = function (mode, instances) {
   return message;
 };
 
-VisualGroup.prototype.showAllVisualGroupElements = function (elements, mode, instances) {
-  var groups = {};
-  var allElements = [];
+VisualGroup.prototype.showAllVisualGroupElements = function (
+  elements,
+  mode,
+  instances
+) {
+  const groups = {};
+  const allElements = [];
 
-  var total = 0;
+  let total = 0;
 
-
-  for (var i = 0; i < elements.length; i++) {
+  for (let i = 0; i < elements.length; i++) {
     if (elements[i].getValue() != null) {
-      total = total + parseFloat(elements[i].getValue());
+      total += parseFloat(elements[i].getValue());
       allElements.push(elements[i].getValue());
     }
   }
@@ -109,62 +109,82 @@ VisualGroup.prototype.showAllVisualGroupElements = function (elements, mode, ins
   this.maxDensity = Math.max.apply(null, allElements);
 
   // highlight all reference nodes
-  for (var j = 0; j < elements.length; j++) {
+  for (let j = 0; j < elements.length; j++) {
     groups[elements[j].getId()] = {};
-    var color = elements[j].getColor();
+    let color = elements[j].getColor();
     if (elements[j].getValue() != null) {
-      var intensity = 1;
+      let intensity = 1;
       if (this.maxDensity != this.minDensity) {
-        intensity = (elements[j].getValue() - this.minDensity) / (this.maxDensity - this.minDensity);
+        intensity =
+          (elements[j].getValue() - this.minDensity) /
+          (this.maxDensity - this.minDensity);
       }
 
-      color = GEPPETTO.Utility.rgbToHex(255, Math.floor(255 - (255 * intensity)), 0);
+      color = GEPPETTO.Utility.rgbToHex(
+        255,
+        Math.floor(255 - 255 * intensity),
+        0
+      );
     }
     groups[elements[j].getId()].color = color;
   }
 
-  GEPPETTO.SceneController.showVisualGroups(groups, mode, instances);
+  // TODO: Workaround
+  if (GEPPETTO.SceneController) {
+    GEPPETTO.SceneController.showVisualGroups(groups, mode, instances);
+  } else {
+    const scenes = document.getElementsByClassName(`scene`);
+
+    const event = new CustomEvent('visual_groups', {
+      detail: { groups: groups, mode: mode, instances: instances },
+    });
+    for (const s of scenes) {
+      s.dispatchEvent(event);
+    }
+  }
 };
 
 VisualGroup.prototype.getMinDensity = function () {
+  const allElements = [];
 
-  var allElements = [];
-
-  var elements = this.getVisualGroupElements();
+  const elements = this.getVisualGroupElements();
 
   // calculate mean;
-  for (var i = 0; i < elements.length; i++) {
+  for (let i = 0; i < elements.length; i++) {
     if (elements[i].getValue() != null) {
       allElements.push(elements[i].getValue());
     }
   }
 
-  return (allElements.length == 0) ? null : Math.min.apply(null, allElements);
+  return allElements.length == 0 ? null : Math.min.apply(null, allElements);
 };
 
 VisualGroup.prototype.getMaxDensity = function () {
-  var allElements = [];
+  const allElements = [];
 
-  var elements = this.getVisualGroupElements();
+  const elements = this.getVisualGroupElements();
 
   // calculate mean;
-  for (var i = 0; i < elements.length; i++) {
+  for (let i = 0; i < elements.length; i++) {
     if (elements[i].getValue() != null) {
       allElements.push(elements[i].getValue());
     }
   }
 
-  return (allElements.length == 0) ? null : Math.max.apply(null, allElements);
+  return allElements.length == 0 ? null : Math.max.apply(null, allElements);
 };
 
 /**
  * Print out formatted node
  */
 VisualGroup.prototype.print = function () {
-  return "Name : " + this.getName() + "\n" + "    Id: " + this.getId() + "\n"
-            + "    Type : " + this.getType() + "\n"
-            + "    HighSpectrumColor : " + this.getHighSpectrumColor() + "\n"
-            + "    LowSpectrumColor : " + this.getLowSpectrumColor() + "\n";
+  return (
+    `Name : ${this.getName()}\n` +
+    `    Id: ${this.getId()}\n` +
+    `    Type : ${this.getType()}\n` +
+    `    HighSpectrumColor : ${this.getHighSpectrumColor()}\n` +
+    `    LowSpectrumColor : ${this.getLowSpectrumColor()}\n`
+  );
 };
 
 // Compatibility with new imports and old require syntax
