@@ -1435,6 +1435,7 @@ define(function (require) {
         rol = 0;
       }
       this.setState({ orth: orth, pit: pit, yaw: yaw, rol: rol, dst: 0, stackX: 0, stackY: 0 });
+      setTimeout(this.onHome, 5000);
     },
 
     toggleSlice: function () {
