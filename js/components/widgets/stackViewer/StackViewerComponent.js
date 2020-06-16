@@ -127,6 +127,8 @@ define(function (require) {
 
       this.callPlaneEdges();
 
+      setTimeout(this.bufferStack, 30000);
+
     },
 
     componentDidUpdate: function () {
@@ -232,9 +234,10 @@ define(function (require) {
             // console.log('Stack Depth: ' + ((max - min) / 10.0).toFixed(0));
             this.checkStack();
             this.callPlaneEdges();
-            if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-              this.state.buffer[-1].text = '';
-            }
+            this.iBuffer = {};
+            this.state.lastUpdate = 0;
+            this.bufferStack();
+            this.animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -257,6 +260,10 @@ define(function (require) {
             this.setState({ tileX: tileX, tileY: tileY });
             this.checkStack();
             this.callPlaneEdges();
+            this.iBuffer = {};
+            this.state.lastUpdate = 0;
+            this.bufferStack();
+            this.animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -281,6 +288,10 @@ define(function (require) {
             this.props.setExtent(extent);
             this.checkStack();
             this.callPlaneEdges();
+            this.iBuffer = {};
+            this.state.lastUpdate = 0;
+            this.bufferStack();
+            this.animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -553,7 +564,7 @@ define(function (require) {
             }
           }
         }
-        if (buffMax > 1) { 
+        if (buffMax > 1) {
           var distance = Number(Number(this.state.dst).toFixed(1));
           this.state.lastUpdate = Date.now();
           var step = 0;
@@ -621,11 +632,6 @@ define(function (require) {
           console.log('Loading ' + loadList.size + ' slices/tiles...');
           function loadProgressHandler (loader, resource) {
             this.setStatusText('Buffering stack ' + loader.progress.toFixed(1) + "%");
-            // sort position after 10% loaded.
-            if (this._initialized === false && loader.progress > 5) {
-              this.props.onHome();
-              this._initialized = true;
-            }
           }
 
           function setup () {
@@ -637,14 +643,15 @@ define(function (require) {
             // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
             if (this._isMounted === true && this._initialized === false) {
               // this.props.canvasRef.resetCamera();
-              this.props.onHome();
               this._initialized = true;
+              this.props.onHome();
             }
             if (this.state.text.indexOf('Buffering stack') > -1) {
               this.state.buffer[-1].text = '';
             }
             this.state.bufferRunning = false;
             this.state.lastUpdate = Date.now();
+            this.animate();
           }
 
           var imageLoader = new PIXI.loaders.Loader();
@@ -674,11 +681,6 @@ define(function (require) {
         return;
       }
 
-      if (this.disp.width > 1) {
-        this.disp.position.x = ((this.props.width / 2) - ((((this.state.imageX / 10.0) * this.state.scl) * this.disp.scale.x) / 2));
-        this.disp.position.y = ((this.props.height / 2) - ((((this.state.imageY / 10.0) * this.state.scl) * this.disp.scale.y) / 2));
-      }
-
       if (this.state.stack.length < 1) {
         this.state.images = [];
         this.stack.removeChildren();
@@ -703,6 +705,12 @@ define(function (require) {
       }
       // console.log('Updating scene...');
       this.createImages();
+
+      if (this.disp.width > 1) {
+        this.disp.position.x = ((this.props.width / 2) - ((((this.state.imageX / 10.0) * this.state.scl) * this.disp.scale.x) / 2));
+        this.disp.position.y = ((this.props.height / 2) - ((((this.state.imageY / 10.0) * this.state.scl) * this.disp.scale.y) / 2));
+      }
+
     },
 
     generateColor: function () {
@@ -1267,6 +1275,9 @@ define(function (require) {
       if (this.props.data && this.props.data != null && this.props.data.instances && this.props.data.instances != null) {
         this.setState(this.handleInstances(this.props.data.instances));
       }
+
+      setTimeout(this.onHome, 5000);
+
     },
 
     componentDidUpdate: function (prevProps, prevState) {
