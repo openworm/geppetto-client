@@ -133,6 +133,14 @@ define(['jquery'], function () {
       this.canvasCreated = true;
     },
 
+    startAnimation: function () {
+      this.animationRunning = true;
+      this.animate();
+    },
+
+    stopAnimation: function () {
+      this.animationRunning = false;
+    },
 
     addHoverListener: function (listener) {
       if (this.hoverListeners == undefined) {
@@ -1514,15 +1522,20 @@ define(['jquery'], function () {
      * Rotate the camera around the selection
      *
      */
-    autoRotate: function () {
+    autoRotate: function (props) {
+      var { movieFilter } = props;
       var that = this;
       if (this.rotate == null) {
-        this.movieMode(true);
+        if (movieFilter) {
+          this.movieMode(true);
+        }
         this.rotate = setInterval(function () {
           that.incrementCameraRotate(0.01, 0)
         }, 100);
       } else {
-        this.movieMode(false);
+        if (movieFilter) {
+          this.movieMode(false);
+        }
         clearInterval(this.rotate);
         this.rotate = null;
       }
@@ -1535,9 +1548,6 @@ define(['jquery'], function () {
       var that = this;
       that.debugUpdate = that.needsUpdate;
       // so that we log only the cycles when we are updating the scene
-      if (!this.animationRunning) {
-        return;
-      }
 
       that.controls.update();
 
