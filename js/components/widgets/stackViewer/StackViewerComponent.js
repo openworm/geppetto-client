@@ -319,8 +319,8 @@ define(function (require) {
           }
           coordinates[0] = x.toFixed(0);
           coordinates[1] = y.toFixed(0);
-          x = x + (this.app.width / (this.disp.scale.x * this.state.scl));
-          y = y + (this.app.height / (this.disp.scale.y * this.state.scl));
+          x = x + (this.app.renderer.width / (this.disp.scale.x * this.state.scl));
+          y = y + (this.app.renderer.height / (this.disp.scale.y * this.state.scl));
           coordinates[2] = x.toFixed(0);
           coordinates[3] = y.toFixed(0);
           if (this.state.orth == 0) { // frontal
