@@ -133,6 +133,18 @@ define(['jquery'], function () {
       this.canvasCreated = true;
     },
 
+    startAnimation: function () {
+      if (this.animationRunning == false) {
+        this.animationRunning = true;
+        this.animate();
+      }
+    },
+
+    stopAnimation: function () {
+      if (this.rotate == null && this.animationRunning === true) {
+        this.animationRunning = false;
+      }
+    },
 
     addHoverListener: function (listener) {
       if (this.hoverListeners == undefined) {
@@ -1514,15 +1526,20 @@ define(['jquery'], function () {
      * Rotate the camera around the selection
      *
      */
-    autoRotate: function () {
+    autoRotate: function (props) {
+      var { movieFilter } = props;
       var that = this;
       if (this.rotate == null) {
-        this.movieMode(true);
+        if ( movieFilter === undefined || movieFilter === true ) {
+          this.movieMode(true);
+        }
         this.rotate = setInterval(function () {
           that.incrementCameraRotate(0.01, 0)
         }, 100);
       } else {
-        this.movieMode(false);
+        if ( movieFilter === undefined || movieFilter === true ) {
+          this.movieMode(false);
+        }
         clearInterval(this.rotate);
         this.rotate = null;
       }

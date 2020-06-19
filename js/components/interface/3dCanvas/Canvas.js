@@ -41,15 +41,13 @@ define(function (require) {
 
     startAnimation () {
       if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
-        this.engine.animationRunning = true;
-        this.engine.animate();
+        this.engine.startAnimation();
       }
     }
 
     stopAnimation () {
       if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
-        this.engine.animationRunning = false;
-        this.engine.animate();
+        this.engine.stopAnimation();
       }
     }
 
@@ -245,7 +243,9 @@ define(function (require) {
      */
     add3DPlane (x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, textureURL) {
       this.startAnimation();
-      return this.engine.add3DPlane(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, textureURL);
+      let returnValue = this.engine.add3DPlane(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, textureURL);
+      this.stopAnimation();
+      return returnValue;
     }
 
     /**
@@ -268,7 +268,9 @@ define(function (require) {
      */
     modify3DPlane (object, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4) {
       this.startAnimation();
-      return this.engine.modify3DPlane(object, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4);
+      let returnValue = this.engine.modify3DPlane(object, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4);
+      this.stopAnimation();
+      return returnValue;
     }
 
     /**
@@ -647,7 +649,7 @@ define(function (require) {
      * @return {Canvas}
      */
     autoRotate () {
-      this.engine.autoRotate();
+      this.engine.autoRotate({ movieFilter: this.props.movieFilter });
       return this;
     }
 
