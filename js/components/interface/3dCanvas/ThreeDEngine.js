@@ -1552,9 +1552,6 @@ define(['jquery'], function () {
       var that = this;
       that.debugUpdate = that.needsUpdate;
       // so that we log only the cycles when we are updating the scene
-      if (!this.animationRunning) {
-        return;
-      }
 
       that.controls.update();
 

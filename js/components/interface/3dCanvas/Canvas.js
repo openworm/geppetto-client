@@ -36,7 +36,6 @@ define(function (require) {
       }
       
       this.initialCameraReset = false;
-      this.animationRunning = false;
     }
 
     startAnimation () {
@@ -126,7 +125,6 @@ define(function (require) {
      * @param object
      */
     removeObject (object) {
-      this.startAnimation();
       this.engine.removeObject(object);
     }
 
@@ -153,7 +151,6 @@ define(function (require) {
      * @return {Canvas}
      */
     selectInstance (instancePath, geometryIdentifier) {
-      this.startAnimation();
       this.engine.selectInstance(instancePath, geometryIdentifier);
       return this;
     }
@@ -165,7 +162,6 @@ define(function (require) {
      * @returns {Canvas}
      */
     deselectInstance (instancePath) {
-      this.startAnimation();
       this.engine.deselectInstance(instancePath);
       return this;
     }
@@ -176,7 +172,6 @@ define(function (require) {
      * @returns {Canvas}
      */
     assignRandomColor (instance) {
-      this.startAnimation();
       this.engine.assignRandomColor(instance);
       return this;
     }
@@ -187,7 +182,6 @@ define(function (require) {
      * @return {Canvas}
      */
     zoomTo (instances) {
-      this.startAnimation();
       this.engine.zoomTo(instances);
       return this;
     }
@@ -198,7 +192,6 @@ define(function (require) {
      * @return {Canvas}
      */
     setWireframe (wireframe) {
-      this.startAnimation();
       this.engine.setWireframe(wireframe);
       return this;
     }
@@ -209,7 +202,6 @@ define(function (require) {
      * @return {Canvas}
      */
     enablePicking (pickingEnabled) {
-      this.startAnimation();
       this.engine.enablePicking(pickingEnabled);
       return this;
     }
@@ -279,7 +271,6 @@ define(function (require) {
      *  @param {boolean} mode - Show or hide connection lines
      */
     showConnectionLines (instancePath, mode) {
-      this.startAnimation();
       this.engine.showConnectionLines(instancePath, mode);
       return this;
     }
@@ -291,7 +282,6 @@ define(function (require) {
      * @return {Canvas}
      */
     showInstance (instancePath) {
-      this.startAnimation();
       this.engine.showInstance(instancePath);
       return this;
     }
@@ -303,7 +293,6 @@ define(function (require) {
      * @return {Canvas}
      */
     hideInstance (instancePath) {
-      this.startAnimation();
       this.engine.hideInstance(instancePath);
       return this;
     }
@@ -314,7 +303,6 @@ define(function (require) {
      * @return {Canvas}
      */
     hideAllInstances () {
-      this.startAnimation();
       this.engine.hideAllInstances();
       return this;
     }
@@ -326,7 +314,6 @@ define(function (require) {
      * @return {Canvas}
      */
     setBackgroundColor (color) {
-      this.startAnimation();
       this.viewState.custom.backgroundColor = color;
       this.setDirty(true);
       $(this.getContainer()).css("background", color);
@@ -343,7 +330,6 @@ define(function (require) {
      * @return {Canvas}
      */
     setColor (path, color, recursion) {
-      this.startAnimation();
       if (recursion === undefined) {
         recursion = false;
       }
@@ -833,24 +819,6 @@ define(function (require) {
 
         var that = this;
 
-        if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
-          $("#" + this.props.id + "_component").on("mouseover", function (event, ui) {
-            that.startAnimation();
-          });
-
-          $("#" + this.props.id + "_component").on("mouseout", function (event, ui) {
-            that.stopAnimation();
-          });
-
-          GEPPETTO.on(GEPPETTO.Events.selectInstance, () => {
-            this.stopAnimation();
-          }, this);
-
-          GEPPETTO.on(GEPPETTO.Events.deselectInstance, () => {
-            this.stopAnimation();
-          }, this);
-        }
-
         window.addEventListener('resize', function () {
           var [width, height] = that.setContainerDimensions();
           that.engine.setSize(width, height);
@@ -875,7 +843,6 @@ define(function (require) {
             this.resetCamera();
             this.initialCameraReset = false;
           }
-          this.startAnimation();
         }, this);
 
         this.initialCameraReset = true;
