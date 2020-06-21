@@ -15,7 +15,7 @@ define(function (require) {
       this.fireImageAction = this.fireImageAction.bind(this);
       this.getImageInstanceVisibility = this.getImageInstanceVisibility.bind(this);
 
-      let initialCheckBoxState = this.getImageInstanceVisibility(this.props.rowData.id)
+      let initialCheckBoxState = this.getImageInstanceVisibility(JSON.parse(_this.props.data).initialValues[0].value.reference)
 
       this.state = { 
         carouselFullyLoaded: false, 
