@@ -22,7 +22,8 @@ define(function (require) {
         checked: initialCheckBoxState, 
         imageID : '', 
         imageInstanceLoading : false,
-        initialSlide : 0 
+        initialSlide : 0,
+        disabled: false
       };
 
       this.isCarousel = false;
@@ -39,6 +40,7 @@ define(function (require) {
         let imageVariable = eval(path);
         if (imageVariable !== undefined) {
           initialCheckBoxState = imageVariable.isVisible();
+          this.state.disabled = !imageVariable.isVisible();
         }
       } catch (e) {
         console.info("Instance Variable not Found : " + path); 
@@ -152,6 +154,8 @@ define(function (require) {
           if (imageVariable !== undefined) {
             if (imageVariable.isVisible()) {
               add = false;
+            }else{
+              this.state.disabled = !imageVariable.isVisible();
             }
           }
         } catch (e) {
@@ -205,7 +209,6 @@ define(function (require) {
               if (key < imagesToLoad) {
                 var image = item.initialValue;
                 var action = that.getImageClickAction(image.reference);
-                
                 // Since a carousel has multiple images, we make sure the image getting rendered here is the one saved in the state
                 var loading = that.state.imageInstanceLoading;
                 if ( that.state.imageID !== image.reference ) {
@@ -225,7 +228,7 @@ define(function (require) {
                   {loading
                     ? (<div id={image.reference + "-loader"} className="loader"></div>)
                     : (<input id={image.reference + "-checkbox"} className="query-results-checkbox" type="checkbox"
-                      onChange={event => that.checkboxAction(event, image.reference)} checked={checked} />)
+                      onChange={event => that.checkboxAction(event, image.reference)} checked={checked} disabled={!this.state.disabled}/>)
                   }
                 </div>
               }
