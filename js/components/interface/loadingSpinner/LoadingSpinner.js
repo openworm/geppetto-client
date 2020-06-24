@@ -8,7 +8,6 @@ define(function (require) {
   return CreateClass({
     mixins: [require('../../controls/mixins/bootstrap/modal.js')],
     timer1:null,
-    timer2:null,
     visible: false,
     
     getInitialState: function () {
@@ -26,7 +25,6 @@ define(function (require) {
       if (this.visible){
         if (this.timer1 != null){
           clearTimeout(this.timer1);
-          clearTimeout(this.timer2);
         }
 
         this.visible = false;
@@ -43,16 +41,12 @@ define(function (require) {
       
       if (this.timer1 != null){
         clearTimeout(this.timer1);
-        clearTimeout(this.timer2);
       }
       
       this.timer1 = setTimeout((function (){
         that.setState({ text:'Loading is taking longer than usual, either a large amount of data is being loaded or bandwidth is limited' });
       }).bind(this), 20000);
-      
-      this.timer2 = setTimeout((function (){
-        that.setState({ text:GEPPETTO.Resources.SPOTLIGHT_HINT });
-      }).bind(this), 5000);
+
     },
     
     componentDidMount: function (){

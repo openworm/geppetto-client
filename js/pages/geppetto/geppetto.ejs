@@ -50,12 +50,12 @@ $content
 <div id="mainContainer">
     <div id="loadingText" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; ">
         <% if(htmlWebpackPlugin.options.GEPPETTO_CONFIGURATION.customSplash) { %>
-        <object data="<%=htmlWebpackPlugin.options.GEPPETTO_CONFIGURATION.customSplash%>" type="image/png" style="max-width: 95%">
+        <object data="<%=htmlWebpackPlugin.options.GEPPETTO_CONFIGURATION.customSplash%>" type="image/png" style="max-width: 95%; max-height: 95%;">
             LOADING... [~3MB]
         </object>
          <% } else{ %>
         
-        <object data="geppetto/build/splash.png" type="image/png" style="max-width: 95%">
+        <object data="geppetto/build/splash.png" type="image/png" style="max-width: 95%; max-height: 95%;">
             LOADING... [~3MB]
         </object>
         <% } %>

@@ -178,8 +178,6 @@ export default function (GEPPETTO) {
         }
         if (instance.value) {
           instance.value = this.createValue(rawInstance, { wrappedObj: rawInstance.value });
-        } else {
-          console.error("Instance", instance, "has no value defined");
         }
           
         return instance;

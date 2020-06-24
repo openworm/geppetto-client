@@ -1,5 +1,6 @@
 import React from 'react';
-import Griddle, { plugins, ColumnDefinition, RowDefinition } from 'griddle-react';
+import { plugins, ColumnDefinition, RowDefinition } from 'griddle-react';
+import Griddle from './utils/Griddle'
 import BaseIconComponent from './BaseIconComponent';
 
 import PopupColorPicker from './PopupColorPicker';
