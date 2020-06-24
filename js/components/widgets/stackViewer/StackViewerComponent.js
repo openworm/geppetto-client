@@ -43,7 +43,6 @@ define(function (require) {
         posY: 0,
         oldX: 0,
         oldY: 0,
-        oldEvent: 0,
         loadingLabels: false,
         orth: this.props.orth,
         data: {},
@@ -53,7 +52,11 @@ define(function (require) {
         txtUpdated: Date.now(),
         txtStay: 3000,
         objects: [],
-        hoverTime: Date.now()
+        hoverTime: Date.now(),
+        lastLabelCall: 0,
+        bufferRunning: false,
+        iBuffer: {},
+        imagesUrl: {}
       };
     },
     /**
@@ -66,15 +69,14 @@ define(function (require) {
       this._isMounted = true;
 
       // console.log('Loading....');
-      
-      // Setup PIXI Canvas in componentDidMount
-      this.renderer = PIXI.autoDetectRenderer(this.props.width, this.props.height);
-      // maintain full window size
-      this.refs.stackCanvas.appendChild(this.renderer.view);
 
+      // Setup PIXI Canvas in componentDidMount
+      this.app = new PIXI.Application(this.props.width, this.props.height);
+      // maintain full window size
+      this.refs.stackCanvas.appendChild(this.app.view);
 
       // create the root of the scene graph
-      this.stage = new PIXI.Container();
+      this.stage = this.app.stage;
       this.stage.pivot.x = 0;
       this.stage.pivot.y = 0;
       this.stage.position.x = 0;
@@ -107,15 +109,12 @@ define(function (require) {
         .on('touchendoutside', this.onDragEnd)
         // events for drag move
         .on('mousemove', this.onDragMove)
-        .on('touchmove', this.onDragMove)
-        .on('mousewheel', this.onWheelEvent)
-        .on('wheel', this.onWheelEvent)
-        .on('DOMMouseScroll', this.onWheelEvent);
+        .on('touchmove', this.onDragMove);
 
       this.disp.addChild(this.stack);
 
       // block move event outside stack
-      this.renderer.plugins.interaction.moveWhenInside = true;
+      this.app.renderer.plugins.interaction.moveWhenInside = true;
 
       // call metadata from server
       this.callDstRange();
@@ -128,24 +127,73 @@ define(function (require) {
 
       this.callPlaneEdges();
 
+      setTimeout(this.bufferStack, 30000);
+
     },
 
     componentDidUpdate: function () {
       // console.log('Canvas update');
-      if (this.renderer.width !== Math.floor(this.props.width) || this.renderer.height !== Math.floor(this.props.height)) {
-        this.renderer.resize(this.props.width, this.props.height);
+      if (this.app.renderer.width !== Math.floor(this.props.width) || this.app.renderer.height !== Math.floor(this.props.height)) {
+        this.app.renderer.resize(this.props.width, this.props.height);
         this.props.onHome();
       }
       this.checkStack();
+      this.createImages();
       this.callPlaneEdges();
+      this.animate();
     },
 
+    shouldComponentUpdate: function (nextProps, nextState) {
+      return shallowCompare(this, nextProps, nextState);
+
+      /**
+       * Performs equality by iterating through keys on an object and returning false
+       * when any key has values which are not strictly equal between the arguments.
+       * Returns true when the values of all keys are strictly equal.
+       */
+      function shallowEqual (objA, objB) {
+        if (objA === objB) {
+          return true;
+        }
+
+        if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+          return false;
+        }
+
+        var keysA = Object.keys(objA);
+        var keysB = Object.keys(objB);
+
+        if (keysA.length !== keysB.length) {
+          return false;
+        }
+
+        // Test for A's keys different from B.
+        var bHasOwnProperty = hasOwnProperty.bind(objB);
+        for (var i = 0; i < keysA.length; i++) {
+          if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+            return false;
+          }
+          if (keysA[i] === "color") {
+            if (JSON.stringify(objA[keysA[i]]) !== JSON.stringify(objB[keysA[i]])) {
+              return false;
+            }
+          }
+        }
+        return true;
+      }
+
+      function shallowCompare (instance, nextProps, nextState) {
+        return (
+          !shallowEqual(instance.props, nextProps) || !shallowEqual(instance.state, nextState)
+        );
+      }
+    },
+
+
     componentWillUnmount: function () {
-      this.stage.destroy(true);
-      this.stage = null;
-      this.refs.stackCanvas.removeChild(this.renderer.view);
-      this.renderer.destroy(true);
-      this.renderer = null;
+      this.refs.stackCanvas.removeChild(this.app.view);
+      this.app.destroy(true,true);
+      this.app = null;
 
       if (this.props.canvasRef != null && this.props.canvasRef != undefined) {
         this.props.canvasRef.removeObject(this.state.stackViewerPlane);
@@ -186,10 +234,10 @@ define(function (require) {
             // console.log('Stack Depth: ' + ((max - min) / 10.0).toFixed(0));
             this.checkStack();
             this.callPlaneEdges();
+            this.iBuffer = {};
+            this.state.lastUpdate = 0;
             this.bufferStack();
-            if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-              this.state.buffer[-1].text = '';
-            }
+            this.animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -210,11 +258,12 @@ define(function (require) {
             var tileX = Number(result[0]);
             var tileY = Number(result[1]);
             this.setState({ tileX: tileX, tileY: tileY });
-            // console.log('Tile Size: ' + tileX + ', ' + tileY);
-            this.state.lastUpdate = 0;
-            // update slice view
             this.checkStack();
             this.callPlaneEdges();
+            this.iBuffer = {};
+            this.state.lastUpdate = 0;
+            this.bufferStack();
+            this.animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -237,11 +286,12 @@ define(function (require) {
             var extent = { imageX: imageX, imageY: imageY };
             this.setState(extent);
             this.props.setExtent(extent);
-            // console.log('Image Size: ' + (imageX / 10.0).toFixed(0) + ', ' + (imageY / 10.0).toFixed(0));
-            this.state.lastUpdate = 0;
-            // update slice view
             this.checkStack();
             this.callPlaneEdges();
+            this.iBuffer = {};
+            this.state.lastUpdate = 0;
+            this.bufferStack();
+            this.animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -269,8 +319,8 @@ define(function (require) {
           }
           coordinates[0] = x.toFixed(0);
           coordinates[1] = y.toFixed(0);
-          x = x + (this.renderer.width / (this.disp.scale.x * this.state.scl));
-          y = y + (this.renderer.height / (this.disp.scale.y * this.state.scl));
+          x = x + (this.app.renderer.width / (this.disp.scale.x * this.state.scl));
+          y = y + (this.app.renderer.height / (this.disp.scale.y * this.state.scl));
           coordinates[2] = x.toFixed(0);
           coordinates[3] = y.toFixed(0);
           if (this.state.orth == 0) { // frontal
@@ -303,7 +353,7 @@ define(function (require) {
           }
         }
         // Pass Z coordinates
-        z = ((this.props.dst - ((this.state.minDst / 10.0) * this.state.scl)) / this.state.scl);
+        z = ((this.state.dst - ((this.state.minDst / 10.0) * this.state.scl)) / this.state.scl);
         if (this.state.orth == 0) { // frontal
           this.state.plane[2] = z;
           this.state.plane[5] = z;
@@ -416,7 +466,6 @@ define(function (require) {
                   }
                 }
                 // update slice view
-                that.state.lastUpdate = 0;
                 that.checkStack();
               }
             },
@@ -429,11 +478,13 @@ define(function (require) {
     },
 
     listObjects: function () {
-      if (!this.state.loadingLabels) {
+      if (!this.state.loadingLabels || this.state.lastLabelCall < (Date.now() - 500)) {
+        this.state.lastLabelCall = Date.now();
         this.state.objects = [];
         var i, j, result;
         var that = this;
         var callX = that.state.posX.toFixed(0), callY = that.state.posY.toFixed(0);
+
         $.each([this.state.stack[0]], function (i, item) {
           (function (i, that, shift) {
             if (i == 0) {
@@ -475,14 +526,14 @@ define(function (require) {
                   }
                   if (objects !== '' && i == 0) {
                     that.setHoverText(callX,callY,list[0]);
+                  } else {
+                    that.setStatusText('');
                   }
                 }
                 // update slice view
                 if (i == 0) {
                   that.state.loadingLabels = false;
                 }
-                that.state.lastUpdate = 0;
-                that.checkStack();
               },
               error: function (xhr, status, err) {
                 that.state.loadingLabels = false;
@@ -491,126 +542,135 @@ define(function (require) {
             });
           })(i, that);
         });
-        that.state.loadingLabels = false;
       }
     },
 
     bufferStack: function () {
-      var i, j, dst, image;
-      var min = (this.state.minDst / 10.0) * this.state.scl;
-      var max = (this.state.maxDst / 10.0) * this.state.scl;
-      var buffMax = 2000;
-      var imageLoader = PIXI.loader;
-      var loaderOptions = {
-        loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
-        xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
-      };
+      if (!this.state.bufferRunning && this.state.lastUpdate < (Date.now() - 60000)) {
+        this.state.bufferRunning = true;
+        var loadList = new Set();
+        this.state.lastUpdate = Date.now();
+        var i, j, dst, image;
+        var min = (this.state.minDst / 10.0) * this.state.scl;
+        var max = (this.state.maxDst / 10.0) * this.state.scl;
+        var buffMax = 2000;
 
-      for (j = 0; j < this.state.numTiles; j++) {
-        for (i in this.state.stack) {
-          image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-          if (!PIXI.loader.resources[image] && !imageLoader.loading) {
-            // console.log('buffering ' + this.state.stack[i].toString() + '...');
-            imageLoader.add(image, image, loaderOptions);
-            buffMax -= 1;
-          }
-          if (buffMax < 1) {
-            break;
-          }
-        }
-      }
-      if (this.state.numTiles < 10) {
-        for (j in this.state.visibleTiles) {
+        for (j = 0; j < this.state.numTiles; j++) {
           for (i in this.state.stack) {
-            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=0.0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-            if (!PIXI.loader.resources[image] && !imageLoader.loading) {
-              // console.log('buffering ' + this.state.stack[i].toString() + '...');
-              imageLoader.add(image, image, loaderOptions);
+            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+            if (!this.state.iBuffer[image]) {
+              loadList.add(image);
               buffMax -= 1;
             }
-            if (buffMax < 1) {
-              break;
-            }
           }
-          var step;
+        }
+        if (buffMax > 1) {
+          var distance = Number(Number(this.state.dst).toFixed(1));
+          this.state.lastUpdate = Date.now();
+          var step = 0;
+          var maxDist = 0;
           if (this.state.orth == 0) {
-            step = this.state.voxelZ;
+            step = this.state.voxelZ * this.state.scl;
           } else if (this.state.orth == 1) {
-            step = this.state.voxelY;
+            step = this.state.voxelY * this.state.scl;
           } else if (this.state.orth == 2) {
-            step = this.state.voxelX;
+            step = this.state.voxelX * this.state.scl;
           }
-          for (dst = 0; -dst > min || dst < max; dst += step) {
-            for (i in this.state.stack) {
-              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-              if (dst < max && !PIXI.loader.resources[image] && !imageLoader.loading) {
-                imageLoader.add(image, image, loaderOptions);
-                buffMax -= 1;
+          step = Number(Number(step).toFixed(1));
+          if (this.state.numTiles < 10) {
+            for (maxDist = distance + step; maxDist < max; maxDist += step) {
+              for (i in this.state.stack) {
+                for (j in this.state.visibleTiles) {
+                  image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+                  if (!this.state.iBuffer[image]) {
+                    loadList.add(image);
+                    buffMax -= 1;
+                  }
+                }
               }
-              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(-dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-              if (-dst > min && !PIXI.loader.resources[image] && !imageLoader.loading) {
-                imageLoader.add(image, image, loaderOptions);
-                buffMax -= 1;
+              if (buffMax < 1000) {
+                break;
               }
             }
-            if (buffMax < 1) {
-              break;
+            for (maxDist = distance - step; maxDist > min; maxDist -= step) {
+              for (i in this.state.stack) {
+                for (j in this.state.visibleTiles) {
+                  image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+                  if (!this.state.iBuffer[image]) {
+                    loadList.add(image);
+                    buffMax -= 1;
+                  }
+                }
+              }
+              if (buffMax < 1) {
+                break;
+              }
+            }
+          } else {
+            // console.log('Buffering neighbouring layers (' + this.state.numTiles.toString() + ') tiles...');
+            for (j = 0; j < this.state.numTiles; j++) {
+              for (i in this.state.stack) {
+                image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+                if (!this.state.iBuffer[image]) {
+                  // console.log('buffering ' + this.state.stack[i].toString() + '...');
+                  loadList.add(image);
+                  buffMax -= 1;
+                }
+                if (buffMax < 1) {
+                  break;
+                }
+              }
+              if (buffMax < 1) {
+                break;
+              }
             }
           }
         }
-      } else {
-        // console.log('Buffering neighbouring layers (' + this.state.numTiles.toString() + ') tiles...');
-        for (j = 0; j < this.state.numTiles && j < this.state.stack.length; j++) {
-          for (i in this.state.stack) {
-            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst - 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-            if (!PIXI.loader.resources[image] && !imageLoader.loading) {
-              // console.log('buffering ' + this.state.stack[i].toString() + '...');
-              imageLoader.add(image, image, loaderOptions);
-              buffMax -= 1;
-            }
-            if (buffMax < 1) {
-              break;
-            }
-            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst + 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-            if (!PIXI.loader.resources[image] && !imageLoader.loading) {
-              // console.log('buffering ' + this.state.stack[i].toString() + '...');
-              imageLoader.add(image, image, loaderOptions);
-              buffMax -= 1;
-            }
-            if (buffMax < 1) {
-              break;
-            }
-          }
-        }
-      }
-      imageLoader
-        .on('progress', loadProgressHandler.bind(this))
-        .on('error', console.error)
-        .on('complete', setup.bind(this))
-        .load();
 
-      function loadProgressHandler (loader, resource) {
-        if (loader.progress < 100) {
-          if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-            this.state.buffer[-1].text = 'Buffering stack ' + loader.progress.toFixed(1) + "%";
+        if (loadList.size > 0) {
+          this.state.bufferRunning = true;
+          console.log('Loading ' + loadList.size + ' slices/tiles...');
+          function loadProgressHandler (loader, resource) {
+            this.setStatusText('Buffering stack ' + loader.progress.toFixed(1) + "%");
           }
-        }
-        // sort position after 10% loaded.
-        if (this._initialized === false && loader.progress > 5) {
-          this.props.onHome();
-          this._initialized = true;
-        }
-      }
 
-      function setup () {
-        // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
-        if (this._isMounted === true && this._initialized === false) {
-          // this.props.canvasRef.resetCamera();
-          this.props.onHome();
-          this._initialized = true;
-        }
-        if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-          this.state.buffer[-1].text = '';
+          function setup () {
+            var k;
+            for (k in imageLoader.resources) {
+              this.state.iBuffer[k] = imageLoader.resources[k].texture;
+            }
+            imageLoader.destroy(true);
+            // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
+            if (this._isMounted === true && this._initialized === false) {
+              // this.props.canvasRef.resetCamera();
+              this._initialized = true;
+              this.props.onHome();
+            }
+            if (this.state.text.indexOf('Buffering stack') > -1) {
+              this.state.buffer[-1].text = '';
+            }
+            this.state.bufferRunning = false;
+            this.state.lastUpdate = Date.now();
+            this.animate();
+          }
+
+          var imageLoader = new PIXI.loaders.Loader();
+          var loaderOptions = {
+            loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
+            xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
+          };
+          loadList.forEach(function (value) {
+            imageLoader.add(value, value, loaderOptions);
+          });
+          imageLoader
+            .on('progress', loadProgressHandler.bind(this))
+            .on('error', console.error)
+            .on('complete', setup.bind(this,imageLoader))
+            .load();
+
+        } else {
+          this.state.bufferRunning = false;
+          this.state.lastUpdate = Date.now();
         }
       }
     },
@@ -621,32 +681,13 @@ define(function (require) {
         return;
       }
 
-      if (this.disp.width > 1) {
-        this.disp.position.x = ((this.props.width / 2) - ((((this.state.imageX / 10.0) * this.state.scl) * this.disp.scale.x) / 2));
-        this.disp.position.y = ((this.props.height / 2) - ((((this.state.imageY / 10.0) * this.state.scl) * this.disp.scale.y) / 2));
-      }
-
       if (this.state.stack.length < 1) {
         this.state.images = [];
         this.stack.removeChildren();
       }
 
-      if (this.state.lastUpdate < (Date.now() - 2000)) {
-        this.state.lastUpdate = Date.now();
-        if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-          this.state.buffer[-1].text = '';
-        }
-        // console.log('Updating scene...');
-        this.createImages();
-        this.updateImages(this.props);
-        this.bufferStack();
-      } else if (!this.state.updating) {
-        this.state.updating = true;
-        var that = this;
-        window.setTimeout(function () {
-          that.state.updating = false;
-          that.checkStack();
-        }, 1000);
+      if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+        this.state.buffer[-1].text = '';
       }
 
       if (Object.keys(this.state.images).length > (this.state.stack.length * this.state.visibleTiles.length)) {
@@ -661,6 +702,13 @@ define(function (require) {
             }
           }
         }
+      }
+      // console.log('Updating scene...');
+      this.createImages();
+
+      if (this.disp.width > 1) {
+        this.disp.position.x = ((this.props.width / 2) - ((((this.state.imageX / 10.0) * this.state.scl) * this.disp.scale.x) / 2));
+        this.disp.position.y = ((this.props.height / 2) - ((((this.state.imageY / 10.0) * this.state.scl) * this.disp.scale.y) / 2));
       }
 
     },
@@ -703,16 +751,23 @@ define(function (require) {
           XboundMax = (this.props.width / (this.disp.scale.x)) + Xpos + (2 * (this.state.tileX * this.state.scl));
           Ypos = (this.stack.parent.position.y / (this.disp.scale.y)) + this.stack.position.y;
           YboundMin = Ypos - (2 * (this.state.tileY * this.state.scl));
-          YboundMax = (this.renderer.view.height / (this.disp.scale.y)) + Ypos + (2 * (this.state.tileY * this.state.scl));
+          YboundMax = (this.app.view.height / (this.disp.scale.y)) + Ypos + (2 * (this.state.tileY * this.state.scl));
           if ((w * h < 3) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
               d = i.toString() + ',' + t.toString();
+              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + t.toString();
+              // console.log(image);
               if (!this.state.images[d]) {
                 // console.log('Adding ' + this.state.stack[i].toString());
-                image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + t.toString();
-                // console.log(image);
-                this.state.images[d] = PIXI.Sprite.fromImage(image);
+                if (this.state.iBuffer[image]) {
+                  this.state.images[d] = new PIXI.Sprite.from(this.state.iBuffer[image]);
+                  this.state.imagesUrl[d] = image;
+                } else {
+                  this.state.images[d] = new PIXI.Sprite.fromImage(image);
+                  this.state.iBuffer[image] = this.state.images[d].texture;
+                  this.state.imagesUrl[d] = image;
+                }
                 this.state.images[d].anchor.x = 0;
                 this.state.images[d].anchor.y = 0;
                 this.state.images[d].position.x = x;
@@ -729,19 +784,34 @@ define(function (require) {
                 }
                 this.stack.addChild(this.state.images[d]);
               } else {
-                this.state.images[d].anchor.x = 0;
-                this.state.images[d].anchor.y = 0;
-                this.state.images[d].position.x = x;
-                this.state.images[d].position.y = y;
-                this.state.images[d].zOrder = i;
-                this.state.images[d].visible = true;
+                if (this.state.imagesUrl[d] != image) {
+                  if (this.state.iBuffer[image]) {
+                    this.state.images[d].texture = this.state.iBuffer[image];
+                    this.state.imagesUrl[d] = image;
+                  } else {
+                    if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+                      this.state.buffer[-1].text = 'Loading slice ' + Number(this.state.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
+                    }
+                    this.state.images[d].texture = new PIXI.Texture.fromImage(image);
+                    this.state.iBuffer[image] = this.state.images[d].texture;
+                    this.state.imagesUrl[d] = image;
+                  }
+                  this.state.images[d].anchor.x = 0;
+                  this.state.images[d].anchor.y = 0;
+                  this.state.images[d].position.x = x;
+                  this.state.images[d].position.y = y;
+                  this.state.images[d].zOrder = i;
+                  this.state.images[d].visible = true;
+                  if (i > 0) {
+                    // this.state.images[d].alpha = 0.9;
+                    this.state.images[d].blendMode = PIXI.BLEND_MODES.SCREEN;
+                  }
+                }
                 if (!this.state.color[i]) {
                   this.generateColor();
                 }
-                this.state.images[d].tint = this.state.color[i];
-                if (i > 0) {
-                  // this.state.images[d].alpha = 0.9;
-                  this.state.images[d].blendMode = PIXI.BLEND_MODES.SCREEN;
+                if (this.state.images[d].tint != this.state.color[i]) {
+                  this.state.images[d].tint = this.state.color[i];
                 }
               }
             }
@@ -772,7 +842,7 @@ define(function (require) {
           dropShadowAngle: Math.PI / 6,
           dropShadowDistance: 2,
           wordWrap: true,
-          wordWrapWidth: this.renderer.view.width,
+          wordWrapWidth: this.app.view.width,
           textAlign: 'right'
         };
         this.state.buffer[-1] = new PIXI.Text(this.state.text, style);
@@ -794,6 +864,12 @@ define(function (require) {
      */
     UNSAFE_componentWillReceiveProps: function (nextProps) {
       var updDst = false;
+      if (nextProps.dst !== this.state.dst) {
+        this.state.dst = nextProps.dst;
+        this.setStatusText(nextProps.statusText);
+        this.createImages();
+        return true;
+      }
       if (nextProps.stack !== this.state.stack || nextProps.color !== this.state.color || this.state.serverUrl !== nextProps.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) || this.state.id !== nextProps.id) {
         this.setState({
           stack: nextProps.stack,
@@ -802,8 +878,6 @@ define(function (require) {
           id: nextProps.id,
           serverUrl: nextProps.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol)
         });
-        this.createImages();
-        this.updateImages(nextProps);
         this.checkStack();
       }
       if (nextProps.scl !== this.state.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextProps.stackX !== this.stack.position.x || nextProps.stackY !== this.stack.position.y){
@@ -815,33 +889,32 @@ define(function (require) {
         this.stack.position.x = nextProps.stackX;
         this.stack.position.y = nextProps.stackY;
         this.state.scl = nextProps.scl;
-        this.setState({ scl: nextProps.scl });
+        this.state.iBuffer = {};
+        this.setState({ scl: nextProps.scl, iBuffer: {} });
         this.updateZoomLevel(nextProps);
+        this.bufferStack();
         updDst = true;
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
         this.setState({ dst: nextProps.dst });
+        this.bufferStack();
         updDst = true;
       }
       if (nextProps.statusText !== this.props.statusText && nextProps.statusText.trim() !== '') {
         this.updateStatusText(nextProps);
       }
-      
+
       if (nextProps.orth !== this.state.orth || nextProps.pit !== this.state.pit || nextProps.yaw !== this.state.yaw || nextProps.rol !== this.state.rol) {
         if (nextProps.orth !== this.state.orth) {
           this.state.recenter = true;
+          this.state.iBuffer = {};
         }
         this.changeOrth(nextProps);
-        updDst = true;
-      }
-      if (nextProps.dst !== this.state.dst) {
-        this.state.dst = nextProps.dst;
-        this.setState({ dst: nextProps.dst });
+        this.bufferStack();
         updDst = true;
       }
       if (updDst) {
-        this.updateImages(nextProps);
         this.checkStack();
         this.callPlaneEdges();
       }
@@ -875,13 +948,13 @@ define(function (require) {
       this.state.pit = props.pit;
       this.state.yaw = props.yaw;
       this.state.rol = props.rol;
-      // forcing the state change before size calls as setstate take time. 
+      // forcing the state change before size calls as setstate take time.
       this.setState({
         pit: props.pit,
         yaw: props.yaw,
         rol: props.rol,
         orth: props.orth
-      }); 
+      });
       this.state.images = [];
       this.stack.removeChildren();
       if (props.orth == 0) {
@@ -908,54 +981,12 @@ define(function (require) {
       this.state.text = text;
       this.state.txtUpdated = Date.now();
     },
-    
+
     setHoverText: function (x,y,text) {
       this.state.buffer[-1].x = -this.stage.position.x + this.disp.position.x + (this.stack.position.x * this.disp.scale.x) + (Number(x) * this.disp.scale.x) - 10;
       this.state.buffer[-1].y = -this.stage.position.y + this.disp.position.y + (this.stack.position.y * this.disp.scale.y) + (Number(y) * this.disp.scale.y) + 15;
       this.state.buffer[-1].text = text;
       this.state.text = text;
-      this.state.txtUpdated = Date.now();
-    },
-
-    /**
-     * Update the stage Image files when any change.
-     *
-     */
-    updateImages: function (props) {
-      var i, j, d, image;
-      // console.log(this.state.visibleTiles);
-      for (j in this.state.visibleTiles) {
-        for (i in this.state.stack) {
-          image = props.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + props.fxp.join(',') + '&scl=' + Number(props.scl).toFixed(1) + '&dst=' + Number(props.dst).toFixed(1) + '&pit=' + Number(props.pit).toFixed(0) + '&yaw=' + Number(props.yaw).toFixed(0) + '&rol=' + Number(props.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-          d = i.toString() + ',' + this.state.visibleTiles[j].toString();
-          if (this.state.images[d]) {
-            if (PIXI.loader.resources[image] && PIXI.loader.resources[image].texture && (PIXI.loader.resources[image].texture.baseTexture !== null)) {
-              this.state.images[d].texture = PIXI.loader.resources[image].texture;
-            } else {
-              if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-                this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
-              }
-              this.state.images[d].texture = PIXI.Texture.fromImage(image);
-              if (!PIXI.loader.resources[image] && !PIXI.loader.loading) {
-                PIXI.loader.add(image, image, {
-                  loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
-                  xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
-                });
-              }
-            }
-            this.state.images[d].tint = this.state.color[i];
-            this.state.images[d].zOrder = i;
-            // console.log([d,this.state.images[d].position.x,this.state.images[d].position.y,this.state.images[d].anchor.x,this.state.images[d].anchor.y])
-          }// else{
-          /*
-           *   console.log(d + ' not loaded!?');
-           *   console.log(this.state.images);
-           *   console.log(this.state.visibleTiles[j]);
-           * }
-           */
-        }
-      }
-      PIXI.loader.load();
     },
 
     /**
@@ -965,8 +996,8 @@ define(function (require) {
     animate: function () {
       if (this._isMounted) {
         // render the stage container (if the component is still mounted)
-        this.renderer.render(this.stage);
-        this.frame = requestAnimationFrame(this.animate);
+        this.app.render();
+        // this.frame = requestAnimationFrame(this.animate);
       }
     },
 
@@ -1010,53 +1041,30 @@ define(function (require) {
         this.state.dragging = false;
         this.props.setExtent({ stackX: this.stack.position.x, stackY: this.stack.position.y });
         this.createImages();
+        this.state.buffer[-1].text = '';
       }
     },
 
-    onHoverEvent: function (event, repeat) {
-      var oldEvent = this.state.oldEvent;
+    onHoverEvent: function (event) {
       if (!this.state.loadingLabels && !this.state.dragging) {
-        repeat = typeof repeat !== 'undefined' ? repeat : true;
-        if (this.renderer === null ) {
+        if (this.app === null ) {
           return;
         }
-        var currentPosition = this.renderer.plugins.interaction.mouse.getLocalPosition(this.stack);
-        currentPosition.x = Number(currentPosition.x.toFixed(0));
-        currentPosition.y = Number(currentPosition.y.toFixed(0));
-        if (this.state.hoverTime < Date.now() - 1000 && !(this.state.posX == this.state.oldX && this.state.posY == this.state.oldY) && this.state.posX == currentPosition.x && this.state.posY == currentPosition.y) {
-          this.state.hoverTime = Date.now();
+        var currentPosition = this.app.renderer.plugins.interaction.mouse.getLocalPosition(this.stack);
+        // update new position:
+        this.state.posX = Number(currentPosition.x.toFixed(0));
+        this.state.posY = Number(currentPosition.y.toFixed(0));
+        if (!(this.state.posX == this.state.oldX && this.state.posY == this.state.oldY)) {
           this.listObjects();
-          this.state.oldX = currentPosition.x;
-          this.state.oldY = currentPosition.y;
-        } else {
-          // Timeout:
-          if (this.state.hoverTime < Date.now() - 5000) {
-            this.listObjects();
-          }
-          // Check valid value:
-          if (this.state.hoverTime > Date.now()) {
-            this.state.hoverTime = Date.now();
-            this.listObjects();
-          }
-          // update new position:
-          this.state.posX = currentPosition.x;
-          this.state.posY = currentPosition.y;
-          if (repeat) {
-            clearTimeout(oldEvent);
-            oldEvent = setTimeout(function (func, event) {
-              func(event, false);
-            }, 1000, this.onHoverEvent, event);
-          }
+          this.state.hoverTime = Date.now();
         }
-      } else if (this.state.loadingLabels) {
-        if (repeat) {
-          clearTimeout(oldEvent);
-          oldEvent = setTimeout(function (func, event) {
-            func(event, false);
-          }, 5000, this.onHoverEvent, event);
+        if (this.state.hoverTime < (Date.now() - 1000) && this.state.posX == this.state.oldX && this.state.posY == this.state.oldY) {
+          this.state.hoverTime = Date.now() + 30000;
+          this.listObjects();
         }
+        this.state.oldX = Number(currentPosition.x.toFixed(0));
+        this.state.oldY = Number(currentPosition.y.toFixed(0));
       }
-      this.state.oldEvent = oldEvent;
     },
 
     onDragMove: function (event) {
@@ -1071,7 +1079,7 @@ define(function (require) {
         // console.log('Moving :'+xmove+','+ymove);
         this.state.buffer[-1].text = 'Moving stack... (X:' + Number(this.stack.position.x).toFixed(2) + ',Y:' + Number(this.stack.position.y).toFixed(2) + ')';
         // update slice view
-        this.checkStack();
+        this.createImages();
       } else {
         this.onHoverEvent(event);
       }
@@ -1095,7 +1103,7 @@ define(function (require) {
 
   var StackViewerComponent = createClass({
     _isMounted: false,
-    
+
     getInitialState: function () {
       return {
         zoomLevel: 1.0,
@@ -1125,54 +1133,123 @@ define(function (require) {
         tempType: [],
         plane: null,
         initalised: false,
-        slice: false
+        slice: false,
+        lastUpdate: 0,
+        scrollTrack: 0,
+        loadChanges: true
       };
     },
 
     onWheelEvent: function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      var newdst = this.state.dst;
+      var newdst = Number(Number(this.state.dst).toFixed(1));
       if (e.ctrlKey && e.wheelDelta > 0) {
         this.onZoomIn();
       } else if (e.ctrlKey && e.wheelDelta < 0) {
         this.onZoomOut();
       } else {
         // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
-        var step = -1 * e.wheelDelta;
-        // Max step of imposed
-        if (step > 0) {
-          if (this.state.orth == 0) {
-            step = this.state.voxelZ * this.state.scl;
-          } else if (this.state.orth == 1) {
-            step = this.state.voxelY * this.state.scl;
-          } else if (this.state.orth == 2) {
-            step = this.state.voxelX * this.state.scl;
+        this.state.scrollTrack += e.deltaY * 0.04;
+
+        if (this.state.scrollTrack > 0.9 || this.state.scrollTrack < -0.9){
+          var step = 0;
+          if (this.state.scrollTrack > 1) {
+            step = Math.ceil(this.state.scrollTrack) - 1;
+          } else {
+            step = Math.floor(this.state.scrollTrack) + 1;
           }
-        } else if (step < 0) {
+          this.state.scrollTrack = 0;
+          var stepDepth = 1;
+          // Max step of imposed
           if (this.state.orth == 0) {
-            step = -this.state.voxelZ * this.state.scl;
+            stepDepth = this.state.voxelZ * this.state.scl;
           } else if (this.state.orth == 1) {
-            step = -this.state.voxelY * this.state.scl;
+            stepDepth = this.state.voxelY * this.state.scl;
           } else if (this.state.orth == 2) {
-            step = -this.state.voxelX * this.state.scl;
+            stepDepth = this.state.voxelX * this.state.scl;
           }
-        }
-        if (e.shiftKey) {
-          newdst += step * 10;
-        } else {
-          newdst += step;
+          if (e.shiftKey) {
+            stepDepth = stepDepth * 10;
+          }
+          stepDepth = Number(Number(stepDepth).toFixed(1))
+
+          newdst += Number((stepDepth * step).toFixed(1));
+          if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+            this.setState({ dst: newdst, text: 'Depth:' + ((newdst / this.state.scl) - (this.state.minDst / 10.0)).toFixed(1) });
+          } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
+            newdst = ((this.state.minDst / 10.0) * this.state.scl);
+            this.setState({ dst: newdst, text: 'First slice!' });
+          } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+            newdst = ((this.state.maxDst / 10.0) * this.state.scl);
+            this.setState({ dst: newdst, text: 'Last slice!' });
+          }
+
         }
 
-        if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
-          this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
-        } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
-          newdst = ((this.state.minDst / 10.0) * this.state.scl);
-          this.setState({ dst: newdst, text: 'First slice!' });
-        } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
-          newdst = ((this.state.maxDst / 10.0) * this.state.scl);
-          this.setState({ dst: newdst, text: 'Last slice!' });
+      }
+    },
+
+    shouldComponentUpdate: function (nextProps, nextState) {
+      if (shallowCompare(this, nextProps, nextState)) {
+        return true;
+      }
+      if (this.props !== undefined && this.props.data !== undefined && this.props.data.instances !== undefined && nextProps.data !== undefined && nextProps.data.instances !== undefined) {
+        var a = nextProps.data.instances;
+        var b = this.props.data.instances;
+        if (a.length == b.length) {
+          for (var i = 0; i < a.length; i++) {
+            try {
+              if (a[i].parent.getColor() != b[i].parent.getColor()) {
+                return true;
+              }
+              if (a[i].parent.isVisible() != b[i].parent.isVisible()) {
+                return true;
+              }
+            } catch (ignore) { }
+          }
+          return false;
         }
+        return true;
+      }
+      return false;
+
+      /**
+       * Performs equality by iterating through keys on an object and returning false
+       * when any key has values which are not strictly equal between the arguments.
+       * Returns true when the values of all keys are strictly equal.
+       */
+      function shallowEqual (objA, objB) {
+        if (objA === objB) {
+          return true;
+        }
+
+        if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+          return false;
+        }
+
+        var keysA = Object.keys(objA);
+        var keysB = Object.keys(objB);
+
+        if (keysA.length !== keysB.length) {
+          return false;
+        }
+
+        // Test for A's keys different from B.
+        var bHasOwnProperty = hasOwnProperty.bind(objB);
+        for (var i = 0; i < keysA.length; i++) {
+          if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+            return false;
+          }
+        }
+
+        return true;
+      }
+
+      function shallowCompare (instance, nextProps, nextState) {
+        return (
+          !shallowEqual(instance.props, nextProps) || !shallowEqual(instance.state, nextState)
+        );
       }
     },
 
@@ -1196,63 +1273,21 @@ define(function (require) {
       }.bind(this));
 
       if (this.props.data && this.props.data != null && this.props.data.instances && this.props.data.instances != null) {
-        this.handleInstances(this.props.data.instances);
+        this.setState(this.handleInstances(this.props.data.instances));
       }
+
+      setTimeout(this.onHome, 5000);
+
     },
 
-    UNSAFE_componentWillReceiveProps: function (nextProps) {
-      if (nextProps.data && nextProps.data != null) {
-        var newState = {}
-        if (nextProps.data.height && nextProps.data.height != null) {
-          newState.height = nextProps.data.height;
-        }
-        if (nextProps.data.width && nextProps.data.width != null) {
-          newState.width = nextProps.data.width;
-        }
-        if (nextProps.config && nextProps.config != null && nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length && nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-          newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
-          newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
-          newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
-        }
-        if (nextProps.config && nextProps.config != null) {
-          if (nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length) {
-            if (nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-              newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
-              newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
-              newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
-            }
-            if (nextProps.config.subDomains.length > 4 && nextProps.config.subDomains[1] != null) {
-              newState.tempName = nextProps.config.subDomains[2];
-              newState.tempId = nextProps.config.subDomains[1];
-              newState.tempType = nextProps.config.subDomains[3];
-              if (nextProps.config.subDomains[4] && nextProps.config.subDomains[4].length && nextProps.config.subDomains[4].length > 0) {
-                newState.fxp = JSON.parse(nextProps.config.subDomains[4][0]);
-              }
-            }
-          }
-        }
-        if (nextProps.voxel && nextProps.voxel != null) {
-          
-          newState.voxelX = nextProps.voxel.x;
-          newState.voxelY = nextProps.voxel.y; 
-          newState.voxelZ = nextProps.voxel.z; 
-        }
-        if (nextProps.data.instances && nextProps.data.instances != null) {
-          if (JSON.stringify(newState) !== "{}"){
-            this.setState(newState, () => {
-              this.handleInstances(nextProps.data.instances);
-            });
-          } else {
-            this.handleInstances(nextProps.data.instances);
-          }
-        } else if (JSON.stringify(newState) !== "{}"){
-          this.setState(newState);
-        }
-      }
+    componentDidUpdate: function (prevProps, prevState) {
+      if (prevProps.data != undefined && prevProps.data != null && prevProps.data.instances != undefined) {
+        this.setState(this.handleInstances(this.props.data.instances));
+      } 
     },
 
     handleInstances: function (instances) {
-      var newState = {}
+      var newState = this.state;
       if (instances && instances != null && instances.length > 0) {
         var instance;
         var data, vals;
@@ -1261,6 +1296,34 @@ define(function (require) {
         var labels = [];
         var ids = [];
         var server = this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
+        if (this.props.data.height && this.props.data.height != null) {
+          newState.height = this.props.data.height;
+        }
+        if (this.props.data.width && this.props.data.width != null) {
+          newState.width = this.props.data.width;
+        }
+        if (this.props.config && this.props.config != null && this.props.config.subDomains && this.props.config.subDomains != null && this.props.config.subDomains.length && this.props.config.subDomains.length > 0 && this.props.config.subDomains[0] && this.props.config.subDomains[0].length && this.props.config.subDomains[0].length > 2) {
+          newState.voxelX = Number(this.props.config.subDomains[0][0] || 0.622088);
+          newState.voxelY = Number(this.props.config.subDomains[0][1] || 0.622088);
+          newState.voxelZ = Number(this.props.config.subDomains[0][2] || 0.622088);
+        }
+        if (this.props.config && this.props.config != null) {
+          if (this.props.config.subDomains && this.props.config.subDomains != null && this.props.config.subDomains.length) {
+            if (this.props.config.subDomains.length > 0 && this.props.config.subDomains[0] && this.props.config.subDomains[0].length && this.props.config.subDomains[0].length > 2) {
+              newState.voxelX = Number(this.props.config.subDomains[0][0] || 0.622088);
+              newState.voxelY = Number(this.props.config.subDomains[0][1] || 0.622088);
+              newState.voxelZ = Number(this.props.config.subDomains[0][2] || 0.622088);
+            }
+            if (this.props.config.subDomains.length > 4 && this.props.config.subDomains[1] != null) {
+              newState.tempName = this.props.config.subDomains[2];
+              newState.tempId = this.props.config.subDomains[1];
+              newState.tempType = this.props.config.subDomains[3];
+              if (this.props.config.subDomains[4] && this.props.config.subDomains[4].length && this.props.config.subDomains[4].length > 0) {
+                newState.fxp = JSON.parse(this.props.config.subDomains[4][0]);
+              }
+            }
+          }
+        }
         for (instance in instances) {
           try {
             if ((instances[instance].id != undefined) && (instances[instance].parent != null) && (typeof instances[instance].parent.isSelected === "function") && (typeof instances[instance].parent.isVisible === "function" && instances[instance].parent.isVisible())){
@@ -1287,7 +1350,7 @@ define(function (require) {
             console.log(err.stack);
           }
         }
-        
+
         if (server != this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) && server != null) {
           newState.serverURL = server;
         }
@@ -1303,16 +1366,11 @@ define(function (require) {
         if (colors && colors != null && colors.length > 0 && colors.toString() != this.state.color.toString()) {
           newState.color = colors;
         }
-      } else {
-        newState = { label: [], stack: [], id: [], color: [] };
-      }
-      if (JSON.stringify(newState) !== "{}") {
-        this.setState(newState);  
-      }
+      } 
+      return newState;
     },
 
     componentWillUnmount: function () {
-      clearTimeout(this.state.oldEvent);
       this._isMounted = false;
       return true;
     },
@@ -1334,7 +1392,7 @@ define(function (require) {
       }
       if (zoomLevel < 10.0) {
         scale = Number(Math.ceil(zoomLevel).toFixed(1));
-        text = 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')'; 
+        text = 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')';
       } else {
         zoomLevel = 10;
         scale = 10;
@@ -1342,7 +1400,7 @@ define(function (require) {
       }
       if (Number(this.state.scl) < scale) {
         var baseDst = this.state.dst / this.state.scl;
-        newDst = baseDst * scale;
+        newDst = Number((baseDst * scale).toFixed(1));
         stackX = Math.ceil((this.state.stackX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
         stackY = Math.ceil((this.state.stackY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
       }
@@ -1351,8 +1409,8 @@ define(function (require) {
         scl: scale,
         text: text,
         dst: newDst,
-        stackX: stackX, 
-        stackY: stackY 
+        stackX: stackX,
+        stackY: stackY
       });
     },
 
@@ -1377,6 +1435,7 @@ define(function (require) {
         rol = 0;
       }
       this.setState({ orth: orth, pit: pit, yaw: yaw, rol: rol, dst: 0, stackX: 0, stackY: 0 });
+      setTimeout(this.onHome, 5000);
     },
 
     toggleSlice: function () {
@@ -1413,7 +1472,7 @@ define(function (require) {
       }
       if (Number(this.state.scl) > scale) {
         var baseDst = this.state.dst / this.state.scl;
-        newDst = baseDst * scale;
+        newDst = Number((baseDst * scale).toFixed(1));
         stackX = Math.ceil((this.state.stackX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
         stackY = Math.ceil((this.state.stackY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
       }
@@ -1422,7 +1481,7 @@ define(function (require) {
         scl: scale,
         text: text,
         dst: newDst,
-        stackX: stackX, 
+        stackX: stackX,
         stackY: stackY
       });
     },
@@ -1533,7 +1592,7 @@ define(function (require) {
 
       }, useCapture || false);
     },
-    
+
     render: function () {
       var homeClass = 'btn fa fa-home';
       var zoomInClass = 'btn fa fa-search-plus';
@@ -1643,10 +1702,10 @@ define(function (require) {
           </div>
         );
       }
-  
+
       return markup;
     }
   });
-  
+
   return StackViewerComponent;
 });
