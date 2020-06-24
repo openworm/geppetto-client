@@ -132,6 +132,14 @@ define(['jquery'], function () {
       this.canvasCreated = true;
     },
 
+    startAnimation: function () {
+      this.animationRunning = true;
+      this.animate();
+    },
+
+    stopAnimation: function () {
+      this.animationRunning = false;
+    },
 
     addHoverListener: function (listener) {
       if (this.hoverListeners == undefined) {
@@ -1514,16 +1522,17 @@ define(['jquery'], function () {
      *
      */
     autoRotate: function (props) {
+      var { movieFilter } = props;
       var that = this;
       if (this.rotate == null) {
-        if (props.movieFilter === undefined || props.movieFilter === true) {
+        if (movieFilter) {
           this.movieMode(true);
         }
         this.rotate = setInterval(function () {
           that.incrementCameraRotate(0.01, 0)
         }, 100);
       } else {
-        if (props.movieFilter === undefined || props.movieFilter === true) {
+        if (movieFilter) {
           this.movieMode(false);
         }
         clearInterval(this.rotate);
