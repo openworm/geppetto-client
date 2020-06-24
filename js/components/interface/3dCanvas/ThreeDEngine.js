@@ -64,7 +64,6 @@ define(['jquery'], function () {
       this.needsUpdate = false;
       this.pickingEnabled = true; // flag to enable disable 3d picking
       this.linesUserInput = false;
-      this.animationRunning = true;
       this.linesUserPreference = undefined;
       this.hoverListeners = undefined;
       this.THREE = THREE;

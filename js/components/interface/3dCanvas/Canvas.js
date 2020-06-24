@@ -38,18 +38,6 @@ define(function (require) {
       this.initialCameraReset = false;
     }
 
-    startAnimation () {
-      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
-        this.engine.startAnimation();
-      }
-    }
-
-    stopAnimation () {
-      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
-        this.engine.stopAnimation();
-      }
-    }
-
     /**
      * Displays all the passed instances in this canvas component
      * @param instances an array of instances
