@@ -64,7 +64,6 @@ define(['jquery'], function () {
       this.needsUpdate = false;
       this.pickingEnabled = true; // flag to enable disable 3d picking
       this.linesUserInput = false;
-      this.animationRunning = true;
       this.linesUserPreference = undefined;
       this.hoverListeners = undefined;
       this.THREE = THREE;
@@ -1514,15 +1513,19 @@ define(['jquery'], function () {
      * Rotate the camera around the selection
      *
      */
-    autoRotate: function () {
+    autoRotate: function (props) {
       var that = this;
       if (this.rotate == null) {
-        this.movieMode(true);
+        if (props.movieFilter === undefined || props.movieFilter === true) {
+          this.movieMode(true);
+        }
         this.rotate = setInterval(function () {
           that.incrementCameraRotate(0.01, 0)
         }, 100);
       } else {
-        this.movieMode(false);
+        if (props.movieFilter === undefined || props.movieFilter === true) {
+          this.movieMode(false);
+        }
         clearInterval(this.rotate);
         this.rotate = null;
       }
@@ -1535,9 +1538,6 @@ define(['jquery'], function () {
       var that = this;
       that.debugUpdate = that.needsUpdate;
       // so that we log only the cycles when we are updating the scene
-      if (!this.animationRunning) {
-        return;
-      }
 
       that.controls.update();
 

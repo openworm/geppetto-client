@@ -101,21 +101,36 @@ define(function (require) {
           
         }
 
-        shouldComponentUpdate (nextProps, nextState) {
-          switch (this.state.componentType) {
-          case 'AutoComplete':
-            return ((this.state.searchText !== nextState.searchText) || (this.state.model !== nextState.model));
-          case 'Checkbox':
-            return ((this.state.checked !== nextState.checked) || (this.state.model !== nextState.model));
-          default:
-            return ((this.state.value !== nextState.value) || (this.state.model !== nextState.model));
+        componentDidMount () {
+          super.componentDidMount()
+          this.UNRELIABLE_SyncDefaultValueWithPython()
+        }
+
+        /*
+         * since we don't know when a component will be synched with python,
+         * we can't know when to check if this.state.value should be replaced
+         * with this.props.default
+         */
+        UNRELIABLE_SyncDefaultValueWithPython (timeInterval = 100, attemps = 0) {
+          if (attemps < 3) {
+            setTimeout(() => {
+              if (this.props.default && this.state.value === '') {
+                if (this.syncValueWithPython) {
+                  // this function is added by jupyter_geppetto after the component is synched with python
+                  this.syncValueWithPython(this.props.default);
+                } else {
+                  this.UNRELIABLE_SyncDefaultValueWithPython(timeInterval * 2, attemps + 1)
+                }
+              }
+            }, timeInterval)
+          } else {
+            console.warn(`Tried to sync default value for ${this.props.model} and failed after 3 attemps.`)
           }
         }
 
         UNSAFE_componentWillReceiveProps (nextProps) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
-          
           GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           if ((this.state.searchText != nextProps.searchText) && (nextProps.searchText != undefined)) {
@@ -151,9 +166,24 @@ define(function (require) {
             break;
           }
           if (this.props.validate) {
-            this.props.validate(this.state.value).then(errorState => {
-              this.setState(errorState);
-            });
+            this.props.validate(this.state.value)
+              .then(response => {
+                if (this.state.errorState !== response.errorMsg) {
+                  this.setState({ errorState: response.errorMsg });
+                }
+              });
+          }
+
+          if (
+            /*
+             * If the component changes id without unmounting,
+             * then default values will never be synched with python
+             */
+            this.props.model === prevProps.model 
+            && this.state.value === '' 
+            && this.props.default
+          ) {
+            this.UNRELIABLE_SyncDefaultValueWithPython(1000)
           }
         }
 
@@ -213,9 +243,12 @@ define(function (require) {
           this.setState({ value: targetValue });
 
           if (this.props.validate) {
-            this.props.validate(targetValue).then(errorState => {
-              this.setState(errorState);
-            });
+            this.props.validate(targetValue)
+              .then(response => {
+                if (response.errorMsg !== this.state.errorMsg) {
+                  this.setState({ errorMsg: response.errorMsg });
+                }
+              });
           }
 
           // For textfields value is retrieved from the event. For dropdown value is retrieved from the value
@@ -253,7 +286,7 @@ define(function (require) {
           if (wrappedComponentProps.realType == 'func' || wrappedComponentProps.realType == 'float') {
             wrappedComponentProps['helperText'] = this.state.errorMsg;
           }
-          if (getNameFromWrappedComponent(WrappedComponent) != 'ListComponent') {
+          if (!getNameFromWrappedComponent(WrappedComponent).includes('ListComponent')) {
             delete wrappedComponentProps.realType;
           }
 
