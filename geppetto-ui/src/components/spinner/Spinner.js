@@ -69,7 +69,6 @@ class Spinner extends Component {
       </Fragment>
     );
 
-    console.log(children);
     return (
       <div>
         <Backdrop
