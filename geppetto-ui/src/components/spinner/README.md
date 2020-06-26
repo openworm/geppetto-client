@@ -8,6 +8,30 @@ spinner/Spinner
 
 ## Examples
 
+### Spinner Example 5
+
+Basic example usage of the Spinner with alternative content .
+
+```
+spinner/showcase/examples/SpinnerShowcase5
+```
+
+### Spinner Example 4
+
+Basic example usage of the Spinner background styling.
+
+```
+spinner/showcase/examples/SpinnerShowcase4
+```
+
+### Spinner Example 3
+
+Basic example usage of the Spinner with linear determinate.
+
+```
+spinner/showcase/examples/SpinnerShowcase3
+```
+
 ### Spinner Example 2
 
 Basic example usage of the Spinner with messages.
