@@ -34,7 +34,7 @@ export default class LoaderShowcase4 extends Component {
           active={active}
           handleClose={this.handleClose}
           messages={['Loading Project', 'Did you know you can...']}
-          backgroundStyle={{ backgroundColor: 'orange', opacity: 0.1 }}
+          backgroundStyle={{ backgroundColor: 'rgba(255,142,0,0.1)' }}
         />
       </div>
     );

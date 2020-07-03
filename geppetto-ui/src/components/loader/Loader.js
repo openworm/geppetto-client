@@ -1,10 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 
 const styles = (theme) => ({
   backdrop: {
@@ -56,17 +57,25 @@ class Loader extends Component {
     const content = children ? (
       children
     ) : (
-      <Fragment>
-        {progress}
-        <Typography
-          display="block"
-          variant="subtitle1"
-          gutterBottom
-          style={{ color: 'white' }}
-        >
-          {message}
-        </Typography>
-      </Fragment>
+      <Grid container spacing={1}>
+        <Grid container item xs={12} spacing={3}>
+          <Grid item xs={4}>
+            {progress}
+          </Grid>
+        </Grid>
+        <Grid container item xs={12} spacing={3}>
+          <Grid item xs={4}>
+            <Typography
+              display="block"
+              variant="subtitle1"
+              gutterBottom
+              style={{ color: 'white' }}
+            >
+              {message}
+            </Typography>
+          </Grid>
+        </Grid>
+      </Grid>
     );
 
     return (
