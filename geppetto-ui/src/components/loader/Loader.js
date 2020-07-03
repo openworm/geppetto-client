@@ -11,11 +11,6 @@ const styles = (theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
   },
-  content: {
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
 });
 
 class Loader extends Component {
@@ -63,28 +58,18 @@ class Loader extends Component {
       children
     ) : (
       <Grid container spacing={1}>
-        <Grid container item xs={12} spacing={3} justify="center">
-          <Grid item xs={4}></Grid>
-          <Grid item xs={4} align="center">
-            <div className={classes.content}>{progress}</div>
-          </Grid>
-          <Grid item xs={4}></Grid>
+        <Grid container item spacing={3} justify="center">
+          <Grid item>{progress}</Grid>
+          {/* <Grid item xs={4}></Grid> */}
         </Grid>
-        <Grid container item xs={12} spacing={3}>
-          <Grid item xs={4}></Grid>
-          <Grid item xs={4}>
-            <div className={classes.content}>
-              <Typography
-                display="block"
-                variant="subtitle1"
-                gutterBottom
-                style={{ color: 'white' }}
-              >
-                {message}
-              </Typography>
-            </div>
+        <Grid container item spacing={3} justify="center">
+          {/* <Grid item xs={4}></Grid> */}
+          <Grid item>
+            <Typography display="block" variant="subtitle1" gutterBottom>
+              {message}
+            </Typography>
           </Grid>
-          <Grid item xs={4}></Grid>
+          {/* <Grid item xs={4}></Grid> */}
         </Grid>
       </Grid>
     );
