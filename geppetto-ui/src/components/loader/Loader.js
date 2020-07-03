@@ -12,7 +12,7 @@ const styles = (theme) => ({
   },
 });
 
-class Spinner extends Component {
+class Loader extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -84,7 +84,7 @@ class Spinner extends Component {
   }
 }
 
-Spinner.defaultProps = {
+Loader.defaultProps = {
   active: true,
   messages: [],
   messagesInterval: 10000,
@@ -93,13 +93,13 @@ Spinner.defaultProps = {
   handleClose: () => {},
 };
 
-Spinner.propTypes = {
+Loader.propTypes = {
   /**
-   * Flag to show/hide the spinner
+   * Flag to show/hide the Loader
    */
   active: PropTypes.bool,
   /**
-   * Function to handle the close of the spinner
+   * Function to handle the close of the Loader
    */
   handleClose: PropTypes.func,
   /**
@@ -115,9 +115,9 @@ Spinner.propTypes = {
    */
   elapsed: PropTypes.number,
   /**
-   * Style to be applied to the spinner background
+   * Style to be applied to the Loader background
    */
   backgroundStyle: PropTypes.object,
 };
 
-export default withStyles(styles)(Spinner);
+export default withStyles(styles)(Loader);

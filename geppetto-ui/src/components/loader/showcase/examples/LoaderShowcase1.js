@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Spinner from '../../Spinner';
+import Loader from '../../Loader';
 import Button from '@material-ui/core/Button';
 
-export default class SpinnerShowcase4 extends Component {
+export default class LoaderShowcase1 extends Component {
   constructor(props) {
     super(props);
     this.handleClose = this.handleClose.bind(this);
@@ -28,11 +28,9 @@ export default class SpinnerShowcase4 extends Component {
     return (
       <div>
         <Button variant="outlined" color="primary" onClick={this.handleToggle}>
-          Show Spinner
+          Show Loader
         </Button>
-        <Spinner active={active} handleClose={this.handleClose}>
-          My content
-        </Spinner>
+        <Loader active={active} handleClose={this.handleClose} />
       </div>
     );
   }
