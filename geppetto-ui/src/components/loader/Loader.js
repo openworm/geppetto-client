@@ -60,16 +60,13 @@ class Loader extends Component {
       <Grid container spacing={1}>
         <Grid container item spacing={3} justify="center">
           <Grid item>{progress}</Grid>
-          {/* <Grid item xs={4}></Grid> */}
         </Grid>
         <Grid container item spacing={3} justify="center">
-          {/* <Grid item xs={4}></Grid> */}
           <Grid item>
             <Typography display="block" variant="subtitle1" gutterBottom>
               {message}
             </Typography>
           </Grid>
-          {/* <Grid item xs={4}></Grid> */}
         </Grid>
       </Grid>
     );
