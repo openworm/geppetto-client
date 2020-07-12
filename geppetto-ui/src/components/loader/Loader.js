@@ -88,6 +88,7 @@ class Loader extends Component {
 
 Loader.defaultProps = {
   active: true,
+  fullscreen: true,
   messages: [],
   messagesInterval: 10000,
   elapsed: null,
@@ -100,6 +101,10 @@ Loader.propTypes = {
    * Flag to show/hide the Loader
    */
   active: PropTypes.bool,
+  /**
+   * Flag to show/hide the Loader as fullscreen
+   */
+  fullscreen: PropTypes.bool,
   /**
    * Function to handle the close of the Loader
    */
