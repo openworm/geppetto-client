@@ -8,6 +8,14 @@ loader/Loader
 
 ## Examples
 
+### Loader Example 7
+
+Basic example usage of the Loader typography styling.
+
+```
+loader/showcase/examples/LoaderShowcase7
+```
+
 ### Loader Example 6
 
 Basic example usage of the Loader with fullscreen false .

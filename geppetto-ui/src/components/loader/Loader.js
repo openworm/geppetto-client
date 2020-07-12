@@ -46,6 +46,7 @@ class Loader extends Component {
       elapsed,
       backgroundStyle,
       children,
+      className,
     } = this.props;
     const { messageIndex } = this.state;
 
@@ -69,7 +70,12 @@ class Loader extends Component {
         </Grid>
         <Grid container item spacing={3} justify="center">
           <Grid item>
-            <Typography display="block" variant="subtitle1" gutterBottom>
+            <Typography
+              className={className}
+              display="block"
+              variant="subtitle1"
+              gutterBottom
+            >
               {message}
             </Typography>
           </Grid>
