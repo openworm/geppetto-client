@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -10,6 +10,11 @@ import Grid from '@material-ui/core/Grid';
 const styles = (theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
+  },
+  root: {
+    position: 'absolute',
+    flex: '0 0 100%',
+    alignSelf: 'stretch',
   },
 });
 
@@ -35,6 +40,7 @@ class Loader extends Component {
     const {
       classes,
       active,
+      fullscreen,
       handleClose,
       messages,
       elapsed,
@@ -71,8 +77,8 @@ class Loader extends Component {
       </Grid>
     );
 
-    return (
-      <div>
+    const backdrop = fullscreen ? (
+      <Fragment>
         <Backdrop
           className={classes.backdrop}
           open={active}
@@ -81,8 +87,24 @@ class Loader extends Component {
         >
           {content}
         </Backdrop>
-      </div>
+      </Fragment>
+    ) : (
+      <Fragment>
+        <Backdrop
+          open={active}
+          onClick={handleClose}
+          style={backgroundStyle}
+          className={classes.backdrop}
+          classes={{
+            root: classes.root, // class name, e.g. `classes-nesting-root-x`
+          }}
+        >
+          {content}
+        </Backdrop>
+      </Fragment>
     );
+
+    return backdrop;
   }
 }
 
@@ -102,7 +124,7 @@ Loader.propTypes = {
    */
   active: PropTypes.bool,
   /**
-   * Flag to show/hide the Loader as fullscreen
+   * Flag to show/hide the Loader in fullscreen
    */
   fullscreen: PropTypes.bool,
   /**

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Loader from '../../Loader';
 import Button from '@material-ui/core/Button';
 import * as FlexLayout from '../../../flex-layout/src';
@@ -92,7 +92,7 @@ class LoaderShowcase6 extends Component {
     if (component === 'loader') {
       return (
         <div className={classes.container}>
-          <div>
+          <Fragment>
             <Button
               variant="outlined"
               color="primary"
@@ -100,8 +100,12 @@ class LoaderShowcase6 extends Component {
             >
               Show Loader
             </Button>
-            <Loader active={active} handleClose={this.handleClose} />
-          </div>
+            <Loader
+              active={active}
+              handleClose={this.handleClose}
+              fullscreen={false}
+            />
+          </Fragment>
         </div>
       );
     } else {

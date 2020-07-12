@@ -16,7 +16,7 @@ Basic example usage of the Loader with fullscreen false .
 loader/showcase/examples/LoaderShowcase6
 ```
 
-<!-- ### Loader Example 5
+### Loader Example 5
 
 Basic example usage of the Loader with alternative content .
 
@@ -54,7 +54,7 @@ Basic example usage of the Loader.
 
 ```
 loader/showcase/examples/LoaderShowcase1
-``` -->
+```
 
 ## Libraries
 
