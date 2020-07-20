@@ -57,7 +57,7 @@ class MenuSingleItem extends React.Component {
     var menuToRender = undefined;
     
 
-    const { action, icon, style, ...others } = item;
+    const { action, icon, trailerIcon, style, ...others } = item;
     const mergedStyle = { ...labelsStyle, ...style, hover: { ...labelsStyle?.hover, ...style?.hover }, standard: { ...labelsStyle?.standard, ...style?.standard } }
     const appliedStyle = anchorEl && index === Number(this.state.sectionOpened) ? mergedStyle.hover : mergedStyle.standard;
 
@@ -102,7 +102,12 @@ class MenuSingleItem extends React.Component {
             <i className={item.icon}></i>
           </ListItemIcon>
           : undefined}
-        <span className="menu-item-label">{item.label}</span>
+        <span className="menu-item-label">
+          {item.label}
+          {item.trailerIcon
+            ? <i style={{ marginLeft: "5px" }} className={item.trailerIcon}></i>
+            : undefined}
+        </span>
         
         {item.list || item.dynamicListInjector ? <React.Fragment>{this.renderArrow()}{menuToRender}</React.Fragment> : ''}
       </MenuItem>
