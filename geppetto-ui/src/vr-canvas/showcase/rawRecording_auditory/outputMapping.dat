@@ -1,0 +1,12 @@
+results/results0.dat
+time(StateVariable) acnet2.pyramidals_48[0].soma_0.v acnet2.pyramidals_48[1].soma_0.v acnet2.pyramidals_48[2].soma_0.v acnet2.pyramidals_48[3].soma_0.v acnet2.pyramidals_48[4].soma_0.v acnet2.pyramidals_48[5].soma_0.v acnet2.pyramidals_48[6].soma_0.v acnet2.pyramidals_48[7].soma_0.v acnet2.pyramidals_48[8].soma_0.v acnet2.pyramidals_48[9].soma_0.v
+results/results1.dat
+time(StateVariable) acnet2.pyramidals_48[10].soma_0.v acnet2.pyramidals_48[11].soma_0.v acnet2.pyramidals_48[12].soma_0.v acnet2.pyramidals_48[13].soma_0.v acnet2.pyramidals_48[14].soma_0.v acnet2.pyramidals_48[15].soma_0.v acnet2.pyramidals_48[16].soma_0.v acnet2.pyramidals_48[17].soma_0.v acnet2.pyramidals_48[18].soma_0.v acnet2.pyramidals_48[19].soma_0.v
+results/results2.dat
+time(StateVariable) acnet2.pyramidals_48[20].soma_0.v acnet2.pyramidals_48[21].soma_0.v acnet2.pyramidals_48[22].soma_0.v acnet2.pyramidals_48[23].soma_0.v acnet2.pyramidals_48[24].soma_0.v acnet2.pyramidals_48[25].soma_0.v acnet2.pyramidals_48[26].soma_0.v acnet2.pyramidals_48[27].soma_0.v acnet2.pyramidals_48[28].soma_0.v acnet2.pyramidals_48[29].soma_0.v
+results/results3.dat
+time(StateVariable) acnet2.pyramidals_48[30].soma_0.v acnet2.pyramidals_48[31].soma_0.v acnet2.pyramidals_48[32].soma_0.v acnet2.pyramidals_48[33].soma_0.v acnet2.pyramidals_48[34].soma_0.v acnet2.pyramidals_48[35].soma_0.v acnet2.pyramidals_48[36].soma_0.v acnet2.pyramidals_48[37].soma_0.v acnet2.pyramidals_48[38].soma_0.v acnet2.pyramidals_48[39].soma_0.v
+results/results4.dat
+time(StateVariable) acnet2.pyramidals_48[40].soma_0.v acnet2.pyramidals_48[41].soma_0.v acnet2.pyramidals_48[42].soma_0.v acnet2.pyramidals_48[43].soma_0.v acnet2.pyramidals_48[44].soma_0.v acnet2.pyramidals_48[45].soma_0.v acnet2.pyramidals_48[46].soma_0.v acnet2.pyramidals_48[47].soma_0.v acnet2.baskets_12[0].soma_0.v acnet2.baskets_12[1].soma_0.v
+results/results5.dat
+time(StateVariable) acnet2.baskets_12[2].soma_0.v acnet2.baskets_12[3].soma_0.v acnet2.baskets_12[4].soma_0.v acnet2.baskets_12[5].soma_0.v acnet2.baskets_12[6].soma_0.v acnet2.baskets_12[7].soma_0.v acnet2.baskets_12[8].soma_0.v acnet2.baskets_12[9].soma_0.v acnet2.baskets_12[10].soma_0.v acnet2.baskets_12[11].soma_0.v
