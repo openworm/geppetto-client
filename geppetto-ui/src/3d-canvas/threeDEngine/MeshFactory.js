@@ -2,12 +2,21 @@ import * as THREE from 'three';
 require('./OBJLoader');
 
 export default class MeshFactory {
-  constructor(engine, linesThreshold = 2000) {
+  // TODO: Make all arguments props
+  constructor(
+    engine,
+    linesThreshold = 2000,
+    linePrecisionMinRadius = 300,
+    minAllowedLinePrecision = 1
+  ) {
     this.engine = engine;
     this.meshes = {};
     this.splitMeshes = {};
     this.visualModelMap = {};
     this.complexity = 0;
+    this.sceneMaxRadius = 0;
+    this.linePrecisionMinRadius = linePrecisionMinRadius;
+    this.minAllowedLinePrecision = minAllowedLinePrecision;
     this.linesThreshold = linesThreshold;
   }
 
@@ -482,7 +491,7 @@ export default class MeshFactory {
           this.splitGroups(instance, elements);
         }
       }
-      // TODO: Add scalculateSceneMaxRadius
+      this.calculateSceneMaxRadius(mesh);
     }
   }
 
@@ -732,5 +741,43 @@ export default class MeshFactory {
       // add split mesh to scenne and set flag to visible
       groupMesh.visible = true;
     }
+  }
+  /**
+   * Traverse through THREE object to calculate that maximun radius based
+   * on bounding sphere of visible objects
+   * @param object
+   */
+  calculateSceneMaxRadius(object) {
+    let currentRadius = 0;
+    if (object.children.length > 0) {
+      for (const i = 0; i < object.children.length; i++) {
+        if (object.children[i] != undefined) {
+          this.calculateSceneMaxRadius(object.children[i]);
+        }
+      }
+    } else {
+      if (Object.prototype.hasOwnProperty.call(object, 'geometry')) {
+        object.geometry.computeBoundingSphere();
+        currentRadius = object.geometry.boundingSphere.radius;
+      }
+    }
+
+    if (currentRadius > this.sceneMaxRadius) {
+      this.sceneMaxRadius = currentRadius;
+    }
+  }
+
+  /**
+   * Calculates linePrecision used by raycaster when picking objects.
+   */
+  getLinePrecision() {
+    this.rayCasterLinePrecision =
+      this.sceneMaxRadius / this.linePrecisionMinRadius;
+    if (this.rayCasterLinePrecision < this.minAllowedLinePrecision) {
+      this.rayCasterLinePrecision = this.minAllowedLinePrecision;
+    }
+    this.rayCasterLinePrecision = Math.round(this.rayCasterLinePrecision);
+
+    return this.rayCasterLinePrecision;
   }
 }

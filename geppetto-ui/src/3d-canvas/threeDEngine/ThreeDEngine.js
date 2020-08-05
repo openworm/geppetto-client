@@ -13,6 +13,7 @@ export default class ThreeDEngine {
     containerRef,
     cameraOptions,
     cameraHandler,
+    selectionHandler,
     backgroundColor,
     instances,
     viewerId,
@@ -23,6 +24,7 @@ export default class ThreeDEngine {
     this.cameraManager = null;
     this.renderer = null;
     this.controls = null;
+    this.mouse = { x: 0, y: 0 };
     this.frameId = null;
     this.meshFactory = new MeshFactory(this);
 
@@ -44,6 +46,9 @@ export default class ThreeDEngine {
 
     // Setup Controls
     this.setupControls(cameraHandler);
+
+    // Setup Listeners
+    this.setupListeners(selectionHandler);
 
     // Update Scene
     this.addInstancesToScene(instances);
@@ -117,207 +122,6 @@ export default class ThreeDEngine {
   }
 
   /**
-   * Set up the listeners use to detect mouse movement and windoe resizing
-   */
-  setupListeners() {
-    // const that = this;
-    // // when the mouse moves, call the given function
-    // this.renderer.domElement.addEventListener(
-    //   'mousedown',
-    //   function (event) {
-    //     clientX = event.clientX;
-    //     clientY = event.clientY;
-    //   },
-    //   false
-    // );
-    // // when the mouse moves, call the given function
-    // this.renderer.domElement.addEventListener(
-    //   'mouseup',
-    //   function (event) {
-    //     if (event.target == that.renderer.domElement) {
-    //       var x = event.clientX;
-    //       var y = event.clientY;
-    //       // If the mouse moved since the mousedown then don't consider this a selection
-    //       if (
-    //         typeof clientX === 'undefined' ||
-    //         typeof clientY === 'undefined' ||
-    //         x != clientX ||
-    //         y != clientY
-    //       ) {
-    //         return;
-    //       }
-    //       that.mouse.y =
-    //         -(
-    //           (event.clientY -
-    //             that.renderer.domElement.getBoundingClientRect().top) /
-    //           that.renderer.domElement.getBoundingClientRect().height
-    //         ) *
-    //           2 +
-    //         1;
-    //       that.mouse.x =
-    //         ((event.clientX -
-    //           that.renderer.domElement.getBoundingClientRect().left) /
-    //           that.renderer.domElement.getBoundingClientRect().width) *
-    //           2 -
-    //         1;
-    //       if (event.button == 0) {
-    //         // only for left click
-    //         if (that.pickingEnabled) {
-    //           const intersects = that.getIntersectedObjects();
-    //           if (intersects.length > 0) {
-    //             let selected = '';
-    //             let geometryIdentifier = '';
-    //             // sort intersects
-    //             const compare = function (a, b) {
-    //               if (a.distance < b.distance) {
-    //                 return -1;
-    //               }
-    //               if (a.distance > b.distance) {
-    //                 return 1;
-    //               }
-    //               return 0;
-    //             };
-    //             intersects.sort(compare);
-    //             let selectedIntersect;
-    //             // Iterate and get the first visible item (they are now ordered by proximity)
-    //             for (let i = 0; i < intersects.length; i++) {
-    //               // figure out if the entity is visible
-    //               let instancePath = '';
-    //               if (
-    //                 Object.prototype.hasOwnProperty.call(
-    //                   intersects[i].object,
-    //                   'instancePath'
-    //                 )
-    //               ) {
-    //                 instancePath = intersects[i].object.instancePath;
-    //                 geometryIdentifier =
-    //                   intersects[i].object.geometryIdentifier;
-    //               } else {
-    //                 // weak assumption: if the object doesn't have an instancePath its parent will
-    //                 instancePath = intersects[i].object.parent.instancePath;
-    //                 geometryIdentifier =
-    //                   intersects[i].object.parent.geometryIdentifier;
-    //               }
-    //               if (instancePath != null || undefined) {
-    //                 const visible = eval(instancePath + '.visible');
-    //                 if (intersects.length == 1 || i == intersects.length) {
-    //                   // if there's only one element intersected we select it regardless of its opacity
-    //                   if (visible) {
-    //                     selected = instancePath;
-    //                     selectedIntersect = intersects[i];
-    //                     break;
-    //                   }
-    //                 } else {
-    //                   /*
-    //                    *if there are more than one element intersected and opacity of the current one is less than 1
-    //                    *we skip it to realize a "pick through"
-    //                    */
-    //                   const opacity = that.meshes[instancePath].defaultOpacity;
-    //                   if (
-    //                     (opacity == 1 && visible) ||
-    //                     GEPPETTO.isKeyPressed('ctrl')
-    //                   ) {
-    //                     selected = instancePath;
-    //                     selectedIntersect = intersects[i];
-    //                     break;
-    //                   } else if (visible && opacity < 1 && opacity > 0) {
-    //                     /*
-    //                      *if only transparent objects intersected select first or the next down if
-    //                      *one is already selected in order to enable "burrow through" sample.
-    //                      */
-    //                     if (
-    //                       selected == '' &&
-    //                       !eval(instancePath + '.selected')
-    //                     ) {
-    //                       selected = instancePath;
-    //                       selectedIntersect = intersects[i];
-    //                     } else {
-    //                       if (
-    //                         eval(instancePath + '.selected') &&
-    //                         i != intersects.length - 1
-    //                       ) {
-    //                         selected = '';
-    //                       }
-    //                     }
-    //                   }
-    //                 }
-    //               }
-    //             }
-    //             if (selected != '') {
-    //               if (
-    //                 Object.prototype.hasOwnProperty.call(
-    //                   that.meshes,
-    //                   selected
-    //                 ) ||
-    //                 Object.prototype.hasOwnProperty.call(
-    //                   that.splitMeshes,
-    //                   selected
-    //                 )
-    //               ) {
-    //                 if (!GEPPETTO.isKeyPressed('shift')) {
-    //                   that.deselectAll();
-    //                 }
-    //                 const selectedIntersectCoordinates = [
-    //                   selectedIntersect.point.x,
-    //                   selectedIntersect.point.y,
-    //                   selectedIntersect.point.z,
-    //                 ];
-    //                 if (geometryIdentifier == undefined) {
-    //                   geometryIdentifier = '';
-    //                 }
-    //                 GEPPETTO.CommandController.execute(
-    //                   selected +
-    //                     '.select(' +
-    //                     false +
-    //                     ', ' +
-    //                     '"' +
-    //                     geometryIdentifier +
-    //                     '", [' +
-    //                     selectedIntersectCoordinates +
-    //                     '])'
-    //                 );
-    //               }
-    //             }
-    //           } else if (GEPPETTO.isKeyPressed('ctrl')) {
-    //             that.deselectAll();
-    //           }
-    //         }
-    //       }
-    //     }
-    //   },
-    //   false
-    // );
-    // this.renderer.domElement.addEventListener(
-    //   'mousemove',
-    //   function (event) {
-    //     that.mouse.y =
-    //       -(
-    //         (event.clientY -
-    //           that.renderer.domElement.getBoundingClientRect().top) /
-    //         that.renderer.domElement.height
-    //       ) *
-    //         2 +
-    //       1;
-    //     that.mouse.x =
-    //       ((event.clientX -
-    //         that.renderer.domElement.getBoundingClientRect().left) /
-    //         that.renderer.domElement.width) *
-    //         2 -
-    //       1;
-    //     if (that.hoverListeners) {
-    //       const intersects = that.getIntersectedObjects();
-    //       for (const listener in that.hoverListeners) {
-    //         if (intersects.length != 0) {
-    //           that.hoverListeners[listener](intersects);
-    //         }
-    //       }
-    //     }
-    //   },
-    //   false
-    // );
-  }
-
-  /**
    * Returns intersected objects from mouse click
    *
    * @returns {Array} a list of objects intersected by the current mouse coordinates
@@ -331,7 +135,7 @@ export default class ThreeDEngine {
       this.cameraManager.getCamera().position,
       vector.sub(this.cameraManager.getCamera().position).normalize()
     );
-    raycaster.linePrecision = this.getLinePrecision();
+    raycaster.linePrecision = this.meshFactory.getLinePrecision();
 
     const visibleChildren = [];
     this.scene.traverse(function(child) {
@@ -389,6 +193,7 @@ export default class ThreeDEngine {
     }
   }
   setInstanceColor(path, color) {
+    //TODO: Use opacity
     const entity = Instances.getInstance(path);
     if (entity.hasCapability('VisualCapability')) {
       if (entity instanceof Instance || entity instanceof ArrayInstance) {
@@ -440,6 +245,185 @@ export default class ThreeDEngine {
   }
 
   /**
+   * Set up the listeners use to detect mouse movement and windoe resizing
+   */
+  setupListeners(selectionHandler) {
+    const that = this;
+    // when the mouse moves, call the given function
+    this.renderer.domElement.addEventListener(
+      'mousedown',
+      function(event) {
+        that.clientX = event.clientX;
+        that.clientY = event.clientY;
+      },
+      false
+    );
+
+    // when the mouse moves, call the given function
+    this.renderer.domElement.addEventListener(
+      'mouseup',
+      function(event) {
+        if (event.target == that.renderer.domElement) {
+          const x = event.clientX;
+          const y = event.clientY;
+
+          // If the mouse moved since the mousedown then don't consider this a selection
+          if (
+            typeof that.clientX === 'undefined' ||
+            typeof that.clientY === 'undefined' ||
+            x != that.clientX ||
+            y != that.clientY
+          ) {
+            return;
+          }
+
+          that.mouse.y =
+            -(
+              (event.clientY -
+                that.renderer.domElement.getBoundingClientRect().top) /
+              that.renderer.domElement.getBoundingClientRect().height
+            ) *
+              2 +
+            1;
+          that.mouse.x =
+            ((event.clientX -
+              that.renderer.domElement.getBoundingClientRect().left) /
+              that.renderer.domElement.getBoundingClientRect().width) *
+              2 -
+            1;
+
+          if (event.button == 0) {
+            // only for left click
+            if (that.pickingEnabled) {
+              const intersects = that.getIntersectedObjects();
+
+              if (intersects.length > 0) {
+                let selected = '';
+                let geometryIdentifier = '';
+
+                // sort intersects
+                const compare = function(a, b) {
+                  if (a.distance < b.distance) {
+                    return -1;
+                  }
+                  if (a.distance > b.distance) {
+                    return 1;
+                  }
+                  return 0;
+                };
+
+                intersects.sort(compare);
+
+                let selectedIntersect;
+                // Iterate and get the first visible item (they are now ordered by proximity)
+                for (const i = 0; i < intersects.length; i++) {
+                  // figure out if the entity is visible
+                  let instancePath = '';
+                  if (
+                    Object.prototype.hasOwnProperty.call(
+                      intersects[i].object,
+                      'instancePath'
+                    )
+                  ) {
+                    instancePath = intersects[i].object.instancePath;
+                    geometryIdentifier =
+                      intersects[i].object.geometryIdentifier;
+                  } else {
+                    // weak assumption: if the object doesn't have an instancePath its parent will
+                    instancePath = intersects[i].object.parent.instancePath;
+                    geometryIdentifier =
+                      intersects[i].object.parent.geometryIdentifier;
+                  }
+                  if (instancePath != null || undefined) {
+                    const instance = Instances.getInstance(instancePath);
+                    const visible = instance.visible;
+
+                    if (visible) {
+                      selected = instancePath;
+                      selectedIntersect = intersects[i];
+                      break;
+                    }
+                  }
+                }
+
+                if (selected != '') {
+                  if (
+                    Object.prototype.hasOwnProperty.call(
+                      that.meshFactory.meshes,
+                      selected
+                    )
+                    //TODO:
+                    // ) ||
+                    // Object.prototype.hasOwnProperty.call(
+                    //   that.splitMeshes,
+                    //   selected
+                    // )
+                  ) {
+                    // TODO:
+                    // if (!GEPPETTO.isKeyPressed('shift')) {
+                    //   that.deselectAll();
+                    // }
+
+                    const selectedIntersectCoordinates = [
+                      selectedIntersect.point.x,
+                      selectedIntersect.point.y,
+                      selectedIntersect.point.z,
+                    ];
+                    if (geometryIdentifier == undefined) {
+                      geometryIdentifier = '';
+                    }
+                    selectionHandler(
+                      selected,
+                      geometryIdentifier,
+                      selectedIntersectCoordinates,
+                      selectedIntersect.object.material.color
+                    );
+                  }
+                }
+              }
+              // TODO:
+              // } else if (GEPPETTO.isKeyPressed('ctrl')) {
+              //   that.deselectAll();
+              // }
+            }
+          }
+        }
+      },
+      false
+    );
+
+    // TODO:
+    // this.renderer.domElement.addEventListener(
+    //   'mousemove',
+    //   function(event) {
+    //     that.mouse.y =
+    //       -(
+    //         (event.clientY -
+    //           that.renderer.domElement.getBoundingClientRect().top) /
+    //         that.renderer.domElement.height
+    //       ) *
+    //         2 +
+    //       1;
+    //     that.mouse.x =
+    //       ((event.clientX -
+    //         that.renderer.domElement.getBoundingClientRect().left) /
+    //         that.renderer.domElement.width) *
+    //         2 -
+    //       1;
+    //     if (that.hoverListeners) {
+    //       var intersects = that.getIntersectedObjects();
+    //       for (var listener in that.hoverListeners) {
+    //         if (intersects.length != 0) {
+    //           that.hoverListeners[listener](intersects);
+    //         }
+    //       }
+    //     }
+    //   },
+    //   false
+    // );
+  }
+
+  /**
    * Checks if instance has a mesh
    *
    * @param instance
@@ -485,6 +469,15 @@ export default class ThreeDEngine {
       threeColor.b = color.b;
     } else {
       threeColor.set(color);
+    }
+  }
+
+  update(proxyInstances, toTraverse) {
+    // TODO: Add camera
+    if (toTraverse) {
+      this.addInstancesToScene(proxyInstances);
+    } else {
+      this.updateInstancesColor(proxyInstances);
     }
   }
 

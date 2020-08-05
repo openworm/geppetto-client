@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { Vector3 } from 'three';
 
 export default class CameraManager {
   constructor(engine, cameraOptions) {
@@ -12,11 +11,6 @@ export default class CameraManager {
       cameraOptions.far
     );
     this.engine.scene.add(this.camera);
-    this.camera.position.set(
-      cameraOptions.position.x,
-      cameraOptions.position.y,
-      cameraOptions.position.z
-    );
     this.camera.up = new THREE.Vector3(0, 1, 0);
     this.camera.direction = new THREE.Vector3(0, 0, 1);
     this.camera.lookAt(this.sceneCenter);
@@ -28,7 +22,7 @@ export default class CameraManager {
     let aabbMin = null;
     let aabbMax = null;
 
-    this.engine.scene.traverse(function (child) {
+    this.engine.scene.traverse(function(child) {
       if (
         Object.prototype.hasOwnProperty.call(child, 'geometry') &&
         child.visible === true

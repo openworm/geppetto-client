@@ -22,6 +22,7 @@ class Canvas extends Component {
       data,
       cameraOptions,
       cameraHandler,
+      selectionHandler,
       backgroundColor,
       id,
       pickingEnabled,
@@ -31,6 +32,7 @@ class Canvas extends Component {
       this.sceneRef.current,
       cameraOptions,
       cameraHandler,
+      selectionHandler,
       backgroundColor,
       data,
       id,
@@ -47,8 +49,16 @@ class Canvas extends Component {
     );
   }
 
+  shouldEngineTraverse() {
+    // TODO: check if new instance added, check if split meshes changed?
+    return false;
+  }
+
   render() {
-    const { classes } = this.props;
+    const { classes, data } = this.props;
+    if (this.threeDEngine) {
+      this.threeDEngine.update(data, this.shouldEngineTraverse());
+    }
     return <div className={classes.container} ref={this.sceneRef}></div>;
   }
 }
@@ -83,6 +93,10 @@ Canvas.propTypes = {
    * Function to callback on camera changes
    */
   cameraHandler: PropTypes.func,
+  /**
+   * Function to callback on selection changes
+   */
+  selectionHandler: PropTypes.func,
   /**
    * Scene background color
    */
