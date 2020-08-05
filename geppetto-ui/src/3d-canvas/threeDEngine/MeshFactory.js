@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 require('./OBJLoader');
 
-export default class InstancesParser {
+export default class MeshFactory {
   constructor(engine, linesThreshold = 2000) {
     this.engine = engine;
     this.meshes = {};
@@ -11,7 +11,7 @@ export default class InstancesParser {
     this.linesThreshold = linesThreshold;
   }
 
-  parse(instances) {
+  start(instances) {
     this.traverseInstances(instances);
     const meshes = { ...this.meshes, ...this.splitMeshes };
     return meshes;
@@ -394,10 +394,10 @@ export default class InstancesParser {
     loader.options.convertUpAxis = true;
     let scene = null;
     const that = this;
-    loader.parse(node.collada, function (collada) {
+    loader.parse(node.collada, function(collada) {
       // eslint-disable-next-line prefer-destructuring
       scene = collada.scene;
-      scene.traverse(function (child) {
+      scene.traverse(function(child) {
         if (child instanceof THREE.Mesh) {
           child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
           child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
@@ -420,14 +420,14 @@ export default class InstancesParser {
 
   loadThreeOBJModelFromNode(node) {
     const manager = new THREE.LoadingManager();
-    manager.onProgress = function (item, loaded, total) {
+    manager.onProgress = function(item, loaded, total) {
       console.log(item, loaded, total);
     };
     const loader = new THREE.OBJLoader(manager);
     // TODO: Fix this texture
     const scene = loader.parse(node.obj, this.particleTexture);
     const that = this;
-    scene.traverse(function (child) {
+    scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         that.setThreeColor(
           child.material.color,
@@ -491,7 +491,7 @@ export default class InstancesParser {
     let ret = null;
     let mergedLines;
     let mergedMeshes;
-    objArray.forEach(function (obj) {
+    objArray.forEach(function(obj) {
       if (obj instanceof THREE.Line) {
         if (mergedLines === undefined) {
           mergedLines = new THREE.Geometry();

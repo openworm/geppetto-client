@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 
-const styles = (theme) => ({
+const styles = () => ({
   container: {
     display: 'flex',
     alignItems: 'stretch',
@@ -11,7 +11,7 @@ const styles = (theme) => ({
   },
 });
 
-export default class Canvas extends Component {
+class Canvas extends Component {
   constructor(props) {
     super(props);
     this.sceneRef = React.createRef();
@@ -47,18 +47,7 @@ export default class Canvas extends Component {
 
   render() {
     const { classes } = this.props;
-    // TODO: Use classNames instead of style
-
-    return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'stretch',
-          flex: 1,
-        }}
-        ref={this.sceneRef}
-      ></div>
-    );
+    return <div className={classes.container} ref={this.sceneRef}></div>;
   }
 }
 
@@ -102,4 +91,4 @@ Canvas.propTypes = {
   hoverListeners: PropTypes.array,
 };
 
-// export default withStyles(styles)(Canvas);
+export default withStyles(styles)(Canvas);

@@ -1,11 +1,12 @@
 import * as THREE from 'three';
-import InstancesParser from './InstancesParser';
+import MeshFactory from './MeshFactory';
 import CameraManager from './CameraManager';
 import { EffectComposer, RenderPass } from 'postprocessing';
 import Instance from '@geppettoengine/geppetto-core/model/Instance';
 import ArrayInstance from '@geppettoengine/geppetto-core//model/ArrayInstance';
 import Type from '@geppettoengine/geppetto-core/model/Type';
 import Variable from '@geppettoengine/geppetto-core/model/Variable';
+import { p } from 'react-dom-factories';
 require('./TrackballControls');
 
 export default class ThreeDEngine {
@@ -23,7 +24,7 @@ export default class ThreeDEngine {
     this.renderer = null;
     this.controls = null;
     this.frameId = null;
-    this.parser = new InstancesParser();
+    this.meshFactory = new MeshFactory(this);
 
     this.viewerId = viewerId;
     this.pickingEnabled = pickingEnabled;
@@ -353,10 +354,10 @@ export default class ThreeDEngine {
    * @param proxyInstances
    */
   addInstancesToScene(proxyInstances) {
-    const instances = proxyInstances.map((instance) => {
-      return Instances.getInstance(instance.instancePath);
+    const instances = proxyInstances.map((pInstance) => {
+      return Instances.getInstance(pInstance.instancePath);
     });
-    const meshes = this.parser.parse(instances);
+    const meshes = this.meshFactory.start(instances);
     for (const meshKey in meshes) {
       this.scene.add(meshes[meshKey]);
     }
@@ -370,17 +371,23 @@ export default class ThreeDEngine {
    * @param color
    */
   updateInstancesColor(proxyInstances) {
-    for (const instance of proxyInstances) {
-      for (const child of instance.color) {
-        const instancePath = Object.keys(child)[0];
-        const color = child[instancePath];
-        this.setInstanceColor(instancePath, color);
+    const sortedInstances = proxyInstances.sort((a, b) => {
+      if (a.instancePath < b.instancePath) {
+        return -1;
+      }
+      if (a.instancePath > b.instancePath) {
+        return 1;
+      }
+      return 0;
+    });
+    for (const pInstance of sortedInstances) {
+      if (pInstance.color) {
+        this.setInstanceColor(pInstance.instancePath, pInstance.color);
       }
     }
   }
   setInstanceColor(path, color) {
-    // eslint-disable-next-line no-eval
-    const entity = eval(path);
+    const entity = Instances.getInstance(path);
     if (entity.hasCapability('VisualCapability')) {
       if (entity instanceof Instance || entity instanceof ArrayInstance) {
         this.setColor(path, color);
@@ -438,7 +445,7 @@ export default class ThreeDEngine {
   hasInstance(instance) {
     const instancePath =
       typeof instance == 'string' ? instance : instance.getInstancePath();
-    return this.parser.meshes[instancePath] != undefined;
+    return this.meshFactory.meshes[instancePath] != undefined;
   }
 
   /**
@@ -449,14 +456,14 @@ export default class ThreeDEngine {
    */
   getRealMeshesForInstancePath(instancePath) {
     const meshes = [];
-    if (instancePath in this.parser.splitMeshes) {
-      for (const keySplitMeshes in this.parser.splitMeshes) {
+    if (instancePath in this.meshFactory.splitMeshes) {
+      for (const keySplitMeshes in this.meshFactory.splitMeshes) {
         if (keySplitMeshes.startsWith(instancePath)) {
-          meshes.push(this.parser.splitMeshes[keySplitMeshes]);
+          meshes.push(this.meshFactory.splitMeshes[keySplitMeshes]);
         }
       }
-    } else if (instancePath in this.parser.meshes) {
-      meshes.push(this.parser.meshes[instancePath]);
+    } else if (instancePath in this.meshFactory.meshes) {
+      meshes.push(this.meshFactory.meshes[instancePath]);
     }
     return meshes;
   }
