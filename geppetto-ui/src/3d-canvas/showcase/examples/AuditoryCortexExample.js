@@ -22,6 +22,12 @@ class AuditoryCortexExample extends Component {
     super(props);
     GEPPETTO.Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
+    this.cameraHandler = this.cameraHandler.bind(this);
+  }
+
+  cameraHandler(obj) {
+    console.log('Camera has changed');
+    console.log(obj);
   }
 
   render() {
@@ -41,13 +47,13 @@ class AuditoryCortexExample extends Component {
       baseZoom: 1,
     };
 
-    // TODO: Use classNames instead of style
     return (
       <div className={classes.container}>
         <Canvas
           id={'auditory_cortex_canvas'}
           data={data}
           cameraOptions={cameraOptions}
+          cameraHandler={this.cameraHandler}
         />
       </div>
     );

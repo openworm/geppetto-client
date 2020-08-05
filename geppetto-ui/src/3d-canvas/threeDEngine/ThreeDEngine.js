@@ -6,13 +6,13 @@ import Instance from '@geppettoengine/geppetto-core/model/Instance';
 import ArrayInstance from '@geppettoengine/geppetto-core//model/ArrayInstance';
 import Type from '@geppettoengine/geppetto-core/model/Type';
 import Variable from '@geppettoengine/geppetto-core/model/Variable';
-import { p } from 'react-dom-factories';
 require('./TrackballControls');
 
 export default class ThreeDEngine {
   constructor(
     containerRef,
     cameraOptions,
+    cameraHandler,
     backgroundColor,
     instances,
     viewerId,
@@ -43,7 +43,7 @@ export default class ThreeDEngine {
     this.setupLights();
 
     // Setup Controls
-    this.setupControls();
+    this.setupControls(cameraHandler);
 
     // Update Scene
     this.addInstancesToScene(instances);
@@ -103,12 +103,14 @@ export default class ThreeDEngine {
 
   /**
    * Setups the controls
+   * @param cameraHandler
    */
-  setupControls() {
+  setupControls(cameraHandler) {
     this.controls = new THREE.TrackballControls(
       this.cameraManager.getCamera(),
       this.renderer.domElement,
-      this.viewerId
+      this.viewerId,
+      cameraHandler
     );
     this.controls.noZoom = false;
     this.controls.noPan = false;

@@ -21,6 +21,7 @@ class Canvas extends Component {
     const {
       data,
       cameraOptions,
+      cameraHandler,
       backgroundColor,
       id,
       pickingEnabled,
@@ -29,6 +30,7 @@ class Canvas extends Component {
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
       cameraOptions,
+      cameraHandler,
       backgroundColor,
       data,
       id,
@@ -77,6 +79,10 @@ Canvas.propTypes = {
    * Options to customize camera
    */
   cameraOptions: PropTypes.object,
+  /**
+   * Function to callback on camera changes
+   */
+  cameraHandler: PropTypes.func,
   /**
    * Scene background color
    */
