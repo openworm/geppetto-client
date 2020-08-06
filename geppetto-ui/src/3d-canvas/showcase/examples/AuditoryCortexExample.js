@@ -90,6 +90,8 @@ class AuditoryCortexExample extends Component {
       near: 10,
       far: 2000000,
       baseZoom: 1,
+      wireframeEnabled: true,
+      rotation: { rx: -0.294, ry: -0.117, rz: -0.02 },
     };
 
     return (

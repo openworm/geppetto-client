@@ -16,13 +16,14 @@ export default class CameraManager {
     this.camera.lookAt(this.sceneCenter);
     this.baseZoom = cameraOptions.baseZoom;
   }
+
   resetCamera() {
     this.engine.controls.reset();
 
     let aabbMin = null;
     let aabbMax = null;
 
-    this.engine.scene.traverse(function(child) {
+    this.engine.scene.traverse(function (child) {
       if (
         Object.prototype.hasOwnProperty.call(child, 'geometry') &&
         child.visible === true
@@ -145,5 +146,29 @@ export default class CameraManager {
    */
   getCamera() {
     return this.camera;
+  }
+
+  /**
+ * @param x
+ * @param y
+ */
+  incrementCameraPan(x, y) {
+    this.engine.controls.incrementPanEnd(x, y);
+  }
+
+  /**
+   * @param x
+   * @param y
+   * @param z
+   */
+  incrementCameraRotate(x, y, z) {
+    this.engine.controls.incrementRotationEnd(x, y, z);
+  }
+
+  /**
+  * @param z
+  */
+  incrementCameraZoom(z) {
+    this.engine.controls.incrementZoomEnd(z);
   }
 }

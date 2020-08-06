@@ -49,14 +49,6 @@ export default class ThreeDEngine {
 
     // Setup Listeners
     this.setupListeners(selectionHandler);
-
-    // Update Scene
-    this.addInstancesToScene(instances);
-
-    //TODO:
-    //this.setAllGeometriesType(this.getDefaultGeometryType());
-    this.scene.updateMatrixWorld(true);
-    this.cameraManager.resetCamera();
   }
 
   /**
@@ -138,7 +130,7 @@ export default class ThreeDEngine {
     raycaster.linePrecision = this.meshFactory.getLinePrecision();
 
     const visibleChildren = [];
-    this.scene.traverse(function(child) {
+    this.scene.traverse(function (child) {
       if (child.visible && !(child.clickThrough == true)) {
         if (child.geometry != null && child.geometry != undefined) {
           if (child.type !== 'Points') {
@@ -233,7 +225,7 @@ export default class ThreeDEngine {
         var mesh = meshes[i];
         if (mesh) {
           var that = this;
-          mesh.traverse(function(object) {
+          mesh.traverse(function (object) {
             if (Object.prototype.hasOwnProperty.call(object, 'material')) {
               that.setThreeColor(object.material.color, color);
               object.material.defaultColor = color;
@@ -252,7 +244,7 @@ export default class ThreeDEngine {
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mousedown',
-      function(event) {
+      function (event) {
         that.clientX = event.clientX;
         that.clientY = event.clientY;
       },
@@ -262,7 +254,7 @@ export default class ThreeDEngine {
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mouseup',
-      function(event) {
+      function (event) {
         if (event.target == that.renderer.domElement) {
           const x = event.clientX;
           const y = event.clientY;
@@ -283,13 +275,13 @@ export default class ThreeDEngine {
                 that.renderer.domElement.getBoundingClientRect().top) /
               that.renderer.domElement.getBoundingClientRect().height
             ) *
-              2 +
+            2 +
             1;
           that.mouse.x =
             ((event.clientX -
               that.renderer.domElement.getBoundingClientRect().left) /
               that.renderer.domElement.getBoundingClientRect().width) *
-              2 -
+            2 -
             1;
 
           if (event.button == 0) {
@@ -302,7 +294,7 @@ export default class ThreeDEngine {
                 let geometryIdentifier = '';
 
                 // sort intersects
-                const compare = function(a, b) {
+                const compare = function (a, b) {
                   if (a.distance < b.distance) {
                     return -1;
                   }
@@ -476,12 +468,17 @@ export default class ThreeDEngine {
     // TODO: Add camera
     if (toTraverse) {
       this.addInstancesToScene(proxyInstances);
+      //this.setAllGeometriesType(this.getDefaultGeometryType());
+
+      this.scene.updateMatrixWorld(true);
+      this.cameraManager.resetCamera();
     } else {
       this.updateInstancesColor(proxyInstances);
     }
   }
 
-  start = () => {
+  start = (proxyInstances) => {
+    this.update(proxyInstances, true)
     if (!this.frameId) {
       this.frameId = requestAnimationFrame(this.animate);
     }
