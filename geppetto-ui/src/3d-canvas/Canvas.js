@@ -53,7 +53,7 @@ class Canvas extends Component {
   }
 
   shouldEngineTraverse() {
-    // TODO: check if new instance added, check if split meshes changed?
+    //TODO: check if new instance added, check if split meshes changed?
     return true;
   }
 
@@ -73,16 +73,16 @@ class Canvas extends Component {
           this.threeDEngine.cameraManager.incrementCameraPan(0, 0.01)
           break;
         case cameraControlsActions.ROTATE_UP:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0.01, 0)
+          this.threeDEngine.cameraManager.incrementCameraRotate(0, 0.01, undefined)
           break;
         case cameraControlsActions.ROTATE_DOWN:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0, -0.01)
+          this.threeDEngine.cameraManager.incrementCameraRotate(0, -0.01, undefined)
           break;
         case cameraControlsActions.ROTATE_LEFT:
-          this.threeDEngine.cameraManager.incrementCameraRotate(-0.01, 0)
+          this.threeDEngine.cameraManager.incrementCameraRotate(-0.01, 0, undefined)
           break;
         case cameraControlsActions.ROTATE_RIGHT:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0.01, 0)
+          this.threeDEngine.cameraManager.incrementCameraRotate(0.01, 0, undefined)
           break;
         case cameraControlsActions.ROTATE_Z:
           this.threeDEngine.cameraManager.incrementCameraRotate(0, 0, 0.01)
