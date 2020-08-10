@@ -152,6 +152,7 @@ export default class ThreeDEngine {
    * @param proxyInstances
    */
   addInstancesToScene(proxyInstances) {
+    this.clearScene();
     const instances = proxyInstances.map((pInstance) => {
       return Instances.getInstance(pInstance.instancePath);
     });
@@ -160,6 +161,19 @@ export default class ThreeDEngine {
       this.scene.add(meshes[meshKey]);
     }
   }
+
+  /**
+ * Clears the scene
+ * 
+ */
+  clearScene() {
+    const meshes = this.meshFactory.getMeshes();
+    for (const meshKey in meshes) {
+      this.scene.remove(meshes[meshKey]);
+    }
+    this.meshFactory.complexity = 0;
+  }
+
 
   /**
    * Sets the color of the instances

@@ -30,15 +30,14 @@ class AuditoryCortexExample extends Component {
         {
           instancePath: 'acnet2.baskets_12',
           color: COLORS[1],
-          isSelected: false,
         },
-        { instancePath: 'acnet2', isSelected: false },
+        { instancePath: 'acnet2', },
         {
           instancePath: 'acnet2.baskets_12[0]',
           color: COLORS[2],
-          isSelected: false,
         },
       ],
+      selected: {},
     };
   }
 
@@ -53,18 +52,18 @@ class AuditoryCortexExample extends Component {
     selectedIntersectCoordinates,
     currentColor
   ) {
-    const { data } = this.state;
+    const { data, selected } = this.state;
     const newData = data;
+    const newSelected = selected
     let done = false;
     for (const instance of data) {
       if (instance.instancePath == path) {
-        if (instance.isSelected) {
-          instance.color = instance.originalColor;
-          instance.isSelected = false;
+        if (path in newSelected) {
+          instance.color = newSelected[path];
+          delete newSelected[path];
         } else {
-          instance.originalColor = instance.color;
+          newSelected[path] = instance.color;
           instance.color = SELECTION_COLOR;
-          instance.isSelected = true;
         }
         done = true;
       }
@@ -72,12 +71,11 @@ class AuditoryCortexExample extends Component {
     if (!done) {
       newData.push({
         instancePath: path,
-        originalColor: { ...currentColor },
         color: SELECTION_COLOR,
-        isSelected: true,
       });
+      newSelected[path] = { ...currentColor };
     }
-    this.setState(() => ({ data: newData }));
+    this.setState(() => ({ data: newData, selected: newSelected }));
   }
 
   render() {
