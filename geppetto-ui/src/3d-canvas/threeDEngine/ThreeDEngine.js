@@ -159,7 +159,6 @@ export default class ThreeDEngine {
     for (const meshKey in meshes) {
       this.scene.add(meshes[meshKey]);
     }
-    this.updateInstancesColor(proxyInstances);
   }
 
   /**
@@ -464,7 +463,7 @@ export default class ThreeDEngine {
     }
   }
 
-  update(proxyInstances, toTraverse) {
+  update(proxyInstances, cameraOptions, toTraverse) {
     // TODO: Add camera
     if (toTraverse) {
       this.addInstancesToScene(proxyInstances);
@@ -472,13 +471,13 @@ export default class ThreeDEngine {
 
       this.scene.updateMatrixWorld(true);
       this.cameraManager.resetCamera();
-    } else {
-      this.updateInstancesColor(proxyInstances);
     }
+    this.updateInstancesColor(proxyInstances);
+    this.cameraManager.update(cameraOptions)
   }
 
-  start = (proxyInstances) => {
-    this.update(proxyInstances, true)
+  start = (proxyInstances, cameraOptions, toTraverse) => {
+    this.update(proxyInstances, cameraOptions, toTraverse)
     if (!this.frameId) {
       this.frameId = requestAnimationFrame(this.animate);
     }

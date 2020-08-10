@@ -55,7 +55,6 @@ class AuditoryCortexExample extends Component {
   ) {
     const { data } = this.state;
     const newData = data;
-    //TODO: geometryIdentifier and selectedIntersectCoordinates
     let done = false;
     for (const instance of data) {
       if (instance.instancePath == path) {
@@ -91,7 +90,8 @@ class AuditoryCortexExample extends Component {
       far: 2000000,
       baseZoom: 1,
       wireframeEnabled: true,
-      rotation: { rx: -0.294, ry: -0.117, rz: -0.02 },
+      position: { x: 230.357, y: 256.435, z: 934.238 },
+      rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
     };
 
     return (

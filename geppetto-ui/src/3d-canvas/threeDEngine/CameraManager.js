@@ -17,6 +17,16 @@ export default class CameraManager {
     this.baseZoom = cameraOptions.baseZoom;
   }
 
+  update(cameraOptions) {
+    const { position, rotation } = cameraOptions
+    if (position) {
+      this.setCameraPosition(position.x, position.y, position.z)
+    }
+    if (rotation) {
+      this.setCameraRotation(rotation.rx, rotation.ry, rotation.rz, rotation.radius)
+    }
+  }
+
   resetCamera() {
     this.engine.controls.reset();
 
@@ -170,5 +180,23 @@ export default class CameraManager {
   */
   incrementCameraZoom(z) {
     this.engine.controls.incrementZoomEnd(z);
+  }
+
+  /**
+   * @param x
+   * @param y
+   * @param z
+   */
+  setCameraPosition(x, y, z) {
+    this.engine.controls.setPosition(x, y, z);
+  }
+  /**
+* @param rx
+* @param ry
+* @param rz
+* @param radius
+*/
+  setCameraRotation(rx, ry, rz, radius) {
+    this.engine.controls.setRotation(rx, ry, rz, radius);
   }
 }

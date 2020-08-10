@@ -42,7 +42,7 @@ class Canvas extends Component {
       pickingEnabled,
       hoverListeners
     );
-    this.threeDEngine.start(data);
+    this.threeDEngine.start(data, cameraOptions, true);
   }
 
   componentWillUnmount() {
@@ -54,7 +54,7 @@ class Canvas extends Component {
 
   shouldEngineTraverse() {
     // TODO: check if new instance added, check if split meshes changed?
-    return false;
+    return true;
   }
 
   cameraControlsHandler(action) {
@@ -112,7 +112,7 @@ class Canvas extends Component {
     }
 
     if (this.threeDEngine) {
-      this.threeDEngine.update(data, this.shouldEngineTraverse());
+      this.threeDEngine.update(data, cameraOptions, this.shouldEngineTraverse());
     }
     return <div className={classes.container} ref={this.sceneRef}>
       {cameraControls}
