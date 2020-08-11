@@ -96,7 +96,7 @@ class Canvas extends Component {
         case cameraControlsActions.ZOOM_OUT:
           this.threeDEngine.cameraManager.incrementCameraZoom(+0.1)
           break;
-        case cameraControlsActions.CAMERA_HOME:
+        case cameraControlsActions.PAN_HOME:
           this.threeDEngine.cameraManager.resetCamera()
           break;
       }
