@@ -58,6 +58,9 @@ class Canvas extends Component {
   }
 
   cameraControlsHandler(action) {
+    const {
+      cameraOptions,
+    } = this.props;
     if (this.threeDEngine) {
       switch (action) {
         case cameraControlsActions.PAN_LEFT:
@@ -89,6 +92,9 @@ class Canvas extends Component {
           break;
         case cameraControlsActions.ROTATE_MZ:
           this.threeDEngine.cameraManager.incrementCameraRotate(0, 0, -0.01)
+          break;
+        case cameraControlsActions.ROTATE:
+          this.threeDEngine.cameraManager.autoRotate(cameraOptions.movieFilter)
           break;
         case cameraControlsActions.ZOOM_IN:
           this.threeDEngine.cameraManager.incrementCameraZoom(-0.1)

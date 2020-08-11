@@ -1,12 +1,19 @@
 import * as THREE from 'three';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
+import { FocusShader } from 'three/examples/jsm/shaders/FocusShader.js';
+
 import MeshFactory from './MeshFactory';
 import CameraManager from './CameraManager';
-import { EffectComposer, RenderPass } from 'postprocessing';
 import Instance from '@geppettoengine/geppetto-core/model/Instance';
 import ArrayInstance from '@geppettoengine/geppetto-core//model/ArrayInstance';
 import Type from '@geppettoengine/geppetto-core/model/Type';
 import Variable from '@geppettoengine/geppetto-core/model/Variable';
 require('./TrackballControls');
+
 
 export default class ThreeDEngine {
   constructor(
@@ -15,7 +22,6 @@ export default class ThreeDEngine {
     cameraHandler,
     selectionHandler,
     backgroundColor,
-    instances,
     viewerId,
     pickingEnabled,
     hoverListeners
@@ -32,14 +38,14 @@ export default class ThreeDEngine {
     this.pickingEnabled = pickingEnabled;
     this.hoverListeners = hoverListeners;
 
-    const width = containerRef.clientWidth;
-    const height = containerRef.clientHeight;
+    this.width = containerRef.clientWidth;
+    this.height = containerRef.clientHeight;
 
     // Setup Camera
-    this.setupCamera(cameraOptions, width / height);
+    this.setupCamera(cameraOptions, this.width / this.height);
 
     // Setup Renderer
-    this.setupRenderer(containerRef, backgroundColor, width, height);
+    this.setupRenderer(containerRef, backgroundColor);
 
     // Setup Lights
     this.setupLights();
@@ -49,6 +55,12 @@ export default class ThreeDEngine {
 
     // Setup Listeners
     this.setupListeners(selectionHandler);
+
+
+    this.start = this.start.bind(this);
+    this.animate = this.animate.bind(this);
+    this.renderScene = this.renderScene.bind(this);
+    this.stop = this.stop.bind(this);
   }
 
   /**
@@ -66,23 +78,50 @@ export default class ThreeDEngine {
   /**
    * Setups the renderer
    * @param backgroundColor
-   * @param width
-   * @param height
    */
-  setupRenderer(containerRef, backgroundColor, width, height) {
-    // TODO: Add shaders
+  setupRenderer(containerRef, backgroundColor) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setClearColor(backgroundColor);
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(this.width, this.height);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.autoClear = false;
     containerRef.appendChild(this.renderer.domElement);
+    this.configureRenderer(false)
+  }
+
+  /**
+    *
+    * @param shaders
+    */
+  configureRenderer(shaders) {
+    if (shaders == undefined) {
+      shaders = false;
+    }
+
     const renderModel = new RenderPass(
       this.scene,
       this.cameraManager.getCamera()
     );
     this.composer = new EffectComposer(this.renderer);
-    renderModel.renderToScreen = true;
-    this.composer.addPass(renderModel);
+
+    if (shaders) {
+      const effectBloom = new BloomPass(0.75);
+      const effectFilm = new FilmPass(0.5, 0.5, 1448, false);
+      const effectFocus = new ShaderPass(FocusShader);
+
+      effectFocus.uniforms["screenWidth"].value = this.width;
+      effectFocus.uniforms["screenHeight"].value = this.height;
+      effectFocus.renderToScreen = true;
+
+      this.composer.addPass(renderModel);
+      this.composer.addPass(effectBloom);
+      this.composer.addPass(effectFilm);
+      this.composer.addPass(effectFocus);
+    } else {
+      // standard
+      renderModel.renderToScreen = true;
+      this.composer.addPass(renderModel);
+    }
   }
 
   /**
@@ -490,24 +529,24 @@ export default class ThreeDEngine {
     this.cameraManager.update(cameraOptions)
   }
 
-  start = (proxyInstances, cameraOptions, toTraverse) => {
+  start(proxyInstances, cameraOptions, toTraverse) {
     this.update(proxyInstances, cameraOptions, toTraverse)
     if (!this.frameId) {
-      this.frameId = requestAnimationFrame(this.animate);
+      this.frameId = window.requestAnimationFrame(this.animate);
     }
   };
 
-  animate = () => {
+  animate() {
     this.controls.update();
     this.renderScene();
     this.frameId = window.requestAnimationFrame(this.animate);
   };
 
-  renderScene = () => {
+  renderScene() {
     this.renderer.render(this.scene, this.cameraManager.getCamera());
   };
 
-  stop = () => {
+  stop() {
     cancelAnimationFrame(this.frameId);
   };
 

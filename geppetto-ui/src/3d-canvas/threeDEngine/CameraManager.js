@@ -199,4 +199,35 @@ export default class CameraManager {
   setCameraRotation(rx, ry, rz, radius) {
     this.engine.controls.setRotation(rx, ry, rz, radius);
   }
+
+  /**
+     * Rotate the camera around the selection
+     * @movieFilter
+     */
+  autoRotate(movieFilter) {
+    // TODO: MovieFilter Example
+    const that = this;
+    if (this.rotate == null) {
+      if (movieFilter === undefined || movieFilter === true) {
+        this.movieMode(true);
+      }
+      this.rotate = setInterval(function () {
+        that.incrementCameraRotate(0.01, 0)
+      }, 100);
+    } else {
+      if (movieFilter === undefined || movieFilter === true) {
+        this.movieMode(false);
+      }
+      clearInterval(this.rotate);
+      this.rotate = null;
+    }
+  }
+
+  /**
+ *
+ * @param shaders
+ */
+  movieMode(shaders) {
+    this.engine.configureRenderer(shaders);
+  }
 }
