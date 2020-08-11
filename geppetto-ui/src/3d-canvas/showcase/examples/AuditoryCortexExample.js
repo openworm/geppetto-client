@@ -23,8 +23,7 @@ class AuditoryCortexExample extends Component {
     super(props);
     GEPPETTO.Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
-    this.cameraHandler = this.cameraHandler.bind(this);
-    this.selectionHandler = this.selectionHandler.bind(this);
+
     this.state = {
       data: [
         {
@@ -39,6 +38,9 @@ class AuditoryCortexExample extends Component {
       ],
       selected: {},
     };
+
+    this.cameraHandler = this.cameraHandler.bind(this);
+    this.selectionHandler = this.selectionHandler.bind(this);
   }
 
   cameraHandler(obj) {
@@ -49,10 +51,10 @@ class AuditoryCortexExample extends Component {
   selectionHandler(
     path,
     geometryIdentifier,
-    selectedIntersectCoordinates,
-    currentColor
+    allIntersects
   ) {
     const { data, selected } = this.state;
+    const currentColor = allIntersects[0].object.material.color;
     const newData = data;
     const newSelected = selected
     let done = false;
@@ -76,6 +78,11 @@ class AuditoryCortexExample extends Component {
       newSelected[path] = { ...currentColor };
     }
     this.setState(() => ({ data: newData, selected: newSelected }));
+    console.log({
+      path: path,
+      geometryIdentifier: geometryIdentifier,
+      allIntersects: allIntersects
+    })
   }
 
   render() {
@@ -87,10 +94,10 @@ class AuditoryCortexExample extends Component {
       near: 10,
       far: 2000000,
       baseZoom: 1,
-      wireframeEnabled: true,
       position: { x: 230.357, y: 256.435, z: 934.238 },
       rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
-      movieFilter: true
+      movieFilter: true,
+      wireframeEnabled: true,
     };
 
     return (

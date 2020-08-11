@@ -24,7 +24,6 @@ export default class ThreeDEngine {
     backgroundColor,
     viewerId,
     pickingEnabled,
-    hoverListeners
   ) {
     this.scene = new THREE.Scene();
     this.cameraManager = null;
@@ -36,7 +35,6 @@ export default class ThreeDEngine {
 
     this.viewerId = viewerId;
     this.pickingEnabled = pickingEnabled;
-    this.hoverListeners = hoverListeners;
 
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
@@ -419,8 +417,7 @@ export default class ThreeDEngine {
                     selectionHandler(
                       selected,
                       geometryIdentifier,
-                      selectedIntersectCoordinates,
-                      selectedIntersect.object.material.color
+                      intersects
                     );
                   }
                 }

@@ -29,7 +29,6 @@ class Canvas extends Component {
       backgroundColor,
       id,
       pickingEnabled,
-      hoverListeners,
     } = this.props;
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
@@ -40,7 +39,6 @@ class Canvas extends Component {
       data,
       id,
       pickingEnabled,
-      hoverListeners
     );
     this.threeDEngine.start(data, cameraOptions, true);
   }
@@ -136,7 +134,6 @@ Canvas.defaultProps = {
   },
   backgroundColor: '#000000',
   pickingEnabled: true,
-  hoverListeners: [],
   hideCameraControls: false,
 };
 
@@ -170,12 +167,8 @@ Canvas.propTypes = {
    */
   pickingEnabled: PropTypes.bool,
   /**
-   * Array of functions to callback on hover
+   * Boolean to enable/disable cameraControls
    */
-  hoverListeners: PropTypes.array,
-  /**
-* Boolean to enable/disable cameraControls
-*/
   hideCameraControls: PropTypes.bool,
 };
 
