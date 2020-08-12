@@ -49,12 +49,17 @@ class AuditoryCortexExample extends Component {
   }
 
   selectionHandler(
-    path,
-    geometryIdentifier,
-    allIntersects
+    selectedMap
   ) {
     const { data, selected } = this.state;
-    const currentColor = allIntersects[0].object.material.color;
+    let path;
+    for (let sk in selectedMap) {
+      const sv = selectedMap[sk];
+      if (sv.distanceIndex === 0) {
+        path = sk;
+      }
+    }
+    const currentColor = selectedMap[path].object.material.color;
     const newData = data;
     const newSelected = selected
     let done = false;
@@ -79,9 +84,7 @@ class AuditoryCortexExample extends Component {
     }
     this.setState(() => ({ data: newData, selected: newSelected }));
     console.log({
-      path: path,
-      geometryIdentifier: geometryIdentifier,
-      allIntersects: allIntersects
+      selectedMap
     })
   }
 

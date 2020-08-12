@@ -340,9 +340,6 @@ export default class ThreeDEngine {
               const intersects = that.getIntersectedObjects();
 
               if (intersects.length > 0) {
-                let selected = '';
-                let geometryIdentifier = '';
-
                 // sort intersects
                 const compare = function (a, b) {
                   if (a.distance < b.distance) {
@@ -356,11 +353,12 @@ export default class ThreeDEngine {
 
                 intersects.sort(compare);
 
-                let selectedIntersect;
+                let selectedMap = {};
                 // Iterate and get the first visible item (they are now ordered by proximity)
-                for (const i = 0; i < intersects.length; i++) {
+                for (let i = 0; i < intersects.length; i++) {
                   // figure out if the entity is visible
                   let instancePath = '';
+                  let geometryIdentifier = '';
                   if (
                     Object.prototype.hasOwnProperty.call(
                       intersects[i].object,
@@ -376,56 +374,26 @@ export default class ThreeDEngine {
                     geometryIdentifier =
                       intersects[i].object.parent.geometryIdentifier;
                   }
-                  if (instancePath != null || undefined) {
-                    const instance = Instances.getInstance(instancePath);
-                    const visible = instance.visible;
-
-                    if (visible) {
-                      selected = instancePath;
-                      selectedIntersect = intersects[i];
-                      break;
-                    }
-                  }
-                }
-
-                if (selected != '') {
-                  if (
-                    Object.prototype.hasOwnProperty.call(
-                      that.meshFactory.meshes,
-                      selected
-                    )
-                    //TODO:
-                    // ) ||
-                    // Object.prototype.hasOwnProperty.call(
-                    //   that.splitMeshes,
-                    //   selected
-                    // )
-                  ) {
-                    // TODO:
-                    // if (!GEPPETTO.isKeyPressed('shift')) {
-                    //   that.deselectAll();
-                    // }
-
-                    const selectedIntersectCoordinates = [
-                      selectedIntersect.point.x,
-                      selectedIntersect.point.y,
-                      selectedIntersect.point.z,
-                    ];
+                  if (instancePath != null && Object.prototype.hasOwnProperty.call(
+                    that.meshFactory.meshes,
+                    instancePath
+                  )) {
                     if (geometryIdentifier == undefined) {
                       geometryIdentifier = '';
                     }
-                    selectionHandler(
-                      selected,
-                      geometryIdentifier,
-                      intersects
-                    );
+                    selectedMap[instancePath] = { ...intersects[i], geometryIdentifier: geometryIdentifier, distanceIndex: i }
                   }
                 }
+
+
+                //TODO:
+                // ) ||
+                // Object.prototype.hasOwnProperty.call(
+                //   that.splitMeshes,
+                //   selected
+                // )
+                selectionHandler(selectedMap)
               }
-              // TODO:
-              // } else if (GEPPETTO.isKeyPressed('ctrl')) {
-              //   that.deselectAll();
-              // }
             }
           }
         }
