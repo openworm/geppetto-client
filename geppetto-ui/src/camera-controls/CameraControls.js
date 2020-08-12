@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import IconButtonWithTooltip from '../common/IconButtonWithTooltip';
+import { withStyles } from '@material-ui/core';
+import { faChevronLeft, faChevronUp, faChevronRight, faChevronDown, faHome, faUndo, faRedo, faVideo, faSearchPlus, faSearchMinus } from '@fortawesome/free-solid-svg-icons';
+
 import './CameraControls.less';
 
 export const cameraControlsActions = {
@@ -18,25 +22,132 @@ export const cameraControlsActions = {
     ZOOM_IN: "zoomIn",
     ZOOM_OUT: "zoomOut",
     WIREFRAME: "wireframe",
-
 }
 
-export default class CameraControls extends Component {
+const styles = (theme) => ({
+    button: {
+        color: theme.palette.button.main,
+    },
+});
+
+class CameraControls extends Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        const { cameraControlsHandler, wireframeButtonEnabled } = this.props;
+        const { classes, cameraControlsHandler, wireframeButtonEnabled } = this.props;
+        const buttons = [
+            {
+                action: cameraControlsActions.PAN_LEFT,
+                className: 'pan-left',
+                tooltip: 'Pan left',
+                icon: faChevronLeft
+            },
+            {
+                action: cameraControlsActions.PAN_RIGHT,
+                className: 'pan-right',
+                tooltip: 'Pan right',
+                icon: faChevronRight
+            },
+            {
+                action: cameraControlsActions.PAN_UP,
+                className: 'pan-top',
+                tooltip: 'Pan up',
+                icon: faChevronUp
+            },
+            {
+                action: cameraControlsActions.PAN_DOWN,
+                className: 'pan-bottom',
+                tooltip: 'Pan down',
+                icon: faChevronDown
+            },
+            {
+                action: cameraControlsActions.PAN_HOME,
+                className: 'pan-home',
+                tooltip: 'Pan home',
+                icon: faHome
+            },
+            {
+                action: cameraControlsActions.ROTATE_LEFT,
+                className: 'rotate-left',
+                tooltip: 'Rotate left',
+                icon: faUndo
+            },
+            {
+                action: cameraControlsActions.ROTATE_RIGHT,
+                className: 'rotate-right',
+                tooltip: 'Rotate right',
+                icon: faRedo
+            },
+            {
+                action: cameraControlsActions.ROTATE_UP,
+                className: 'rotate-top rotate90',
+                tooltip: 'Rotate up',
+                icon: faUndo
+            },
+            {
+                action: cameraControlsActions.ROTATE_DOWN,
+                className: 'rotate-bottom rotate90',
+                tooltip: 'Rotate down',
+                icon: faRedo
+            },
+            {
+                action: cameraControlsActions.ROTATE,
+                className: 'rotate-home',
+                tooltip: 'Rotate home',
+                icon: faVideo
+            },
+            {
+                action: cameraControlsActions.ROTATE_MZ,
+                className: 'rotate-mz',
+                tooltip: 'Rotate mz',
+                icon: faRedo
+            },
+            {
+                action: cameraControlsActions.ROTATE_Z,
+                className: 'rotate-z',
+                tooltip: 'Rotate z',
+                icon: faUndo
+            },
+            {
+                action: cameraControlsActions.ZOOM_IN,
+                className: 'zoom-in',
+                tooltip: 'Zoom in',
+                icon: faSearchPlus
+            },
+            {
+                action: cameraControlsActions.ZOOM_OUT,
+                className: 'zoom-out',
+                tooltip: 'Zoom out',
+                icon: faSearchMinus
+            },
+        ];
+
+        if (wireframeButtonEnabled) {
+            buttons.push({
+                action: cameraControlsActions.WIREFRAME,
+                className: 'gpt-sphere_wireframe-jpg wireframe',
+                tooltip: 'Toggle wireframe',
+                icon: null
+            })
+        }
         return (
             <div className="position-toolbar">
-                <button className="btn squareB fa fa-chevron-left pan-left" onClick={() => cameraControlsHandler(cameraControlsActions.PAN_LEFT)}></button>
-                <button className="btn squareB fa fa-chevron-up pan-top" onClick={() => cameraControlsHandler(cameraControlsActions.PAN_UP)}></button>
-                <button className="btn squareB fa fa-chevron-right pan-right" onClick={() => cameraControlsHandler(cameraControlsActions.PAN_RIGHT)}></button>
-                <button className="btn squareB fa fa-chevron-down pan-bottom" onClick={() => cameraControlsHandler(cameraControlsActions.PAN_DOWN)}></button>
-                <button className="btn squareB fa fa-home pan-home" onClick={() => cameraControlsHandler(cameraControlsActions.PAN_HOME)}></button>
+                {buttons.map((value, index) => {
+                    return <IconButtonWithTooltip
+                        key={index}
+                        disabled={false}
+                        onClick={() => cameraControlsHandler(value.action)}
+                        className={`${classes.button} ${value.className} squareB`}
+                        tooltip={value.tooltip}
+                        icon={value.icon}
+                    />
+                })}
 
-                <button className="btn squareB fa fa-undo rotate-left" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_LEFT)}></button>
+
+
+                {/* <button className="btn squareB fa fa-undo rotate-left" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_LEFT)}></button>
                 <button className="btn squareB fa fa-repeat rotate90 rotate-top" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_UP)}></button>
                 <button className="btn squareB fa fa-repeat rotate-right" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_RIGHT)}></button>
                 <button className="btn squareB fa fa-undo rotate90 rotate-bottom" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_DOWN)}></button>
@@ -46,7 +157,7 @@ export default class CameraControls extends Component {
 
                 <button className="btn squareB fa fa-search-plus zoom-in" onClick={() => cameraControlsHandler(cameraControlsActions.ZOOM_IN)}></button>
                 <button className="btn squareB fa fa-search-minus zoom-out" onClick={() => cameraControlsHandler(cameraControlsActions.ZOOM_OUT)}></button>
-                {wireframeButtonEnabled ? <button className="btn squareB gpt-sphere_wireframe-jpg wireframe" onClick={() => cameraControlsHandler(cameraControlsActions.WIREFRAME)}></button> : undefined}
+                {wireframeButtonEnabled ? <button className="btn squareB gpt-sphere_wireframe-jpg wireframe" onClick={() => cameraControlsHandler(cameraControlsActions.WIREFRAME)}></button> : undefined} */}
             </div>
         )
     }
@@ -70,3 +181,5 @@ CameraControls.propTypes = {
 
 };
 
+
+export default withStyles(styles)(CameraControls);
