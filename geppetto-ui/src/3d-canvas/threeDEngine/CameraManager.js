@@ -18,12 +18,18 @@ export default class CameraManager {
   }
 
   update(cameraOptions) {
-    const { position, rotation } = cameraOptions
+    const { position, rotation, autoRotate, movieFilter, reset } = cameraOptions
     if (position) {
       this.setCameraPosition(position.x, position.y, position.z)
     }
     if (rotation) {
       this.setCameraRotation(rotation.rx, rotation.ry, rotation.rz, rotation.radius)
+    }
+    if (autoRotate) {
+      this.autoRotate(movieFilter)
+    }
+    if (reset) {
+      this.resetCamera()
     }
   }
 

@@ -22,7 +22,6 @@ export default class ThreeDEngine {
     cameraHandler,
     selectionHandler,
     backgroundColor,
-    viewerId,
     pickingEnabled,
   ) {
     this.scene = new THREE.Scene();
@@ -33,7 +32,6 @@ export default class ThreeDEngine {
     this.frameId = null;
     this.meshFactory = new MeshFactory(this);
 
-    this.viewerId = viewerId;
     this.pickingEnabled = pickingEnabled;
 
     this.width = containerRef.clientWidth;
@@ -143,7 +141,6 @@ export default class ThreeDEngine {
     this.controls = new THREE.TrackballControls(
       this.cameraManager.getCamera(),
       this.renderer.domElement,
-      this.viewerId,
       cameraHandler
     );
     this.controls.noZoom = false;
@@ -481,6 +478,22 @@ export default class ThreeDEngine {
     }
   }
 
+  /**
+  * Sets whether to use wireframe for the materials of the meshes
+  * @param wireframe
+  */
+  setWireframe(wireframe) {
+    this.wireframe = wireframe;
+    const that = this;
+    this.scene.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        if (!(child.material.nowireframe == true)) {
+          child.material.wireframe = that.wireframe;
+        }
+      }
+    });
+  }
+
   update(proxyInstances, cameraOptions, toTraverse) {
     // TODO: Add camera
     if (toTraverse) {
@@ -528,5 +541,12 @@ export default class ThreeDEngine {
    */
   getScene() {
     return this.scene;
+  }
+  /**
+   * Returns the wireframe flag
+   * @returns wireframe
+   */
+  getWireframe() {
+    return this.wireframe;
   }
 }

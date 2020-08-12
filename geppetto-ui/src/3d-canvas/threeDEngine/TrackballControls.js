@@ -5,8 +5,7 @@
  * @author Luca Antiga / http://lantiga.github.io
  */
 var THREE = window.THREE || require('three');
-THREE.TrackballControls = function (object, domElement, viewerId, handler) {
-  this.viewerId = viewerId;
+THREE.TrackballControls = function (object, domElement, handler) {
 
   var _this = this;
   var STATE = {
@@ -152,7 +151,6 @@ THREE.TrackballControls = function (object, domElement, viewerId, handler) {
     var l = _eye.length();
 
     this.handler({
-      viewerId: this.viewerId,
       position: p,
       rotation: u,
       eyeLength: l,

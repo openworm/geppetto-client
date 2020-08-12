@@ -27,7 +27,7 @@ export default class CameraControls extends Component {
     }
 
     render() {
-        const { cameraControlsHandler, wireframeEnabled } = this.props;
+        const { cameraControlsHandler, wireframeButtonEnabled } = this.props;
         return (
             <div className="position-toolbar">
                 <button className="btn squareB fa fa-chevron-left pan-left" onClick={() => cameraControlsHandler(cameraControlsActions.PAN_LEFT)}></button>
@@ -46,7 +46,7 @@ export default class CameraControls extends Component {
 
                 <button className="btn squareB fa fa-search-plus zoom-in" onClick={() => cameraControlsHandler(cameraControlsActions.ZOOM_IN)}></button>
                 <button className="btn squareB fa fa-search-minus zoom-out" onClick={() => cameraControlsHandler(cameraControlsActions.ZOOM_OUT)}></button>
-                {wireframeEnabled ? <button className="btn squareB gpt-sphere_wireframe-jpg wireframe" onClick={() => cameraControlsHandler(cameraControlsActions.WIREFRAME)}></button> : undefined}
+                {wireframeButtonEnabled ? <button className="btn squareB gpt-sphere_wireframe-jpg wireframe" onClick={() => cameraControlsHandler(cameraControlsActions.WIREFRAME)}></button> : undefined}
             </div>
         )
     }
@@ -54,7 +54,7 @@ export default class CameraControls extends Component {
 
 CameraControls.defaultProps = {
 
-    wireframeEnabled: false,
+    wireframeButtonEnabled: false,
 };
 
 CameraControls.propTypes = {
@@ -66,7 +66,7 @@ CameraControls.propTypes = {
     /**
    * Boolean to enable/disable wireframe
    */
-    wireframeEnabled: PropTypes.bool,
+    wireframeButtonEnabled: PropTypes.bool,
 
 };
 

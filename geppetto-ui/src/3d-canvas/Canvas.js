@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
-import CameraControls, { cameraControlsActions } from '../camera-controls/CameraControls'
+
 
 
 const styles = () => ({
@@ -17,7 +17,6 @@ class Canvas extends Component {
   constructor(props) {
     super(props);
     this.sceneRef = React.createRef();
-    this.cameraControlsHandler = this.cameraControlsHandler.bind(this);
   }
 
   componentDidMount() {
@@ -27,7 +26,6 @@ class Canvas extends Component {
       cameraHandler,
       selectionHandler,
       backgroundColor,
-      id,
       pickingEnabled,
     } = this.props;
     this.threeDEngine = new ThreeDEngine(
@@ -37,7 +35,6 @@ class Canvas extends Component {
       selectionHandler,
       backgroundColor,
       data,
-      id,
       pickingEnabled,
     );
     this.threeDEngine.start(data, cameraOptions, true);
@@ -55,65 +52,8 @@ class Canvas extends Component {
     return true;
   }
 
-  cameraControlsHandler(action) {
-    const {
-      cameraOptions,
-    } = this.props;
-    if (this.threeDEngine) {
-      switch (action) {
-        case cameraControlsActions.PAN_LEFT:
-          this.threeDEngine.cameraManager.incrementCameraPan(-0.01, 0)
-          break;
-        case cameraControlsActions.PAN_RIGHT:
-          this.threeDEngine.cameraManager.incrementCameraPan(0.01, 0)
-          break;
-        case cameraControlsActions.PAN_UP:
-          this.threeDEngine.cameraManager.incrementCameraPan(0, -0.01)
-          break;
-        case cameraControlsActions.PAN_DOWN:
-          this.threeDEngine.cameraManager.incrementCameraPan(0, 0.01)
-          break;
-        case cameraControlsActions.ROTATE_UP:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0, 0.01, undefined)
-          break;
-        case cameraControlsActions.ROTATE_DOWN:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0, -0.01, undefined)
-          break;
-        case cameraControlsActions.ROTATE_LEFT:
-          this.threeDEngine.cameraManager.incrementCameraRotate(-0.01, 0, undefined)
-          break;
-        case cameraControlsActions.ROTATE_RIGHT:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0.01, 0, undefined)
-          break;
-        case cameraControlsActions.ROTATE_Z:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0, 0, 0.01)
-          break;
-        case cameraControlsActions.ROTATE_MZ:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0, 0, -0.01)
-          break;
-        case cameraControlsActions.ROTATE:
-          this.threeDEngine.cameraManager.autoRotate(cameraOptions.movieFilter)
-          break;
-        case cameraControlsActions.ZOOM_IN:
-          this.threeDEngine.cameraManager.incrementCameraZoom(-0.1)
-          break;
-        case cameraControlsActions.ZOOM_OUT:
-          this.threeDEngine.cameraManager.incrementCameraZoom(+0.1)
-          break;
-        case cameraControlsActions.PAN_HOME:
-          this.threeDEngine.cameraManager.resetCamera()
-          break;
-      }
-    }
-
-  }
-
   render() {
-    const { classes, data, hideCameraControls, cameraOptions } = this.props;
-    let cameraControls;
-    if (!hideCameraControls) {
-      cameraControls = <CameraControls cameraControlsHandler={this.cameraControlsHandler} wireframeEnabled={cameraOptions.wireframeEnabled} />;
-    }
+    const { classes, data, cameraOptions, cameraControls } = this.props;
 
     if (this.threeDEngine) {
       this.threeDEngine.update(data, cameraOptions, this.shouldEngineTraverse());
@@ -134,14 +74,9 @@ Canvas.defaultProps = {
   },
   backgroundColor: '#000000',
   pickingEnabled: true,
-  hideCameraControls: false,
 };
 
 Canvas.propTypes = {
-  /**
-   * Canvas identifier
-   */
-  id: PropTypes.string.isRequired,
   /**
    * (Proxy) Instances to visualize
    */
@@ -167,9 +102,9 @@ Canvas.propTypes = {
    */
   pickingEnabled: PropTypes.bool,
   /**
-   * Boolean to enable/disable cameraControls
+   * Camera Controls
    */
-  hideCameraControls: PropTypes.bool,
+  cameraControls: PropTypes.object,
 };
 
 export default withStyles(styles)(Canvas);
