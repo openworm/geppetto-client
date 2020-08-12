@@ -23,6 +23,7 @@ export default class ThreeDEngine {
     selectionHandler,
     backgroundColor,
     pickingEnabled,
+    linesThreshold
   ) {
     this.scene = new THREE.Scene();
     this.cameraManager = null;
@@ -30,7 +31,7 @@ export default class ThreeDEngine {
     this.controls = null;
     this.mouse = { x: 0, y: 0 };
     this.frameId = null;
-    this.meshFactory = new MeshFactory(this);
+    this.meshFactory = new MeshFactory(this, linesThreshold);
 
     this.pickingEnabled = pickingEnabled;
 

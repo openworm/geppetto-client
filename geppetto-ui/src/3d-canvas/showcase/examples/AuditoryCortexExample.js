@@ -23,7 +23,9 @@ const styles = () => ({
 class AuditoryCortexExample extends Component {
   constructor(props) {
     super(props);
-    GEPPETTO.Manager.loadModel(model);
+    //TODO: Proper way to perform this?
+    const newModel = GEPPETTO.ModelFactory.createGeppettoModel(model, true, true)
+    window.Instances.push.apply(window.Instances, GEPPETTO.ModelFactory.instantiateVariables(newModel));
     Instances.getInstance(INSTANCE_NAME);
     this.canvasRef = React.createRef();
 
@@ -48,7 +50,7 @@ class AuditoryCortexExample extends Component {
         position: { x: 230.357, y: 256.435, z: 934.238 },
         rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
         autoRotate: false,
-        movieFilter: true,
+        movieFilter: false,
         reset: false
       }
     };

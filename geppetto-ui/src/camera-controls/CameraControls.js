@@ -144,20 +144,6 @@ class CameraControls extends Component {
                         icon={value.icon}
                     />
                 })}
-
-
-
-                {/* <button className="btn squareB fa fa-undo rotate-left" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_LEFT)}></button>
-                <button className="btn squareB fa fa-repeat rotate90 rotate-top" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_UP)}></button>
-                <button className="btn squareB fa fa-repeat rotate-right" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_RIGHT)}></button>
-                <button className="btn squareB fa fa-undo rotate90 rotate-bottom" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_DOWN)}></button>
-                <button className="btn squareB fa fa-undo rotate-z" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_Z)}></button>
-                <button className="btn squareB fa fa-repeat rotate-mz" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE_MZ)}></button>
-                <button className="btn squareB fa fa-video-camera rotate-home" onClick={() => cameraControlsHandler(cameraControlsActions.ROTATE)}></button>
-
-                <button className="btn squareB fa fa-search-plus zoom-in" onClick={() => cameraControlsHandler(cameraControlsActions.ZOOM_IN)}></button>
-                <button className="btn squareB fa fa-search-minus zoom-out" onClick={() => cameraControlsHandler(cameraControlsActions.ZOOM_OUT)}></button>
-                {wireframeButtonEnabled ? <button className="btn squareB gpt-sphere_wireframe-jpg wireframe" onClick={() => cameraControlsHandler(cameraControlsActions.WIREFRAME)}></button> : undefined} */}
             </div>
         )
     }

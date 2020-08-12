@@ -27,6 +27,7 @@ class Canvas extends Component {
       selectionHandler,
       backgroundColor,
       pickingEnabled,
+      linesThreshold
     } = this.props;
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
@@ -34,8 +35,8 @@ class Canvas extends Component {
       cameraHandler,
       selectionHandler,
       backgroundColor,
-      data,
       pickingEnabled,
+      linesThreshold
     );
     this.threeDEngine.start(data, cameraOptions, true);
   }
@@ -74,6 +75,7 @@ Canvas.defaultProps = {
   },
   backgroundColor: '#000000',
   pickingEnabled: true,
+  linesThreshold: 2000,
 };
 
 Canvas.propTypes = {
@@ -105,6 +107,10 @@ Canvas.propTypes = {
    * Camera Controls
    */
   cameraControls: PropTypes.object,
+  /**
+ * Threshold to limit scene complexity
+ */
+  linesThreshold: PropTypes.number
 };
 
 export default withStyles(styles)(Canvas);
