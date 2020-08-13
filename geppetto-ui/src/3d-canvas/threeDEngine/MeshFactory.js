@@ -21,13 +21,17 @@ export default class MeshFactory {
   }
 
   start(instances) {
+    this.clean();
     this.traverseInstances(instances);
-    const meshes = { ...this.meshes, ...this.splitMeshes };
-    return meshes;
   }
 
   getMeshes() {
-    const meshes = { ...this.meshes, ...this.splitMeshes };
+    const meshes = this.splitMeshes;
+    for (const m in this.meshes) {
+      if (!(m in meshes)) {
+        meshes[m] = this.meshes[m];
+      }
+    }
     return meshes;
   }
 
@@ -732,13 +736,14 @@ export default class MeshFactory {
       this.splitMeshes[groupName] = groupMesh;
 
       // Update visualization feature for a mesh
-      if (mergedMesh.ghosted) {
-        this.unselectedTransparent([groupMesh], true);
-      }
-      if (mergedMesh.selected) {
-        this.selectInstance(groupName);
-      }
-      groupMesh.selected = mergedMesh.selected;
+      // TODO:
+      // if (mergedMesh.ghosted) {
+      //   this.unselectedTransparent([groupMesh], true);
+      // }
+      // if (mergedMesh.selected) {
+      //   this.selectInstance(groupName);
+      // }
+      // groupMesh.selected = mergedMesh.selected;
 
       // add split mesh to scenne and set flag to visible
       groupMesh.visible = true;

@@ -18,18 +18,29 @@ export default class CameraManager {
   }
 
   update(cameraOptions) {
-    const { position, rotation, autoRotate, movieFilter, reset } = cameraOptions
+    const {
+      position,
+      rotation,
+      autoRotate,
+      movieFilter,
+      reset,
+    } = cameraOptions;
     if (position) {
-      this.setCameraPosition(position.x, position.y, position.z)
+      this.setCameraPosition(position.x, position.y, position.z);
     }
     if (rotation) {
-      this.setCameraRotation(rotation.rx, rotation.ry, rotation.rz, rotation.radius)
+      this.setCameraRotation(
+        rotation.rx,
+        rotation.ry,
+        rotation.rz,
+        rotation.radius
+      );
     }
     if (autoRotate) {
-      this.autoRotate(movieFilter)
+      this.autoRotate(movieFilter);
     }
-    if (reset) {
-      this.resetCamera()
+    if (reset || (position == undefined && rotation == undefined)) {
+      this.resetCamera();
     }
   }
 
@@ -39,7 +50,7 @@ export default class CameraManager {
     let aabbMin = null;
     let aabbMax = null;
 
-    this.engine.scene.traverse(function (child) {
+    this.engine.scene.traverse(function(child) {
       if (
         Object.prototype.hasOwnProperty.call(child, 'geometry') &&
         child.visible === true
@@ -165,9 +176,9 @@ export default class CameraManager {
   }
 
   /**
- * @param x
- * @param y
- */
+   * @param x
+   * @param y
+   */
   incrementCameraPan(x, y) {
     this.engine.controls.incrementPanEnd(x, y);
   }
@@ -182,8 +193,8 @@ export default class CameraManager {
   }
 
   /**
-  * @param z
-  */
+   * @param z
+   */
   incrementCameraZoom(z) {
     this.engine.controls.incrementZoomEnd(z);
   }
@@ -197,27 +208,27 @@ export default class CameraManager {
     this.engine.controls.setPosition(x, y, z);
   }
   /**
-* @param rx
-* @param ry
-* @param rz
-* @param radius
-*/
+   * @param rx
+   * @param ry
+   * @param rz
+   * @param radius
+   */
   setCameraRotation(rx, ry, rz, radius) {
     this.engine.controls.setRotation(rx, ry, rz, radius);
   }
 
   /**
-     * Rotate the camera around the selection
-     * @movieFilter
-     */
+   * Rotate the camera around the selection
+   * @movieFilter
+   */
   autoRotate(movieFilter) {
     const that = this;
     if (this.rotate == null) {
       if (movieFilter === undefined || movieFilter === true) {
         this.movieMode(true);
       }
-      this.rotate = setInterval(function () {
-        that.incrementCameraRotate(0.01, 0)
+      this.rotate = setInterval(function() {
+        that.incrementCameraRotate(0.01, 0);
       }, 100);
     } else {
       if (movieFilter === undefined || movieFilter === true) {
@@ -229,9 +240,9 @@ export default class CameraManager {
   }
 
   /**
- *
- * @param shaders
- */
+   *
+   * @param shaders
+   */
   movieMode(shaders) {
     this.engine.configureRenderer(shaders);
   }

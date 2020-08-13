@@ -185,14 +185,11 @@ export default class ThreeDEngine {
    * @param proxyInstances
    */
   addInstancesToScene(proxyInstances) {
-    this.clearScene();
     const instances = proxyInstances.map((pInstance) => {
       return Instances.getInstance(pInstance.instancePath);
     });
-    const meshes = this.meshFactory.start(instances);
-    for (const meshKey in meshes) {
-      this.scene.add(meshes[meshKey]);
-    }
+    this.meshFactory.start(instances);
+    this.updateGroupMeshes(proxyInstances);
   }
 
   /**
@@ -200,11 +197,12 @@ export default class ThreeDEngine {
    *
    */
   clearScene() {
-    const meshes = this.meshFactory.getMeshes();
-    for (const meshKey in meshes) {
-      this.scene.remove(meshes[meshKey]);
+    const toRemove = this.scene.children.filter(
+      (child) => child.type === 'Mesh'
+    );
+    for (let child of toRemove) {
+      this.scene.remove(child);
     }
-    this.meshFactory.clean();
   }
 
   updateInstancesColor(proxyInstances) {
@@ -262,6 +260,7 @@ export default class ThreeDEngine {
       }
     }
     const meshes = this.meshFactory.getMeshes();
+    this.clearScene();
     for (const meshKey in meshes) {
       this.scene.add(meshes[meshKey]);
     }
@@ -440,11 +439,9 @@ export default class ThreeDEngine {
   update(proxyInstances, cameraOptions, toTraverse) {
     if (toTraverse) {
       this.addInstancesToScene(proxyInstances);
-      this.updateGroupMeshes(proxyInstances);
       //this.setAllGeometriesType(this.getDefaultGeometryType());
 
       this.scene.updateMatrixWorld(true);
-      //this.cameraManager.resetCamera();
     }
     this.updateInstancesColor(proxyInstances);
     this.cameraManager.update(cameraOptions);
