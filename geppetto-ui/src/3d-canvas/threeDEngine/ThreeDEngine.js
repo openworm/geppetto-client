@@ -219,6 +219,9 @@ export default class ThreeDEngine {
       if (pInstance.color) {
         this.setInstanceColor(pInstance.instancePath, pInstance.color);
       }
+      if (pInstance.splitGroups) {
+        this.setSplitGroupsColor(pInstance.instancePath, pInstance.splitGroups);
+      }
     }
   }
 
@@ -250,6 +253,29 @@ export default class ThreeDEngine {
       }
     }
     return this;
+  }
+
+  /**
+   *
+   * @param instancePath
+   * @param splitGroups
+   */
+  setSplitGroupsColor(instancePath, splitGroups) {
+    for (const g in splitGroups) {
+      // retrieve visual group object
+      const group = splitGroups[g];
+
+      // get full group name to access group mesh
+      let groupName = g;
+      if (groupName.indexOf(instancePath) <= -1) {
+        groupName = instancePath + '.' + g;
+      }
+
+      // get group mesh
+      const groupMesh = this.meshFactory.getMeshes()[groupName];
+      groupMesh.visible = true;
+      this.meshFactory.setThreeColor(groupMesh.material.color, group.color);
+    }
   }
 
   updateGroupMeshes(proxyInstances) {
