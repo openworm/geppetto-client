@@ -5,13 +5,11 @@
 import * as React from "react";
 import { getResultsSOLR } from "./datasources/SOLRclient";
 import { DatasourceTypes } from './datasources/datasources';
-import { Component, FC, useState, useRef, useEffect, createRef } from "react";
+import { Component, FC, useState, useRef, useEffect } from "react";
 
-import clsx from 'clsx';
-import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { Checkbox, Paper, MenuList, MenuItem, Input, InputAdornment } from "@material-ui/core";
+import { Button, Grid, Input, InputAdornment, MenuList, MenuItem, Paper } from "@material-ui/core";
 
 import { SearchProps, SearchState, ResultsProps, FiltersProps } from './SearchInterfaces';
 
@@ -76,19 +74,72 @@ const useStyles = makeStyles({
 });
 
 function StyledCheckbox(props) {
-  const classes = useStyles();
+  const itemState = props.checked;
 
-  return (
-    <Checkbox
-      className={classes.root}
-      disableRipple
-      color="default"
-      checkedIcon={<span className={clsx(classes.icon, classes.checkedIcon)} />}
-      icon={<span className={classes.icon} />}
-      inputProps={{ 'aria-label': 'decorative checkbox' }}
-      {...props}
-    />
-  );
+  switch (itemState) {
+    case "disabled":
+      return (
+        <i
+          style={{
+            cursor: 'pointer',
+            paddingTop: '3px',
+            paddingLeft: '5px',
+            paddingRight: '4px',
+            fontSize: '20px' }}
+          className="fa fa-square"
+          onClick={() => {
+            props.filterHandler(props.filter);
+          }}/>
+      );
+      break;
+    case "positive":
+      return (
+        <i
+          style={{
+            color: 'green',
+            fontSize: '20px' ,
+            cursor: 'pointer',
+            paddingTop: '3px',
+            paddingLeft: '5px',
+            paddingRight: '4px', }}
+          className="fa fa-plus-square"
+          onClick={() => {
+            props.filterHandler(props.filter);
+          }}/>
+      );
+      break;
+    case "negative":
+      return (
+        <i
+          style={{
+            color: 'red',
+            fontSize: '20px' ,
+            cursor: 'pointer',
+            paddingTop: '3px',
+            paddingLeft: '5px',
+            paddingRight: '4px', }}
+          className="fa fa-minus-square"
+          onClick={() => {
+            props.filterHandler(props.filter);
+          }}/>
+      );
+      break;
+    default:
+      return (
+        <i
+          style={{
+            fontSize: '20px' ,
+            cursor: 'pointer',
+            paddingTop: '3px',
+            paddingLeft: '5px',
+            paddingRight: '4px',  }}
+          className="fa fa-square"
+          onClick={() => {
+            props.filterHandler(props.filter);
+          }}/>
+      );
+      break;
+  }
 }
 
 const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, topAnchor }) => {
@@ -140,6 +191,55 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
     }
   };
 
+  const filterHandler = item => {
+    if (item.enabled === undefined) {
+      item.enabled = "disabled"
+    } else {
+      switch(item.enabled) {
+        case "disabled":
+          item.enabled = "positive"
+          break;
+        case "positive":
+          item.enabled = "negative"
+          break;
+        case "negative":
+          item.enabled = "disabled"
+          break;
+        default:
+          item.enabled = "disabled"
+          break;
+      }
+    }
+    if (item.type === 'array') {
+      item.values.map(singleCheck => {
+        singleCheck.enabled = item.enabled;
+        setFilters(singleCheck);
+      });
+    }
+    setFilters(item);
+    setState(() => { return { open: true, top: state.top, left: state.left} });
+  };
+
+  const resetFilters = () => {
+    filters.map((item, index) => {
+      switch (item.type) {
+        case 'string':
+          item.enabled = "disabled";
+          setFilters(item);
+          break;
+        case 'array':
+          item.enabled = "disabled";
+          item.values.map(singleCheck => {
+            singleCheck.enabled = "disabled";
+            setFilters(singleCheck);
+          });
+          setFilters(item);
+          break;
+        }
+      });
+    setState(() => { return { open: true, top: state.top, left: state.left} });
+  };
+
   // If filters are not defined we don't visualise anything
   if (filters == undefined || filters.length == 0) return null;
 
@@ -160,62 +260,52 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
                   return (
                     <div key={index} style={{ textAlign: "left", fontSize: "16px", height: "25px" }}>
                       <StyledCheckbox
+                        filter={item}
                         checked={item.enabled}
-                        onChange={() => {
-                          if (item.enabled !== undefined) {
-                            item.enabled = !item.enabled;
-                          } else {
-                            item.enabled = true;
-                          }
-                          setFilters(item);
-                          setState(() => { return { open: true, top: state.top, left: state.left} });
-                        }}/>
-                      <span style={{verticalAlign: "middle"}}>
+                        filterHandler={filterHandler} />
+                      <span>
                         {item.filter_name}
                       </span>
                     </div>);
                   break;
                 case 'array':
                   return (
-                    <div key={index} style={{ textAlign: "left", fontSize: "16px", height: "25px" }}>
+                    <div key={index} style={{ textAlign: "left", fontSize: "16px", height: "25px", marginBottom: "5px", }}>
                       <StyledCheckbox
+                        filter={item}
                         checked={item.enabled}
-                        onChange={() => {
-                          if (item.enabled !== undefined) {
-                            item.enabled = !item.enabled;
-                          } else {
-                            item.enabled = true;
-                          }
-                          item.values.map(singleCheck => {
-                            singleCheck.enabled = item.enabled;
-                            setFilters(singleCheck);
-                          });
-                          setState(() => { return { open: true, top: state.top, left: state.left} });
-                        }}/>
-                      <span style={{verticalAlign: "middle"}}>
+                        filterHandler={filterHandler} />
+                      <span>
                         {item.filter_name}
                       </span>
 
                       {item.values.map((value, innerIndex) => {
                         return (
-                          <div key={index + "_" + innerIndex} style={{ marginLeft: "20px", height: "25px" }}>
+                          <div key={index + "_" + innerIndex} style={{ marginTop: "5px", marginLeft: "20px", height: "25px" }}>
                             <StyledCheckbox
+                              filter={value}
                               checked={value.enabled}
-                              onChange={() => {
-                                if (value.enabled !== undefined) {
-                                  value.enabled = !value.enabled;
-                                } else {
-                                  value.enabled = true;
-                                }
-                                setFilters(item);
-                                setState(() => { return { open: true, top: state.top, left: state.left} });
-                              }}/>
+                              filterHandler={filterHandler} />
                             <span style={{verticalAlign: "middle"}}>
                               {value.filter_name}
                             </span>
                           </div>);
                         })
                       }
+                      <div style={{ paddingTop: "18px", paddingLeft: "10px" }}>
+                        <Button
+                          style={{
+                            fontSize: "12px",
+                            fontFamily: 'Barlow',
+                            borderRadius: '0px',
+                            color: 'white',
+                            borderColor: 'white'
+                          }}
+                          variant="outlined"
+                          onClick={resetFilters}>
+                          Clear Filters
+                        </Button>
+                      </div>
                     </div>);
                   break;
                 default:
@@ -325,13 +415,11 @@ export default class Search extends Component<SearchProps, SearchState> {
 
       // update the filters, handler used to trigger the update from the filter component
       setFilters(filter) {
-        let newFilters:Array<any> = [];
-
-        this.state.filters.map(item => {
+        let newFilters = this.state.filters.map(item => {
           if (item.key === filter.key) {
-            newFilters.push(filter);
+            return filter;
           } else {
-            newFilters.push(item);
+            return item;
           }
         });
         this.setState({ filters: newFilters });
@@ -342,55 +430,72 @@ export default class Search extends Component<SearchProps, SearchState> {
         var allFiltersDisabled:boolean = true;
         var newResults:Array<any> = [];
 
-        this.state.filters.map(filter => {
+        let filters = this.state.filters.map(filter => {
           switch(filter.type) {
             case 'string':
-              if (filter.enabled !== undefined && filter.enabled === true) {
+              if (filter.enabled !== undefined && filter.enabled !== 'disabled') {
                 allFiltersDisabled = false;
+                return filter;
               }
               break;
             case 'array':
-              filter.values.map(innerFilter => {
-                if (innerFilter.enabled !== undefined && innerFilter.enabled === true) {
+              let filtersList = filter.values.filter(innerFilter => {
+                if (innerFilter.enabled !== undefined && innerFilter.enabled !== 'disabled') {
                   allFiltersDisabled = false;
+                  return true;
                 }
               });
+              if (filtersList.length > 0) {
+                let newFilter = { ...filter }
+                newFilter.values = filtersList;
+                return newFilter;
+              }
               break;
             default:
               console.log("Error filter " + filter.key + " configuration");
           }
-        });
+        }).filter( item => item !== undefined );
 
         if (allFiltersDisabled) {
           return this.results;
-        } else {
-          this.results.map(record => {
-            var recordAdded:boolean = true;
-            this.state.filters.map(filter => {
-              switch(filter.type) {
+        } else if (this.results.length > 0) {
+          newResults = this.results.filter(record => {
+            var recordToBeAdded:boolean = true;
+            for (let i = 0; i < filters.length; i++) {
+              switch(filters[i].type) {
                 case 'string':
-                  if (recordAdded && filter.enabled === true && filter.key !== undefined && record[filter.key] !== undefined) {
-                    if (record[filter.key].toLowerCase().indexOf(this.state.value.toLowerCase()) > -1) {
-                      recordAdded = false;
-                      newResults.push(record);
+                  if (recordToBeAdded && filters[i].key !== undefined && record[filters[i].key] !== undefined) {
+                    if (filters[i].enabled === "positive" && !(record[filters[i].key].toLowerCase().indexOf(this.state.value.toLowerCase()) > -1)) {
+                      recordToBeAdded = false;
+                    }
+                    if (filters[i].enabled === "negative" && record[filters[i].key].toLowerCase().indexOf(this.state.value.toLowerCase()) > -1) {
+                      recordToBeAdded = false;
                     }
                   }
                   break;
                 case 'array':
-                  if (record[filter.key] !== undefined) {
-                    filter.values.map(innerFilter => {
-                      if (recordAdded && innerFilter.enabled === true && innerFilter.key !== undefined && record[filter.key].includes(innerFilter.key)) {
-                        recordAdded = false;
-                        newResults.push(record);
+                  if (record[filters[i].key] !== undefined) {
+                    for (let j = 0; j < filters[i].values.length; j++) {
+                      if (recordToBeAdded && filters[i].values[j].key !== undefined) {
+                        if (filters[i].values[j].enabled === "positive" && !(record[filters[i].key].includes(filters[i].values[j].key))) {
+                          recordToBeAdded = false;
+                        }
+                        if (filters[i].values[j].enabled === "negative" && record[filters[i].key].includes(filters[i].values[j].key)) {
+                          recordToBeAdded = false;
+                        }
                       }
-                    });
+                    }
                   }
                   break;
                 default:
-                  console.log("Error filter " + filter.key + " configuration");
+                  recordToBeAdded = false;
+                  console.log("Error filter " + filters[i].key + " configuration");
               }
-            });
+            }
+            return recordToBeAdded;
           });
+          return newResults;
+        } else {
           return newResults;
         }
       }
@@ -459,30 +564,36 @@ export default class Search extends Component<SearchProps, SearchState> {
           <div>
             <Paper id="mainPaper">
               <div id="inputContainer" ref="containerRef">
-                <Input id="searchInput" type="text"
-                  ref={(input) => { this.inputRef = input; }}
-                  autoComplete="virtualflybrain"
-                  onChange={ (e:any) => {
-                    this.resultsHeight = e.currentTarget.offsetTop + 65;
-                    this.requestData(e);
-                  }} 
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <Filters
-                        filters={this.state.filters}
-                        setFilters={this.setFilters} />
-                    </InputAdornment>}
-                  />
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Input id="searchInput" type="text"
+                    ref={(input) => { this.inputRef = input; }}
+                    autoComplete="virtualflybrain"
+                    onChange={ (e:any) => {
+                      this.resultsHeight = e.currentTarget.offsetTop + 65;
+                      this.requestData(e);
+                    }}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <Filters
+                          filters={this.state.filters}
+                          setFilters={this.setFilters} />
+                      </InputAdornment>}
+                    />
 
-                <span id="closeIcon" className="fa fa-times" onClick={ () => {
-                  this.openSearch(false); }}/>
+                  <span id="closeIcon" className="fa fa-times" onClick={ () => {
+                    this.openSearch(false); }}/>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Results
+                      data={filteredResults}
+                      mapping={this.props.searchConfiguration.resultsMapping}
+                      closeHandler={this.openSearch}
+                      clickHandler={this.props.searchConfiguration.clickHandler}
+                      topAnchor={this.resultsHeight} />
+                  </Grid>
+                </Grid>
 
-                <Results
-                data={filteredResults}
-                mapping={this.props.searchConfiguration.resultsMapping}
-                closeHandler={this.openSearch}
-                clickHandler={this.props.searchConfiguration.clickHandler}
-                topAnchor={this.resultsHeight} />
               </div>
             </Paper>
           </div>
