@@ -49,7 +49,7 @@ class Canvas extends Component {
   }
 
   shouldEngineTraverse() {
-    //TODO: check if new instance added, check if split meshes changed?
+    // TODO: check if new instance added, check if split meshes changed?
     return true;
   }
 

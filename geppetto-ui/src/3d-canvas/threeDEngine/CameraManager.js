@@ -211,7 +211,6 @@ export default class CameraManager {
      * @movieFilter
      */
   autoRotate(movieFilter) {
-    // TODO: MovieFilter Example
     const that = this;
     if (this.rotate == null) {
       if (movieFilter === undefined || movieFilter === true) {

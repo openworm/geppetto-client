@@ -14,7 +14,6 @@ import Type from '@geppettoengine/geppetto-core/model/Type';
 import Variable from '@geppettoengine/geppetto-core/model/Variable';
 require('./TrackballControls');
 
-
 export default class ThreeDEngine {
   constructor(
     containerRef,
@@ -53,7 +52,6 @@ export default class ThreeDEngine {
     // Setup Listeners
     this.setupListeners(selectionHandler);
 
-
     this.start = this.start.bind(this);
     this.animate = this.animate.bind(this);
     this.renderScene = this.renderScene.bind(this);
@@ -83,13 +81,13 @@ export default class ThreeDEngine {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.autoClear = false;
     containerRef.appendChild(this.renderer.domElement);
-    this.configureRenderer(false)
+    this.configureRenderer(false);
   }
 
   /**
-    *
-    * @param shaders
-    */
+   *
+   * @param shaders
+   */
   configureRenderer(shaders) {
     if (shaders == undefined) {
       shaders = false;
@@ -106,8 +104,8 @@ export default class ThreeDEngine {
       const effectFilm = new FilmPass(0.5, 0.5, 1448, false);
       const effectFocus = new ShaderPass(FocusShader);
 
-      effectFocus.uniforms["screenWidth"].value = this.width;
-      effectFocus.uniforms["screenHeight"].value = this.height;
+      effectFocus.uniforms['screenWidth'].value = this.width;
+      effectFocus.uniforms['screenHeight'].value = this.height;
       effectFocus.renderToScreen = true;
 
       this.composer.addPass(renderModel);
@@ -165,7 +163,7 @@ export default class ThreeDEngine {
     raycaster.linePrecision = this.meshFactory.getLinePrecision();
 
     const visibleChildren = [];
-    this.scene.traverse(function (child) {
+    this.scene.traverse(function(child) {
       if (child.visible && !(child.clickThrough == true)) {
         if (child.geometry != null && child.geometry != undefined) {
           if (child.type !== 'Points') {
@@ -198,24 +196,17 @@ export default class ThreeDEngine {
   }
 
   /**
- * Clears the scene
- * 
- */
+   * Clears the scene
+   *
+   */
   clearScene() {
     const meshes = this.meshFactory.getMeshes();
     for (const meshKey in meshes) {
       this.scene.remove(meshes[meshKey]);
     }
-    this.meshFactory.complexity = 0;
+    this.meshFactory.clean();
   }
 
-
-  /**
-   * Sets the color of the instances
-   *
-   * @param proxyInstances
-   * @param color
-   */
   updateInstancesColor(proxyInstances) {
     const sortedInstances = proxyInstances.sort((a, b) => {
       if (a.instancePath < b.instancePath) {
@@ -232,12 +223,19 @@ export default class ThreeDEngine {
       }
     }
   }
+
+  /**
+   * Sets the color of the instances
+   *
+   * @param proxyInstances
+   * @param color
+   */
   setInstanceColor(path, color) {
-    //TODO: Use opacity
+    // TODO: Use opacity
     const entity = Instances.getInstance(path);
     if (entity.hasCapability('VisualCapability')) {
       if (entity instanceof Instance || entity instanceof ArrayInstance) {
-        this.setColor(path, color);
+        this.meshFactory.setColor(path, color);
 
         if (typeof entity.getChildren === 'function') {
           const children = entity.getChildren();
@@ -247,7 +245,6 @@ export default class ThreeDEngine {
         }
       } else if (entity instanceof Type || entity instanceof Variable) {
         // fetch all instances for the given type or variable and call hide on each
-        // TODO: Pass ModelFactory to prop?
         const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
         for (let j = 0; j < instances.length; j++) {
           this.setInstanceColor(instances[j].getInstancePath(), color);
@@ -257,30 +254,16 @@ export default class ThreeDEngine {
     return this;
   }
 
-  /**
-   * Changes the color of a given instance
-   *
-   * @param instancePath
-   * @param color
-   */
-  setColor(instancePath, color) {
-    if (!this.hasInstance(instancePath)) {
-      return;
-    }
-    var meshes = this.getRealMeshesForInstancePath(instancePath);
-    if (meshes.length > 0) {
-      for (var i = 0; i < meshes.length; i++) {
-        var mesh = meshes[i];
-        if (mesh) {
-          var that = this;
-          mesh.traverse(function (object) {
-            if (Object.prototype.hasOwnProperty.call(object, 'material')) {
-              that.setThreeColor(object.material.color, color);
-              object.material.defaultColor = color;
-            }
-          });
-        }
+  updateGroupMeshes(proxyInstances) {
+    for (const pInstance of proxyInstances) {
+      if (pInstance.splitGroups) {
+        const instance = Instances.getInstance(pInstance.instancePath);
+        this.meshFactory.splitGroups(instance, pInstance.splitGroups);
       }
+    }
+    const meshes = this.meshFactory.getMeshes();
+    for (const meshKey in meshes) {
+      this.scene.add(meshes[meshKey]);
     }
   }
 
@@ -292,7 +275,7 @@ export default class ThreeDEngine {
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mousedown',
-      function (event) {
+      function(event) {
         that.clientX = event.clientX;
         that.clientY = event.clientY;
       },
@@ -302,7 +285,7 @@ export default class ThreeDEngine {
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mouseup',
-      function (event) {
+      function(event) {
         if (event.target == that.renderer.domElement) {
           const x = event.clientX;
           const y = event.clientY;
@@ -323,13 +306,13 @@ export default class ThreeDEngine {
                 that.renderer.domElement.getBoundingClientRect().top) /
               that.renderer.domElement.getBoundingClientRect().height
             ) *
-            2 +
+              2 +
             1;
           that.mouse.x =
             ((event.clientX -
               that.renderer.domElement.getBoundingClientRect().left) /
               that.renderer.domElement.getBoundingClientRect().width) *
-            2 -
+              2 -
             1;
 
           if (event.button == 0) {
@@ -339,7 +322,7 @@ export default class ThreeDEngine {
 
               if (intersects.length > 0) {
                 // sort intersects
-                const compare = function (a, b) {
+                const compare = function(a, b) {
                   if (a.distance < b.distance) {
                     return -1;
                   }
@@ -372,25 +355,33 @@ export default class ThreeDEngine {
                     geometryIdentifier =
                       intersects[i].object.parent.geometryIdentifier;
                   }
-                  if (instancePath != null && Object.prototype.hasOwnProperty.call(
-                    that.meshFactory.meshes,
-                    instancePath
-                  )) {
+                  if (
+                    instancePath != null &&
+                    Object.prototype.hasOwnProperty.call(
+                      that.meshFactory.meshes,
+                      instancePath
+                    )
+                  ) {
                     if (geometryIdentifier == undefined) {
                       geometryIdentifier = '';
                     }
-                    selectedMap[instancePath] = { ...intersects[i], geometryIdentifier: geometryIdentifier, distanceIndex: i }
+                    if (!(instancePath in selectedMap)) {
+                      selectedMap[instancePath] = {
+                        ...intersects[i],
+                        geometryIdentifier: geometryIdentifier,
+                        distanceIndex: i,
+                      };
+                    }
                   }
                 }
 
-
-                //TODO:
+                // TODO:
                 // ) ||
                 // Object.prototype.hasOwnProperty.call(
                 //   that.splitMeshes,
                 //   selected
                 // )
-                selectionHandler(selectedMap)
+                selectionHandler(selectedMap);
               }
             }
           }
@@ -431,62 +422,13 @@ export default class ThreeDEngine {
   }
 
   /**
-   * Checks if instance has a mesh
-   *
-   * @param instance
+   * Sets whether to use wireframe for the materials of the meshes
+   * @param wireframe
    */
-  hasInstance(instance) {
-    const instancePath =
-      typeof instance == 'string' ? instance : instance.getInstancePath();
-    return this.meshFactory.meshes[instancePath] != undefined;
-  }
-
-  /**
-   * Get Meshes associated to an instance
-   *
-   * @param {String}
-   *            instancePath - Path of the instance
-   */
-  getRealMeshesForInstancePath(instancePath) {
-    const meshes = [];
-    if (instancePath in this.meshFactory.splitMeshes) {
-      for (const keySplitMeshes in this.meshFactory.splitMeshes) {
-        if (keySplitMeshes.startsWith(instancePath)) {
-          meshes.push(this.meshFactory.splitMeshes[keySplitMeshes]);
-        }
-      }
-    } else if (instancePath in this.meshFactory.meshes) {
-      meshes.push(this.meshFactory.meshes[instancePath]);
-    }
-    return meshes;
-  }
-
-  setThreeColor(threeColor, color) {
-    // eslint-disable-next-line no-restricted-globals
-    if (!isNaN(color % 1)) {
-      // we have an integer (hex) value
-      threeColor.setHex(color);
-    } else if (
-      Object.prototype.hasOwnProperty.call(color, 'r') &&
-      Object.prototype.hasOwnProperty.call(color, 'g') &&
-      Object.prototype.hasOwnProperty.call(color, 'b')
-    ) {
-      threeColor.r = color.r;
-      threeColor.g = color.g;
-      threeColor.b = color.b;
-    } else {
-      threeColor.set(color);
-    }
-  }
-
-  /**
-  * Sets whether to use wireframe for the materials of the meshes
-  * @param wireframe
-  */
   setWireframe(wireframe) {
     this.wireframe = wireframe;
     const that = this;
-    this.scene.traverse(function (child) {
+    this.scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         if (!(child.material.nowireframe == true)) {
           child.material.wireframe = that.wireframe;
@@ -496,38 +438,38 @@ export default class ThreeDEngine {
   }
 
   update(proxyInstances, cameraOptions, toTraverse) {
-    // TODO: Add camera
     if (toTraverse) {
       this.addInstancesToScene(proxyInstances);
+      this.updateGroupMeshes(proxyInstances);
       //this.setAllGeometriesType(this.getDefaultGeometryType());
 
       this.scene.updateMatrixWorld(true);
-      this.cameraManager.resetCamera();
+      //this.cameraManager.resetCamera();
     }
     this.updateInstancesColor(proxyInstances);
-    this.cameraManager.update(cameraOptions)
+    this.cameraManager.update(cameraOptions);
   }
 
   start(proxyInstances, cameraOptions, toTraverse) {
-    this.update(proxyInstances, cameraOptions, toTraverse)
+    this.update(proxyInstances, cameraOptions, toTraverse);
     if (!this.frameId) {
       this.frameId = window.requestAnimationFrame(this.animate);
     }
-  };
+  }
 
   animate() {
     this.controls.update();
     this.renderScene();
     this.frameId = window.requestAnimationFrame(this.animate);
-  };
+  }
 
   renderScene() {
     this.renderer.render(this.scene, this.cameraManager.getCamera());
-  };
+  }
 
   stop() {
     cancelAnimationFrame(this.frameId);
-  };
+  }
 
   /**
    * Returns the scene renderer

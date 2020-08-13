@@ -129,7 +129,7 @@ class CameraControls extends Component {
                 action: cameraControlsActions.WIREFRAME,
                 className: 'gpt-sphere_wireframe-jpg wireframe',
                 tooltip: 'Toggle wireframe',
-                icon: null
+                icon: null,
             })
         }
         return (

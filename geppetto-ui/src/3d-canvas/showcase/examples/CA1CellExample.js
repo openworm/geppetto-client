@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import model from './ca1_pyramidal_cell.json';
-import CameraControls, { cameraControlsActions } from '../../../camera-controls/CameraControls'
+import CameraControls, {
+  cameraControlsActions,
+} from '../../../camera-controls/CameraControls';
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
-  { r: 0, g: 0.2, b: 0.6, a: 1 },
-  { r: 0.8, g: 0, b: 0, a: 1 },
-  { r: 0, g: 0.8, b: 0, a: 1 },
+  { r: 0, g: 0.29, b: 0.71, a: 1 },
+  { r: 0.43, g: 0.57, b: 0, a: 1 },
+  { r: 0.71, g: 0.28, b: 0, a: 1 },
 ];
 const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 
@@ -29,7 +31,20 @@ class CA1Example extends Component {
 
     this.state = {
       data: [
-        { instancePath: 'network_CA1PyramidalCell', },
+        {
+          instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
+          splitGroups: {
+            soma_group: {
+              color: COLORS[0],
+            },
+            dendrite_group: {
+              color: COLORS[1],
+            },
+            axon_group: {
+              color: COLORS[2],
+            },
+          },
+        },
       ],
       selected: {},
       cameraOptions: {
@@ -41,9 +56,11 @@ class CA1Example extends Component {
         rotation: { rx: 0.051, ry: -0.192, rz: -0.569, radius: 361.668 },
         autoRotate: false,
         movieFilter: true,
-        reset: false
-      }
+        reset: false,
+      },
     };
+
+    this.lastCameraUpdate = null;
 
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
@@ -51,13 +68,13 @@ class CA1Example extends Component {
   }
 
   cameraHandler(obj) {
+    this.lastCameraUpdate = obj;
+
     console.log('Camera has changed:');
     console.log(obj);
   }
 
-  selectionHandler(
-    selectedMap
-  ) {
+  selectionHandler(selectedMap) {
     const { data, selected } = this.state;
     let path;
     for (let sk in selectedMap) {
@@ -68,7 +85,7 @@ class CA1Example extends Component {
     }
     const currentColor = selectedMap[path].object.material.color;
     const newData = data;
-    const newSelected = selected
+    const newSelected = selected;
     let done = false;
     for (const instance of data) {
       if (instance.instancePath == path) {
@@ -92,8 +109,8 @@ class CA1Example extends Component {
     this.setState(() => ({ data: newData, selected: newSelected }));
     console.log('Selection Handler Called:');
     console.log({
-      selectedMap
-    })
+      selectedMap,
+    });
   }
 
   cameraControlsHandler(action) {
@@ -102,68 +119,86 @@ class CA1Example extends Component {
       const engine = this.canvasRef.current.threeDEngine;
       switch (action) {
         case cameraControlsActions.PAN_LEFT:
-          engine.cameraManager.incrementCameraPan(-0.01, 0)
+          engine.cameraManager.incrementCameraPan(-0.01, 0);
           break;
         case cameraControlsActions.PAN_RIGHT:
-          engine.cameraManager.incrementCameraPan(0.01, 0)
+          engine.cameraManager.incrementCameraPan(0.01, 0);
           break;
         case cameraControlsActions.PAN_UP:
-          engine.cameraManager.incrementCameraPan(0, -0.01)
+          engine.cameraManager.incrementCameraPan(0, -0.01);
           break;
         case cameraControlsActions.PAN_DOWN:
-          engine.cameraManager.incrementCameraPan(0, 0.01)
+          engine.cameraManager.incrementCameraPan(0, 0.01);
           break;
         case cameraControlsActions.ROTATE_UP:
-          engine.cameraManager.incrementCameraRotate(0, 0.01, undefined)
+          engine.cameraManager.incrementCameraRotate(0, 0.01, undefined);
           break;
         case cameraControlsActions.ROTATE_DOWN:
-          engine.cameraManager.incrementCameraRotate(0, -0.01, undefined)
+          engine.cameraManager.incrementCameraRotate(0, -0.01, undefined);
           break;
         case cameraControlsActions.ROTATE_LEFT:
-          engine.cameraManager.incrementCameraRotate(-0.01, 0, undefined)
+          engine.cameraManager.incrementCameraRotate(-0.01, 0, undefined);
           break;
         case cameraControlsActions.ROTATE_RIGHT:
-          engine.cameraManager.incrementCameraRotate(0.01, 0, undefined)
+          engine.cameraManager.incrementCameraRotate(0.01, 0, undefined);
           break;
         case cameraControlsActions.ROTATE_Z:
-          engine.cameraManager.incrementCameraRotate(0, 0, 0.01)
+          engine.cameraManager.incrementCameraRotate(0, 0, 0.01);
           break;
         case cameraControlsActions.ROTATE_MZ:
-          engine.cameraManager.incrementCameraRotate(0, 0, -0.01)
+          engine.cameraManager.incrementCameraRotate(0, 0, -0.01);
           break;
         case cameraControlsActions.ROTATE:
-          engine.cameraManager.autoRotate(cameraOptions.movieFilter) //movie filter
+          engine.cameraManager.autoRotate(cameraOptions.movieFilter); //movie filter
           break;
         case cameraControlsActions.ZOOM_IN:
-          engine.cameraManager.incrementCameraZoom(-0.1)
+          engine.cameraManager.incrementCameraZoom(-0.1);
           break;
         case cameraControlsActions.ZOOM_OUT:
-          engine.cameraManager.incrementCameraZoom(+0.1)
+          engine.cameraManager.incrementCameraZoom(+0.1);
           break;
         case cameraControlsActions.PAN_HOME:
-          this.setState(() => ({ cameraOptions: { ...cameraOptions, reset: !cameraOptions.reset } }));
+          this.setState(() => ({
+            cameraOptions: { ...cameraOptions, reset: !cameraOptions.reset },
+          }));
           break;
         case cameraControlsActions.WIREFRAME:
-          engine.setWireframe(!engine.getWireframe())
+          engine.setWireframe(!engine.getWireframe());
           break;
       }
     }
-
   }
 
   render() {
     const { classes } = this.props;
     const { data, cameraOptions } = this.state;
 
+    let camOptions = cameraOptions;
+    if (this.lastCameraUpdate) {
+      camOptions = {
+        ...cameraOptions,
+        position: this.lastCameraUpdate.position,
+        rotation: {
+          ...this.lastCameraUpdate.rotation,
+          radius: cameraOptions.rotation.radius,
+        },
+      };
+    }
+
     return (
       <div className={classes.container}>
         <Canvas
           ref={this.canvasRef}
           data={data}
-          cameraOptions={cameraOptions}
+          cameraOptions={camOptions}
           cameraHandler={this.cameraHandler}
           selectionHandler={this.selectionHandler}
-          cameraControls={<CameraControls cameraControlsHandler={this.cameraControlsHandler} wireframeButtonEnabled={true} />}
+          cameraControls={
+            <CameraControls
+              cameraControlsHandler={this.cameraControlsHandler}
+              wireframeButtonEnabled={false}
+            />
+          }
           linesThreshold={10000}
         />
       </div>

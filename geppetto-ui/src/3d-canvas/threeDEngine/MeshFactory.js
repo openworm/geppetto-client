@@ -42,7 +42,7 @@ export default class MeshFactory {
       // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
       if (
         instance.getType().getMetaType() !==
-        GEPPETTO.Resources.ARRAY_TYPE_NODE &&
+          GEPPETTO.Resources.ARRAY_TYPE_NODE &&
         instance.getVisualType()
       ) {
         this.buildVisualInstance(instance);
@@ -77,7 +77,6 @@ export default class MeshFactory {
       }
     }
 
-    // TODO: This can be optimised, no need to create both
     const materials = {
       mesh: this.getMeshPhongMaterial(color),
       line: this.getLineMaterial(color),
@@ -408,10 +407,10 @@ export default class MeshFactory {
     loader.options.convertUpAxis = true;
     let scene = null;
     const that = this;
-    loader.parse(node.collada, function (collada) {
+    loader.parse(node.collada, function(collada) {
       // eslint-disable-next-line prefer-destructuring
       scene = collada.scene;
-      scene.traverse(function (child) {
+      scene.traverse(function(child) {
         if (child instanceof THREE.Mesh) {
           child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
           child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
@@ -434,14 +433,14 @@ export default class MeshFactory {
 
   loadThreeOBJModelFromNode(node) {
     const manager = new THREE.LoadingManager();
-    manager.onProgress = function (item, loaded, total) {
+    manager.onProgress = function(item, loaded, total) {
       console.log(item, loaded, total);
     };
     const loader = new THREE.OBJLoader(manager);
     // TODO: Fix this texture
     const scene = loader.parse(node.obj, this.particleTexture);
     const that = this;
-    scene.traverse(function (child) {
+    scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
         that.setThreeColor(
           child.material.color,
@@ -505,7 +504,7 @@ export default class MeshFactory {
     let ret = null;
     let mergedLines;
     let mergedMeshes;
-    objArray.forEach(function (obj) {
+    objArray.forEach(function(obj) {
       if (obj instanceof THREE.Line) {
         if (mergedLines === undefined) {
           mergedLines = new THREE.Geometry();
@@ -556,14 +555,12 @@ export default class MeshFactory {
    * Split merged mesh into individual meshes
    *
    * @param {String}
-   *            instancePath - Path of aspect, corresponds to original merged mesh
-   * @param {AspectSubTreeNode}
-   *            visualizationTree - Aspect Visualization Tree with groups info for visual objects
+   *            instance - original instance
    * @param {object}
    *            groups - The groups that we need to split mesh into
    */
   splitGroups(instance, groupElements) {
-    if (!this.hasInstance(instance)) {
+    if (!this.hasMesh(instance)) {
       return;
     }
     const instancePath = instance.getInstancePath();
@@ -607,7 +604,7 @@ export default class MeshFactory {
         const m = this.visualModelMap[map[v]];
 
         // eslint-disable-next-line no-eval
-        eval(map[v].substring(0, map[v].lastIndexOf('.')));
+        Instances.getInstance(map[v].substring(0, map[v].lastIndexOf('.')));
         const object = instance.getVisualType()[
           map[v].replace(`${instancePath}.`, '')
         ];
@@ -678,7 +675,7 @@ export default class MeshFactory {
    *            m - current mesh
    */
   addMeshToGeometryGroup(instance, id, geometryGroups, m) {
-    if (!this.hasInstance(instance)) {
+    if (!this.hasMesh(instance)) {
       return;
     }
     // name of group, mix of aspect path and group name
@@ -704,7 +701,7 @@ export default class MeshFactory {
    * @param groups
    */
   createGroupMeshes(instancePath, geometryGroups, groups) {
-    if (!this.hasInstance(instancePath)) {
+    if (!this.hasMesh(instancePath)) {
       return;
     }
     const mergedMesh = this.meshes[instancePath];
@@ -747,6 +744,83 @@ export default class MeshFactory {
       groupMesh.visible = true;
     }
   }
+
+  /**
+   * Changes the color of a given instance
+   *
+   * @param instancePath
+   * @param color
+   */
+  setColor(instancePath, color) {
+    if (!this.hasMesh(instancePath)) {
+      return;
+    }
+    var meshes = this.getRealMeshesForInstancePath(instancePath);
+    if (meshes.length > 0) {
+      for (var i = 0; i < meshes.length; i++) {
+        var mesh = meshes[i];
+        if (mesh) {
+          var that = this;
+          mesh.traverse(function(object) {
+            if (Object.prototype.hasOwnProperty.call(object, 'material')) {
+              that.setThreeColor(object.material.color, color);
+              object.material.defaultColor = color;
+            }
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * Get Meshes associated to an instance
+   *
+   * @param {String}
+   *            instancePath - Path of the instance
+   */
+  getRealMeshesForInstancePath(instancePath) {
+    const meshes = [];
+    if (instancePath in this.splitMeshes) {
+      for (const keySplitMeshes in this.splitMeshes) {
+        if (keySplitMeshes.startsWith(instancePath)) {
+          meshes.push(this.splitMeshes[keySplitMeshes]);
+        }
+      }
+    } else if (instancePath in this.meshes) {
+      meshes.push(this.meshes[instancePath]);
+    }
+    return meshes;
+  }
+
+  setThreeColor(threeColor, color) {
+    // eslint-disable-next-line no-restricted-globals
+    if (!isNaN(color % 1)) {
+      // we have an integer (hex) value
+      threeColor.setHex(color);
+    } else if (
+      Object.prototype.hasOwnProperty.call(color, 'r') &&
+      Object.prototype.hasOwnProperty.call(color, 'g') &&
+      Object.prototype.hasOwnProperty.call(color, 'b')
+    ) {
+      threeColor.r = color.r;
+      threeColor.g = color.g;
+      threeColor.b = color.b;
+    } else {
+      threeColor.set(color);
+    }
+  }
+
+  /**
+   * Checks if instance has a mesh
+   *
+   * @param instance
+   */
+  hasMesh(instance) {
+    const instancePath =
+      typeof instance == 'string' ? instance : instance.getInstancePath();
+    return this.meshes[instancePath] != undefined;
+  }
+
   /**
    * Traverse through THREE object to calculate that maximun radius based
    * on bounding sphere of visible objects
@@ -784,5 +858,13 @@ export default class MeshFactory {
     this.rayCasterLinePrecision = Math.round(this.rayCasterLinePrecision);
 
     return this.rayCasterLinePrecision;
+  }
+
+  clean() {
+    this.meshes = {};
+    this.splitMeshes = {};
+    this.visualModelMap = {};
+    this.complexity = 0;
+    this.sceneMaxRadius = 0;
   }
 }
