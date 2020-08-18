@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import model from './auditory_cortex.json';
-import CameraControls, { cameraControlsActions } from '../../../camera-controls/CameraControls'
+import CameraControls, {
+  cameraControlsActions,
+} from '../../../camera-controls/CameraControls';
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -24,8 +26,8 @@ class AuditoryCortexExample extends Component {
   constructor(props) {
     super(props);
     //TODO: Proper way to perform this?
-    const newModel = GEPPETTO.ModelFactory.createGeppettoModel(model, true, true)
-    window.Instances.push.apply(window.Instances, GEPPETTO.ModelFactory.instantiateVariables(newModel));
+    // const newModel = GEPPETTO.ModelFactory.createGeppettoModel(model, true, true)
+    // window.Instances.push.apply(window.Instances, GEPPETTO.ModelFactory.instantiateVariables(newModel));
     Instances.getInstance(INSTANCE_NAME);
     this.canvasRef = React.createRef();
 
@@ -35,7 +37,7 @@ class AuditoryCortexExample extends Component {
           instancePath: 'acnet2.baskets_12',
           color: COLORS[1],
         },
-        { instancePath: 'acnet2', },
+        { instancePath: 'acnet2' },
         {
           instancePath: 'acnet2.baskets_12[0]',
           color: COLORS[2],
@@ -51,8 +53,8 @@ class AuditoryCortexExample extends Component {
         rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
         autoRotate: false,
         movieFilter: false,
-        reset: false
-      }
+        reset: false,
+      },
     };
 
     this.cameraHandler = this.cameraHandler.bind(this);
@@ -65,9 +67,7 @@ class AuditoryCortexExample extends Component {
     console.log(obj);
   }
 
-  selectionHandler(
-    selectedMap
-  ) {
+  selectionHandler(selectedMap) {
     const { data, selected } = this.state;
     let path;
     for (let sk in selectedMap) {
@@ -78,7 +78,7 @@ class AuditoryCortexExample extends Component {
     }
     const currentColor = selectedMap[path].object.material.color;
     const newData = data;
-    const newSelected = selected
+    const newSelected = selected;
     let done = false;
     for (const instance of data) {
       if (instance.instancePath == path) {
@@ -102,8 +102,8 @@ class AuditoryCortexExample extends Component {
     this.setState(() => ({ data: newData, selected: newSelected }));
     console.log('Selection Handler Called:');
     console.log({
-      selectedMap
-    })
+      selectedMap,
+    });
   }
 
   cameraControlsHandler(action) {
@@ -112,53 +112,54 @@ class AuditoryCortexExample extends Component {
       const engine = this.canvasRef.current.threeDEngine;
       switch (action) {
         case cameraControlsActions.PAN_LEFT:
-          engine.cameraManager.incrementCameraPan(-0.01, 0)
+          engine.cameraManager.incrementCameraPan(-0.01, 0);
           break;
         case cameraControlsActions.PAN_RIGHT:
-          engine.cameraManager.incrementCameraPan(0.01, 0)
+          engine.cameraManager.incrementCameraPan(0.01, 0);
           break;
         case cameraControlsActions.PAN_UP:
-          engine.cameraManager.incrementCameraPan(0, -0.01)
+          engine.cameraManager.incrementCameraPan(0, -0.01);
           break;
         case cameraControlsActions.PAN_DOWN:
-          engine.cameraManager.incrementCameraPan(0, 0.01)
+          engine.cameraManager.incrementCameraPan(0, 0.01);
           break;
         case cameraControlsActions.ROTATE_UP:
-          engine.cameraManager.incrementCameraRotate(0, 0.01, undefined)
+          engine.cameraManager.incrementCameraRotate(0, 0.01, undefined);
           break;
         case cameraControlsActions.ROTATE_DOWN:
-          engine.cameraManager.incrementCameraRotate(0, -0.01, undefined)
+          engine.cameraManager.incrementCameraRotate(0, -0.01, undefined);
           break;
         case cameraControlsActions.ROTATE_LEFT:
-          engine.cameraManager.incrementCameraRotate(-0.01, 0, undefined)
+          engine.cameraManager.incrementCameraRotate(-0.01, 0, undefined);
           break;
         case cameraControlsActions.ROTATE_RIGHT:
-          engine.cameraManager.incrementCameraRotate(0.01, 0, undefined)
+          engine.cameraManager.incrementCameraRotate(0.01, 0, undefined);
           break;
         case cameraControlsActions.ROTATE_Z:
-          engine.cameraManager.incrementCameraRotate(0, 0, 0.01)
+          engine.cameraManager.incrementCameraRotate(0, 0, 0.01);
           break;
         case cameraControlsActions.ROTATE_MZ:
-          engine.cameraManager.incrementCameraRotate(0, 0, -0.01)
+          engine.cameraManager.incrementCameraRotate(0, 0, -0.01);
           break;
         case cameraControlsActions.ROTATE:
-          engine.cameraManager.autoRotate(cameraOptions.movieFilter) //movie filter
+          engine.cameraManager.autoRotate(cameraOptions.movieFilter); //movie filter
           break;
         case cameraControlsActions.ZOOM_IN:
-          engine.cameraManager.incrementCameraZoom(-0.1)
+          engine.cameraManager.incrementCameraZoom(-0.1);
           break;
         case cameraControlsActions.ZOOM_OUT:
-          engine.cameraManager.incrementCameraZoom(+0.1)
+          engine.cameraManager.incrementCameraZoom(+0.1);
           break;
         case cameraControlsActions.PAN_HOME:
-          this.setState(() => ({ cameraOptions: { ...cameraOptions, reset: !cameraOptions.reset } }));
+          this.setState(() => ({
+            cameraOptions: { ...cameraOptions, reset: !cameraOptions.reset },
+          }));
           break;
         case cameraControlsActions.WIREFRAME:
-          engine.setWireframe(!engine.getWireframe())
+          engine.setWireframe(!engine.getWireframe());
           break;
       }
     }
-
   }
 
   render() {
@@ -173,7 +174,12 @@ class AuditoryCortexExample extends Component {
           cameraOptions={cameraOptions}
           cameraHandler={this.cameraHandler}
           selectionHandler={this.selectionHandler}
-          cameraControls={<CameraControls cameraControlsHandler={this.cameraControlsHandler} wireframeButtonEnabled={false} />}
+          cameraControls={
+            <CameraControls
+              cameraControlsHandler={this.cameraControlsHandler}
+              wireframeButtonEnabled={false}
+            />
+          }
         />
       </div>
     );
