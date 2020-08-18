@@ -35,7 +35,7 @@ class AuditoryCortexExample extends Component {
           instancePath: 'acnet2.baskets_12',
           color: COLORS[1],
         },
-        { instancePath: 'acnet2' },
+        { instancePath: 'acnet2', color: COLORS[0] },
         {
           instancePath: 'acnet2.baskets_12[0]',
           color: COLORS[2],
@@ -259,6 +259,7 @@ class AuditoryCortexExample extends Component {
               wireframeButtonEnabled={false}
             />
           }
+          backgroundColor={0x505050}
         />
       </div>
     );

@@ -25,6 +25,7 @@ export default class ThreeDEngine {
     linesThreshold
   ) {
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(backgroundColor);
     this.cameraManager = null;
     this.renderer = null;
     this.controls = null;
@@ -41,7 +42,7 @@ export default class ThreeDEngine {
     this.setupCamera(cameraOptions, this.width / this.height);
 
     // Setup Renderer
-    this.setupRenderer(containerRef, backgroundColor);
+    this.setupRenderer(containerRef);
 
     // Setup Lights
     this.setupLights();
@@ -72,11 +73,10 @@ export default class ThreeDEngine {
 
   /**
    * Setups the renderer
-   * @param backgroundColor
+   * @param containerRef
    */
-  setupRenderer(containerRef, backgroundColor) {
+  setupRenderer(containerRef) {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    this.renderer.setClearColor(backgroundColor);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.autoClear = false;

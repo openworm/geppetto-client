@@ -268,6 +268,7 @@ class CA1Example extends Component {
             />
           }
           linesThreshold={10000}
+          backgroundColor={0x505050}
         />
       </div>
     );
