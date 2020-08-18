@@ -42,9 +42,9 @@ class CA1Example extends Component {
               dendrite_group: {
                 color: COLORS[1],
               },
-              axon_group: {
-                color: COLORS[2],
-              },
+              // axon_group: {
+              //   color: COLORS[2],
+              // },
             },
           },
         },
@@ -87,19 +87,91 @@ class CA1Example extends Component {
       }
     }
     const currentColor = selectedMap[path].object.material.color;
+    const geometryIdentifier = selectedMap[path].geometryIdentifier;
     const newData = data;
     const newSelected = selected;
     let done = false;
-    for (const instance of data) {
+    //TODO: Retest individual selection without visual groups and remove working logs
+    for (const instance of newData) {
       if (instance.instancePath == path) {
-        if (path in newSelected) {
-          instance.color = newSelected[path];
-          delete newSelected[path];
+        if (geometryIdentifier == '') {
+          if (path in newSelected) {
+            instance.color = newSelected[path].color;
+            delete newSelected[path];
+          } else {
+            newSelected[path] = { color: instance.color };
+            instance.color = SELECTION_COLOR;
+          }
+          done = true;
         } else {
-          newSelected[path] = instance.color;
-          instance.color = SELECTION_COLOR;
+          if (path in newSelected) {
+            if (geometryIdentifier in newSelected[path]) {
+              // Working
+              instance.visualGroups.custom[geometryIdentifier].color =
+                newSelected[path][geometryIdentifier].color;
+              delete newSelected[path][geometryIdentifier];
+              if (Object.keys(newSelected[path]).length === 0) {
+                delete newSelected[path];
+              }
+              done = true;
+            } else {
+              if (instance.visualGroups.custom[geometryIdentifier]) {
+                // Working
+                newSelected[path][geometryIdentifier] = {
+                  color: instance.visualGroups.custom[geometryIdentifier].color,
+                };
+                instance.visualGroups.custom[
+                  geometryIdentifier
+                ].color = SELECTION_COLOR;
+                done = true;
+              }
+            }
+          } else {
+            if (instance.visualGroups) {
+              if (instance.visualGroups.custom) {
+                if (instance.visualGroups.custom[geometryIdentifier]) {
+                  // Working
+                  newSelected[path] = {
+                    [geometryIdentifier]: {
+                      color:
+                        instance.visualGroups.custom[geometryIdentifier].color,
+                    },
+                  };
+                  instance.visualGroups.custom[
+                    geometryIdentifier
+                  ].color = SELECTION_COLOR;
+                  done = true;
+                } else {
+                  // Working
+                  newSelected[path] = {
+                    [geometryIdentifier]: {
+                      color: {
+                        ...currentColor,
+                      },
+                    },
+                  };
+                  instance.visualGroups.custom[geometryIdentifier] = {
+                    color: SELECTION_COLOR,
+                  };
+                  done = true;
+                }
+              } else {
+                // working
+                newSelected[path] = {
+                  [geometryIdentifier]: {
+                    color: {
+                      ...currentColor,
+                    },
+                  },
+                };
+                instance.visualGroups.custom = {
+                  [geometryIdentifier]: { color: SELECTION_COLOR },
+                };
+                done = true;
+              }
+            }
+          }
         }
-        done = true;
       }
     }
     if (!done) {
@@ -107,8 +179,9 @@ class CA1Example extends Component {
         instancePath: path,
         color: SELECTION_COLOR,
       });
-      newSelected[path] = { ...currentColor };
+      newSelected[path] = { color: { ...currentColor } };
     }
+
     this.setState(() => ({ data: newData, selected: newSelected }));
     console.log('Selection Handler Called:');
     console.log({
