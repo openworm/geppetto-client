@@ -8,12 +8,12 @@
 
 ## Examples
 
-### 3D Canvas Auditory Cortex Example
+### 3D Canvas VFB Example
 
-3D Canvas Auditory Cortex Example
+3D Canvas VFB Example
 
 ```
-3d-canvas/showcase/examples/AuditoryCortexExample
+3d-canvas/showcase/examples/VFBExample
 ```
 
 ### 3D Canvas CA1 Pyramidal Cell Example
@@ -22,6 +22,14 @@
 
 ```
 3d-canvas/showcase/examples/CA1CellExample
+```
+
+### 3D Canvas Auditory Cortex Example
+
+3D Canvas Auditory Cortex Example
+
+```
+3d-canvas/showcase/examples/AuditoryCortexExample
 ```
 
 ## Libraries

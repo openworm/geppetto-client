@@ -1,17 +1,30 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
-import model from './model.json';
 import CameraControls, {
   cameraControlsActions,
 } from '../../../camera-controls/CameraControls';
 
-const INSTANCE_NAME = 'network_CA1PyramidalCell';
-const COLORS = [
-  { r: 0, g: 0.29, b: 0.71, a: 1 },
-  { r: 0.43, g: 0.57, b: 0, a: 1 },
-  { r: 1, g: 0.41, b: 0.71, a: 1 },
+const INSTANCES = [
+  'VFB_00017894',
+  'VFB_00030624',
+  'VFB_00030622',
+  'VFB_00030616',
+  'VFB_00030633',
+  'VFB_00030840',
+  'VFB_00030632',
+  'VFB_00030783',
 ];
+const COLORS = [
+  { r: 0.36, g: 0.36, b: 0.36, a: 1 },
+  { r: 0, g: 1, b: 0, a: 1 },
+  { r: 1, g: 0, b: 1, a: 1 },
+  { r: 0, g: 0, b: 1, a: 1 },
+  { r: 1, g: 0.83, b: 0, a: 1 },
+  { r: 0, g: 0.52, b: 0.96, a: 1 },
+  { r: 1, g: 0, b: 0, a: 1 },
+];
+
 const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 
 const styles = () => ({
@@ -22,30 +35,45 @@ const styles = () => ({
     alignItems: 'stretch',
   },
 });
-class CA1Example extends Component {
+class VFBExample extends Component {
   constructor(props) {
     super(props);
-    Instances.getInstance(INSTANCE_NAME);
+    for (const iname of INSTANCES) {
+      Instances.getInstance(iname);
+    }
     this.canvasRef = React.createRef();
-
     this.state = {
       data: [
         {
-          instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
-          visualGroups: {
-            index: 0,
-            custom: {
-              soma_group: {
-                color: COLORS[0],
-              },
-              dendrite_group: {
-                color: COLORS[1],
-              },
-              axon_group: {
-                color: COLORS[2],
-              },
-            },
-          },
+          instancePath: 'VFB_00017894',
+          color: COLORS[0],
+        },
+        {
+          instancePath: 'VFB_00030622',
+          color: COLORS[1],
+        },
+        {
+          instancePath: 'VFB_00030616',
+          color: COLORS[2],
+        },
+        {
+          instancePath: 'VFB_00030633',
+          color: COLORS[3],
+        },
+        {
+          instancePath: 'VFB_00030840',
+          color: COLORS[4],
+        },
+        {
+          instancePath: 'VFB_00030632',
+          color: COLORS[5],
+        },
+        {
+          instancePath: 'VFB_00030624',
+        },
+        {
+          instancePath: 'VFB_00030783',
+          color: COLORS[6],
         },
       ],
       selected: {},
@@ -54,8 +82,8 @@ class CA1Example extends Component {
         near: 10,
         far: 2000000,
         baseZoom: 1,
-        position: { x: -97.349, y: 53.797, z: 387.82 },
-        rotation: { rx: 0.051, ry: -0.192, rz: -0.569, radius: 361.668 },
+        position: { x: 319.7, y: 153.12, z: -494.2 },
+        rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
         autoRotate: false,
         movieFilter: true,
         reset: false,
@@ -217,7 +245,7 @@ class CA1Example extends Component {
           engine.cameraManager.incrementCameraRotate(0, 0, -0.01);
           break;
         case cameraControlsActions.ROTATE:
-          engine.cameraManager.autoRotate(cameraOptions.movieFilter); //movie filter
+          engine.cameraManager.autoRotate(cameraOptions.movieFilter);
           break;
         case cameraControlsActions.ZOOM_IN:
           engine.cameraManager.incrementCameraZoom(-0.1);
@@ -264,7 +292,7 @@ class CA1Example extends Component {
           cameraControls={
             <CameraControls
               cameraControlsHandler={this.cameraControlsHandler}
-              wireframeButtonEnabled={false}
+              wireframeButtonEnabled={true}
             />
           }
           linesThreshold={10000}
@@ -274,4 +302,4 @@ class CA1Example extends Component {
   }
 }
 
-export default withStyles(styles)(CA1Example);
+export default withStyles(styles)(VFBExample);

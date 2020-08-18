@@ -5,7 +5,7 @@
  */
 
 var THREE = window.THREE || require('three');
-THREE.OBJLoader = (function () {
+THREE.OBJLoader = (function() {
   // o object_name | g group_name
   var object_pattern = /^[og]\s*(.+)?/;
   // mtllib file_reference
@@ -35,7 +35,7 @@ THREE.OBJLoader = (function () {
       materials: {},
       materialLibraries: [],
 
-      startObject: function (name, fromDeclaration) {
+      startObject: function(name, fromDeclaration) {
         // If the current object (initial from reset) is not from a g/o declaration in the parsed
         // file. We need to use it for the first parsed g/o to keep things in sync.
         if (this.object && this.object.fromDeclaration === false) {
@@ -68,7 +68,7 @@ THREE.OBJLoader = (function () {
           materials: [],
           smooth: true,
 
-          startMaterial: function (name, libraries) {
+          startMaterial: function(name, libraries) {
             var previous = this._finalize(false);
 
             // New usemtl declaration overwrites an inherited material, except if faces were declared
@@ -90,7 +90,7 @@ THREE.OBJLoader = (function () {
               groupCount: -1,
               inherited: false,
 
-              clone: function (index) {
+              clone: function(index) {
                 var cloned = {
                   index: typeof index === 'number' ? index : this.index,
                   name: this.name,
@@ -111,7 +111,7 @@ THREE.OBJLoader = (function () {
             return material;
           },
 
-          currentMaterial: function () {
+          currentMaterial: function() {
             if (this.materials.length > 0) {
               return this.materials[this.materials.length - 1];
             }
@@ -119,7 +119,7 @@ THREE.OBJLoader = (function () {
             return undefined;
           },
 
-          _finalize: function (end) {
+          _finalize: function(end) {
             var lastMultiMaterial = this.currentMaterial();
             if (lastMultiMaterial && lastMultiMaterial.groupEnd === -1) {
               lastMultiMaterial.groupEnd = this.geometry.vertices.length / 3;
@@ -168,28 +168,28 @@ THREE.OBJLoader = (function () {
         this.objects.push(this.object);
       },
 
-      finalize: function () {
+      finalize: function() {
         if (this.object && typeof this.object._finalize === 'function') {
           this.object._finalize(true);
         }
       },
 
-      parseVertexIndex: function (value, len) {
+      parseVertexIndex: function(value, len) {
         var index = parseInt(value, 10);
         return (index >= 0 ? index - 1 : index + len / 3) * 3;
       },
 
-      parseNormalIndex: function (value, len) {
+      parseNormalIndex: function(value, len) {
         var index = parseInt(value, 10);
         return (index >= 0 ? index - 1 : index + len / 3) * 3;
       },
 
-      parseUVIndex: function (value, len) {
+      parseUVIndex: function(value, len) {
         var index = parseInt(value, 10);
         return (index >= 0 ? index - 1 : index + len / 2) * 2;
       },
 
-      addVertex: function (a, b, c) {
+      addVertex: function(a, b, c) {
         var src = this.vertices;
         var dst = this.object.geometry.vertices;
 
@@ -198,21 +198,21 @@ THREE.OBJLoader = (function () {
         dst.push(src[c + 0], src[c + 1], src[c + 2]);
       },
 
-      addVertexPoint: function (a) {
+      addVertexPoint: function(a) {
         var src = this.vertices;
         var dst = this.object.geometry.vertices;
 
         dst.push(src[a + 0], src[a + 1], src[a + 2]);
       },
 
-      addVertexLine: function (a) {
+      addVertexLine: function(a) {
         var src = this.vertices;
         var dst = this.object.geometry.vertices;
 
         dst.push(src[a + 0], src[a + 1], src[a + 2]);
       },
 
-      addNormal: function (a, b, c) {
+      addNormal: function(a, b, c) {
         var src = this.normals;
         var dst = this.object.geometry.normals;
 
@@ -221,7 +221,7 @@ THREE.OBJLoader = (function () {
         dst.push(src[c + 0], src[c + 1], src[c + 2]);
       },
 
-      addFaceNormal: function (a, b, c) {
+      addFaceNormal: function(a, b, c) {
         var src = this.vertices;
         var dst = this.object.geometry.normals;
 
@@ -240,7 +240,7 @@ THREE.OBJLoader = (function () {
         dst.push(cb.x, cb.y, cb.z);
       },
 
-      addColor: function (a, b, c) {
+      addColor: function(a, b, c) {
         var src = this.colors;
         var dst = this.object.geometry.colors;
 
@@ -249,7 +249,7 @@ THREE.OBJLoader = (function () {
         if (src[c] !== undefined) dst.push(src[c + 0], src[c + 1], src[c + 2]);
       },
 
-      addUV: function (a, b, c) {
+      addUV: function(a, b, c) {
         var src = this.uvs;
         var dst = this.object.geometry.uvs;
 
@@ -258,7 +258,7 @@ THREE.OBJLoader = (function () {
         dst.push(src[c + 0], src[c + 1]);
       },
 
-      addDefaultUV: function () {
+      addDefaultUV: function() {
         var dst = this.object.geometry.uvs;
 
         dst.push(0, 0);
@@ -266,14 +266,14 @@ THREE.OBJLoader = (function () {
         dst.push(0, 0);
       },
 
-      addUVLine: function (a) {
+      addUVLine: function(a) {
         var src = this.uvs;
         var dst = this.object.geometry.uvs;
 
         dst.push(src[a + 0], src[a + 1]);
       },
 
-      addFace: function (a, b, c, ua, ub, uc, na, nb, nc) {
+      addFace: function(a, b, c, ua, ub, uc, na, nb, nc) {
         var vLen = this.vertices.length;
 
         var ia = this.parseVertexIndex(a, vLen);
@@ -318,7 +318,7 @@ THREE.OBJLoader = (function () {
         }
       },
 
-      addPointGeometry: function (vertices) {
+      addPointGeometry: function(vertices) {
         this.object.geometry.type = 'Points';
 
         var vLen = this.vertices.length;
@@ -328,7 +328,7 @@ THREE.OBJLoader = (function () {
         }
       },
 
-      addLineGeometry: function (vertices, uvs) {
+      addLineGeometry: function(vertices, uvs) {
         this.object.geometry.type = 'Line';
 
         var vLen = this.vertices.length;
@@ -360,14 +360,14 @@ THREE.OBJLoader = (function () {
   OBJLoader.prototype = Object.assign(Object.create(THREE.Loader.prototype), {
     constructor: OBJLoader,
 
-    load: function (url, onLoad, onProgress, onError) {
+    load: function(url, onLoad, onProgress, onError) {
       var scope = this;
 
       var loader = new THREE.FileLoader(scope.manager);
       loader.setPath(this.path);
       loader.load(
         url,
-        function (text) {
+        function(text) {
           try {
             onLoad(scope.parse(text));
           } catch (e) {
@@ -385,13 +385,13 @@ THREE.OBJLoader = (function () {
       );
     },
 
-    setMaterials: function (materials) {
+    setMaterials: function(materials) {
       this.materials = materials;
 
       return this;
     },
 
-    createMesh: function (vertices, color, texture) {
+    createMesh: function(vertices, color, texture) {
       var i, c;
       var vl = vertices.length;
 
@@ -406,7 +406,7 @@ THREE.OBJLoader = (function () {
       threeColor.setHex(color);
 
       var material = new THREE.PointsMaterial({
-        size: 0.05,
+        size: 0.5,
         map: texture,
         blending: THREE.AdditiveBlending,
         depthTest: false,
@@ -418,7 +418,7 @@ THREE.OBJLoader = (function () {
       return new THREE.Points(geometry, material);
     },
 
-    parse: function (text, texture) {
+    parse: function(text, texture) {
       var state = new ParserState();
 
       if (text.indexOf('\r\n') !== -1) {
@@ -527,7 +527,10 @@ THREE.OBJLoader = (function () {
             );
           }
         } else if (lineFirstChar === 'l') {
-          var lineParts = line.substring(1).trim().split(' ');
+          var lineParts = line
+            .substring(1)
+            .trim()
+            .split(' ');
           var lineVertices = [],
             lineUVs = [];
 

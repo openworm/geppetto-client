@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
+import model from './model.json';
 import CameraControls, {
   cameraControlsActions,
 } from '../../../camera-controls/CameraControls';
@@ -24,6 +25,7 @@ const styles = () => ({
 class AuditoryCortexExample extends Component {
   constructor(props) {
     super(props);
+    GEPPETTO.Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
     this.canvasRef = React.createRef();
 

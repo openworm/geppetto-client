@@ -32,3 +32,6 @@ org.geppetto.simulation/
 
 # redis cache files
 *.rdb
+
+# big files
+ ./geppetto-ui/src/3d-canvas/showcase/examples/model.json

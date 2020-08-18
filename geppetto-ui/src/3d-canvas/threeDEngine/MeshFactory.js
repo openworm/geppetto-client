@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import particle from '../textures/particle.png';
 require('./OBJLoader');
 
 export default class MeshFactory {
@@ -71,7 +72,9 @@ export default class MeshFactory {
     const previous3DObject = this.meshes[instance.getInstancePath()];
     let color;
     if (previous3DObject) {
-      color = previous3DObject.material.defaultColor;
+      if (previous3DObject.material) {
+        color = previous3DObject.material.defaultColor;
+      }
       this.engine.getScene().remove(previous3DObject);
       const { splitMeshes } = this;
       for (const m in splitMeshes) {
@@ -441,8 +444,9 @@ export default class MeshFactory {
       console.log(item, loaded, total);
     };
     const loader = new THREE.OBJLoader(manager);
-    // TODO: Fix this texture
-    const scene = loader.parse(node.obj, this.particleTexture);
+    const textureLoader = new THREE.TextureLoader();
+
+    const scene = loader.parse(node.obj, textureLoader.load(particle));
     const that = this;
     scene.traverse(function(child) {
       if (child instanceof THREE.Mesh) {
@@ -834,7 +838,7 @@ export default class MeshFactory {
   calculateSceneMaxRadius(object) {
     let currentRadius = 0;
     if (object.children.length > 0) {
-      for (const i = 0; i < object.children.length; i++) {
+      for (let i = 0; i < object.children.length; i++) {
         if (object.children[i] != undefined) {
           this.calculateSceneMaxRadius(object.children[i]);
         }
