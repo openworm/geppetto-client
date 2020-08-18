@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
-import model from './ca1_pyramidal_cell.json';
+import model from './model.json';
 import CameraControls, {
   cameraControlsActions,
 } from '../../../camera-controls/CameraControls';
