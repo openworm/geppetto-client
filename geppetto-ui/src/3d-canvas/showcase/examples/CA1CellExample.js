@@ -42,9 +42,9 @@ class CA1Example extends Component {
               dendrite_group: {
                 color: COLORS[1],
               },
-              // axon_group: {
-              //   color: COLORS[2],
-              // },
+              axon_group: {
+                color: COLORS[2],
+              },
             },
           },
         },
@@ -64,7 +64,6 @@ class CA1Example extends Component {
     };
 
     this.lastCameraUpdate = null;
-
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.cameraControlsHandler = this.cameraControlsHandler.bind(this);
@@ -272,7 +271,7 @@ class CA1Example extends Component {
           cameraControls={
             <CameraControls
               cameraControlsHandler={this.cameraControlsHandler}
-              wireframeButtonEnabled={true}
+              wireframeButtonEnabled={false}
             />
           }
           linesThreshold={10000}
