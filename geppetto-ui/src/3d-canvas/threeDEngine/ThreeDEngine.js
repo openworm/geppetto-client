@@ -219,8 +219,13 @@ export default class ThreeDEngine {
       if (pInstance.color) {
         this.setInstanceColor(pInstance.instancePath, pInstance.color);
       }
-      if (pInstance.splitGroups) {
-        this.setSplitGroupsColor(pInstance.instancePath, pInstance.splitGroups);
+      if (pInstance.visualGroups) {
+        const instance = Instances.getInstance(pInstance.instancePath);
+        const visualGroups = this.getVisualElements(
+          instance,
+          pInstance.visualGroups
+        );
+        this.setSplitGroupsColor(pInstance.instancePath, visualGroups);
       }
     }
   }
@@ -258,12 +263,12 @@ export default class ThreeDEngine {
   /**
    *
    * @param instancePath
-   * @param splitGroups
+   * @param visualGroups
    */
-  setSplitGroupsColor(instancePath, splitGroups) {
-    for (const g in splitGroups) {
+  setSplitGroupsColor(instancePath, visualGroups) {
+    for (const g in visualGroups) {
       // retrieve visual group object
-      const group = splitGroups[g];
+      const group = visualGroups[g];
 
       // get full group name to access group mesh
       let groupName = g;
@@ -280,9 +285,13 @@ export default class ThreeDEngine {
 
   updateGroupMeshes(proxyInstances) {
     for (const pInstance of proxyInstances) {
-      if (pInstance.splitGroups) {
+      if (pInstance.visualGroups) {
         const instance = Instances.getInstance(pInstance.instancePath);
-        this.meshFactory.splitGroups(instance, pInstance.splitGroups);
+        const visualGroups = this.getVisualElements(
+          instance,
+          pInstance.visualGroups
+        );
+        this.meshFactory.splitGroups(instance, visualGroups);
       }
     }
     const meshes = this.meshFactory.getMeshes();
@@ -290,6 +299,52 @@ export default class ThreeDEngine {
     for (const meshKey in meshes) {
       this.scene.add(meshes[meshKey]);
     }
+  }
+
+  getVisualElements(instance, visualGroups) {
+    const groups = {};
+    if (visualGroups.index != null) {
+      const vg = instance.getVisualGroups()[visualGroups.index];
+      const visualElements = vg.getVisualGroupElements();
+      const allElements = [];
+      for (let i = 0; i < visualElements.length; i++) {
+        if (visualElements[i].getValue() != null) {
+          allElements.push(visualElements[i].getValue());
+        }
+      }
+
+      let minDensity = Math.min.apply(null, allElements);
+      let maxDensity = Math.max.apply(null, allElements);
+
+      // highlight all reference nodes
+      for (let j = 0; j < visualElements.length; j++) {
+        groups[visualElements[j].getId()] = {};
+        let color = visualElements[j].getColor();
+        if (visualElements[j].getValue() != null) {
+          let intensity = 1;
+          if (maxDensity != minDensity) {
+            intensity =
+              (visualElements[j].getValue() - minDensity) /
+              (maxDensity - minDensity);
+          }
+
+          color = GEPPETTO.Utility.rgbToHex(
+            255,
+            Math.floor(255 - 255 * intensity),
+            0
+          );
+        }
+        groups[visualElements[j].getId()].color = color;
+      }
+    }
+
+    for (const c in visualGroups.custom) {
+      if (c in groups) {
+        groups[c].color = visualGroups.custom[c].color;
+      }
+    }
+
+    return groups;
   }
 
   /**

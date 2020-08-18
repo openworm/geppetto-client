@@ -10,7 +10,7 @@ const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
   { r: 0, g: 0.29, b: 0.71, a: 1 },
   { r: 0.43, g: 0.57, b: 0, a: 1 },
-  { r: 0.71, g: 0.28, b: 0, a: 1 },
+  { r: 1, g: 0.41, b: 0.71, a: 1 },
 ];
 const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 
@@ -33,15 +33,18 @@ class CA1Example extends Component {
       data: [
         {
           instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
-          splitGroups: {
-            soma_group: {
-              color: COLORS[0],
-            },
-            dendrite_group: {
-              color: COLORS[1],
-            },
-            axon_group: {
-              color: COLORS[2],
+          visualGroups: {
+            index: 0,
+            custom: {
+              soma_group: {
+                color: COLORS[0],
+              },
+              dendrite_group: {
+                color: COLORS[1],
+              },
+              axon_group: {
+                color: COLORS[2],
+              },
             },
           },
         },
@@ -196,7 +199,7 @@ class CA1Example extends Component {
           cameraControls={
             <CameraControls
               cameraControlsHandler={this.cameraControlsHandler}
-              wireframeButtonEnabled={false}
+              wireframeButtonEnabled={true}
             />
           }
           linesThreshold={10000}
