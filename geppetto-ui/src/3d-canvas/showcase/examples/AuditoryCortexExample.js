@@ -11,7 +11,7 @@ const COLORS = [
   { r: 0, g: 0.2, b: 0.6, a: 1 },
   { r: 0.8, g: 0, b: 0, a: 1 },
   { r: 0, g: 0.8, b: 0, a: 1 },
-  { r: 0, g: 0.8, b: 0, a: 0.8 },
+  { r: 0, g: 0.8, b: 0, a: 0.5 },
 ];
 const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 
@@ -64,6 +64,7 @@ class AuditoryCortexExample extends Component {
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.cameraControlsHandler = this.cameraControlsHandler.bind(this);
+    this.hoverHandler = this.hoverHandler.bind(this);
   }
 
   cameraHandler(obj) {
@@ -178,6 +179,11 @@ class AuditoryCortexExample extends Component {
     });
   }
 
+  hoverHandler(obj) {
+    console.log('Hover handler called:');
+    console.log(obj);
+  }
+
   cameraControlsHandler(action) {
     const { cameraOptions } = this.state;
     if (this.canvasRef.current && this.canvasRef.current.threeDEngine) {
@@ -265,6 +271,7 @@ class AuditoryCortexExample extends Component {
             />
           }
           backgroundColor={0x505050}
+          hoverListeners={[this.hoverHandler]}
         />
       </div>
     );

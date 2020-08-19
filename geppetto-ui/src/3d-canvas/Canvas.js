@@ -3,8 +3,6 @@ import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 
-
-
 const styles = () => ({
   container: {
     display: 'flex',
@@ -27,7 +25,8 @@ class Canvas extends Component {
       selectionHandler,
       backgroundColor,
       pickingEnabled,
-      linesThreshold
+      linesThreshold,
+      hoverListeners,
     } = this.props;
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
@@ -36,7 +35,8 @@ class Canvas extends Component {
       selectionHandler,
       backgroundColor,
       pickingEnabled,
-      linesThreshold
+      linesThreshold,
+      hoverListeners
     );
     this.threeDEngine.start(data, cameraOptions, true);
   }
@@ -57,11 +57,17 @@ class Canvas extends Component {
     const { classes, data, cameraOptions, cameraControls } = this.props;
 
     if (this.threeDEngine) {
-      this.threeDEngine.update(data, cameraOptions, this.shouldEngineTraverse());
+      this.threeDEngine.update(
+        data,
+        cameraOptions,
+        this.shouldEngineTraverse()
+      );
     }
-    return <div className={classes.container} ref={this.sceneRef}>
-      {cameraControls}
-    </div>;
+    return (
+      <div className={classes.container} ref={this.sceneRef}>
+        {cameraControls}
+      </div>
+    );
   }
 }
 
@@ -76,6 +82,7 @@ Canvas.defaultProps = {
   backgroundColor: '#000000',
   pickingEnabled: true,
   linesThreshold: 2000,
+  hoverListeners: [],
 };
 
 Canvas.propTypes = {
@@ -108,9 +115,13 @@ Canvas.propTypes = {
    */
   cameraControls: PropTypes.object,
   /**
- * Threshold to limit scene complexity
- */
-  linesThreshold: PropTypes.number
+   * Threshold to limit scene complexity
+   */
+  linesThreshold: PropTypes.number,
+  /**
+   * Array of hover handlers to callback
+   */
+  hoverListeners: PropTypes.array,
 };
 
 export default withStyles(styles)(Canvas);

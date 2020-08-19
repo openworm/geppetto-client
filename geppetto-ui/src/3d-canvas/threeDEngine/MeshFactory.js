@@ -165,7 +165,7 @@ export default class MeshFactory {
       return threeDeeObjList;
     }
     if (visualType.isArray) {
-      // TODO if there is more than one visual type we need to display all of them
+      // FIXME: if there is more than one visual type we need to display all of them
       visualType = visualType[0];
     }
     if (
@@ -258,13 +258,13 @@ export default class MeshFactory {
 
     if (threeObject) {
       threeObject.visible = true;
-      // TODO: this is empty for collada and obj nodes
+      // FIXME: this is empty for collada and obj nodes
 
       const instancePath = `${instance.getInstancePath()}.${id}`;
       threeObject.instancePath = instancePath;
       threeObject.highlighted = false;
 
-      // TODO: shouldn't that be the vistree? why is it also done at the loadEntity level??
+      // FIXME: shouldn't that be the vistree? why is it also done at the loadEntity level??
       this.visualModelMap[instancePath] = threeObject;
     }
     return threeObject;
@@ -408,7 +408,7 @@ export default class MeshFactory {
     return threeObject;
   }
 
-  // TODO: test
+  // TODO: Collada example
   loadColladaModelFromNode(node) {
     const loader = new THREE.ColladaLoader();
     loader.options.convertUpAxis = true;
@@ -480,9 +480,7 @@ export default class MeshFactory {
       }
       this.meshes[instancePath] = mesh;
       this.meshes[instancePath].visible = true;
-      this.meshes[instancePath].ghosted = false;
       this.meshes[instancePath].defaultOpacity = 1;
-      this.meshes[instancePath].selected = false;
       this.meshes[instancePath].input = false;
       this.meshes[instancePath].output = false;
 
@@ -738,16 +736,6 @@ export default class MeshFactory {
       groupMesh.position.copy(mergedMesh.position);
 
       this.splitMeshes[groupName] = groupMesh;
-
-      // Update visualization feature for a mesh
-      // TODO:
-      // if (mergedMesh.ghosted) {
-      //   this.unselectedTransparent([groupMesh], true);
-      // }
-      // if (mergedMesh.selected) {
-      //   this.selectInstance(groupName);
-      // }
-      // groupMesh.selected = mergedMesh.selected;
 
       // add split mesh to scenne and set flag to visible
       groupMesh.visible = true;

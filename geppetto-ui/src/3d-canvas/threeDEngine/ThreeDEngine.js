@@ -22,7 +22,8 @@ export default class ThreeDEngine {
     selectionHandler,
     backgroundColor,
     pickingEnabled,
-    linesThreshold
+    linesThreshold,
+    hoverListeners
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -32,8 +33,8 @@ export default class ThreeDEngine {
     this.mouse = { x: 0, y: 0 };
     this.frameId = null;
     this.meshFactory = new MeshFactory(this, linesThreshold);
-
     this.pickingEnabled = pickingEnabled;
+    this.hoverListeners = hoverListeners;
 
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
@@ -237,7 +238,6 @@ export default class ThreeDEngine {
    * @param color
    */
   setInstanceColor(path, color) {
-    // TODO: Use opacity
     const entity = Instances.getInstance(path);
     if (entity.hasCapability('VisualCapability')) {
       if (entity instanceof Instance || entity instanceof ArrayInstance) {
@@ -436,9 +436,13 @@ export default class ThreeDEngine {
                       intersects[i].object.parent.geometryIdentifier;
                   }
                   if (
-                    instancePath != null &&
+                    (instancePath != null &&
+                      Object.prototype.hasOwnProperty.call(
+                        that.meshFactory.meshes,
+                        instancePath
+                      )) ||
                     Object.prototype.hasOwnProperty.call(
-                      that.meshFactory.meshes,
+                      that.splitMeshes,
                       instancePath
                     )
                   ) {
@@ -455,12 +459,6 @@ export default class ThreeDEngine {
                   }
                 }
 
-                // TODO:
-                // ) ||
-                // Object.prototype.hasOwnProperty.call(
-                //   that.splitMeshes,
-                //   selected
-                // )
                 selectionHandler(selectedMap);
               }
             }
@@ -470,35 +468,34 @@ export default class ThreeDEngine {
       false
     );
 
-    // TODO:
-    // this.renderer.domElement.addEventListener(
-    //   'mousemove',
-    //   function(event) {
-    //     that.mouse.y =
-    //       -(
-    //         (event.clientY -
-    //           that.renderer.domElement.getBoundingClientRect().top) /
-    //         that.renderer.domElement.height
-    //       ) *
-    //         2 +
-    //       1;
-    //     that.mouse.x =
-    //       ((event.clientX -
-    //         that.renderer.domElement.getBoundingClientRect().left) /
-    //         that.renderer.domElement.width) *
-    //         2 -
-    //       1;
-    //     if (that.hoverListeners) {
-    //       var intersects = that.getIntersectedObjects();
-    //       for (var listener in that.hoverListeners) {
-    //         if (intersects.length != 0) {
-    //           that.hoverListeners[listener](intersects);
-    //         }
-    //       }
-    //     }
-    //   },
-    //   false
-    // );
+    this.renderer.domElement.addEventListener(
+      'mousemove',
+      function(event) {
+        that.mouse.y =
+          -(
+            (event.clientY -
+              that.renderer.domElement.getBoundingClientRect().top) /
+            that.renderer.domElement.height
+          ) *
+            2 +
+          1;
+        that.mouse.x =
+          ((event.clientX -
+            that.renderer.domElement.getBoundingClientRect().left) /
+            that.renderer.domElement.width) *
+            2 -
+          1;
+        if (that.hoverListeners) {
+          const intersects = that.getIntersectedObjects();
+          for (const listener in that.hoverListeners) {
+            if (intersects.length != 0) {
+              that.hoverListeners[listener](intersects);
+            }
+          }
+        }
+      },
+      false
+    );
   }
 
   /**
