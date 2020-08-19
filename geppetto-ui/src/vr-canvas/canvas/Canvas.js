@@ -275,7 +275,17 @@ class Canvas extends Component {
         // eslint-disable-next-line no-param-reassign
         evt.detail.selected = false;
         const color = this.selectedMeshes[evt.detail.id];
-        evt.detail.getObject3D('mesh').material.color.set(color);
+        if (
+          (color.r != undefined) &
+          (color.g != undefined) &
+          (color.b != undefined)
+        ) {
+          evt.detail
+            .getObject3D('mesh')
+            .material.color.setRGB(color.r, color.g, color.b);
+        } else {
+          evt.detail.getObject3D('mesh').material.color.set(color);
+        }
         delete this.selectedMeshes[evt.detail.id];
         this.hoveredMeshes = {
           ...evt.detail.getObject3D('mesh').material.color,
