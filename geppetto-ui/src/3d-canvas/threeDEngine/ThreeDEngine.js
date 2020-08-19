@@ -35,6 +35,7 @@ export default class ThreeDEngine {
     this.meshFactory = new MeshFactory(this.scene, linesThreshold);
     this.pickingEnabled = pickingEnabled;
     this.hoverListeners = hoverListeners;
+    this.cameraHandler = cameraHandler;
 
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
@@ -49,7 +50,7 @@ export default class ThreeDEngine {
     this.setupLights();
 
     // Setup Controls
-    this.setupControls(cameraHandler);
+    this.setupControls();
 
     // Setup Listeners
     this.setupListeners(selectionHandler);
@@ -133,15 +134,11 @@ export default class ThreeDEngine {
     this.cameraManager.getCamera().add(new THREE.PointLight(0xffffff, 1));
   }
 
-  /**
-   * Setups the controls
-   * @param cameraHandler
-   */
-  setupControls(cameraHandler) {
+  setupControls() {
     this.controls = new THREE.TrackballControls(
       this.cameraManager.getCamera(),
       this.renderer.domElement,
-      cameraHandler
+      this.cameraHandler
     );
     this.controls.noZoom = false;
     this.controls.noPan = false;

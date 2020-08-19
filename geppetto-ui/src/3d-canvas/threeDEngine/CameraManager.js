@@ -19,12 +19,18 @@ export default class CameraManager {
 
   update(cameraOptions) {
     const {
+      flip,
       position,
       rotation,
       autoRotate,
       movieFilter,
+      zoomTo,
       reset,
     } = cameraOptions;
+
+    if (flip) {
+      this.flipCamera(flip);
+    }
     if (position) {
       this.setCameraPosition(position.x, position.y, position.z);
     }
@@ -39,9 +45,130 @@ export default class CameraManager {
     if (autoRotate) {
       this.autoRotate(movieFilter);
     }
-    if (reset || (position == undefined && rotation == undefined)) {
+    if (zoomTo && Array.isArray(zoomTo)) {
+      const instances = zoomTo.map((element) => Instances.getInstance(element));
+      if (instances.length > 0) {
+        this.zoomTo(instances);
+      }
+    }
+    if (
+      reset ||
+      (position == undefined && rotation == undefined && zoomTo == undefined)
+    ) {
       this.resetCamera();
     }
+  }
+  /**
+   *
+   * @param instances
+   */
+  flipCamera(axis) {
+    if (axis === 'y') {
+      this.flipCameraY();
+    } else if (axis === 'z') {
+      this.flipCameraZ();
+    }
+  }
+
+  /**
+   * Reinitializes the camera with the Y axis flipped
+   */
+  flipCameraY() {
+    this.camera.up = new THREE.Vector3(0, -1, 0);
+    this.engine.setupControls();
+    this.resetCamera();
+  }
+
+  /**
+   *
+   */
+  flipCameraZ() {
+    this.camera.direction = new THREE.Vector3(0, 0, -1);
+    this.engine.setupControls();
+    this.resetCamera();
+  }
+
+  /**
+   *
+   * @param instances
+   */
+  zoomTo(instances) {
+    this.engine.controls.reset();
+    this.zoomToParameters(this.zoomIterator(instances, {}));
+  }
+
+  /**
+   *
+   * @param instances
+   * @param zoomParameters
+   * @returns {*}
+   */
+  zoomIterator(instances, zoomParameters) {
+    const that = this;
+    for (let i = 0; i < instances.length; i++) {
+      const instancePath = instances[i].getInstancePath();
+      const mesh = this.engine.meshFactory.meshes[instancePath];
+      if (mesh) {
+        mesh.traverse(function(object) {
+          if (Object.prototype.hasOwnProperty.call(object, 'geometry')) {
+            that.addMeshToZoomParameters(object, zoomParameters);
+          }
+        });
+      } else {
+        zoomParameters = this.zoomIterator(
+          instances[i].getChildren(),
+          zoomParameters
+        );
+      }
+    }
+    return zoomParameters;
+  }
+
+  /**
+   *
+   * @param mesh
+   * @param zoomParameters
+   * @returns {*}
+   */
+  addMeshToZoomParameters(mesh, zoomParameters) {
+    mesh.geometry.computeBoundingBox();
+    const bb = mesh.geometry.boundingBox;
+    bb.translate(mesh.localToWorld(new THREE.Vector3()));
+
+    // If min and max vectors are null, first values become default min and max
+    if (
+      zoomParameters.aabbMin == undefined &&
+      zoomParameters.aabbMax == undefined
+    ) {
+      zoomParameters.aabbMin = bb.min;
+      zoomParameters.aabbMax = bb.max;
+    } else {
+      // Compare other meshes, particles BB's to find min and max
+      zoomParameters.aabbMin.x = Math.min(zoomParameters.aabbMin.x, bb.min.x);
+      zoomParameters.aabbMin.y = Math.min(zoomParameters.aabbMin.y, bb.min.y);
+      zoomParameters.aabbMin.z = Math.min(zoomParameters.aabbMin.z, bb.min.z);
+      zoomParameters.aabbMax.x = Math.max(zoomParameters.aabbMax.x, bb.max.x);
+      zoomParameters.aabbMax.y = Math.max(zoomParameters.aabbMax.y, bb.max.y);
+      zoomParameters.aabbMax.z = Math.max(zoomParameters.aabbMax.z, bb.max.z);
+    }
+
+    return zoomParameters;
+  }
+
+  /**
+   *
+   * @param zoomParameters
+   */
+  zoomToParameters(zoomParameters) {
+    // Compute world AABB center
+    this.sceneCenter.x =
+      (zoomParameters.aabbMax.x + zoomParameters.aabbMin.x) * 0.5;
+    this.sceneCenter.y =
+      (zoomParameters.aabbMax.y + zoomParameters.aabbMin.y) * 0.5;
+    this.sceneCenter.z =
+      (zoomParameters.aabbMax.z + zoomParameters.aabbMin.z) * 0.5;
+
+    this.updateCamera(zoomParameters.aabbMax, zoomParameters.aabbMin);
   }
 
   resetCamera() {
