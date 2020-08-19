@@ -774,6 +774,10 @@ export default class MeshFactory {
             if (Object.prototype.hasOwnProperty.call(object, 'material')) {
               that.setThreeColor(object.material.color, color);
               object.material.defaultColor = color;
+              if (color.a) {
+                object.material.transparent = true;
+                object.material.opacity = color.a;
+              }
             }
           });
         }

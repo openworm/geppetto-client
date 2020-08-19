@@ -11,6 +11,7 @@ const COLORS = [
   { r: 0, g: 0.2, b: 0.6, a: 1 },
   { r: 0.8, g: 0, b: 0, a: 1 },
   { r: 0, g: 0.8, b: 0, a: 1 },
+  { r: 0, g: 0.8, b: 0, a: 0.8 },
 ];
 const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 
@@ -35,10 +36,14 @@ class AuditoryCortexExample extends Component {
           instancePath: 'acnet2.baskets_12',
           color: COLORS[1],
         },
-        { instancePath: 'acnet2', color: COLORS[0] },
+        { instancePath: 'acnet2' },
         {
           instancePath: 'acnet2.baskets_12[0]',
           color: COLORS[2],
+        },
+        {
+          instancePath: 'acnet2.baskets_12[7]',
+          color: COLORS[3],
         },
       ],
       selected: {},
