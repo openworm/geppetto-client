@@ -12,8 +12,8 @@ const model = {
   model: auditoryCortex,
   props: {
     colorMap: {
-      'acnet2.baskets_12': '#003398',
-      'acnet2.pyramidals_48': '#cb0000',
+      'acnet2.baskets_12': { r: 0, g: 0.2, b: 0.6, a: 1 },
+      'acnet2.pyramidals_48': { r: 0.8, g: 0, b: 0, a: 1 },
     },
     position: '-20 16 -80',
   },

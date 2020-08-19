@@ -22,7 +22,6 @@ export default class VRCanvasExample extends Component {
     const {
       sceneBackground,
       colorMap,
-      opacityMap,
       position,
       rotation,
     } = selectedModel.props;
@@ -39,7 +38,6 @@ export default class VRCanvasExample extends Component {
             model={selectedModel}
             instances={this.instances}
             colorMap={colorMap}
-            opacityMap={opacityMap}
             position={position}
             rotation={rotation}
             sceneBackground={sceneBackground}

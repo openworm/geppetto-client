@@ -1,16 +1,17 @@
-import * as THREE from 'three';
 import particle from '../textures/particle.png';
 require('./OBJLoader');
 
 export default class MeshFactory {
   // TODO: Make all arguments props
   constructor(
-    engine,
+    scene,
     linesThreshold = 2000,
     linePrecisionMinRadius = 300,
-    minAllowedLinePrecision = 1
+    minAllowedLinePrecision = 1,
+    particleTexture,
+    THREE
   ) {
-    this.engine = engine;
+    this.scene = scene;
     this.meshes = {};
     this.splitMeshes = {};
     this.visualModelMap = {};
@@ -19,6 +20,8 @@ export default class MeshFactory {
     this.linePrecisionMinRadius = linePrecisionMinRadius;
     this.minAllowedLinePrecision = minAllowedLinePrecision;
     this.linesThreshold = linesThreshold;
+    this.particleTexture = particleTexture;
+    this.THREE = THREE ? THREE : require('three');
   }
 
   start(instances) {
@@ -75,11 +78,11 @@ export default class MeshFactory {
       if (previous3DObject.material) {
         color = previous3DObject.material.defaultColor;
       }
-      this.engine.getScene().remove(previous3DObject);
+      this.scene.remove(previous3DObject);
       const { splitMeshes } = this;
       for (const m in splitMeshes) {
         if (m.indexOf(instance.getInstancePath()) != -1) {
-          this.engine.getScene().remove(splitMeshes[m]);
+          this.scene.remove(splitMeshes[m]);
         }
       }
     }
@@ -115,7 +118,7 @@ export default class MeshFactory {
     if (color == undefined) {
       color = GEPPETTO.Resources.COLORS.DEFAULT;
     }
-    const material = new THREE.MeshPhongMaterial({
+    const material = new this.THREE.MeshPhongMaterial({
       opacity: 1,
       shininess: 10,
       flatShading: false,
@@ -132,7 +135,7 @@ export default class MeshFactory {
     if (color == undefined) {
       color = GEPPETTO.Resources.COLORS.DEFAULT;
     }
-    const material = new THREE.LineBasicMaterial();
+    const material = new this.THREE.LineBasicMaterial();
     this.setThreeColor(material.color, color);
     material.defaultColor = color;
     material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
@@ -277,16 +280,19 @@ export default class MeshFactory {
   }
 
   createParticles(node) {
-    const geometry = new THREE.Geometry();
-    const threeColor = new THREE.Color();
+    const geometry = new this.THREE.Geometry();
+    const threeColor = new this.THREE.Color();
     const color = `0x${Math.floor(Math.random() * 16777215).toString(16)}`;
     threeColor.setHex(color);
 
-    const textureLoader = new THREE.TextureLoader();
-    const material = new THREE.PointsMaterial({
-      size: 2,
-      map: textureLoader.load('./textures/particle.png'),
-      blending: THREE.NormalBlending,
+    const textureLoader = new this.THREE.TextureLoader();
+    const particleTexture = this.particleTexture
+      ? this.particleTexture
+      : textureLoader.load(particle);
+    const material = new this.THREE.PointsMaterial({
+      size: 0.5,
+      map: particleTexture,
+      blending: this.THREE.NormalBlending,
       depthTest: true,
       transparent: true,
       color: threeColor,
@@ -294,7 +300,7 @@ export default class MeshFactory {
 
     for (let p = 0; p < node.particles.length; p++) {
       geometry.vertices.push(
-        new THREE.Vector3(
+        new this.THREE.Vector3(
           node.particles[p].x,
           node.particles[p].y,
           node.particles[p].z
@@ -304,7 +310,7 @@ export default class MeshFactory {
 
     material.defaultColor = color;
     material.defaultOpacity = 1;
-    const threeObject = new THREE.Points(geometry, material);
+    const threeObject = new this.THREE.Points(geometry, material);
     threeObject.visible = true;
     threeObject.instancePath = node.instancePath;
     threeObject.highlighted = false;
@@ -314,38 +320,42 @@ export default class MeshFactory {
   create3DLineFromNode(node, material) {
     let threeObject = null;
     if (node.eClass == GEPPETTO.Resources.CYLINDER) {
-      const bottomBasePos = new THREE.Vector3(
+      const bottomBasePos = new this.THREE.Vector3(
         node.position.x,
         node.position.y,
         node.position.z
       );
-      const topBasePos = new THREE.Vector3(
+      const topBasePos = new this.THREE.Vector3(
         node.distal.x,
         node.distal.y,
         node.distal.z
       );
 
-      const axis = new THREE.Vector3();
+      const axis = new this.THREE.Vector3();
       axis.subVectors(topBasePos, bottomBasePos);
-      const midPoint = new THREE.Vector3();
+      const midPoint = new this.THREE.Vector3();
       midPoint.addVectors(bottomBasePos, topBasePos).multiplyScalar(0.5);
 
-      const geometry = new THREE.Geometry();
+      const geometry = new this.THREE.Geometry();
       geometry.vertices.push(bottomBasePos);
       geometry.vertices.push(topBasePos);
-      threeObject = new THREE.Line(geometry, material);
+      threeObject = new this.THREE.Line(geometry, material);
       threeObject.applyMatrix(
-        new THREE.Matrix4().makeTranslation(0, axis.length() / 2, 0)
+        new this.THREE.Matrix4().makeTranslation(0, axis.length() / 2, 0)
       );
-      threeObject.applyMatrix(new THREE.Matrix4().makeRotationY(Math.PI / 2));
+      threeObject.applyMatrix(
+        new this.THREE.Matrix4().makeRotationY(Math.PI / 2)
+      );
       threeObject.lookAt(axis);
       threeObject.position.fromArray(bottomBasePos.toArray());
-      threeObject.applyMatrix(new THREE.Matrix4().makeRotationY(-Math.PI / 2));
+      threeObject.applyMatrix(
+        new this.THREE.Matrix4().makeRotationY(-Math.PI / 2)
+      );
 
       threeObject.geometry.verticesNeedUpdate = true;
     } else if (node.eClass == GEPPETTO.Resources.SPHERE) {
-      const sphere = new THREE.SphereGeometry(node.radius, 20, 20);
-      threeObject = new THREE.Mesh(sphere, material);
+      const sphere = new this.THREE.SphereGeometry(node.radius, 20, 20);
+      threeObject = new this.THREE.Mesh(sphere, material);
       threeObject.position.set(
         node.position.x,
         node.position.y,
@@ -357,9 +367,9 @@ export default class MeshFactory {
   }
 
   create3DSphereFromNode(sphereNode, material) {
-    const sphere = new THREE.SphereGeometry(sphereNode.radius, 20, 20);
-    // sphere.applyMatrix(new THREE.Matrix4().makeScale(-1,1,1));
-    const threeObject = new THREE.Mesh(sphere, material);
+    const sphere = new this.THREE.SphereGeometry(sphereNode.radius, 20, 20);
+    // sphere.applyMatrix(new this.THREE.Matrix4().makeScale(-1,1,1));
+    const threeObject = new this.THREE.Mesh(sphere, material);
     threeObject.position.set(
       sphereNode.position.x,
       sphereNode.position.y,
@@ -370,21 +380,21 @@ export default class MeshFactory {
   }
 
   create3DCylinderFromNode(cylNode, material) {
-    const bottomBasePos = new THREE.Vector3(
+    const bottomBasePos = new this.THREE.Vector3(
       cylNode.position.x,
       cylNode.position.y,
       cylNode.position.z
     );
-    const topBasePos = new THREE.Vector3(
+    const topBasePos = new this.THREE.Vector3(
       cylNode.distal.x,
       cylNode.distal.y,
       cylNode.distal.z
     );
 
-    const axis = new THREE.Vector3();
+    const axis = new this.THREE.Vector3();
     axis.subVectors(topBasePos, bottomBasePos);
 
-    const c = new THREE.CylinderGeometry(
+    const c = new this.THREE.CylinderGeometry(
       cylNode.topRadius,
       cylNode.bottomRadius,
       axis.length(),
@@ -394,11 +404,13 @@ export default class MeshFactory {
     );
 
     // shift it so one end rests on the origin
-    c.applyMatrix(new THREE.Matrix4().makeTranslation(0, axis.length() / 2, 0));
+    c.applyMatrix(
+      new this.THREE.Matrix4().makeTranslation(0, axis.length() / 2, 0)
+    );
     // rotate it the right way for lookAt to work
-    c.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI / 2));
+    c.applyMatrix(new this.THREE.Matrix4().makeRotationX(Math.PI / 2));
     // make a mesh with the geometry
-    const threeObject = new THREE.Mesh(c, material);
+    const threeObject = new this.THREE.Mesh(c, material);
     // make it point to where we want
     threeObject.lookAt(axis);
     // move base
@@ -410,7 +422,7 @@ export default class MeshFactory {
 
   // TODO: Collada example
   loadColladaModelFromNode(node) {
-    const loader = new THREE.ColladaLoader();
+    const loader = new this.THREE.ColladaLoader();
     loader.options.convertUpAxis = true;
     let scene = null;
     const that = this;
@@ -418,14 +430,14 @@ export default class MeshFactory {
       // eslint-disable-next-line prefer-destructuring
       scene = collada.scene;
       scene.traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
+        if (child instanceof that.THREE.Mesh) {
           child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
           child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
           child.material.wireframe = that.wireframe;
           child.material.opacity = GEPPETTO.Resources.OPACITY.DEFAULT;
           child.geometry.computeVertexNormals();
         }
-        if (child instanceof THREE.SkinnedMesh) {
+        if (child instanceof that.THREE.SkinnedMesh) {
           child.material.skinning = true;
           child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
           child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
@@ -439,17 +451,20 @@ export default class MeshFactory {
   }
 
   loadThreeOBJModelFromNode(node) {
-    const manager = new THREE.LoadingManager();
+    const manager = new this.THREE.LoadingManager();
     manager.onProgress = function(item, loaded, total) {
       console.log(item, loaded, total);
     };
-    const loader = new THREE.OBJLoader(manager);
-    const textureLoader = new THREE.TextureLoader();
+    const loader = new this.THREE.OBJLoader(manager);
+    const textureLoader = new this.THREE.TextureLoader();
+    const particleTexture = this.particleTexture
+      ? this.particleTexture
+      : textureLoader.load(particle);
 
-    const scene = loader.parse(node.obj, textureLoader.load(particle));
+    const scene = loader.parse(node.obj, particleTexture);
     const that = this;
     scene.traverse(function(child) {
-      if (child instanceof THREE.Mesh) {
+      if (child instanceof that.THREE.Mesh) {
         that.setThreeColor(
           child.material.color,
           GEPPETTO.Resources.COLORS.DEFAULT
@@ -510,10 +525,11 @@ export default class MeshFactory {
     let ret = null;
     let mergedLines;
     let mergedMeshes;
+    const that = this;
     objArray.forEach(function(obj) {
-      if (obj instanceof THREE.Line) {
+      if (obj instanceof that.THREE.Line) {
         if (mergedLines === undefined) {
-          mergedLines = new THREE.Geometry();
+          mergedLines = new that.THREE.Geometry();
         }
         mergedLines.vertices.push(obj.geometry.vertices[0]);
         mergedLines.vertices.push(obj.geometry.vertices[1]);
@@ -526,7 +542,7 @@ export default class MeshFactory {
         }
       } else {
         if (mergedMeshes === undefined) {
-          mergedMeshes = new THREE.Geometry();
+          mergedMeshes = new that.THREE.Geometry();
         }
         obj.geometry.dynamic = true;
         obj.geometry.verticesNeedUpdate = true;
@@ -541,12 +557,12 @@ export default class MeshFactory {
        * There are no line geometries, we just create a mesh for the merge of the solid geometries
        * and apply the mesh material
        */
-      ret = new THREE.Mesh(mergedMeshes, materials.mesh);
+      ret = new that.THREE.Mesh(mergedMeshes, materials.mesh);
     } else {
-      ret = new THREE.LineSegments(mergedLines, materials.line);
+      ret = new that.THREE.LineSegments(mergedLines, materials.line);
       if (mergedMeshes != undefined) {
         // we merge into a single mesh both types of geometries (from lines and 3D objects)
-        const tempmesh = new THREE.Mesh(mergedMeshes, materials.mesh);
+        const tempmesh = new that.THREE.Mesh(mergedMeshes, materials.mesh);
         ret.geometry.merge(tempmesh.geometry, tempmesh.matrix);
       }
     }
@@ -580,13 +596,13 @@ export default class MeshFactory {
      * reset the aspect instance path group mesh, this is used to group visual objects that don't belong to any of the groups passed as parameter
      */
     this.splitMeshes[instancePath] = null;
-    geometryGroups[instancePath] = new THREE.Geometry();
+    geometryGroups[instancePath] = new this.THREE.Geometry();
 
     // create map of geometry groups for groups
     for (const groupElement in groupElements) {
       const groupName = `${instancePath}.${groupElement}`;
 
-      const geometry = new THREE.Geometry();
+      const geometry = new this.THREE.Geometry();
       geometry.groupMerge = true;
 
       geometryGroups[groupName] = geometry;
@@ -650,7 +666,7 @@ export default class MeshFactory {
          */
         if (!added) {
           const geometry = geometryGroups[instancePath];
-          if (m instanceof THREE.Line) {
+          if (m instanceof this.THREE.Line) {
             geometry.vertices.push(m.geometry.vertices[0]);
             geometry.vertices.push(m.geometry.vertices[1]);
           } else {
@@ -689,7 +705,7 @@ export default class MeshFactory {
     // retrieve corresponding geometry for this group
     const geometry = geometryGroups[groupName];
     // only merge if flag is set to true
-    if (m instanceof THREE.Line) {
+    if (m instanceof this.THREE.Line) {
       geometry.vertices.push(m.geometry.vertices[0]);
       geometry.vertices.push(m.geometry.vertices[1]);
     } else {
@@ -723,12 +739,12 @@ export default class MeshFactory {
       let groupMesh = this.splitMeshes[groupName];
       const geometryGroup = geometryGroups[groupName];
 
-      if (mergedMesh instanceof THREE.Line) {
+      if (mergedMesh instanceof this.THREE.Line) {
         const material = this.getLineMaterial();
-        groupMesh = new THREE.LineSegments(geometryGroup, material);
+        groupMesh = new this.THREE.LineSegments(geometryGroup, material);
       } else {
         const material = this.getMeshPhongMaterial();
-        groupMesh = new THREE.Mesh(geometryGroup, material);
+        groupMesh = new this.THREE.Mesh(geometryGroup, material);
       }
       groupMesh.instancePath = instancePath;
       groupMesh.geometryIdentifier = g;
@@ -867,5 +883,9 @@ export default class MeshFactory {
     this.visualModelMap = {};
     this.complexity = 0;
     this.sceneMaxRadius = 0;
+  }
+
+  setParticleTexture(particleTexture) {
+    this.particleTexture = particleTexture;
   }
 }

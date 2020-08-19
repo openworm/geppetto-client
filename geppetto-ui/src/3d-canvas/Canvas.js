@@ -79,7 +79,7 @@ Canvas.defaultProps = {
     position: { x: 0, y: 0, z: 0 },
     baseZoom: 1,
   },
-  backgroundColor: '#000000',
+  backgroundColor: 0x000000,
   pickingEnabled: true,
   linesThreshold: 2000,
   hoverListeners: [],
@@ -105,7 +105,7 @@ Canvas.propTypes = {
   /**
    * Scene background color
    */
-  backgroundColor: PropTypes.string,
+  backgroundColor: PropTypes.number,
   /**
    * Boolean to enable/disable 3d picking
    */

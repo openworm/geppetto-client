@@ -1,6 +1,6 @@
 export default class ColorController {
-  constructor(engine) {
-    this.engine = engine;
+  constructor(meshFactory) {
+    this.meshFactory = meshFactory;
   }
 
   /**
@@ -78,7 +78,7 @@ export default class ColorController {
         for (const voIndex in visualObjects) {
           elements[visualObjects[voIndex]] = '';
         }
-        this.engine.splitGroups(instance, elements);
+        this.meshFactory.splitGroups(instance, elements);
       }
     }
   }
@@ -94,12 +94,12 @@ export default class ColorController {
   colorInstance(instance, colorfn, intensity) {
     let threeObject;
     if (
-      instance in this.engine.meshes &&
-      this.engine.meshes[instance].visible
+      instance in this.meshFactory.meshes &&
+      this.meshFactory.meshes[instance].visible
     ) {
-      threeObject = this.engine.meshes[instance];
+      threeObject = this.meshFactory.meshes[instance];
     } else {
-      threeObject = this.engine.splitMeshes[instance];
+      threeObject = this.meshFactory.splitMeshes[instance];
     }
 
     const [r, g, b] = colorfn(intensity);

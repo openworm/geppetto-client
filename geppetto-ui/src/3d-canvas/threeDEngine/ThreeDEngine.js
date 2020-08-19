@@ -32,7 +32,7 @@ export default class ThreeDEngine {
     this.controls = null;
     this.mouse = { x: 0, y: 0 };
     this.frameId = null;
-    this.meshFactory = new MeshFactory(this, linesThreshold);
+    this.meshFactory = new MeshFactory(this.scene, linesThreshold);
     this.pickingEnabled = pickingEnabled;
     this.hoverListeners = hoverListeners;
 

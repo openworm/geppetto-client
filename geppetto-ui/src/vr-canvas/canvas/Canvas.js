@@ -7,7 +7,7 @@ import Type from '@geppettoengine/geppetto-core/model/Type';
 import Variable from '@geppettoengine/geppetto-core/model/Variable';
 import 'aframe';
 import 'aframe-slice9-component';
-import GeppettoThree from './GeppettoThree';
+import MeshFactory from '@geppettoengine/geppetto-ui/3d-canvas/threeDEngine/MeshFactory';
 import LaserControls from '../LaserControls';
 import Menu from '../menu/Menu';
 import '../aframe/interactable';
@@ -28,6 +28,7 @@ import {
   getVoltageColor,
 } from '../utilities/GeppettoSimulation';
 import ColorController from './ColorController';
+import particle from '../assets/particle.png';
 
 const HOVER_COLOR = { r: 0.67, g: 0.84, b: 0.9 };
 const SELECTED_COLOR = { r: 1, g: 1, b: 0 };
@@ -39,7 +40,6 @@ const SHORTCUTS = {
 class Canvas extends Component {
   constructor(props) {
     super(props);
-    const { threshold } = this.props;
     this.state = {
       loadedTextures: false,
       visualGroups: false,
@@ -49,8 +49,6 @@ class Canvas extends Component {
       time: 0,
       simulationData: null,
     };
-    this.geppettoThree = new GeppettoThree(threshold);
-    this.colorController = new ColorController(this.geppettoThree);
     this.canvasRef = React.createRef();
     this.sceneRef = React.createRef();
     this.handleLoadedTextures = this.handleLoadedTextures.bind(this);
@@ -60,17 +58,37 @@ class Canvas extends Component {
     this.handleMenuClick = this.handleMenuClick.bind(this);
     this.handleKeyboardPress = this.handleKeyboardPress.bind(this);
     // TODO: remove this workaround
-    this.showVisualGroups = this.showVisualGroups.bind(this);
+    this.activateVisualGroups = this.activateVisualGroups.bind(this);
     this.threeMeshes = {};
     this.selectedMeshes = {};
     this.hoveredMeshes = {};
-    this.geppettoThree.initTextures(this.handleLoadedTextures);
     this.isReady = false;
     this.menuHistory = [];
     this.timer = null;
+    this.initTextures(this.handleLoadedTextures);
+  }
+
+  initTextures(callback) {
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(particle, (texture) => {
+      this.particleTexture = texture;
+      callback();
+    });
   }
 
   componentDidMount() {
+    const { id, threshold } = this.props;
+    const scene = document.getElementById(`${id}_scene`);
+    this.meshFactory = new MeshFactory(
+      scene.object3D,
+      threshold,
+      300,
+      1,
+      null,
+      THREE
+    );
+    this.colorController = new ColorController(this.meshFactory);
+
     this.sceneRef.current.addEventListener('mesh_hover', this.handleHover);
     this.sceneRef.current.addEventListener(
       'mesh_hover_leave',
@@ -85,48 +103,39 @@ class Canvas extends Component {
     );
     // TODO: remove this workaround
     this.sceneRef.current.addEventListener(VISUAL_GROUPS, (evt) =>
-      this.showVisualGroups(
+      this.activateVisualGroups(
         evt.detail.groups,
         evt.detail.mode,
         evt.detail.instances
       )
     );
 
-    const { colorMap, opacityMap } = this.props;
+    const { colorMap } = this.props;
     if (colorMap !== {}) {
       for (const path in colorMap) {
         this.setColor(path, colorMap[path]);
       }
     }
-    if (opacityMap !== {}) {
-      for (const path in opacityMap) {
-        this.setOpacity(path, opacityMap[path]);
-      }
-    }
+
     this.setEntityMeshes();
   }
 
   shouldComponentUpdate(nextProps) {
     const { instances } = this.props;
     if (instances !== nextProps.instances) {
-      this.geppettoThree.init(nextProps.instances);
+      this.meshFactory.start(nextProps.instances);
       this.setState({ visualGroups: false });
     }
     return true;
   }
 
   componentDidUpdate() {
-    const { colorMap, opacityMap } = this.props;
+    const { colorMap } = this.props;
     const { visualGroups, time, simulationData, simulation } = this.state;
     if (!visualGroups) {
       if (colorMap !== {}) {
         for (const path in colorMap) {
           this.setColor(path, colorMap[path]);
-        }
-      }
-      if (opacityMap !== {}) {
-        for (const path in opacityMap) {
-          this.setOpacity(path, opacityMap[path]);
         }
       }
     }
@@ -150,7 +159,7 @@ class Canvas extends Component {
     const entity = eval(path);
     if (entity.hasCapability('VisualCapability')) {
       if (entity instanceof Instance || entity instanceof ArrayInstance) {
-        this.geppettoThree.setColor(path, color);
+        this.meshFactory.setColor(path, color);
 
         if (typeof entity.getChildren === 'function') {
           const children = entity.getChildren();
@@ -167,37 +176,6 @@ class Canvas extends Component {
         }
       }
     }
-    return this;
-  }
-
-  /**
-   *
-   * @param instancePath
-   * @param opacity
-   * @returns {Canvas}
-   */
-  setOpacity(instancePath, opacity) {
-    // eslint-disable-next-line no-eval
-    const entity = eval(instancePath);
-    if (entity.hasCapability('VisualCapability')) {
-      if (entity instanceof Instance || entity instanceof ArrayInstance) {
-        this.geppettoThree.setOpacity(instancePath, opacity);
-
-        if (typeof entity.getChildren === 'function') {
-          const children = entity.getChildren();
-          for (let i = 0; i < children.length; i++) {
-            this.setOpacity(children[i].getInstancePath(), opacity, true);
-          }
-        }
-      } else if (entity instanceof Type || entity instanceof Variable) {
-        // fetch all instances for the given type or variable and call hide on each
-        const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
-        for (let j = 0; j < instances.length; j++) {
-          this.setOpacity(instancePath, opacity, true);
-        }
-      }
-    }
-
     return this;
   }
 
@@ -371,11 +349,101 @@ class Canvas extends Component {
    * @param mode
    * @param instances
    */
-  showVisualGroups(visualGroup, mode, instances) {
-    this.geppettoThree.showVisualGroups(visualGroup, mode, instances);
+  activateVisualGroups(visualGroup, mode, instances) {
+    this.showVisualGroups(visualGroup, mode, instances);
     this.setState({
       visualGroups: true,
     });
+  }
+
+  /**
+   * Shows a visual group
+   * @param visualGroups
+   * @param mode
+   * @param instances
+   */
+  showVisualGroups(visualGroups, mode, instances) {
+    for (let i = 0; i < instances.length; i++) {
+      const instance = instances[i];
+      const instancePath = instance.getInstancePath();
+      this.merge(instancePath, true);
+      if (mode) {
+        const mergedMesh = this.meshFactory.meshes[instancePath];
+        const map = mergedMesh.mergedMeshesPaths;
+        // no mergedMeshesPaths means object hasn't been merged, single object
+        if (map != undefined || null) {
+          this.meshFactory.splitGroups(instance, visualGroups);
+          this.showVisualGroupsRaw(
+            visualGroups,
+            instance,
+            this.meshFactory.splitMeshes
+          );
+        } else {
+          this.showVisualGroupsRaw(
+            visualGroups,
+            instance,
+            this.meshFactory.meshes
+          );
+        }
+      }
+    }
+  }
+
+  /**
+   *
+   * @param visualGroups
+   * @param instance
+   * @param meshesContainer
+   */
+  showVisualGroupsRaw(visualGroups, instance, meshesContainer) {
+    const instancePath = instance.getInstancePath();
+    for (const g in visualGroups) {
+      // retrieve visual group object
+      const visualGroup = visualGroups[g];
+
+      // get full group name to access group mesh
+      let groupName = g;
+      if (groupName.indexOf(instancePath) <= -1) {
+        groupName = `${instancePath}.${g}`;
+      }
+
+      // get group mesh
+      const groupMesh = meshesContainer[groupName];
+      groupMesh.visible = true;
+      this.meshFactory.setThreeColor(
+        groupMesh.material.color,
+        visualGroup.color
+      );
+    }
+  }
+
+  /**
+   * Merge mesh that was split before
+   *
+   *            aspectPath - Path to aspect that points to mesh
+   * @param instancePath
+   * @param visible
+   */
+  merge(instancePath, visible) {
+    // get mesh from map
+    const mergedMesh = this.meshFactory.meshes[instancePath];
+
+    // if merged mesh is not visible, turn it on and turn split one off
+    if (!mergedMesh.visible) {
+      for (const path in this.meshFactory.splitMeshes) {
+        // retrieve split mesh that is on the scene
+        const splitMesh = this.meshFactory.splitMeshes[path];
+        if (splitMesh) {
+          if (instancePath == splitMesh.instancePath) {
+            splitMesh.visible = false;
+          }
+        }
+      }
+      if (visible) {
+        // add merged mesh to scene and set flag to true
+        mergedMesh.visible = true;
+      }
+    }
   }
 
   render() {
@@ -402,10 +470,11 @@ class Canvas extends Component {
 
     if (loadedTextures) {
       if (!this.isReady) {
-        this.geppettoThree.init(instances);
+        this.meshFactory.setParticleTexture(this.particleTexture);
+        this.meshFactory.start(instances);
         this.isReady = true;
       }
-      this.threeMeshes = this.geppettoThree.getThreeMeshes(instances);
+      this.threeMeshes = this.meshFactory.getMeshes();
     }
 
     if (simulation) {
@@ -510,7 +579,6 @@ class Canvas extends Component {
 Canvas.defaultProps = {
   threshold: 1000,
   colorMap: {},
-  opacityMap: {},
   position: '-20 -20 -80',
   rotation: '0 0 0',
   sceneBackground: 'color: #ECECEC',
@@ -531,7 +599,6 @@ Canvas.propTypes = {
   id: PropTypes.string.isRequired,
   threshold: PropTypes.number,
   colorMap: PropTypes.object,
-  opacityMap: PropTypes.object,
   position: PropTypes.string,
   rotation: PropTypes.string,
   sceneBackground: PropTypes.string,
