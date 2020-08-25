@@ -49,6 +49,7 @@ THREE.TrackballControls = function(object, domElement, handler) {
   this.cameraByConsoleLock = true;
   this.cameraChanged = false;
   this.handler = handler;
+  this.rotationRadius = null;
   //* *******END ADDITIONS****************
 
   this.target = new THREE.Vector3();
@@ -151,7 +152,7 @@ THREE.TrackballControls = function(object, domElement, handler) {
 
     this.handler({
       position: { x: p[0], y: p[1], z: p[2] },
-      rotation: { x: u[0], y: u[1], z: u[2] },
+      rotation: { x: u[0], y: u[1], z: u[2], radius: this.rotationRadius },
       eyeLength: l,
     });
 
@@ -387,6 +388,7 @@ THREE.TrackballControls = function(object, domElement, handler) {
     _state = STATE.NONE;
     _prevState = STATE.NONE;
 
+    this.rotationRadius = radius;
     var base = new THREE.Vector3(0, 0, -1);
     base.applyEuler(new THREE.Euler(x, y, z));
     base.multiplyScalar(radius);

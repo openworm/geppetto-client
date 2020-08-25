@@ -52,11 +52,28 @@ class AuditoryCortexExample extends Component {
         near: 10,
         far: 2000000,
         baseZoom: 1,
+        cameraControls: { 
+          instance: CameraControls,
+          props: {
+            wireframeButtonEnabled: false,
+          }
+        },
+        incrementPan: {
+          x:0.01,
+          y:0.01
+        },
+        incrementRotation: {
+          x:0.01,
+          y:0.01,
+          z:0.01,
+        },
+        incrementZoom: 0.1,
+        reset: false,
+        movieFilter: false,
+        autorotate:false,
+        wireframe:false,
         position: { x: 230.357, y: 256.435, z: 934.238 },
         rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
-        autoRotate: false,
-        movieFilter: false,
-        reset: false,
       },
     };
 
@@ -249,10 +266,7 @@ class AuditoryCortexExample extends Component {
       camOptions = {
         ...cameraOptions,
         position: this.lastCameraUpdate.position,
-        rotation: {
-          ...this.lastCameraUpdate.rotation,
-          radius: cameraOptions.rotation.radius,
-        },
+        rotation: this.lastCameraUpdate.rotation,
       };
     }
 
@@ -264,12 +278,6 @@ class AuditoryCortexExample extends Component {
           cameraOptions={camOptions}
           cameraHandler={this.cameraHandler}
           selectionHandler={this.selectionHandler}
-          cameraControls={
-            <CameraControls
-              cameraControlsHandler={this.cameraControlsHandler}
-              wireframeButtonEnabled={false}
-            />
-          }
           backgroundColor={0x505050}
           hoverListeners={[this.hoverHandler]}
         />
