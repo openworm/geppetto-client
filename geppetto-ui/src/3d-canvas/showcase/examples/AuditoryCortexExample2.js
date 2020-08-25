@@ -4,6 +4,7 @@ import Canvas from '../../Canvas';
 import CameraControls, {
   cameraControlsActions,
 } from '../../../camera-controls/CameraControls';
+import model from './simpleModel.json';
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -26,7 +27,8 @@ class AuditoryCortexExample2 extends Component {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
-
+    GEPPETTO.Manager.loadModel(model);
+    Instances.getInstance(INSTANCE_NAME);
     this.state = {
       data: [
         {
@@ -53,7 +55,7 @@ class AuditoryCortexExample2 extends Component {
         movieFilter: false,
         reset: false,
         zoomTo: ['acnet2.baskets_12[7]'],
-        flip: 'y',
+        flip: 'z',
       },
     };
 
@@ -65,12 +67,13 @@ class AuditoryCortexExample2 extends Component {
   }
 
   cameraHandler(obj) {
-    this.lastCameraUpdate = obj;
     console.log('Camera has changed:');
     console.log(obj);
   }
 
-  selectionHandler(selectedMap) {
+  selectionHandler(
+    selectedMap
+  ) {
     const { data, selected } = this.state;
     let path;
     for (let sk in selectedMap) {
@@ -80,100 +83,35 @@ class AuditoryCortexExample2 extends Component {
       }
     }
     const currentColor = selectedMap[path].object.material.color;
-    const geometryIdentifier = selectedMap[path].geometryIdentifier;
     const newData = data;
-    const newSelected = selected;
+    const newSelected = selected
     let done = false;
-    for (const instance of newData) {
+    for (const instance of data) {
       if (instance.instancePath == path) {
-        if (geometryIdentifier == '') {
-          if (path in newSelected) {
-            instance.color = newSelected[path].color;
-            delete newSelected[path];
-          } else {
-            newSelected[path] = { color: instance.color };
-            instance.color = SELECTION_COLOR;
-          }
-          done = true;
+        if (path in newSelected) {
+          instance.color = newSelected[path];
+          instance.showConnectionLines = false;
+          delete newSelected[path];
         } else {
-          if (path in newSelected) {
-            if (geometryIdentifier in newSelected[path]) {
-              instance.visualGroups.custom[geometryIdentifier].color =
-                newSelected[path][geometryIdentifier].color;
-              delete newSelected[path][geometryIdentifier];
-              if (Object.keys(newSelected[path]).length === 0) {
-                delete newSelected[path];
-              }
-              done = true;
-            } else {
-              if (instance.visualGroups.custom[geometryIdentifier]) {
-                newSelected[path][geometryIdentifier] = {
-                  color: instance.visualGroups.custom[geometryIdentifier].color,
-                };
-                instance.visualGroups.custom[
-                  geometryIdentifier
-                ].color = SELECTION_COLOR;
-                done = true;
-              }
-            }
-          } else {
-            if (instance.visualGroups) {
-              if (instance.visualGroups.custom) {
-                if (instance.visualGroups.custom[geometryIdentifier]) {
-                  newSelected[path] = {
-                    [geometryIdentifier]: {
-                      color:
-                        instance.visualGroups.custom[geometryIdentifier].color,
-                    },
-                  };
-                  instance.visualGroups.custom[
-                    geometryIdentifier
-                  ].color = SELECTION_COLOR;
-                  done = true;
-                } else {
-                  newSelected[path] = {
-                    [geometryIdentifier]: {
-                      color: {
-                        ...currentColor,
-                      },
-                    },
-                  };
-                  instance.visualGroups.custom[geometryIdentifier] = {
-                    color: SELECTION_COLOR,
-                  };
-                  done = true;
-                }
-              } else {
-                newSelected[path] = {
-                  [geometryIdentifier]: {
-                    color: {
-                      ...currentColor,
-                    },
-                  },
-                };
-                instance.visualGroups.custom = {
-                  [geometryIdentifier]: { color: SELECTION_COLOR },
-                };
-                done = true;
-              }
-            }
-          }
+          newSelected[path] = instance.color;
+          instance.color = SELECTION_COLOR;
+          instance.showConnectionLines = true;
         }
+        done = true;
       }
     }
     if (!done) {
       newData.push({
         instancePath: path,
         color: SELECTION_COLOR,
+        showConnectionLines: true,
       });
-      newSelected[path] = { color: { ...currentColor } };
+      newSelected[path] = { ...currentColor };
     }
-
     this.setState(() => ({ data: newData, selected: newSelected }));
-    console.log('Selection Handler Called:');
     console.log({
-      selectedMap,
-    });
+      selectedMap
+    })
   }
 
   hoverHandler(obj) {
@@ -241,24 +179,12 @@ class AuditoryCortexExample2 extends Component {
     const { classes } = this.props;
     const { data, cameraOptions } = this.state;
 
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        rotation: {
-          ...this.lastCameraUpdate.rotation,
-          radius: cameraOptions.rotation.radius,
-        },
-      };
-    }
-
     return (
       <div className={classes.container}>
         <Canvas
           ref={this.canvasRef}
           data={data}
-          cameraOptions={camOptions}
+          cameraOptions={cameraOptions}
           cameraHandler={this.cameraHandler}
           selectionHandler={this.selectionHandler}
           cameraControls={

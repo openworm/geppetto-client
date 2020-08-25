@@ -15,6 +15,7 @@ export default class MeshFactory {
     this.meshes = {};
     this.splitMeshes = {};
     this.visualModelMap = {};
+    this.connectionLines = {};
     this.complexity = 0;
     this.sceneMaxRadius = 0;
     this.linePrecisionMinRadius = linePrecisionMinRadius;

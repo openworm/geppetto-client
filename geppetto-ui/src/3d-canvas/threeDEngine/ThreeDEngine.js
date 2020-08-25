@@ -228,6 +228,13 @@ export default class ThreeDEngine {
     }
   }
 
+  updateInstancesConnectionLines(proxyInstances) {
+    for (const pInstance of proxyInstances) {
+      const mode =  pInstance.showConnectionLines? pInstance.showConnectionLines: false
+      this.showConnectionLines(pInstance.instancePath, mode);
+    }
+  }
+
   /**
    * Sets the color of the instances
    *
@@ -343,6 +350,167 @@ export default class ThreeDEngine {
 
     return groups;
   }
+  /**
+     * Show connection lines for this instance.
+     *
+     * @param instancePath
+     * @param {boolean} mode - Show or hide connection lines
+     */
+    showConnectionLines (instancePath, mode) {
+      if (mode == null || mode == undefined) {
+        mode = true;
+      }
+      const entity = Instances.getInstance(instancePath);
+      if (entity instanceof Instance || entity instanceof ArrayInstance) {
+        // show or hide connection lines
+        if (mode) {
+          this.showConnectionLinesForInstance(entity);
+        } else {
+          this.removeConnectionLines(entity);
+        }
+      } else if (entity instanceof Type || entity instanceof Variable) {
+        // fetch all instances for the given type or variable and call hide on each
+        const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
+        for (const j = 0; j < instances.length; j++) {
+          if (instances[j].hasCapability('VisualCapability')) {
+            this.showConnectionLines(instances[j], mode);
+          }
+        }
+      }
+    }
+
+    /**
+     *
+     *
+     * @param instance
+     */
+    showConnectionLinesForInstance (instance) {
+      const connections = instance.getConnections();
+
+      const mesh = this.meshFactory.meshes[instance.getInstancePath()];
+      const inputs = {};
+      const outputs = {};
+      const defaultOrigin = mesh.position.clone();
+
+      for (let c = 0; c < connections.length; c++) {
+
+        const connection = connections[c];
+        const type = connection.getA().getPath() == instance.getInstancePath()
+          ? GEPPETTO.Resources.OUTPUT
+          : GEPPETTO.Resources.INPUT;
+
+        const thisEnd = connection.getA().getPath() == instance.getInstancePath() ? connection.getA() : connection.getB();
+        const otherEnd = connection.getA().getPath() == instance.getInstancePath() ? connection.getB() : connection.getA();
+        const otherEndPath = otherEnd.getPath();
+
+        const otherEndMesh = this.meshFactory.meshes[otherEndPath];
+
+        let destination;
+        let origin;
+
+        if (thisEnd.getPoint() == undefined) {
+          // same as before
+          origin = defaultOrigin;
+        } else {
+          // the specified coordinate
+          const p = thisEnd.getPoint();
+          origin = new THREE.Vector3(p.x + mesh.position.x, p.y + mesh.position.y, p.z + mesh.position.z);
+        }
+
+        if (otherEnd.getPoint() == undefined) {
+          // same as before
+          destination = otherEndMesh.position.clone();
+        } else {
+          // the specified coordinate
+          const p = otherEnd.getPoint();
+          destination = new THREE.Vector3(p.x + otherEndMesh.position.x, p.y + otherEndMesh.position.y, p.z + otherEndMesh.position.z);
+        }
+
+        const geometry = new THREE.Geometry();
+
+        geometry.vertices.push(origin, destination);
+        geometry.verticesNeedUpdate = true;
+        geometry.dynamic = true;
+
+        let colour = null;
+
+
+        if (type == GEPPETTO.Resources.INPUT) {
+
+          colour = GEPPETTO.Resources.COLORS.INPUT_TO_SELECTED;
+
+          // figure out if connection is both, input and output
+          if (outputs[otherEndPath]) {
+            colour = GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT;
+          }
+
+          if (inputs[otherEndPath]) {
+            inputs[otherEndPath].push(connection.getInstancePath());
+          } else {
+            inputs[otherEndPath] = [];
+            inputs[otherEndPath].push(connection.getInstancePath());
+          }
+        } else if (type == GEPPETTO.Resources.OUTPUT) {
+
+          colour = GEPPETTO.Resources.COLORS.OUTPUT_TO_SELECTED;
+          // figure out if connection is both, input and output
+          if (inputs[otherEndPath]) {
+            colour = GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT;
+          }
+
+          if (outputs[otherEndPath]) {
+            outputs[otherEndPath].push(connection.getInstancePath());
+          } else {
+            outputs[otherEndPath] = [];
+            outputs[otherEndPath].push(connection.getInstancePath());
+          }
+        }
+
+        const material = new THREE.LineDashedMaterial({ dashSize: 3, gapSize: 1 });
+        this.meshFactory.setThreeColor(material.color, colour);
+
+        const line = new THREE.LineSegments(geometry, material);
+        line.updateMatrixWorld(true);
+
+
+        if (this.meshFactory.connectionLines[connection.getInstancePath()]) {
+          this.scene.remove(this.meshFactory.connectionLines[connection.getInstancePath()]);
+        }
+
+        this.scene.add(line);
+        this.meshFactory.connectionLines[connection.getInstancePath()] = line;
+      }
+    }
+
+    /**
+     * Removes connection lines, all if nothing is passed in or just the ones passed in.
+     *
+     * @param instance - optional, instance for which we want to remove the connections
+     */
+    removeConnectionLines (instance) {
+      if (instance != undefined) {
+        const connections = instance.getConnections();
+        // get connections for given instance and remove only those
+        const lines = this.meshFactory.connectionLines;
+        for (let i = 0; i < connections.length; i++) {
+          if (Object.prototype.hasOwnProperty.call(lines, connections[i].getInstancePath())) {
+            // remove the connection line from the scene
+            this.scene.remove(lines[connections[i].getInstancePath()]);
+            // remove the conneciton line from the GEPPETTO list of connection lines
+            delete lines[connections[i].getInstancePath()];
+          }
+        }
+      } else {
+        // remove all connection lines
+        const lines = this.meshFactory.connectionLines;
+        for (var key in lines) {
+          if (Object.prototype.hasOwnProperty.call(lines, key)) {
+            this.scene.remove(lines[key]);
+          }
+        }
+        this.meshFactory.connectionLines = [];
+      }
+    }
 
   /**
    * Set up the listeners use to detect mouse movement and windoe resizing
@@ -439,7 +607,7 @@ export default class ThreeDEngine {
                         instancePath
                       )) ||
                     Object.prototype.hasOwnProperty.call(
-                      that.splitMeshes,
+                      that.meshFactory.splitMeshes,
                       instancePath
                     )
                   ) {
@@ -519,6 +687,7 @@ export default class ThreeDEngine {
       this.scene.updateMatrixWorld(true);
     }
     this.updateInstancesColor(proxyInstances);
+    this.updateInstancesConnectionLines(proxyInstances);
     this.cameraManager.update(cameraOptions);
   }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
-import model from './model.json';
+import model from './simpleModel.json';
 import CameraControls, {
   cameraControlsActions,
 } from '../../../camera-controls/CameraControls';
