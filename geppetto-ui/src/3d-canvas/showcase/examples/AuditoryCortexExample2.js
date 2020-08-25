@@ -16,7 +16,7 @@ const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 const styles = () => ({
   container: {
     height: '800px',
-    width: '1400px',
+    width: '1240px',
     display: 'flex',
     alignItems: 'stretch',
   },

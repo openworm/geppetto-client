@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
-import CameraControls, {
-  cameraControlsActions,
-} from '../../../camera-controls/CameraControls';
+import CameraControls from '../../../camera-controls/CameraControls';
+import model from './model.json';
 
 const INSTANCES = [
   'VFB_00017894',
@@ -30,7 +29,7 @@ const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 const styles = () => ({
   container: {
     height: '800px',
-    width: '1400px',
+    width: '1240px',
     display: 'flex',
     alignItems: 'stretch',
   },
@@ -38,6 +37,7 @@ const styles = () => ({
 class VFBExample extends Component {
   constructor(props) {
     super(props);
+    GEPPETTO.Manager.loadModel(model);
     for (const iname of INSTANCES) {
       Instances.getInstance(iname);
     }
@@ -71,10 +71,10 @@ class VFBExample extends Component {
         {
           instancePath: 'VFB_00030624',
         },
-        {
+/*         {
           instancePath: 'VFB_00030783',
           color: COLORS[6],
-        },
+        }, */
       ],
       selected: {},
       cameraOptions: {
@@ -84,16 +84,32 @@ class VFBExample extends Component {
         baseZoom: 1,
         position: { x: 319.7, y: 153.12, z: -494.2 },
         rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
-        autoRotate: false,
-        movieFilter: true,
+        cameraControls: { 
+          instance: CameraControls,
+          props: {
+            wireframeButtonEnabled: true,
+          }
+        },
+        incrementPan: {
+          x:0.01,
+          y:0.01
+        },
+        incrementRotation: {
+          x:0.01,
+          y:0.01,
+          z:0.01,
+        },
+        incrementZoom: 0.1,
         reset: false,
+        movieFilter: false,
+        autorotate:false,
+        wireframe:false
       },
     };
 
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
-    this.cameraControlsHandler = this.cameraControlsHandler.bind(this);
   }
 
   cameraHandler(obj) {
@@ -209,62 +225,6 @@ class VFBExample extends Component {
     });
   }
 
-  cameraControlsHandler(action) {
-    const { cameraOptions } = this.state;
-    if (this.canvasRef.current && this.canvasRef.current.threeDEngine) {
-      const engine = this.canvasRef.current.threeDEngine;
-      switch (action) {
-        case cameraControlsActions.PAN_LEFT:
-          engine.cameraManager.incrementCameraPan(-0.01, 0);
-          break;
-        case cameraControlsActions.PAN_RIGHT:
-          engine.cameraManager.incrementCameraPan(0.01, 0);
-          break;
-        case cameraControlsActions.PAN_UP:
-          engine.cameraManager.incrementCameraPan(0, -0.01);
-          break;
-        case cameraControlsActions.PAN_DOWN:
-          engine.cameraManager.incrementCameraPan(0, 0.01);
-          break;
-        case cameraControlsActions.ROTATE_UP:
-          engine.cameraManager.incrementCameraRotate(0, 0.01, undefined);
-          break;
-        case cameraControlsActions.ROTATE_DOWN:
-          engine.cameraManager.incrementCameraRotate(0, -0.01, undefined);
-          break;
-        case cameraControlsActions.ROTATE_LEFT:
-          engine.cameraManager.incrementCameraRotate(-0.01, 0, undefined);
-          break;
-        case cameraControlsActions.ROTATE_RIGHT:
-          engine.cameraManager.incrementCameraRotate(0.01, 0, undefined);
-          break;
-        case cameraControlsActions.ROTATE_Z:
-          engine.cameraManager.incrementCameraRotate(0, 0, 0.01);
-          break;
-        case cameraControlsActions.ROTATE_MZ:
-          engine.cameraManager.incrementCameraRotate(0, 0, -0.01);
-          break;
-        case cameraControlsActions.ROTATE:
-          engine.cameraManager.autoRotate(cameraOptions.movieFilter);
-          break;
-        case cameraControlsActions.ZOOM_IN:
-          engine.cameraManager.incrementCameraZoom(-0.1);
-          break;
-        case cameraControlsActions.ZOOM_OUT:
-          engine.cameraManager.incrementCameraZoom(+0.1);
-          break;
-        case cameraControlsActions.PAN_HOME:
-          this.setState(() => ({
-            cameraOptions: { ...cameraOptions, reset: !cameraOptions.reset },
-          }));
-          break;
-        case cameraControlsActions.WIREFRAME:
-          engine.setWireframe(!engine.getWireframe());
-          break;
-      }
-    }
-  }
-
   render() {
     const { classes } = this.props;
     const { data, cameraOptions } = this.state;
@@ -289,12 +249,6 @@ class VFBExample extends Component {
           cameraOptions={camOptions}
           cameraHandler={this.cameraHandler}
           selectionHandler={this.selectionHandler}
-          cameraControls={
-            <CameraControls
-              cameraControlsHandler={this.cameraControlsHandler}
-              wireframeButtonEnabled={true}
-            />
-          }
           linesThreshold={10000}
           backgroundColor={0x505050}
         />

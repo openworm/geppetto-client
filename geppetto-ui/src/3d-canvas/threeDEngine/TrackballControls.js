@@ -152,7 +152,7 @@ THREE.TrackballControls = function(object, domElement, handler) {
 
     this.handler({
       position: { x: p[0], y: p[1], z: p[2] },
-      rotation: { x: u[0], y: u[1], z: u[2], radius: this.rotationRadius },
+      rotation: { rx: u[0], ry: u[1], rz: u[2], radius: this.rotationRadius },
       eyeLength: l,
     });
 

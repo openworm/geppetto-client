@@ -13,7 +13,7 @@
 3D Canvas Auditory Cortex Example
 
 ```
-3d-canvas/showcase/examples/AuditoryCortexExample2
+3d-canvas/showcase/examples/VFBExample
 ```
 
 ## Libraries
