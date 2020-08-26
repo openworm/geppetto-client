@@ -36,7 +36,7 @@ const styles = () => ({
   },
 });
 class VFBExample extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     GEPPETTO.Manager.loadModel(model);
     for (const iname of INSTANCES) {
@@ -69,9 +69,7 @@ class VFBExample extends Component {
           instancePath: 'VFB_00030632',
           color: COLORS[5],
         },
-        {
-          instancePath: 'VFB_00030624',
-        },
+        { instancePath: 'VFB_00030624', },
         {
           instancePath: 'VFB_00030783',
           color: COLORS[6],
@@ -87,9 +85,7 @@ class VFBExample extends Component {
       rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
       cameraControls: { 
         instance: CameraControls,
-        props: {
-          wireframeButtonEnabled: true,
-        }
+        props: { wireframeButtonEnabled: true, }
       },
       flip: ['y', 'z',],
       rotateSpeed: 3,
@@ -101,82 +97,84 @@ class VFBExample extends Component {
     this.onMount = this.onMount.bind(this);
   }
 
-  componentDidMount()
-  {
+  componentDidMount () {
+    const { modelVersion } = this.state;
     GEPPETTO.on(GEPPETTO.Events.Model_loaded, 
-      ()=>{this.setState(() => ({ modelVersion: modelVersion+1}))});
+      () => {
+        this.setState(() => ({ modelVersion: modelVersion + 1 }))
+      });
   }
 
-/**
-     * Add a 3D plane to the scene at the given coordinates (4) points.
-     * It could be any geometry really.
-     * @returns {THREE.Mesh}
-     */
-    get3DPlane (x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4) {
+  /**
+   * Add a 3D plane to the scene at the given coordinates (4) points.
+   * It could be any geometry really.
+   * @returns {THREE.Mesh}
+   */
+  get3DPlane (x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4) {
 
-      const geometry = new THREE.Geometry();
-      geometry.vertices.push(
-        new THREE.Vector3(x1, y1, z1),// vertex0
-        new THREE.Vector3(x2, y2, z2),// 1
-        new THREE.Vector3(x3, y3, z3),// 2
-        new THREE.Vector3(x4, y4, z4)// 3
-      );
-      geometry.faces.push(
-        new THREE.Face3(2, 1, 0),// use vertices of rank 2,1,0
-        new THREE.Face3(3, 1, 2)// vertices[3],1,2...
-      );
-      geometry.computeBoundingBox();
+    const geometry = new THREE.Geometry();
+    geometry.vertices.push(
+      new THREE.Vector3(x1, y1, z1),// vertex0
+      new THREE.Vector3(x2, y2, z2),// 1
+      new THREE.Vector3(x3, y3, z3),// 2
+      new THREE.Vector3(x4, y4, z4)// 3
+    );
+    geometry.faces.push(
+      new THREE.Face3(2, 1, 0),// use vertices of rank 2,1,0
+      new THREE.Face3(3, 1, 2)// vertices[3],1,2...
+    );
+    geometry.computeBoundingBox();
 
-      const max = geometry.boundingBox.max,
-        min = geometry.boundingBox.min;
-      const offset = new THREE.Vector2(0 - min.x, 0 - min.y);
-      const range = new THREE.Vector2(max.x - min.x, max.y - min.y);
-      const faces = geometry.faces;
+    const max = geometry.boundingBox.max,
+      min = geometry.boundingBox.min;
+    const offset = new THREE.Vector2(0 - min.x, 0 - min.y);
+    const range = new THREE.Vector2(max.x - min.x, max.y - min.y);
+    const faces = geometry.faces;
 
-      geometry.faceVertexUvs[0] = [];
+    geometry.faceVertexUvs[0] = [];
 
-      for (let i = 0; i < faces.length; i++) {
+    for (let i = 0; i < faces.length; i++) {
 
-        const v1 = geometry.vertices[faces[i].a],
-          v2 = geometry.vertices[faces[i].b],
-          v3 = geometry.vertices[faces[i].c];
+      const v1 = geometry.vertices[faces[i].a],
+        v2 = geometry.vertices[faces[i].b],
+        v3 = geometry.vertices[faces[i].c];
 
-        geometry.faceVertexUvs[0].push([
-          new THREE.Vector2((v1.x + offset.x) / range.x, (v1.y + offset.y) / range.y),
-          new THREE.Vector2((v2.x + offset.x) / range.x, (v2.y + offset.y) / range.y),
-          new THREE.Vector2((v3.x + offset.x) / range.x, (v3.y + offset.y) / range.y)
-        ]);
-      }
-      geometry.uvsNeedUpdate = true;
-      geometry.dynamic = true;
-
-      const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
-      material.nowireframe = true;
-      
-      material.opacity = 0.3;
-      material.transparent = true;
-      material.color.setHex("0xb0b0b0");
-
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.renderOrder = 1;
-      mesh.clickThrough = true;
-      return mesh;
+      geometry.faceVertexUvs[0].push([
+        new THREE.Vector2((v1.x + offset.x) / range.x, (v1.y + offset.y) / range.y),
+        new THREE.Vector2((v2.x + offset.x) / range.x, (v2.y + offset.y) / range.y),
+        new THREE.Vector2((v3.x + offset.x) / range.x, (v3.y + offset.y) / range.y)
+      ]);
     }
+    geometry.uvsNeedUpdate = true;
+    geometry.dynamic = true;
 
-  onMount(scene) {
-   const bb = new THREE.Box3().setFromObject(scene);
-   const plane = this.get3DPlane(bb.min.x, bb.min.y, bb.min.z, bb.max.x, bb.max.y, bb.max.z)
-   this.setState(() => ({ threeDObjects: [plane]}));
+    const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
+    material.nowireframe = true;
+      
+    material.opacity = 0.3;
+    material.transparent = true;
+    material.color.setHex("0xb0b0b0");
+
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.renderOrder = 1;
+    mesh.clickThrough = true;
+    return mesh;
   }
 
-  cameraHandler(obj) {
-    //this.lastCameraUpdate = obj;
+  onMount (scene) {
+    const bb = new THREE.Box3().setFromObject(scene);
+    const plane = this.get3DPlane(bb.min.x, bb.min.y, bb.min.z, bb.max.x, bb.max.y, bb.max.z)
+    this.setState(() => ({ threeDObjects: [plane] }));
+  }
+
+  cameraHandler (obj) {
+    // this.lastCameraUpdate = obj;
 
     console.log('Camera has changed:');
     console.log(obj);
   }
 
-  selectionHandler(selectedMap) {
+  selectionHandler (selectedMap) {
     const { data, selected } = this.state;
     let path;
     for (let sk in selectedMap) {
@@ -204,8 +202,8 @@ class VFBExample extends Component {
         } else {
           if (path in newSelected) {
             if (geometryIdentifier in newSelected[path]) {
-              instance.visualGroups.custom[geometryIdentifier].color =
-                newSelected[path][geometryIdentifier].color;
+              instance.visualGroups.custom[geometryIdentifier].color
+                = newSelected[path][geometryIdentifier].color;
               delete newSelected[path][geometryIdentifier];
               if (Object.keys(newSelected[path]).length === 0) {
                 delete newSelected[path];
@@ -213,9 +211,7 @@ class VFBExample extends Component {
               done = true;
             } else {
               if (instance.visualGroups.custom[geometryIdentifier]) {
-                newSelected[path][geometryIdentifier] = {
-                  color: instance.visualGroups.custom[geometryIdentifier].color,
-                };
+                newSelected[path][geometryIdentifier] = { color: instance.visualGroups.custom[geometryIdentifier].color, };
                 instance.visualGroups.custom[
                   geometryIdentifier
                 ].color = SELECTION_COLOR;
@@ -237,29 +233,13 @@ class VFBExample extends Component {
                   ].color = SELECTION_COLOR;
                   done = true;
                 } else {
-                  newSelected[path] = {
-                    [geometryIdentifier]: {
-                      color: {
-                        ...currentColor,
-                      },
-                    },
-                  };
-                  instance.visualGroups.custom[geometryIdentifier] = {
-                    color: SELECTION_COLOR,
-                  };
+                  newSelected[path] = { [geometryIdentifier]: { color: { ...currentColor, }, }, };
+                  instance.visualGroups.custom[geometryIdentifier] = { color: SELECTION_COLOR, };
                   done = true;
                 }
               } else {
-                newSelected[path] = {
-                  [geometryIdentifier]: {
-                    color: {
-                      ...currentColor,
-                    },
-                  },
-                };
-                instance.visualGroups.custom = {
-                  [geometryIdentifier]: { color: SELECTION_COLOR },
-                };
+                newSelected[path] = { [geometryIdentifier]: { color: { ...currentColor, }, }, };
+                instance.visualGroups.custom = { [geometryIdentifier]: { color: SELECTION_COLOR }, };
                 done = true;
               }
             }
@@ -277,16 +257,14 @@ class VFBExample extends Component {
 
     this.setState(() => ({ data: newData, selected: newSelected }));
     console.log('Selection Handler Called:');
-    console.log({
-      selectedMap,
-    });
+    console.log({ selectedMap, });
   }
 
-  getModelVersion() {
+  getModelVersion () {
     return true;
   }
 
-  render() {
+  render () {
     const { classes } = this.props;
     const { data, threeDObjects, modelVersion } = this.state;
 

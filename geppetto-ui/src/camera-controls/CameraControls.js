@@ -35,18 +35,14 @@ export const cameraControlsActions = {
   WIREFRAME: 'wireframe',
 };
 
-const styles = (theme) => ({
-  button: {
-    color: theme.palette.button.main,
-  },
-});
+const styles = theme => ({ button: { color: theme.palette.button.main, }, });
 
 class CameraControls extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
+  render () {
     const {
       classes,
       cameraControlsHandler,
@@ -149,26 +145,22 @@ class CameraControls extends Component {
     }
     return (
       <div className="position-toolbar">
-        {buttons.map((value, index) => {
-          return (
-            <IconButtonWithTooltip
-              key={index}
-              disabled={false}
-              onClick={() => cameraControlsHandler(value.action)}
-              className={`${classes.button} ${value.className} squareB`}
-              tooltip={value.tooltip}
-              icon={value.icon}
-            />
-          );
-        })}
+        {buttons.map((value, index) => (
+          <IconButtonWithTooltip
+            key={index}
+            disabled={false}
+            onClick={() => cameraControlsHandler(value.action)}
+            className={`${classes.button} ${value.className} squareB`}
+            tooltip={value.tooltip}
+            icon={value.icon}
+          />
+        ))}
       </div>
     );
   }
 }
 
-CameraControls.defaultProps = {
-  wireframeButtonEnabled: false,
-};
+CameraControls.defaultProps = { wireframeButtonEnabled: false, };
 
 CameraControls.propTypes = {
   /**

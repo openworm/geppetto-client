@@ -1,12 +1,12 @@
 import { BRING_CLOSER, MOVE_PLAYER, STOP_PLAYER } from '../Events';
 
-function emitEvent(event, raycaster) {
+function emitEvent (event, raycaster) {
   if (raycaster.intersectedEls.length > 0) {
     raycaster.intersectedEls[0].emit(event);
   }
 }
 
-function emitEventSelected(event, model, detail) {
+function emitEventSelected (event, model, detail) {
   const cEvent = new CustomEvent(event, { detail: detail });
   let toModel = true;
   for (const child of model.children) {
@@ -21,9 +21,7 @@ function emitEventSelected(event, model, detail) {
 }
 
 AFRAME.registerComponent('extended-laser-controls', {
-  schema: {
-    id: { type: 'string' },
-  },
+  schema: { id: { type: 'string' }, },
   init: function () {
     const { el } = this;
     const { raycaster } = this.el.components;
@@ -53,10 +51,8 @@ AFRAME.registerComponent('extended-laser-controls', {
       emitEventSelected(BRING_CLOSER, model, null);
     });
 
-    el.addEventListener(MOVE_PLAYER, (evt) => {
-      const event = new CustomEvent(MOVE_PLAYER, {
-        detail: { hand: el.id, data: evt.detail },
-      });
+    el.addEventListener(MOVE_PLAYER, evt => {
+      const event = new CustomEvent(MOVE_PLAYER, { detail: { hand: el.id, data: evt.detail }, });
       camera.dispatchEvent(event);
     });
 

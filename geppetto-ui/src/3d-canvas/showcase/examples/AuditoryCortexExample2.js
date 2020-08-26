@@ -22,7 +22,7 @@ const styles = () => ({
   },
 });
 class AuditoryCortexExample2 extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
     GEPPETTO.Manager.loadModel(model);
@@ -53,9 +53,7 @@ class AuditoryCortexExample2 extends Component {
         zoomTo: ['acnet2.baskets_12[7]'],
         cameraControls: { 
           instance: CameraControls,
-          props: {
-            wireframeButtonEnabled: false,
-          }
+          props: { wireframeButtonEnabled: false, }
         },
         incrementPan: {
           x:0.05,
@@ -80,13 +78,13 @@ class AuditoryCortexExample2 extends Component {
     this.hoverHandler = this.hoverHandler.bind(this);
   }
 
-  cameraHandler(obj) {
+  cameraHandler (obj) {
     this.lastCameraUpdate = obj;
     console.log('Camera has changed:');
     console.log(obj);
   }
 
-  selectionHandler(
+  selectionHandler (
     selectedMap
   ) {
     const { data, selected } = this.state;
@@ -124,17 +122,15 @@ class AuditoryCortexExample2 extends Component {
       newSelected[path] = { ...currentColor };
     }
     this.setState(() => ({ data: newData, selected: newSelected }));
-    console.log({
-      selectedMap
-    })
+    console.log({ selectedMap })
   }
 
-  hoverHandler(obj) {
+  hoverHandler (obj) {
     console.log('Hover handler called:');
     console.log(obj);
   }
 
-  render() {
+  render () {
     const { classes } = this.props;
     const { data, cameraOptions } = this.state;
 
@@ -146,7 +142,7 @@ class AuditoryCortexExample2 extends Component {
         zoomTo: [],
         flip: []
       };
-      if(this.lastCameraUpdate.rotation.radius){
+      if (this.lastCameraUpdate.rotation.radius){
         camOptions = {
           ...cameraOptions,
           rotation: this.lastCameraUpdate.rotation,

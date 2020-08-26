@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-export function getSimulationData(simulation) {
+export function getSimulationData (simulation) {
   const { outputMapping, results } = simulation;
   const simulationMap = {};
   let columns = [];
@@ -22,6 +22,7 @@ export function getSimulationData(simulation) {
   for (let line = 0; line < linesLength - 1; line++) {
     let lineContent = [];
     for (let j = 0; j < resultLines.length; j++) {
+      // eslint-disable-next-line no-tabs
       const rline = resultLines[j][line].split('	');
       rline.pop();
       if (j !== 0) {
@@ -43,7 +44,7 @@ export function getSimulationData(simulation) {
   return simulationMap;
 }
 
-export function getVoltageColor(x) {
+export function getVoltageColor (x) {
   x = (x + 0.07) / 0.1; // normalization
   if (x < 0) {
     x = 0;

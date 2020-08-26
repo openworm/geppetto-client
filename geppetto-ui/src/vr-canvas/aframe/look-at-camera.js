@@ -1,7 +1,5 @@
 AFRAME.registerComponent('look-at-camera', {
-  schema: {
-    id: { type: 'string' },
-  },
+  schema: { id: { type: 'string' }, },
 
   tick: function () {
     const { el } = this;

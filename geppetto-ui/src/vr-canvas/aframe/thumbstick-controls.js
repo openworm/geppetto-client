@@ -3,7 +3,7 @@ import { MOVE_PLAYER, STOP_PLAYER } from '../Events';
 const MAX_DELTA = 0.2;
 const CLAMP_VELOCITY = 0.00001;
 
-function isEmptyObject(obj) {
+function isEmptyObject (obj) {
   for (const _ in obj) {
     return false;
   }
@@ -47,9 +47,9 @@ AFRAME.registerComponent('thumbstick-controls', {
     const { velocity } = this;
 
     if (
-      !velocity[data.adAxis] &&
-      !velocity[data.wsAxis] &&
-      isEmptyObject(this.thumbstick)
+      !velocity[data.adAxis]
+      && !velocity[data.wsAxis]
+      && isEmptyObject(this.thumbstick)
     ) {
       return;
     }
@@ -86,7 +86,7 @@ AFRAME.registerComponent('thumbstick-controls', {
     this.removeThumbstickEventListeners();
   },
 
-  getOrientationElement() {
+  getOrientationElement () {
     // If a orientation element was defined explicitly use it
     if (this.data.orientationEl) {
       this.orientationEl = this.data.orientationEl;
@@ -146,23 +146,23 @@ AFRAME.registerComponent('thumbstick-controls', {
     if (data.adEnabled) {
       adSign = data.adInverted ? -1 : 1;
       if (thumbstick.left) {
-        velocity[adAxis] -=
-          adSign * acceleration * delta * Math.abs(thumbstick.left);
+        velocity[adAxis]
+          -= adSign * acceleration * delta * Math.abs(thumbstick.left);
       }
       if (thumbstick.right) {
-        velocity[adAxis] +=
-          adSign * acceleration * delta * Math.abs(thumbstick.right);
+        velocity[adAxis]
+          += adSign * acceleration * delta * Math.abs(thumbstick.right);
       }
     }
     if (data.wsEnabled) {
       wsSign = data.wsInverted ? -1 : 1;
       if (thumbstick.up) {
-        velocity[wsAxis] -=
-          wsSign * acceleration * delta * Math.abs(thumbstick.up);
+        velocity[wsAxis]
+          -= wsSign * acceleration * delta * Math.abs(thumbstick.up);
       }
       if (thumbstick.down) {
-        velocity[wsAxis] +=
-          wsSign * acceleration * delta * Math.abs(thumbstick.down);
+        velocity[wsAxis]
+          += wsSign * acceleration * delta * Math.abs(thumbstick.down);
       }
     }
   },

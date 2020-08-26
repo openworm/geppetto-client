@@ -1,7 +1,7 @@
 import { MENU_CLICK } from '../Events';
 import { VISUAL_GROUPS_MENU, NEW_DATA_MENU, SETTINGS_MENU } from './menuStates';
 
-export default function mainMenu(model) {
+export default function mainMenu (model) {
   const newData = {
     event: MENU_CLICK,
     evtDetail: NEW_DATA_MENU.id,

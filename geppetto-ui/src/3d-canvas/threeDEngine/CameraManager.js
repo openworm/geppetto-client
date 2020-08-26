@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 export default class CameraManager {
-  constructor(engine, cameraOptions) {
+  constructor (engine, cameraOptions) {
     this.engine = engine;
     this.sceneCenter = new THREE.Vector3();
     this.camera = new THREE.PerspectiveCamera(
@@ -17,7 +17,7 @@ export default class CameraManager {
     this.baseZoom = cameraOptions.baseZoom;
   }
 
-  update(cameraOptions) {
+  update (cameraOptions) {
     const {
       flip,
       position,
@@ -31,51 +31,49 @@ export default class CameraManager {
 
 
     if (
-      reset ||
-      (position == undefined && rotation == undefined && zoomTo == undefined)
+      reset
+      || (position == undefined && rotation == undefined && zoomTo == undefined)
     ) {
       this.resetCamera();
-    }
+    } else {
+      if (flip.length > 0) {
+        flip.forEach(element => {
+          this.flipCamera(element);
+        });
+      }
+      if (position) {
+        this.setCameraPosition(position.x, position.y, position.z);
+      }
 
-    else{
-      if (flip.length>0) {
-      flip.forEach(element => {
-        this.flipCamera(element);
-      });
-    }
-    if (position) {
-      this.setCameraPosition(position.x, position.y, position.z);
-    }
+      if (rotation) {
+        this.setCameraRotation(
+          rotation.rx,
+          rotation.ry,
+          rotation.rz,
+          rotation.radius
+        );
+      }
+      if (autoRotate) {
+        this.autoRotate(movieFilter);
+      }
 
-    if (rotation) {
-      this.setCameraRotation(
-        rotation.rx,
-        rotation.ry,
-        rotation.rz,
-        rotation.radius
-      );
-    }
-    if (autoRotate) {
-      this.autoRotate(movieFilter);
-    }
+      if (zoomTo && Array.isArray(zoomTo)) {
+        const instances = zoomTo.map(element => Instances.getInstance(element));
+        if (instances.length > 0) {
+          this.zoomTo(instances);
+        }
+      }
 
-    if (zoomTo && Array.isArray(zoomTo)) {
-      const instances = zoomTo.map((element) => Instances.getInstance(element));
-      if (instances.length > 0) {
-        this.zoomTo(instances);
+      if (rotateSpeed){
+        this.engine.controls.rotateSpeed = rotateSpeed
       }
     }
-
-    if(rotateSpeed){
-      this.engine.controls.rotateSpeed = rotateSpeed
-    }
-  }
   }
   /**
    *
    * @param instances
    */
-  flipCamera(axis) {
+  flipCamera (axis) {
     if (axis === 'y') {
       this.flipCameraY();
     } else if (axis === 'z') {
@@ -86,7 +84,7 @@ export default class CameraManager {
   /**
    * Reinitializes the camera with the Y axis flipped
    */
-  flipCameraY() {
+  flipCameraY () {
     this.camera.up = new THREE.Vector3(0, -1, 0);
     this.engine.setupControls();
     this.resetCamera();
@@ -95,7 +93,7 @@ export default class CameraManager {
   /**
    *
    */
-  flipCameraZ() {
+  flipCameraZ () {
     this.camera.direction = new THREE.Vector3(0, 0, -1);
     this.engine.setupControls();
     this.resetCamera();
@@ -105,7 +103,7 @@ export default class CameraManager {
    *
    * @param instances
    */
-  zoomTo(instances) {
+  zoomTo (instances) {
     this.engine.controls.reset();
     this.zoomToParameters(this.zoomIterator(instances, {}));
   }
@@ -116,13 +114,13 @@ export default class CameraManager {
    * @param zoomParameters
    * @returns {*}
    */
-  zoomIterator(instances, zoomParameters) {
+  zoomIterator (instances, zoomParameters) {
     const that = this;
     for (let i = 0; i < instances.length; i++) {
       const instancePath = instances[i].getInstancePath();
       const mesh = this.engine.meshFactory.meshes[instancePath];
       if (mesh) {
-        mesh.traverse(function(object) {
+        mesh.traverse(function (object) {
           if (Object.prototype.hasOwnProperty.call(object, 'geometry')) {
             that.addMeshToZoomParameters(object, zoomParameters);
           }
@@ -143,15 +141,15 @@ export default class CameraManager {
    * @param zoomParameters
    * @returns {*}
    */
-  addMeshToZoomParameters(mesh, zoomParameters) {
+  addMeshToZoomParameters (mesh, zoomParameters) {
     mesh.geometry.computeBoundingBox();
     const bb = mesh.geometry.boundingBox;
     bb.translate(mesh.localToWorld(new THREE.Vector3()));
 
     // If min and max vectors are null, first values become default min and max
     if (
-      zoomParameters.aabbMin == undefined &&
-      zoomParameters.aabbMax == undefined
+      zoomParameters.aabbMin == undefined
+      && zoomParameters.aabbMax == undefined
     ) {
       zoomParameters.aabbMin = bb.min;
       zoomParameters.aabbMax = bb.max;
@@ -172,28 +170,28 @@ export default class CameraManager {
    *
    * @param zoomParameters
    */
-  zoomToParameters(zoomParameters) {
+  zoomToParameters (zoomParameters) {
     // Compute world AABB center
-    this.sceneCenter.x =
-      (zoomParameters.aabbMax.x + zoomParameters.aabbMin.x) * 0.5;
-    this.sceneCenter.y =
-      (zoomParameters.aabbMax.y + zoomParameters.aabbMin.y) * 0.5;
-    this.sceneCenter.z =
-      (zoomParameters.aabbMax.z + zoomParameters.aabbMin.z) * 0.5;
+    this.sceneCenter.x
+      = (zoomParameters.aabbMax.x + zoomParameters.aabbMin.x) * 0.5;
+    this.sceneCenter.y
+      = (zoomParameters.aabbMax.y + zoomParameters.aabbMin.y) * 0.5;
+    this.sceneCenter.z
+      = (zoomParameters.aabbMax.z + zoomParameters.aabbMin.z) * 0.5;
 
     this.updateCamera(zoomParameters.aabbMax, zoomParameters.aabbMin);
   }
 
-  resetCamera() {
+  resetCamera () {
     this.engine.controls.reset();
 
     let aabbMin = null;
     let aabbMax = null;
 
-    this.engine.scene.traverse(function(child) {
+    this.engine.scene.traverse(function (child) {
       if (
-        Object.prototype.hasOwnProperty.call(child, 'geometry') &&
-        child.visible === true
+        Object.prototype.hasOwnProperty.call(child, 'geometry')
+        && child.visible === true
       ) {
         child.geometry.computeBoundingBox();
 
@@ -234,7 +232,7 @@ export default class CameraManager {
    * @param aabbMax
    * @param aabbMin
    */
-  updateCamera(aabbMax, aabbMin) {
+  updateCamera (aabbMax, aabbMin) {
     // Compute world AABB "radius"
     let diag = new THREE.Vector3();
     diag = diag.subVectors(aabbMax, aabbMin);
@@ -243,10 +241,10 @@ export default class CameraManager {
     this.pointCameraTo(this.sceneCenter);
 
     // Compute offset needed to move the camera back that much needed to center AABB
-    const offset =
-      radius /
-      Math.sin((Math.PI / 180.0) * this.camera.fov * 0.5) /
-      this.baseZoom;
+    const offset
+      = radius
+      / Math.sin((Math.PI / 180.0) * this.camera.fov * 0.5)
+      / this.baseZoom;
 
     const dir = this.camera.direction.clone();
     dir.multiplyScalar(offset);
@@ -260,7 +258,7 @@ export default class CameraManager {
    *  Refocus camera to the center of the new object
    * @param node
    */
-  pointCameraTo(node) {
+  pointCameraTo (node) {
     let COG;
     if (node instanceof THREE.Vector3) {
       COG = node;
@@ -282,7 +280,7 @@ export default class CameraManager {
    * @param obj
    * @returns {*}
    */
-  shapeCenterOfGravity(obj) {
+  shapeCenterOfGravity (obj) {
     return this.boundingBox(obj).center();
   }
 
@@ -291,7 +289,7 @@ export default class CameraManager {
    * @param obj
    * @returns {*}
    */
-  boundingBox(obj) {
+  boundingBox (obj) {
     if (obj instanceof THREE.Mesh) {
       const geometry = obj.geometry;
       geometry.computeBoundingBox();
@@ -311,7 +309,7 @@ export default class CameraManager {
    * Returns the camera
    * @returns camera
    */
-  getCamera() {
+  getCamera () {
     return this.camera;
   }
 
@@ -319,7 +317,7 @@ export default class CameraManager {
    * @param x
    * @param y
    */
-  incrementCameraPan(x, y) {
+  incrementCameraPan (x, y) {
     this.engine.controls.incrementPanEnd(x, y);
   }
 
@@ -328,14 +326,14 @@ export default class CameraManager {
    * @param y
    * @param z
    */
-  incrementCameraRotate(x, y, z) {
+  incrementCameraRotate (x, y, z) {
     this.engine.controls.incrementRotationEnd(x, y, z);
   }
 
   /**
    * @param z
    */
-  incrementCameraZoom(z) {
+  incrementCameraZoom (z) {
     this.engine.controls.incrementZoomEnd(z);
   }
 
@@ -344,7 +342,7 @@ export default class CameraManager {
    * @param y
    * @param z
    */
-  setCameraPosition(x, y, z) {
+  setCameraPosition (x, y, z) {
     this.engine.controls.setPosition(x, y, z);
   }
   /**
@@ -353,7 +351,7 @@ export default class CameraManager {
    * @param rz
    * @param radius
    */
-  setCameraRotation(rx, ry, rz, radius) {
+  setCameraRotation (rx, ry, rz, radius) {
     this.engine.controls.setRotation(rx, ry, rz, radius);
   }
 
@@ -361,13 +359,13 @@ export default class CameraManager {
    * Rotate the camera around the selection
    * @movieFilter
    */
-  autoRotate(movieFilter) {
+  autoRotate (movieFilter) {
     const that = this;
     if (this.rotate == null) {
       if (movieFilter === undefined || movieFilter === true) {
         this.movieMode(true);
       }
-      this.rotate = setInterval(function() {
+      this.rotate = setInterval(function () {
         that.incrementCameraRotate(0.01, 0);
       }, 100);
     } else {
@@ -383,7 +381,7 @@ export default class CameraManager {
    *
    * @param shaders
    */
-  movieMode(shaders) {
+  movieMode (shaders) {
     this.engine.configureRenderer(shaders);
   }
 }

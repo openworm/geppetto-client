@@ -38,7 +38,7 @@ const SHORTCUTS = {
 };
 
 class Canvas extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       loadedTextures: false,
@@ -68,15 +68,15 @@ class Canvas extends Component {
     this.initTextures(this.handleLoadedTextures);
   }
 
-  initTextures(callback) {
+  initTextures (callback) {
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(particle, (texture) => {
+    textureLoader.load(particle, texture => {
       this.particleTexture = texture;
       callback();
     });
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { id, threshold } = this.props;
     const scene = document.getElementById(`${id}_scene`);
     this.meshFactory = new MeshFactory(
@@ -102,7 +102,7 @@ class Canvas extends Component {
       this.handleKeyboardPress
     );
     // TODO: remove this workaround
-    this.sceneRef.current.addEventListener(VISUAL_GROUPS, (evt) =>
+    this.sceneRef.current.addEventListener(VISUAL_GROUPS, evt =>
       this.activateVisualGroups(
         evt.detail.groups,
         evt.detail.mode,
@@ -120,7 +120,7 @@ class Canvas extends Component {
     this.setEntityMeshes();
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate (nextProps) {
     const { instances } = this.props;
     if (instances !== nextProps.instances) {
       this.meshFactory.start(nextProps.instances);
@@ -129,7 +129,7 @@ class Canvas extends Component {
     return true;
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     const { colorMap } = this.props;
     const { visualGroups, time, simulationData, simulation } = this.state;
     if (!visualGroups) {
@@ -142,7 +142,6 @@ class Canvas extends Component {
     this.setEntityMeshes();
     if (simulation) {
       if (time === Object.keys(simulationData).length - 1) {
-        // eslint-disable-next-line react/no-did-update-set-state
         this.setState({
           simulation: false,
           visualGroups: false,
@@ -154,7 +153,7 @@ class Canvas extends Component {
     }
   }
 
-  setColor(path, color) {
+  setColor (path, color) {
     // eslint-disable-next-line no-eval
     const entity = eval(path);
     if (entity.hasCapability('VisualCapability')) {
@@ -168,8 +167,10 @@ class Canvas extends Component {
           }
         }
       } else if (entity instanceof Type || entity instanceof Variable) {
-        // fetch all instances for the given type or variable and call hide on each
-        // TODO: Pass ModelFactory to prop?
+        /*
+         * fetch all instances for the given type or variable and call hide on each
+         * TODO: Pass ModelFactory to prop?
+         */
         const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
         for (let j = 0; j < instances.length; j++) {
           this.setColor(instances[j].getInstancePath(), color);
@@ -179,12 +180,12 @@ class Canvas extends Component {
     return this;
   }
 
-  setEntityMeshes() {
+  setEntityMeshes () {
     const canvasEntity = this.canvasRef.current;
 
     const sceneMeshes = [];
     const keysThreeMeshes = Object.keys(this.threeMeshes).filter(
-      (key) => this.threeMeshes[key].visible
+      key => this.threeMeshes[key].visible
     );
     for (let i = 0; i < canvasEntity.children.length; i++) {
       const element = canvasEntity.children[i];
@@ -206,22 +207,20 @@ class Canvas extends Component {
     }
   }
 
-  handleLoadedTextures() {
+  handleLoadedTextures () {
     this.setState({ loadedTextures: true });
   }
 
-  handleHover(evt) {
+  handleHover (evt) {
     const { handleHover } = this.props;
     if (Object.keys(this.hoveredMeshes).includes(evt.detail.id)) {
       return;
     }
     if (
-      evt.detail.getObject3D('mesh') !== undefined &&
-      evt.detail.getObject3D('mesh').material
+      evt.detail.getObject3D('mesh') !== undefined
+      && evt.detail.getObject3D('mesh').material
     ) {
-      this.hoveredMeshes[evt.detail.id] = {
-        ...evt.detail.getObject3D('mesh').material.color,
-      };
+      this.hoveredMeshes[evt.detail.id] = { ...evt.detail.getObject3D('mesh').material.color, };
       evt.detail
         .getObject3D('mesh')
         .material.color.setRGB(HOVER_COLOR.r, HOVER_COLOR.g, HOVER_COLOR.b);
@@ -229,7 +228,7 @@ class Canvas extends Component {
     }
   }
 
-  handleHoverLeave(evt) {
+  handleHoverLeave (evt) {
     const { handleHoverLeave } = this.props;
     if (Object.keys(this.hoveredMeshes).includes(evt.detail.id)) {
       const color = this.hoveredMeshes[evt.detail.id];
@@ -242,7 +241,7 @@ class Canvas extends Component {
     handleHoverLeave(evt, false);
   }
 
-  handleKeyboardPress(evt) {
+  handleKeyboardPress (evt) {
     // eslint-disable-next-line eqeqeq
     if (evt.keyCode === SHORTCUTS.COLLAPSE_MENU) {
       const { isMenuVisible } = this.state;
@@ -267,7 +266,7 @@ class Canvas extends Component {
     }
   }
 
-  handleClick(evt) {
+  handleClick (evt) {
     const { handleClick } = this.props;
     const preventDefault = handleClick(evt);
     if (!preventDefault && evt.detail.getObject3D('mesh') !== undefined) {
@@ -276,9 +275,9 @@ class Canvas extends Component {
         evt.detail.selected = false;
         const color = this.selectedMeshes[evt.detail.id];
         if (
-          (color.r != undefined) &
-          (color.g != undefined) &
-          (color.b != undefined)
+          (color.r != undefined)
+          & (color.g != undefined)
+          & (color.b != undefined)
         ) {
           evt.detail
             .getObject3D('mesh')
@@ -287,9 +286,7 @@ class Canvas extends Component {
           evt.detail.getObject3D('mesh').material.color.set(color);
         }
         delete this.selectedMeshes[evt.detail.id];
-        this.hoveredMeshes = {
-          ...evt.detail.getObject3D('mesh').material.color,
-        };
+        this.hoveredMeshes = { ...evt.detail.getObject3D('mesh').material.color, };
       } else {
         // eslint-disable-next-line no-param-reassign
         evt.detail.selected = true;
@@ -304,14 +301,12 @@ class Canvas extends Component {
             SELECTED_COLOR.b
           );
 
-        this.hoveredMeshes = {
-          ...evt.detail.getObject3D('mesh').material.color,
-        };
+        this.hoveredMeshes = { ...evt.detail.getObject3D('mesh').material.color, };
       }
     }
   }
 
-  handleMenuClick(evt) {
+  handleMenuClick (evt) {
     const { model } = this.props;
     const { currentMenu } = this.state;
     const { event, detail } = evt.detail;
@@ -359,11 +354,9 @@ class Canvas extends Component {
    * @param mode
    * @param instances
    */
-  activateVisualGroups(visualGroup, mode, instances) {
+  activateVisualGroups (visualGroup, mode, instances) {
     this.showVisualGroups(visualGroup, mode, instances);
-    this.setState({
-      visualGroups: true,
-    });
+    this.setState({ visualGroups: true, });
   }
 
   /**
@@ -372,7 +365,7 @@ class Canvas extends Component {
    * @param mode
    * @param instances
    */
-  showVisualGroups(visualGroups, mode, instances) {
+  showVisualGroups (visualGroups, mode, instances) {
     for (let i = 0; i < instances.length; i++) {
       const instance = instances[i];
       const instancePath = instance.getInstancePath();
@@ -405,7 +398,7 @@ class Canvas extends Component {
    * @param instance
    * @param meshesContainer
    */
-  showVisualGroupsRaw(visualGroups, instance, meshesContainer) {
+  showVisualGroupsRaw (visualGroups, instance, meshesContainer) {
     const instancePath = instance.getInstancePath();
     for (const g in visualGroups) {
       // retrieve visual group object
@@ -434,7 +427,7 @@ class Canvas extends Component {
    * @param instancePath
    * @param visible
    */
-  merge(instancePath, visible) {
+  merge (instancePath, visible) {
     // get mesh from map
     const mergedMesh = this.meshFactory.meshes[instancePath];
 
@@ -456,7 +449,7 @@ class Canvas extends Component {
     }
   }
 
-  render() {
+  render () {
     const {
       sceneBackground,
       model,
@@ -570,9 +563,8 @@ class Canvas extends Component {
           interactable={`id: ${id}`}
         >
           {Object.keys(this.threeMeshes)
-            .filter((key) => this.threeMeshes[key].visible)
-            .map((key) => (
-              // eslint-disable-next-line react/no-array-index-key
+            .filter(key => this.threeMeshes[key].visible)
+            .map(key => (
               <a-entity
                 class="collidable"
                 key={`a-entity${key}_${id}`}
@@ -592,17 +584,13 @@ Canvas.defaultProps = {
   position: '-20 -20 -80',
   rotation: '0 0 0',
   sceneBackground: 'color: #ECECEC',
-  handleHover: () => {
-    return false;
-  },
-  handleClick: () => {
-    return false;
-  },
+  handleHover: () => false,
+  handleClick: () => false,
   handleHoverLeave: () => {},
   handleModelChange: () => {},
 };
 
-//TODO: Add comments, fix instances subprop
+// TODO: Add comments, fix instances subprop
 Canvas.propTypes = {
   instances: PropTypes.arrayOf(PropTypes.object).isRequired,
   model: PropTypes.object.isRequired,

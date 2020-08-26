@@ -1,6 +1,6 @@
 import { MENU_CLICK } from '../Events';
 
-function clicked(target, event, detail) {
+function clicked (target, event, detail) {
   const evt = new CustomEvent(MENU_CLICK, {
     detail: {
       event: event,

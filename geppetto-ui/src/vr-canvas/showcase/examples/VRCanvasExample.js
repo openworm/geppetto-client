@@ -3,21 +3,19 @@ import model from '../models';
 import Canvas from '../../canvas/Canvas';
 
 export default class VRCanvasExample extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
-    this.state = {
-      selectedModel: model,
-    };
+    this.state = { selectedModel: model, };
     const { selectedModel } = this.state;
     GEPPETTO.Manager.loadModel(selectedModel.model);
     this.instances = [];
-    selectedModel.instances.forEach((instance) =>
+    selectedModel.instances.forEach(instance =>
       this.instances.push(Instances.getInstance(instance))
     );
     this.canvasRef = React.createRef();
   }
 
-  render() {
+  render () {
     const { selectedModel } = this.state;
     const {
       sceneBackground,

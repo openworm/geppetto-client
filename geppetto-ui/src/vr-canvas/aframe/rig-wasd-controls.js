@@ -22,7 +22,7 @@ const KEYCODE_TO_CODE = {
 };
 const { bind, shouldCaptureKeyEvent } = AFRAME.utils;
 
-function isEmptyObject(keys) {
+function isEmptyObject (keys) {
   let key;
   for (key in keys) {
     return false;
@@ -68,10 +68,10 @@ AFRAME.registerComponent('rig-wasd-controls', {
     const { velocity } = this;
 
     if (
-      !velocity[data.adAxis] &&
-      !velocity[data.wsAxis] &&
-      isEmptyObject(this.keys) &&
-      isEmptyObject(this.wheel)
+      !velocity[data.adAxis]
+      && !velocity[data.wsAxis]
+      && isEmptyObject(this.keys)
+      && isEmptyObject(this.wheel)
     ) {
       return;
     }
@@ -108,7 +108,7 @@ AFRAME.registerComponent('rig-wasd-controls', {
     this.removeKeyEventListeners();
   },
 
-  getOrientationElement() {
+  getOrientationElement () {
     // If a orientation element was defined explicitly use it
     if (this.data.orientationEl) {
       this.orientationEl = this.data.orientationEl;

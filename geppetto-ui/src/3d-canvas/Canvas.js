@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
-import {
-  cameraControlsActions,
-} from '../camera-controls/CameraControls';
+import { cameraControlsActions, } from '../camera-controls/CameraControls';
 
 const styles = () => ({
   container: {
@@ -15,14 +13,14 @@ const styles = () => ({
 });
 
 class Canvas extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
     this.cameraControlsHandler = this.cameraControlsHandler.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const {
       data,
       cameraOptions,
@@ -49,7 +47,7 @@ class Canvas extends Component {
     onMount(this.threeDEngine.scene)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.threeDEngine.stop();
     this.sceneRef.current.removeChild(
       this.threeDEngine.getRenderer().domElement
@@ -57,67 +55,67 @@ class Canvas extends Component {
   }
 
 
-  shouldEngineTraverse() {
+  shouldEngineTraverse () {
     // TODO: check if new instance added, check if split meshes changed?
     return true;
   }
 
-  cameraControlsHandler(action) {
+  cameraControlsHandler (action) {
     const { cameraOptions } = this.props;
     const { incrementPan, incrementRotation, incrementZoom, movieFilter } = cameraOptions;
     
     if (this.threeDEngine) {
       switch (action) {
-        case cameraControlsActions.PAN_LEFT:
-          this.threeDEngine.cameraManager.incrementCameraPan(-incrementPan.x, 0);
-          break;
-        case cameraControlsActions.PAN_RIGHT:
-          this.threeDEngine.cameraManager.incrementCameraPan(incrementPan.x, 0);
-          break;
-        case cameraControlsActions.PAN_UP:
-          this.threeDEngine.cameraManager.incrementCameraPan(0, -incrementPan.y);
-          break;
-        case cameraControlsActions.PAN_DOWN:
-          this.threeDEngine.cameraManager.incrementCameraPan(0, incrementPan.y);
-          break;
-        case cameraControlsActions.ROTATE_UP:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0, incrementRotation.y, undefined);
-          break;
-        case cameraControlsActions.ROTATE_DOWN:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0, -incrementRotation.y, undefined);
-          break;
-        case cameraControlsActions.ROTATE_LEFT:
-          this.threeDEngine.cameraManager.incrementCameraRotate(-incrementRotation.x, 0, undefined);
-          break;
-        case cameraControlsActions.ROTATE_RIGHT:
-          this.threeDEngine.cameraManager.incrementCameraRotate(incrementRotation.x, 0, undefined);
-          break;
-        case cameraControlsActions.ROTATE_Z:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0, 0, incrementRotation.z);
-          break;
-        case cameraControlsActions.ROTATE_MZ:
-          this.threeDEngine.cameraManager.incrementCameraRotate(0, 0, -incrementRotation.z);
-          break;
-        case cameraControlsActions.ROTATE:
-          this.threeDEngine.cameraManager.autoRotate(movieFilter); //movie filter
-          break;
-        case cameraControlsActions.ZOOM_IN:
-          this.threeDEngine.cameraManager.incrementCameraZoom(-incrementZoom);
-          break;
-        case cameraControlsActions.ZOOM_OUT:
-          this.threeDEngine.cameraManager.incrementCameraZoom(incrementZoom);
-          break;
-        case cameraControlsActions.PAN_HOME:
-          this.threeDEngine.cameraManager.resetCamera();
-          break;
-        case cameraControlsActions.WIREFRAME:
-          this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());
-          break;
+      case cameraControlsActions.PAN_LEFT:
+        this.threeDEngine.cameraManager.incrementCameraPan(-incrementPan.x, 0);
+        break;
+      case cameraControlsActions.PAN_RIGHT:
+        this.threeDEngine.cameraManager.incrementCameraPan(incrementPan.x, 0);
+        break;
+      case cameraControlsActions.PAN_UP:
+        this.threeDEngine.cameraManager.incrementCameraPan(0, -incrementPan.y);
+        break;
+      case cameraControlsActions.PAN_DOWN:
+        this.threeDEngine.cameraManager.incrementCameraPan(0, incrementPan.y);
+        break;
+      case cameraControlsActions.ROTATE_UP:
+        this.threeDEngine.cameraManager.incrementCameraRotate(0, incrementRotation.y, undefined);
+        break;
+      case cameraControlsActions.ROTATE_DOWN:
+        this.threeDEngine.cameraManager.incrementCameraRotate(0, -incrementRotation.y, undefined);
+        break;
+      case cameraControlsActions.ROTATE_LEFT:
+        this.threeDEngine.cameraManager.incrementCameraRotate(-incrementRotation.x, 0, undefined);
+        break;
+      case cameraControlsActions.ROTATE_RIGHT:
+        this.threeDEngine.cameraManager.incrementCameraRotate(incrementRotation.x, 0, undefined);
+        break;
+      case cameraControlsActions.ROTATE_Z:
+        this.threeDEngine.cameraManager.incrementCameraRotate(0, 0, incrementRotation.z);
+        break;
+      case cameraControlsActions.ROTATE_MZ:
+        this.threeDEngine.cameraManager.incrementCameraRotate(0, 0, -incrementRotation.z);
+        break;
+      case cameraControlsActions.ROTATE:
+        this.threeDEngine.cameraManager.autoRotate(movieFilter); // movie filter
+        break;
+      case cameraControlsActions.ZOOM_IN:
+        this.threeDEngine.cameraManager.incrementCameraZoom(-incrementZoom);
+        break;
+      case cameraControlsActions.ZOOM_OUT:
+        this.threeDEngine.cameraManager.incrementCameraZoom(incrementZoom);
+        break;
+      case cameraControlsActions.PAN_HOME:
+        this.threeDEngine.cameraManager.resetCamera();
+        break;
+      case cameraControlsActions.WIREFRAME:
+        this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());
+        break;
       }
     }
   }
 
-  render() {
+  render () {
     const { classes, data, cameraOptions, threeDObjects } = this.props;
 
     if (this.threeDEngine) {
@@ -132,9 +130,9 @@ class Canvas extends Component {
       <div className={classes.container} ref={this.sceneRef}>
         {
           <cameraOptions.cameraControls.instance
-          ref={this.cameraControls} 
-          wireframeButtonEnabled={cameraOptions.cameraControls.props.wireframeButtonEnabled}
-          cameraControlsHandler={this.cameraControlsHandler}
+            ref={this.cameraControls} 
+            wireframeButtonEnabled={cameraOptions.cameraControls.props.wireframeButtonEnabled}
+            cameraControlsHandler={this.cameraControlsHandler}
           />
         }
       </div>

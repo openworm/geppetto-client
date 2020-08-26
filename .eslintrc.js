@@ -110,5 +110,6 @@ module.exports = {
     "Canvas1": true,
     "clientX": true,
     "clientY": true,
+    "AFRAME": true,
   }
 };

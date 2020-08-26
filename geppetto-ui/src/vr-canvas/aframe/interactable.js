@@ -2,7 +2,7 @@
 import { object } from 'prop-types';
 import { BRING_CLOSER } from '../Events';
 
-function clicked(target, detail) {
+function clicked (target, detail) {
   const event = new CustomEvent('mesh_click', { detail: detail });
   target.dispatchEvent(event);
 }
@@ -51,7 +51,7 @@ AFRAME.registerComponent('interactable', {
       clicked(scene, el);
     });
 
-    el.addEventListener('gripdown', (evt) => {
+    el.addEventListener('gripdown', evt => {
       if (evt.detail === `${id}_rightHand`) {
         this.rhand = document.getElementById(evt.detail);
         this.baseRotation.rhand = el.object3D.rotation;
@@ -63,12 +63,14 @@ AFRAME.registerComponent('interactable', {
       }
     });
 
-    el.addEventListener('gripup', (evt) => {
-      // if (evt.detail === `${id}_rightHand`) {
-      //   this.rhand = null;
-      // } else if (evt.detail === `${id}_leftHand`) {
-      //   this.lhand = null;
-      // }
+    el.addEventListener('gripup', evt => {
+      /*
+       * if (evt.detail === `${id}_rightHand`) {
+       *   this.rhand = null;
+       * } else if (evt.detail === `${id}_leftHand`) {
+       *   this.lhand = null;
+       * }
+       */
       this.rhand = null;
       this.lhand = null;
     });
@@ -103,7 +105,7 @@ AFRAME.registerComponent('interactable', {
       }
     });
   },
-  getCloserPosition(obj, cameraPos, closerDistance) {
+  getCloserPosition (obj, cameraPos, closerDistance) {
     const bbox = new THREE.Box3().setFromObject(obj);
     const center = bbox.getCenter();
     const position = obj.getWorldPosition();
@@ -172,22 +174,22 @@ AFRAME.registerComponent('interactable', {
     }
   },
 
-  isExpanding() {
-    const rightXGrowing =
-      this.rhand.object3D.position.x - this.handOldPos.rhand.x >= 0;
-    const leftXDecreasing =
-      this.lhand.object3D.position.x - this.handOldPos.lhand.x <= 0;
+  isExpanding () {
+    const rightXGrowing
+      = this.rhand.object3D.position.x - this.handOldPos.rhand.x >= 0;
+    const leftXDecreasing
+      = this.lhand.object3D.position.x - this.handOldPos.lhand.x <= 0;
     return rightXGrowing && leftXDecreasing;
   },
 
-  getZDist(cameraPos, objPos, objBox, axis) {
+  getZDist (cameraPos, objPos, objBox, axis) {
     const diff1 = Math.abs(cameraPos[axis] - objBox.min[axis]);
     const diff2 = Math.abs(cameraPos[axis] - objBox.max[axis]);
     const closerDist = diff1 < diff2 ? objBox.min[axis] : objBox.max[axis];
     return Math.abs(objPos[axis] - closerDist);
   },
 
-  getYDist(cameraPos, objPos, objBox, axis) {
+  getYDist (cameraPos, objPos, objBox, axis) {
     const center = objBox.getCenter();
     const diff = Math.abs(objPos[axis] - center[axis]);
     if (cameraPos[axis] - diff < 0) {
@@ -196,15 +198,15 @@ AFRAME.registerComponent('interactable', {
     return diff - cameraPos[axis];
   },
 
-  convertToLocalCoordinates(newWorldPosition, obj) {
+  convertToLocalCoordinates (newWorldPosition, obj) {
     const localPosition = obj.position;
     const worldPosition = obj.getWorldPosition();
-    newWorldPosition.x =
-      (newWorldPosition.x * localPosition.x) / worldPosition.x;
-    newWorldPosition.y =
-      (newWorldPosition.y * localPosition.y) / worldPosition.y;
-    newWorldPosition.z =
-      (newWorldPosition.z * localPosition.z) / worldPosition.z;
+    newWorldPosition.x
+      = (newWorldPosition.x * localPosition.x) / worldPosition.x;
+    newWorldPosition.y
+      = (newWorldPosition.y * localPosition.y) / worldPosition.y;
+    newWorldPosition.z
+      = (newWorldPosition.z * localPosition.z) / worldPosition.z;
     return newWorldPosition;
   },
 });

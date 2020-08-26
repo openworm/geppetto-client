@@ -20,8 +20,8 @@ export default withStyles(styles)(({ onClick, tooltip, disabled, className, clas
       className={className}
       disableRipple
     >
-      {icon != null &&
-        <FontAwesomeIcon icon={icon} className={" fa-xs "} />
+      {icon != null
+        && <FontAwesomeIcon icon={icon} className={" fa-xs "} />
       }
     </IconButton>
   </Tooltip>

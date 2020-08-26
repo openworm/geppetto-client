@@ -1,5 +1,5 @@
 export default class ColorController {
-  constructor(meshFactory) {
+  constructor (meshFactory) {
     this.meshFactory = meshFactory;
   }
 
@@ -11,7 +11,7 @@ export default class ColorController {
    * @param {Instance} modulation - Variable which modulates the color
    * @param {Function} colorfn - Converts time-series value to [r,g,b]
    */
-  addColorFunction(instances) {
+  addColorFunction (instances) {
     const compositeToLit = {};
     const visualObjectsToLit = {};
     let currentCompositePath;
@@ -23,8 +23,8 @@ export default class ColorController {
       composite = instances[j].getParent();
 
       while (
-        composite.getMetaType() !=
-        GEPPETTO.Resources.ARRAY_ELEMENT_INSTANCE_NODE
+        composite.getMetaType()
+        != GEPPETTO.Resources.ARRAY_ELEMENT_INSTANCE_NODE
       ) {
         if (composite.getParent() == null) {
           // eslint-disable-next-line no-throw-literal
@@ -71,7 +71,7 @@ export default class ColorController {
    * @param {Instance} modulation - Variable which modulates the color
    * @param {Function} colorfn - Converts time-series value to [r,g,b]
    */
-  addColorFunctionBulk(instance, visualObjects) {
+  addColorFunctionBulk (instance, visualObjects) {
     if (visualObjects != null) {
       if (visualObjects.length > 0) {
         const elements = {};
@@ -91,11 +91,11 @@ export default class ColorController {
    * @param {Float}
    *            intensity - the lighting intensity from 0 (no illumination) to 1 (full illumination)
    */
-  colorInstance(instance, colorfn, intensity) {
+  colorInstance (instance, colorfn, intensity) {
     let threeObject;
     if (
-      instance in this.meshFactory.meshes &&
-      this.meshFactory.meshes[instance].visible
+      instance in this.meshFactory.meshes
+      && this.meshFactory.meshes[instance].visible
     ) {
       threeObject = this.meshFactory.meshes[instance];
     } else {
