@@ -36,7 +36,7 @@ export default class CameraManager {
     ) {
       this.resetCamera();
     } else {
-      if (flip.length > 0) {
+      if (flip && Array.isArray(flip)) {
         flip.forEach(element => {
           this.flipCamera(element);
         });
@@ -44,7 +44,6 @@ export default class CameraManager {
       if (position) {
         this.setCameraPosition(position.x, position.y, position.z);
       }
-
       if (rotation) {
         this.setCameraRotation(
           rotation.rx,
@@ -56,14 +55,12 @@ export default class CameraManager {
       if (autoRotate) {
         this.autoRotate(movieFilter);
       }
-
       if (zoomTo && Array.isArray(zoomTo)) {
         const instances = zoomTo.map(element => Instances.getInstance(element));
         if (instances.length > 0) {
           this.zoomTo(instances);
         }
       }
-
       if (rotateSpeed){
         this.engine.controls.rotateSpeed = rotateSpeed
       }

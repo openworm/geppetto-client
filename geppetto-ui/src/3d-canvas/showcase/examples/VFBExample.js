@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
-import model from './model.json';
 import * as THREE from 'three';
 
 const INSTANCES = [
@@ -38,7 +37,6 @@ const styles = () => ({
 class VFBExample extends Component {
   constructor (props) {
     super(props);
-    GEPPETTO.Manager.loadModel(model);
     for (const iname of INSTANCES) {
       Instances.getInstance(iname);
     }

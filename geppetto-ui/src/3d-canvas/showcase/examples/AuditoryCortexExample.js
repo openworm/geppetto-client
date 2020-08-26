@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
-import model from './simpleModel.json';
+import model from './model.json';
 import CameraControls, { cameraControlsActions, } from '../../../camera-controls/CameraControls';
 
 const INSTANCE_NAME = 'acnet2';
@@ -16,7 +16,7 @@ const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 const styles = () => ({
   container: {
     height: '800px',
-    width: '1400px',
+    width: '1240px',
     display: 'flex',
     alignItems: 'stretch',
   },
@@ -70,6 +70,7 @@ class AuditoryCortexExample extends Component {
         wireframe:false,
         position: { x: 230.357, y: 256.435, z: 934.238 },
         rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
+        flip:[]
       },
     };
 

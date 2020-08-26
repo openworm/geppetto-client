@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
-import model from './simpleModel.json';
 
-const INSTANCE_NAME = 'acnet2';
 const COLORS = [
   { r: 0, g: 0.2, b: 0.6, a: 1 },
   { r: 0.8, g: 0, b: 0, a: 1 },
@@ -25,8 +23,6 @@ class AuditoryCortexExample2 extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
-    GEPPETTO.Manager.loadModel(model);
-    Instances.getInstance(INSTANCE_NAME);
     this.state = {
       data: [
         {
