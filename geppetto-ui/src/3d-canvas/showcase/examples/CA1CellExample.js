@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
-import CameraControls, { cameraControlsActions, } from '../../../camera-controls/CameraControls';
+import CameraControls from '../../../camera-controls/CameraControls';
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [

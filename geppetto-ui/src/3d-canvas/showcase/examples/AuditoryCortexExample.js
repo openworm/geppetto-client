@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import model from './model.json';
-import CameraControls, { cameraControlsActions, } from '../../../camera-controls/CameraControls';
+import CameraControls from '../../../camera-controls/CameraControls';
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -77,7 +77,6 @@ class AuditoryCortexExample extends Component {
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
-    this.cameraControlsHandler = this.cameraControlsHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
   }
 
@@ -176,60 +175,6 @@ class AuditoryCortexExample extends Component {
   hoverHandler (obj) {
     console.log('Hover handler called:');
     console.log(obj);
-  }
-
-  cameraControlsHandler (action) {
-    const { cameraOptions } = this.state;
-    if (this.canvasRef.current && this.canvasRef.current.threeDEngine) {
-      const engine = this.canvasRef.current.threeDEngine;
-      switch (action) {
-      case cameraControlsActions.PAN_LEFT:
-        engine.cameraManager.incrementCameraPan(-0.01, 0);
-        break;
-      case cameraControlsActions.PAN_RIGHT:
-        engine.cameraManager.incrementCameraPan(0.01, 0);
-        break;
-      case cameraControlsActions.PAN_UP:
-        engine.cameraManager.incrementCameraPan(0, -0.01);
-        break;
-      case cameraControlsActions.PAN_DOWN:
-        engine.cameraManager.incrementCameraPan(0, 0.01);
-        break;
-      case cameraControlsActions.ROTATE_UP:
-        engine.cameraManager.incrementCameraRotate(0, 0.01, undefined);
-        break;
-      case cameraControlsActions.ROTATE_DOWN:
-        engine.cameraManager.incrementCameraRotate(0, -0.01, undefined);
-        break;
-      case cameraControlsActions.ROTATE_LEFT:
-        engine.cameraManager.incrementCameraRotate(-0.01, 0, undefined);
-        break;
-      case cameraControlsActions.ROTATE_RIGHT:
-        engine.cameraManager.incrementCameraRotate(0.01, 0, undefined);
-        break;
-      case cameraControlsActions.ROTATE_Z:
-        engine.cameraManager.incrementCameraRotate(0, 0, 0.01);
-        break;
-      case cameraControlsActions.ROTATE_MZ:
-        engine.cameraManager.incrementCameraRotate(0, 0, -0.01);
-        break;
-      case cameraControlsActions.ROTATE:
-        engine.cameraManager.autoRotate(cameraOptions.movieFilter); // movie filter
-        break;
-      case cameraControlsActions.ZOOM_IN:
-        engine.cameraManager.incrementCameraZoom(-0.1);
-        break;
-      case cameraControlsActions.ZOOM_OUT:
-        engine.cameraManager.incrementCameraZoom(+0.1);
-        break;
-      case cameraControlsActions.PAN_HOME:
-        this.setState(() => ({ cameraOptions: { ...cameraOptions, reset: !cameraOptions.reset }, }));
-        break;
-      case cameraControlsActions.WIREFRAME:
-        engine.setWireframe(!engine.getWireframe());
-        break;
-      }
-    }
   }
 
   render () {
