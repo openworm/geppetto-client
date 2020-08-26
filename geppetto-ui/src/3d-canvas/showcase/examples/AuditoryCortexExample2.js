@@ -48,7 +48,7 @@ class AuditoryCortexExample2 extends Component {
         angle: 60,
         near: 10,
         far: 2000000,
-        flip: 'z',
+        flip: ['z'],
         baseZoom: 1,
         zoomTo: ['acnet2.baskets_12[7]'],
         cameraControls: { 
@@ -58,15 +58,15 @@ class AuditoryCortexExample2 extends Component {
           }
         },
         incrementPan: {
-          x:0.01,
-          y:0.01
+          x:0.05,
+          y:0.05
         },
         incrementRotation: {
-          x:0.01,
-          y:0.01,
-          z:0.01,
+          x:0.05,
+          y:0.05,
+          z:0.05,
         },
-        incrementZoom: 0.1,
+        incrementZoom: 0.5,
         reset: false,
         movieFilter: false,
         autorotate:false,
@@ -144,7 +144,7 @@ class AuditoryCortexExample2 extends Component {
         ...cameraOptions,
         position: this.lastCameraUpdate.position,
         zoomTo: [],
-        flip: null
+        flip: []
       };
       if(this.lastCameraUpdate.rotation.radius){
         camOptions = {

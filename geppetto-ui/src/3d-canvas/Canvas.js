@@ -32,6 +32,7 @@ class Canvas extends Component {
       pickingEnabled,
       linesThreshold,
       hoverListeners,
+      onMount
     } = this.props;
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
@@ -44,6 +45,7 @@ class Canvas extends Component {
       hoverListeners
     );
     this.threeDEngine.start(data, cameraOptions, true);
+    onMount(this.threeDEngine.scene)
   }
 
   componentWillUnmount() {
@@ -114,12 +116,13 @@ class Canvas extends Component {
   }
 
   render() {
-    const { classes, data, cameraOptions } = this.props;
+    const { classes, data, cameraOptions, threeDObjects } = this.props;
 
     if (this.threeDEngine) {
       this.threeDEngine.update(
         data,
         cameraOptions,
+        threeDObjects,
         this.shouldEngineTraverse()
       );
     }
@@ -157,12 +160,23 @@ Canvas.defaultProps = {
     reset: false,
     movieFilter:false,
     autorotate:false,
-    wireframe:false
+    wireframe:false,
+    flip: [],
+    zoomTo: [],
+    cameraControls:  { 
+      instance: null,
+      props: {}
+    },
+    rotateSpeed: 0.5,
   },
   backgroundColor: 0x000000,
   pickingEnabled: true,
   linesThreshold: 2000,
   hoverListeners: [],
+  threeDObjects: [],
+  cameraHandler: () => {},
+  selectionHandler: () => {},
+  onMount: () => {},
 };
 
 Canvas.propTypes = {
@@ -175,6 +189,10 @@ Canvas.propTypes = {
    */
   cameraOptions: PropTypes.object,
   /**
+   * Three JS objects to add to the scene
+   */
+  threeDObjects: PropTypes.array,
+  /**
    * Function to callback on camera changes
    */
   cameraHandler: PropTypes.func,
@@ -183,6 +201,10 @@ Canvas.propTypes = {
    */
   selectionHandler: PropTypes.func,
   /**
+   * Function to callback on component did mount with scene
+   */
+  onMount: PropTypes.func,
+  /**
    * Scene background color
    */
   backgroundColor: PropTypes.number,
@@ -190,10 +212,6 @@ Canvas.propTypes = {
    * Boolean to enable/disable 3d picking
    */
   pickingEnabled: PropTypes.bool,
-  /**
-   * Camera Controls
-   */
-  cameraControls: PropTypes.object,
   /**
    * Threshold to limit scene complexity
    */

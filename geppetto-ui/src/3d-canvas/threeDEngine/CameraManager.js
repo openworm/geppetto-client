@@ -26,14 +26,27 @@ export default class CameraManager {
       movieFilter,
       zoomTo,
       reset,
+      rotateSpeed
     } = cameraOptions;
 
-    if (flip) {
-      this.flipCamera(flip);
+
+    if (
+      reset ||
+      (position == undefined && rotation == undefined && zoomTo == undefined)
+    ) {
+      this.resetCamera();
+    }
+
+    else{
+      if (flip.length>0) {
+      flip.forEach(element => {
+        this.flipCamera(element);
+      });
     }
     if (position) {
       this.setCameraPosition(position.x, position.y, position.z);
     }
+
     if (rotation) {
       this.setCameraRotation(
         rotation.rx,
@@ -45,18 +58,18 @@ export default class CameraManager {
     if (autoRotate) {
       this.autoRotate(movieFilter);
     }
+
     if (zoomTo && Array.isArray(zoomTo)) {
       const instances = zoomTo.map((element) => Instances.getInstance(element));
       if (instances.length > 0) {
         this.zoomTo(instances);
       }
     }
-    if (
-      reset ||
-      (position == undefined && rotation == undefined && zoomTo == undefined)
-    ) {
-      this.resetCamera();
+
+    if(rotateSpeed){
+      this.engine.controls.rotateSpeed = rotateSpeed
     }
+  }
   }
   /**
    *

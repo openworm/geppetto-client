@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import model from './model.json';
+import * as THREE from 'three';
 
 const INSTANCES = [
   'VFB_00017894',
@@ -77,39 +78,88 @@ class VFBExample extends Component {
         }, */
       ],
       selected: {},
-      cameraOptions: {
-        angle: 60,
-        near: 10,
-        far: 2000000,
-        baseZoom: 1,
-        position: { x: 319.7, y: 153.12, z: -494.2 },
-        rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
-        cameraControls: { 
-          instance: CameraControls,
-          props: {
-            wireframeButtonEnabled: true,
-          }
-        },
-        incrementPan: {
-          x:0.01,
-          y:0.01
-        },
-        incrementRotation: {
-          x:0.01,
-          y:0.01,
-          z:0.01,
-        },
-        incrementZoom: 0.1,
-        reset: false,
-        movieFilter: false,
-        autorotate:false,
-        wireframe:false
-      },
+      threeDObjects: []
     };
+
+    this.cameraOptions = {
+      position: { x: 319.7, y: 153.12, z: -494.2 },
+      rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
+      cameraControls: { 
+        instance: CameraControls,
+        props: {
+          wireframeButtonEnabled: true,
+        }
+      },
+      flip: ['y', 'z',],
+      rotateSpeed: 3,
+    },
 
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
+    this.onMount = this.onMount.bind(this);
+  }
+
+/**
+     * Add a 3D plane to the scene at the given coordinates (4) points.
+     * It could be any geometry really.
+     * @returns {THREE.Mesh}
+     */
+    get3DPlane (x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4) {
+
+      const geometry = new THREE.Geometry();
+      geometry.vertices.push(
+        new THREE.Vector3(x1, y1, z1),// vertex0
+        new THREE.Vector3(x2, y2, z2),// 1
+        new THREE.Vector3(x3, y3, z3),// 2
+        new THREE.Vector3(x4, y4, z4)// 3
+      );
+      geometry.faces.push(
+        new THREE.Face3(2, 1, 0),// use vertices of rank 2,1,0
+        new THREE.Face3(3, 1, 2)// vertices[3],1,2...
+      );
+      geometry.computeBoundingBox();
+
+      const max = geometry.boundingBox.max,
+        min = geometry.boundingBox.min;
+      const offset = new THREE.Vector2(0 - min.x, 0 - min.y);
+      const range = new THREE.Vector2(max.x - min.x, max.y - min.y);
+      const faces = geometry.faces;
+
+      geometry.faceVertexUvs[0] = [];
+
+      for (let i = 0; i < faces.length; i++) {
+
+        const v1 = geometry.vertices[faces[i].a],
+          v2 = geometry.vertices[faces[i].b],
+          v3 = geometry.vertices[faces[i].c];
+
+        geometry.faceVertexUvs[0].push([
+          new THREE.Vector2((v1.x + offset.x) / range.x, (v1.y + offset.y) / range.y),
+          new THREE.Vector2((v2.x + offset.x) / range.x, (v2.y + offset.y) / range.y),
+          new THREE.Vector2((v3.x + offset.x) / range.x, (v3.y + offset.y) / range.y)
+        ]);
+      }
+      geometry.uvsNeedUpdate = true;
+      geometry.dynamic = true;
+
+      const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
+      material.nowireframe = true;
+      
+      material.opacity = 0.3;
+      material.transparent = true;
+      material.color.setHex("0xb0b0b0");
+
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.renderOrder = 1;
+      mesh.clickThrough = true;
+      return mesh;
+    }
+
+  onMount(scene) {
+   const bb = new THREE.Box3().setFromObject(scene);
+   const plane = this.get3DPlane(bb.min.x, bb.min.y, bb.min.z, bb.max.x, bb.max.y, bb.max.z)
+   this.setState(() => ({ threeDObjects: [plane]}));
   }
 
   cameraHandler(obj) {
@@ -227,17 +277,15 @@ class VFBExample extends Component {
 
   render() {
     const { classes } = this.props;
-    const { data, cameraOptions } = this.state;
+    const { data, threeDObjects } = this.state;
 
-    let camOptions = cameraOptions;
+    let camOptions = this.cameraOptions;
     if (this.lastCameraUpdate) {
       camOptions = {
-        ...cameraOptions,
+        ...this.cameraOptions,
         position: this.lastCameraUpdate.position,
-        rotation: {
-          ...this.lastCameraUpdate.rotation,
-          radius: cameraOptions.rotation.radius,
-        },
+        rotation: this.lastCameraUpdate.rotation,
+        flip: []
       };
     }
 
@@ -246,7 +294,9 @@ class VFBExample extends Component {
         <Canvas
           ref={this.canvasRef}
           data={data}
+          threeDObjects={threeDObjects}
           cameraOptions={camOptions}
+          onMount={this.onMount}
           cameraHandler={this.cameraHandler}
           selectionHandler={this.selectionHandler}
           linesThreshold={10000}

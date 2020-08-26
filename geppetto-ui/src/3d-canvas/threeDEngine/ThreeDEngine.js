@@ -138,7 +138,7 @@ export default class ThreeDEngine {
     this.controls = new THREE.TrackballControls(
       this.cameraManager.getCamera(),
       this.renderer.domElement,
-      this.cameraHandler
+      this.cameraHandler,
     );
     this.controls.noZoom = false;
     this.controls.noPan = false;
@@ -679,20 +679,22 @@ export default class ThreeDEngine {
     });
   }
 
-  update(proxyInstances, cameraOptions, toTraverse) {
+  update(proxyInstances, cameraOptions, threeDObjects, toTraverse) {
     if (toTraverse) {
       this.addInstancesToScene(proxyInstances);
-      //this.setAllGeometriesType(this.getDefaultGeometryType());
-
+      threeDObjects.forEach(element => {
+        this.scene.add(element)
+      });
       this.scene.updateMatrixWorld(true);
     }
     this.updateInstancesColor(proxyInstances);
     this.updateInstancesConnectionLines(proxyInstances);
     this.cameraManager.update(cameraOptions);
+    
   }
 
   start(proxyInstances, cameraOptions, toTraverse) {
-    this.update(proxyInstances, cameraOptions, toTraverse);
+    this.update(proxyInstances, cameraOptions, [], toTraverse);
     if (!this.frameId) {
       this.frameId = window.requestAnimationFrame(this.animate);
     }
