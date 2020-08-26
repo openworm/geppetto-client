@@ -34,6 +34,7 @@ class Canvas extends Component {
       hoverListeners,
       onMount
     } = this.props;
+    // TODO: pass props instead?
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
       cameraOptions,
@@ -54,6 +55,7 @@ class Canvas extends Component {
       this.threeDEngine.getRenderer().domElement
     );
   }
+
 
   shouldEngineTraverse() {
     // TODO: check if new instance added, check if split meshes changed?
@@ -177,6 +179,7 @@ Canvas.defaultProps = {
   cameraHandler: () => {},
   selectionHandler: () => {},
   onMount: () => {},
+  modelVersion: 0
 };
 
 Canvas.propTypes = {
@@ -184,6 +187,10 @@ Canvas.propTypes = {
    * (Proxy) Instances to visualize
    */
   data: PropTypes.array.isRequired,
+  /**
+   * Model identifier needed to propagate updates on async changes
+   */
+  modelVersion: PropTypes.number,
   /**
    * Options to customize camera
    */

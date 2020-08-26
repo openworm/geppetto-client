@@ -78,7 +78,8 @@ class VFBExample extends Component {
         }, */
       ],
       selected: {},
-      threeDObjects: []
+      threeDObjects: [],
+      modelVersion:0
     };
 
     this.cameraOptions = {
@@ -98,6 +99,12 @@ class VFBExample extends Component {
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.onMount = this.onMount.bind(this);
+  }
+
+  componentDidMount()
+  {
+    GEPPETTO.on(GEPPETTO.Events.Model_loaded, 
+      ()=>{this.setState(() => ({ modelVersion: modelVersion+1}))});
   }
 
 /**
@@ -275,9 +282,13 @@ class VFBExample extends Component {
     });
   }
 
+  getModelVersion() {
+    return true;
+  }
+
   render() {
     const { classes } = this.props;
-    const { data, threeDObjects } = this.state;
+    const { data, threeDObjects, modelVersion } = this.state;
 
     let camOptions = this.cameraOptions;
     if (this.lastCameraUpdate) {
@@ -293,6 +304,7 @@ class VFBExample extends Component {
       <div className={classes.container}>
         <Canvas
           ref={this.canvasRef}
+          modelVersion={modelVersion}
           data={data}
           threeDObjects={threeDObjects}
           cameraOptions={camOptions}
