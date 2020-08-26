@@ -72,10 +72,10 @@ class VFBExample extends Component {
         {
           instancePath: 'VFB_00030624',
         },
-/*         {
+        {
           instancePath: 'VFB_00030783',
           color: COLORS[6],
-        }, */
+        },
       ],
       selected: {},
       threeDObjects: [],
@@ -170,7 +170,7 @@ class VFBExample extends Component {
   }
 
   cameraHandler(obj) {
-    this.lastCameraUpdate = obj;
+    //this.lastCameraUpdate = obj;
 
     console.log('Camera has changed:');
     console.log(obj);
