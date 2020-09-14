@@ -84,6 +84,12 @@ const menuStyle = {
       paddingTop: 0,
       paddingBottom: 0,
     }
+  },
+  iconStyle: {
+    display: "inline-block",
+    color: '#ffffff',
+    minWidth: '25px',
+    width: '25px',
   }
 };
 
@@ -117,27 +123,21 @@ class Menu extends React.Component {
     });
   }
 
+  componentDidUpdate (prevProps) {
+    // We need a way to close the menu on zoom, scroll, right click, etc events on other parts of the application
+    if (this.props.open === false && prevProps.open === true) {
+      this.menuHandler('')
+    }
+  }
+  
   render () {
-    var buttonsStyle = menuStyle.buttonsStyle;
-    var drawersStyle = menuStyle.drawersStyle;
-    var labelsStyle = menuStyle.labelsStyle;
-    if (this.props.configuration.global.buttonsStyle !== undefined
-        && this.props.configuration.global.buttonsStyle.standard !== undefined
-        && this.props.configuration.global.buttonsStyle.hover !== undefined) {
-      buttonsStyle = this.props.configuration.global.buttonsStyle;
-    }
 
-    if (this.props.configuration.global.drawersStyle !== undefined
-        && this.props.configuration.global.drawersStyle.standard !== undefined
-        && this.props.configuration.global.drawersStyle.hover !== undefined) {
-      drawersStyle = this.props.configuration.global.drawersStyle;
-    }
 
-    if (this.props.configuration.global.labelsStyle !== undefined
-        && this.props.configuration.global.labelsStyle.standard !== undefined
-        && this.props.configuration.global.labelsStyle.hover !== undefined) {
-      labelsStyle = this.props.configuration.global.labelsStyle;
-    }
+    const buttonsStyle = { ...menuStyle.buttonsStyle, ...this.props.configuration.global.buttonsStyle };
+    const drawersStyle = { ...menuStyle.drawersStyle, ...this.props.configuration.global.drawersStyle };
+    const labelsStyle = { ...menuStyle.labelsStyle, ...this.props.configuration.global.labelsStyle };
+    const iconStyle = { ...menuStyle.iconStyle, ...this.props.configuration.global.iconStyle };
+    const itemOptions = this.props.configuration.itemOptions;
 
     var buttonsToRender = this.props.configuration.buttons.map((button, index) => (
       <MenuSection
@@ -153,6 +153,8 @@ class Menu extends React.Component {
         buttonsStyle={buttonsStyle}
         drawersStyle={drawersStyle}
         labelsStyle={labelsStyle}
+        iconStyle={iconStyle}
+        itemOptions={itemOptions}
       />
     ));
 

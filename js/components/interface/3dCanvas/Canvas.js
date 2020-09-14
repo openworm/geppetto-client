@@ -34,23 +34,9 @@ define(function (require) {
         },
         instances: []
       }
-      
+
       this.initialCameraReset = false;
       this.animationRunning = false;
-    }
-
-    startAnimation () {
-      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
-        this.engine.animationRunning = true;
-        this.engine.animate();
-      }
-    }
-
-    stopAnimation () {
-      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
-        this.engine.animationRunning = false;
-        this.engine.animate();
-      }
     }
 
     /**
@@ -634,7 +620,7 @@ define(function (require) {
      * @return {Canvas}
      */
     autoRotate () {
-      this.engine.autoRotate();
+      this.engine.autoRotate({ movieFilter: this.props.movieFilter });
       return this;
     }
 
@@ -817,24 +803,6 @@ define(function (require) {
         GEPPETTO.WidgetsListener.subscribe(this.engine, this.id);
 
         var that = this;
-
-        if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
-          $("#" + this.props.id + "_component").on("mouseover", function (event, ui) {
-            that.startAnimation();
-          });
-
-          $("#" + this.props.id + "_component").on("mouseout", function (event, ui) {
-            that.stopAnimation();
-          });
-
-          GEPPETTO.on(GEPPETTO.Events.selectInstance, () => {
-            this.stopAnimation();
-          }, this);
-
-          GEPPETTO.on(GEPPETTO.Events.deselectInstance, () => {
-            this.stopAnimation();
-          }, this);
-        }
 
         window.addEventListener('resize', function () {
           var [width, height] = that.setContainerDimensions();

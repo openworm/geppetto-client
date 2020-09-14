@@ -90,6 +90,7 @@ Manager.prototype = {
 
     console.timeEnd(GEPPETTO.Resources.LOADING_PROJECT);
     GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    return window.Model;
   },
 
   /**

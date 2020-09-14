@@ -22,7 +22,7 @@ define(function (require) {
       this.setState({ show: true });
     }
 
-    componentWillReceiveProps (nextProps) {
+    UNSAFE_componentWillReceiveProps (nextProps) {
       if (nextProps.show != this.props.show) {
         this.setState({ show: nextProps.show });
       }

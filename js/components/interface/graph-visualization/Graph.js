@@ -380,24 +380,12 @@ export default class GeppettoGraphVisualization extends Component {
 
     if (d2) {
       return <div id={this.props.id ? this.props.id : "graph-2d"} style={this.props.containerStyle ? this.props.containerStyle : null} >
-        { this.props.controls ? this.props.controls : null }
+        { this.props.controls ? this.props.controls : null } 
         <ForceGraph2D 
-          linkCanvasObjectMode={ this.props.linkCanvasObjectMode ? this.props.linkCanvasObjectMode : () => "replace" }
-          linkCanvasObject={ this.props.linkCanvasObject ? this.props.linkCanvasObject : this.linkCanvasObject.bind(this) }
-          linkWidth = { this.props.linkWidth ? this.props.linkWidth : 1 }
-          nodeCanvasObject={this.props.nodeCanvasObject ? this.props.nodeCanvasObject : this.nodeWithName.bind(this)}
-          nodeCanvasObjectMode={this.props.nodeCanvasObjectMode ? this.props.nodeCanvasObjectMode : null}
-          nodeRelSize={this.props.nodeRelSize ? this.props.nodeRelSize : this.size} 
-          nodeVal={this.props.nodeVal ? this.props.nodeVal : node => 100 / (node.level + 1)}
-          backgroundColor = {this.props.backgroundColor ? this.props.backgroundColor : "transparent"}
-          dagMode = {this.props.dagMode ? this.props.dagMode : null}
-          dagLevelDistance={this.props.dagLevelDistance ? this.props.dagLevelDistance : 100}  
-          enableNavigationControls = { this.props.enableNavigationControls ? this.props.enableNavigationControls : false }
-          enableZoomPanInteraction = { this.props.enableZoomPanInteraction ? this.props.enableZoomPanInteraction : false }
-          enableNodeDrag = { this.props.enableNodeDrag ? this.props.enableNodeDrag : true} 
-          onLinkHover = { this.props.onLinkHover ? this.props.onLinkHover : null }
-          onNodeHover = { this.props.onNodeHover ? this.props.onNodeHover : null }
-          onNodeClick = {this.props.onNodeClick ? this.props.onNodeClick : null }
+          linkCanvasObjectMode={() => "replace"}
+          linkCanvasObject={this.linkCanvasObject.bind(this)} 
+          nodeCanvasObject={this.nodeWithName.bind(this)} 
+          nodeRelSize={this.size} 
           {...commonProps}/>
       </div>
     } 

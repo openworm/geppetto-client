@@ -32,6 +32,7 @@ define(function (require) {
       this.closeDrawer = this.closeDrawer.bind(this);
       this.maximizeDrawer = this.maximizeDrawer.bind(this);
       this.minimizeDrawer = this.minimizeDrawer.bind(this);
+      this.marginTop = 50
     }
 
     // using the callback onResize of Rnd, keep tracks of the resize and animate the tabber
@@ -43,9 +44,10 @@ define(function (require) {
         var newOffset = window.innerHeight - (e.clientY - e.layerY);
       }
 
-      if (newOffset >= window.innerHeight) {
-        newOffset = window.innerHeight - 50;
+      if (newOffset >= window.innerHeight - this.marginTop) {
+        newOffset = window.innerHeight - this.marginTop;
       }
+        
       if (newOffset < 250) {
         newOffset = 250;
       }
@@ -60,8 +62,8 @@ define(function (require) {
         var newOffset = window.innerHeight - (e.clientY - e.layerY);
       }
 
-      if (newOffset >= window.innerHeight) {
-        newOffset = window.innerHeight - 50;
+      if (newOffset >= window.innerHeight - this.marginTop) {
+        newOffset = window.innerHeight - this.marginTop;
       }
       if (newOffset < 250) {
         newOffset = 250;
@@ -130,8 +132,21 @@ define(function (require) {
       }
     }
 
+    setMarginTop () {
+      if (this.marginTop == 50 && this.props.anchor) {
+        try {
+          this.marginTop += document.getElementById(this.props.anchor).getBoundingClientRect().height
+        } catch (error) {
+          console.log(`'${this.props.anchor}' element is not part of the DOM.`)
+        }
+      }
+
+      return this.marginTop
+    }
+
     // Called by the DrawerButton to determine when the drawer has to be open or closed
     openDrawer (buttonClicked) {
+      this.setMarginTop()
       if (this.state.drawerOpened && (buttonClicked == this.state.selectedTab)) {
         this.setState({
           selectedTab: null,
@@ -148,7 +163,11 @@ define(function (require) {
     }
 
     maximizeDrawer () {
-      var newOffset = (this.state.drawerHeight >= window.innerHeight - 50) ? 250 : window.innerHeight - 50;
+      var marginTop = 0;
+      if (this.props.anchor) {
+        var marginTop = document.getElementById(this.props.anchor).getBoundingClientRect().height
+      }
+      var newOffset = (this.state.drawerHeight >= window.innerHeight - this.marginTop) ? 250 : window.innerHeight - this.marginTop;
       this.rnd.updateSize({ height: newOffset, width: '100%' });
       this.setState({ drawerHeight: newOffset });
     }
@@ -196,7 +215,8 @@ define(function (require) {
           disableDragging={true}
           onResize={this.drawerResizing}
           onResizeStop={this.drawerStopResizing}
-          maxHeight={window.innerHeight - 50} minHeight={250}
+          maxHeight={window.innerHeight - this.marginTop}
+          minHeight={250}
           ref={c => {
             this.rnd = c; 
           }} >
