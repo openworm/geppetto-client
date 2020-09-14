@@ -79,7 +79,7 @@ class MenuSection extends React.Component {
     this.setState({ hover: false });
   };
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps (nextProps) {
     if ((nextProps.sectionOpened !== this.props.id) && (this.props.menuOpen === true) && (this.state.anchorEl !== null)) {
       this.setState({ anchorEl: null });
     }
@@ -89,12 +89,38 @@ class MenuSection extends React.Component {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : null;
-    const customStyle = this.props.itemOptions;
-    let buttonClasses;
+
+    var popperToRender = undefined;
+    if (this.props.button.list !== undefined) {
+      popperToRender = (
+        <MenuPopper
+          parentRef={anchorEl}
+          parentHandler={this.handleClick}
+          menuList={this.props.button.list}
+          menuHandler={this.props.menuHandler}
+          menuHandlerDirect={this.props.menuHandlerDirect}
+          awayClickHandler={this.handleAwayListener}
+          position={(this.props.button.position !== undefined) ? this.props.button.position : "right"}
+        />
+      );
+    } else if (this.state.customList !== undefined) {
+      popperToRender = (
+        <MenuPopper
+          parentRef={anchorEl}
+          parentHandler={this.handleClick}
+          menuList={this.state.customList}
+          menuHandler={this.props.menuHandler}
+          menuHandlerDirect={this.props.menuHandlerDirect}
+          awayClickHandler={this.handleAwayListener}
+          position={(this.props.button.position !== undefined) ? this.props.button.position : "right"}
+        />
+      );
+    }
+    var buttonClasses = undefined;
     if (open || this.state.hover) {
-      buttonClasses = { ...this.props.buttonsStyle?.standard, ...this.props.button?.style?.standard, ...this.props.buttonsStyle?.hover, ...this.props.button?.style?.hover };
+      buttonClasses = this.props.buttonsStyle !== undefined ? this.props.buttonsStyle.hover : undefined;
     } else {
-      buttonClasses = { ...this.props.buttonsStyle?.standard, ...this.props.button?.style?.standard };
+      buttonClasses = this.props.buttonsStyle !== undefined ? this.props.buttonsStyle.standard : undefined;
     }
 
     return (
@@ -102,7 +128,7 @@ class MenuSection extends React.Component {
         <Button
           style={buttonClasses}
           size='small'
-          id={typeof this.props.button.label === 'string' ? this.props.button.label : 'geppetto-menu-btn'}
+          id={this.props.button.label}
           variant="contained"
           aria-describedby={id}
           onClick={this.handleClick}
@@ -110,7 +136,6 @@ class MenuSection extends React.Component {
           onMouseOut={this.handleOut}>
           {this.props.button.icon !== "" ? <span style={{ display: "inline-block", width: "25px" }}><i className={this.props.button.icon}></i></span> : undefined}
           {this.props.button.label}
-          
         </Button>
         <MenuPopper
           parentRef={anchorEl}
@@ -122,8 +147,6 @@ class MenuSection extends React.Component {
           position={(this.props.button.position !== undefined) ? this.props.button.position : "right"}
           drawersStyle={this.props.drawersStyle}
           labelsStyle={this.props.labelsStyle}
-          iconStyle={this.props.iconStyle}
-          itemOptions={this.props.itemOptions}
         />
       </span>
     );

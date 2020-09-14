@@ -101,7 +101,7 @@ function GlobalHandler (GEPPETTO) {
 
   messageHandler[messageTypes.RECONNECTION_ERROR] = function (payload) {
     GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.RECONNECTION_ERROR, payload.message);
-    GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+    GEPPETTO.MessageSocket.SocketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
     GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
     GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
   };

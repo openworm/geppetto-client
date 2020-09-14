@@ -1514,19 +1514,15 @@ define(['jquery'], function () {
      * Rotate the camera around the selection
      *
      */
-    autoRotate: function (props) {
+    autoRotate: function () {
       var that = this;
       if (this.rotate == null) {
-        if (props.movieFilter === undefined || props.movieFilter === true) {
-          this.movieMode(true);
-        }
+        this.movieMode(true);
         this.rotate = setInterval(function () {
           that.incrementCameraRotate(0.01, 0)
         }, 100);
       } else {
-        if (props.movieFilter === undefined || props.movieFilter === true) {
-          this.movieMode(false);
-        }
+        this.movieMode(false);
         clearInterval(this.rotate);
         this.rotate = null;
       }

@@ -131,7 +131,6 @@ define(function (require) {
       var onlyExpandSearchedNodes = (this.props.searchQuery !== undefined && this.props.searchQuery !== null);
       return (
         <div key={this.props.id + "_component"} id={this.props.id + "_component"} className="treeViewer" style={this.props.style}>
-          { this.props.controls ? this.props.controls : null } 
           <SortableTree
             style={this.props.style}
             treeData={this.state.treeData}

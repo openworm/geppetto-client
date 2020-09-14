@@ -160,7 +160,7 @@ export default function (GEPPETTO) {
       },
 
       createStaticInstances: function (instances) {
-        return instances ? instances.filter(inst => !inst.synched).map(instance => this.createStaticInstance(instance)) : [];
+        return instances ? instances.map(instance => this.createStaticInstance(instance)) : [];
       },
 
 
@@ -178,6 +178,8 @@ export default function (GEPPETTO) {
         }
         if (instance.value) {
           instance.value = this.createValue(rawInstance, { wrappedObj: rawInstance.value });
+        } else {
+          console.error("Instance", instance, "has no value defined");
         }
           
         return instance;
@@ -625,22 +627,25 @@ export default function (GEPPETTO) {
       populateConnections: function (instance) {
         // check if it's a connection
         if (instance.getMetaType() === GEPPETTO.Resources.SIMPLE_CONNECTION_INSTANCE_NODE){
-          
-          
-          if (instance.a.$ref !== undefined) {
-            instance.a = this.resolve(instance.a.$ref);
-            if (instance.a) {
-              instance.a.addConnection(instance);
-            }
+          if (instance.a.$ref == undefined) {
+            // Already populated
+            return;
+          }
+
+          const a = this.resolve(instance.a.$ref);
+          if (a) {
+            instance.a = a;
+            instance.a.addConnection(instance);
           }
           
-          
-          if (instance.b.$ref !== undefined) {
-            instance.b = this.resolve(instance.b.$ref);
-            if (instance.b) {
-              instance.b.addConnection(instance);
-            }
+          const b = this.resolve(instance.b.$ref);
+          if (b) {
+            instance.b = b;
+            instance.b.addConnection(instance);
           }
+          
+          // TODO this is a shortcut to add connections, verify it's equivalent
+          
           
           return;
         }
@@ -841,6 +846,7 @@ export default function (GEPPETTO) {
         const currentWorld = this.geppettoModel.getCurrentWorld();
         // STEP 3b: merge world.variables and instances
         if (currentWorld) {
+          this.populateInstanceReferences(diffModel);
           diffVars = diffModel.getCurrentWorld().getVariables();
           diffReport.worlds = rawModel.worlds.map(world => ({ ...world, variables: [], instances: [] }))
           
@@ -1329,18 +1335,14 @@ export default function (GEPPETTO) {
           window.Instances[topInstances[k].getId()] = topInstances[k];
         }
 
-        newInstancesPaths.forEach(newInstance => {
+        newInstancesPaths.map(newInstance => {
           if (newInstance !== "time") {
-            if (newInstance.includes('.')) {
-              let instanceStrings = newInstance.split(".");
-              if (window.Instances[instanceStrings[0]][instanceStrings[1]] !== undefined) {
-                GEPPETTO.trigger(GEPPETTO.Events.Instance_added, newInstance);
-              }
-            } else if (window.Instances[newInstance] !== undefined){
+            let instanceStrings = newInstance.split(".");
+            if (window.Instances[instanceStrings[0]][instanceStrings[1]] !== undefined) {
               GEPPETTO.trigger(GEPPETTO.Events.Instance_added, newInstance);
             }
           }
-        })
+        });
       },
 
       /**

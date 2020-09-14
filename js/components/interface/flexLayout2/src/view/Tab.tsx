@@ -29,7 +29,7 @@ export class Tab extends React.Component<ITabProps, any> {
         //console.log("unmount " + this.props.node.getName());
     }
 
-    UNSAFE_componentWillReceiveProps(newProps: ITabProps) {
+    componentWillReceiveProps(newProps: ITabProps) {
         if (!this.state.renderComponent && newProps.selected) {
             // load on demand
             //console.log("load on demand: " + this.props.node.getName());

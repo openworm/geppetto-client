@@ -38,7 +38,7 @@ export class TabSet extends React.Component<ITabSetProps, any> {
         this.updateVisibleTabs();
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps: ITabSetProps) {
+    componentWillReceiveProps(nextProps: ITabSetProps) {
         this.showToolbar = true;
         this.showOverflow = false;
         this.recalcVisibleTabs = true;

@@ -305,10 +305,10 @@ define(function (require) {
             if (inst != undefined){
               this.handleInstanceSelection(found[0]["id"]);
             } else {
+              // one does not simply assign buttons without deep cloning them
+              var buttons = JSON.parse(JSON.stringify(found[0].buttons));
               // data source item has buttons
-              if (found[0].buttons != null && found[0].buttons != undefined){
-                // one does not simply assign buttons without deep cloning them
-                var buttons = JSON.parse(JSON.stringify(found[0].buttons));
+              if (buttons != null && buttons != undefined){
                 var button;
                 // format button actions to have proper values instead of placeholders
                 for (var prop in buttons) {

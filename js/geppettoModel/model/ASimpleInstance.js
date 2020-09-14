@@ -10,7 +10,7 @@ export default class ASimpleInstance extends ObjectWrapper{
     this.value = node.value;
     this.type = node.type;
     this.capabilities = [];
-    this.connections = new Set();
+    this.connections = [];
   }
 
   getTypes () {
@@ -91,14 +91,12 @@ export default class ASimpleInstance extends ObjectWrapper{
   }
 
   getConnections (direction) {
-    if (direction) {
-      console.error('getConnections with param `direction` is not yet implemented for simple instances');
-    }
-    
-    return Array.from(this.connections);
+    console.error('getConnections is not yet implemented for simple instances');
+    return this.connections;
   }
 
   addConnection (connection) {
-    this.connections.add(connection);
+    this.connections.push(connection);
   }
 }
+

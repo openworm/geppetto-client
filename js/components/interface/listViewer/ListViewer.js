@@ -1,6 +1,5 @@
 import React from 'react';
-import { plugins, ColumnDefinition, RowDefinition } from 'griddle-react';
-import Griddle from './utils/Griddle'
+import Griddle, { plugins, ColumnDefinition, RowDefinition } from 'griddle-react';
 import BaseIconComponent from './BaseIconComponent';
 
 import PopupColorPicker from './PopupColorPicker';
@@ -14,12 +13,12 @@ import { mapToObject, mapSourceToRow, extractGriddleData, isString } from './uti
 export const GroupComponent = conf => ({ value }) => conf.map(
   ({ id, customComponent, configuration, source, visible }) => {
 
-    if (value.get) { // is a map coming from griddle. instanceof Map does not work here
+    if (value.get){ // is a map coming from griddle. instanceof Map does not work here
       value = mapToObject(value);
     }
     if (visible !== undefined) {
       const isVisible = visible instanceof Function ? visible(value) : visible;
-      if (!isVisible) {
+      if (!isVisible){
         return '';
       }
     }
@@ -34,7 +33,7 @@ export const GroupComponent = conf => ({ value }) => conf.map(
 
     return React.createElement(customComponent, { key: id, value: componentValue });
   }
-
+    
 );
 
 
@@ -42,10 +41,10 @@ export const GroupComponent = conf => ({ value }) => conf.map(
  * Shows a fontAwesome icon. Allows an action to be specified
  * @param { icon, action, color, tooltip } 
  */
-export const IconComponent = ({ icon, action, color, tooltip }) =>
-  ({ value }) =>
-    <BaseIconComponent
-      color={color}
+export const IconComponent = ({ icon, action, color, tooltip }) => 
+  ({ value }) => 
+    <BaseIconComponent 
+      color = {color} 
       title={tooltip}
       action={() => action(value)}
       icon={icon} />;
@@ -62,11 +61,11 @@ export const MultiStatusComponent = availableStatuses => class Comp extends Reac
 
   render () {
     const { statusIdx } = this.state;
-
+      
     const { tooltip, icon, action, color } = availableStatuses[this.state.statusIdx];
-
-    return <BaseIconComponent
-      color={color}
+    
+    return <BaseIconComponent 
+      color = {color} 
       title={tooltip}
       action={() => {
         this.setState({ statusIdx: statusIdx + 1 < availableStatuses.length ? statusIdx + 1 : 0 });
@@ -82,7 +81,7 @@ export const MultiStatusComponent = availableStatuses => class Comp extends Reac
  * @param {*} action 
  * @param {*} customComponent 
  */
-export const WrapperComponent = (action, customComponent) => ({ value }) =>
+export const WrapperComponent = (action, customComponent) => ({ value }) => 
   (<span onClick={() => action(value)}>{customComponent ? React.createElement(customComponent, { value: value }) : value}
   </span>);
 
@@ -91,11 +90,11 @@ export const WrapperComponent = (action, customComponent) => ({ value }) =>
  * 
  * @param { title, alt, defaultImg, action } configuration
  */
-export const ImageComponent = ({ title, alt, defaultImg, action }) =>
+export const ImageComponent = ({ title, alt, defaultImg, action }) => 
   ({ value }) =>
-    <img src={value ? value : defaultImg}
-      title={title}
-      alt={alt ? alt : title}
+    <img src={value ? value : defaultImg} 
+      title={title} 
+      alt={alt ? alt : title} 
       onClick={() => action(value)}
       className="thumbnail-img" />;
 
@@ -106,9 +105,9 @@ export const ImageComponent = ({ title, alt, defaultImg, action }) =>
  * 
  * @param { placeholder, onBlur, onKeyPress, readOnly, classString, unit, defaultValue } configuration
  */
-export const ParameterInputComponent = ({ placeholder, onBlur, onKeyPress, readOnly, classString, unit, defaultValue }) => ({ value }) =>
+export const ParameterInputComponent = ({ placeholder, onBlur, onKeyPress, readOnly, classString, unit, defaultValue }) => ({ value }) => 
   <React.Fragment>
-    <input
+    <input 
       placeholder={placeholder}
       defaultValue={defaultValue instanceof Function ? defaultValue(value) : defaultValue}
       onBlur={evt => onBlur(value, evt.target.value)}
@@ -120,18 +119,18 @@ export const ParameterInputComponent = ({ placeholder, onBlur, onKeyPress, readO
   </React.Fragment>;
 
 
-export const ColorComponent = ({ action, defaultColor, icon }) => ({ value }) =>
+export const ColorComponent = ({ action, defaultColor, icon }) => ({ value }) => 
   <React.Fragment>
-    <PopupColorPicker
-      color={isString(defaultColor) ? defaultColor : defaultColor(value)}
-      action={hex => action({ ...(isString(value) ? { path: value } : value), color: hex })}
-      icon={icon}
+    <PopupColorPicker 
+      color={ isString(defaultColor) ? defaultColor : defaultColor(value) } 
+      action={ hex => action({ ...(isString(value) ? { path: value } : value), color:hex }) }
+      icon={ icon }
     />
   </React.Fragment>;
 /**
  * Shows the data value as a link
  */
-export const LinkComponent = ({ text }) => ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">{text ? text : value}</a>;
+export const LinkComponent = ({ text }) => ({ value }) => <a href={value} target="_blank" rel="noopener noreferrer">{text ? text : value }</a>;
 
 
 export const defaultColumnConfiguration = [
@@ -154,7 +153,7 @@ export const defaultColumnConfiguration = [
 
 
 export default class ListViewer extends React.Component {
-
+  
   builtInComponents = { GroupComponent, IconComponent, WrapperComponent, LinkComponent, ImageComponent }
 
   constructor (props, context) {
@@ -173,9 +172,9 @@ export default class ListViewer extends React.Component {
   }
 
   getData () {
-    return extractGriddleData(this.props.filter
-      ? this.props.instances.filter(this.props.filter)
-      : this.props.instances, this.getColumnConfiguration());
+    return extractGriddleData(this.props.filter 
+      ? this.props.instances.filter(this.props.filter) 
+      : this.props.instances, this.getColumnConfiguration ());
   }
 
   /**
@@ -208,14 +207,14 @@ export default class ListViewer extends React.Component {
   }
 
   preprocessAction (action) {
-    if (isString(action)) {
-      if (!this.handlerObject[action]) {
+    if (isString(action)){
+      if (!this.handlerObject[action]){
         throw new Error('Bad ListViewer configuration: the function ' + action + ' is not defined in the specified handler ' + this.handlerObject);
       }
       return entity => this.handlerObject[action](entity);
     } else {
       return action.bind(this.handlerObject);
-    }
+    } 
   }
 
   preprocessComponent (customComponent) {
@@ -247,10 +246,10 @@ export default class ListViewer extends React.Component {
       customComponent = customComponent(configuration);
     }
 
-    if (action && !customComponent) {
+    if ( action && !customComponent) {
       customComponent = WrapperComponent(action, customComponent);
     }
-
+     
     return React.createElement(ColumnDefinition, { ...conf, key: id, configuration: undefined, customComponent: customComponent, source: undefined });
   }
 
@@ -259,35 +258,24 @@ export default class ListViewer extends React.Component {
   }
 
   getLayout () {
-    if (this.props.layout) {
-      return this.props.layout;
-    }
-    return ({ Table, Pagination, Filter, SettingsWrapper }) => (<div className="listviewer-container">
+    return ({ Table, Pagination, Filter, SettingsWrapper }) => ( <div className="listviewer-container">
       <Filter />
       <Table />
       <Pagination />
-    </div>);
-  }
-
-  getPlugins () {
-    const { remoteInfiniteScroll = false, plugins: extraPlugins = [] } = this.props
-    if (remoteInfiniteScroll) {
-      return [plugins.PositionPlugin({ disablePointerEvents: true }), ...extraPlugins]
-    }
-    return this.props.infiniteScroll
-      ? [plugins.LocalPlugin, plugins.PositionPlugin({ disablePointerEvents: true }), ...extraPlugins]
-      : [plugins.LocalPlugin, ...extraPlugins]
+    </div> );
   }
 
   render () {
+    window.conf = this.columnConfiguration;
     const customComponents = this.props.customComponents ? this.props.customComponents : {}
-    const { events, ...others } = this.props
     return <section className="listviewer">
       <Griddle
         data={this.getData()}
-        plugins={this.getPlugins()}
+        plugins={this.props.infiniteScroll 
+          ? [plugins.LocalPlugin, plugins.PositionPlugin({})] 
+          : [plugins.LocalPlugin]
+        }
         components={{ Layout: this.getLayout(), ...customComponents }}
-        events={{ ...events }}
       >
         <RowDefinition>
           {
@@ -297,6 +285,6 @@ export default class ListViewer extends React.Component {
       </Griddle>
     </section>;
   }
-
-
+  
+ 
 }

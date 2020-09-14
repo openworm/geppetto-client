@@ -26,7 +26,7 @@ define(function (require) {
       this.setState({ items: items });
     }
 
-    UNSAFE_componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps (nextProps) {
       this.setState({ items: nextProps.items });
     }
 

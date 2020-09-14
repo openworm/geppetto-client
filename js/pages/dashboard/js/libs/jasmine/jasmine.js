@@ -44,7 +44,7 @@ jasmine.MAX_PRETTY_PRINT_DEPTH = 40;
 /**
  * Default timeout interval in milliseconds for waitsFor() blocks.
  */
-jest.setTimeout(5000);
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
 /**
  * By default exceptions thrown in the context of a test are caught by jasmine so that it can run the remaining tests in the suite.

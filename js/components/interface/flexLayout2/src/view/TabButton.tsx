@@ -130,7 +130,7 @@ export class TabButton extends React.Component<ITabButtonProps, any> {
         let leadingContent = undefined;
 
         if (node.getIcon() !== undefined) {
-            leadingContent = <img src={node.getIcon()}/>;
+            leadingContent = <img src={node.getIcon()} />;
         }
 
         // allow customization of leading contents (icon) and contents
