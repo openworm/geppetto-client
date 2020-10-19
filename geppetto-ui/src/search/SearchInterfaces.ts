@@ -24,6 +24,7 @@ export interface ResultsProps {
 export interface FiltersProps {
     filters: Array<any>;
     searchStyle?: any;
+    filters_expanded?: Boolean;
     setFilters: Function;
     openFilters?: Function;
 }

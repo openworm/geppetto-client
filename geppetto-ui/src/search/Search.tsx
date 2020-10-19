@@ -244,7 +244,7 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
   let clone = Object.assign({}, searchStyle.paperResults);
   clone.top = topAnchor.toString() + "px";
   return (
-      <Paper style={ searchStyle.paperResults } id="paperResults" >
+      <Paper style={ searchStyle.paperResults } id="paperResults">
         <MenuList>
           {data.map((item, index) => {
             return ( <MenuItem style={ searchStyle.singleResult }
@@ -268,9 +268,9 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
  * @param openFilters: Function
  */
 
-const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilters }) => {
+const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilters, filters_expanded }) => {
   var paperRef = useRef(null);
-  const [ state, setState ] = useState({ open: false, top: "0", left: "0" });
+  const [ state, setState ] = useState({ open: filters_expanded, top: "0", left: "0" });
 
   // hook for the event listener to detect when we click outside the component
   useEffect(() => {
@@ -682,6 +682,7 @@ class Search extends Component<SearchProps, SearchState> {
                     endAdornment={
                       <InputAdornment position="end">
                         <Filters
+                          filters_expanded={this.props.searchConfiguration.filters_expanded}
                           searchStyle={searchStyle}
                           filters={this.state.filters}
                           setFilters={this.setFilters} />
