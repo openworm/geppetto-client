@@ -1031,7 +1031,7 @@ define(function (require) {
         var newPosX = Number(startPosition.x.toFixed(0));
         var newPosY = Number(startPosition.y.toFixed(0));
         // console.log('DragEnd:'+JSON.stringify(startPosition));
-        if (newPosX == this.state.posX && newPosY == this.state.posY) {
+        if ((newPosX == this.state.posX && newPosY == this.state.posY) || (this.state.posX == 0 && this.state.posY == 0)) {
           this.callObjects();
           this.state.oldX = newPosX;
           this.state.oldY = newPosY;
