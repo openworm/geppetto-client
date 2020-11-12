@@ -114,26 +114,6 @@ function refineResults(e) {
         if (b.label.toLowerCase().split(/\W+/).join(' ').replace('_', ' ').indexOf(InputString.toLowerCase().split(/\W+/).join(' ').replace('_', ' ')) < 0 && a.label.toLowerCase().split(/\W+/).join(' ').replace('_', ' ').indexOf(InputString.toLowerCase().split(/\W+/).join(' ').replace('_', ' ')) > -1) {
             return -1;
         }
-        if (InputString.toLowerCase().indexOf(' ') > -1) {
-          var lcInputStingFac = InputString.toLowerCase().split(' ');
-          var compare = (a1, a2) => a1.filter(v => a2.includes(v)).length;
-          var cA = compare(lcInputStingFac, a.label.toLowerCase().split(' '));
-          var cB = compare(lcInputStingFac, b.label.toLowerCase().split(' '));
-          if (cA > 0 || cB > 0) {
-            if (cA > cB) {
-              return -1;
-            }
-            if (cA < cB) {
-              return 1;
-            }
-            if (a.label.length < b.label.length) {
-              return -1;
-            }
-            if (a.label.length > b.label.length) {
-              return 1;
-            }
-          }
-        }
         // if not found in one then advance the other
         if (a.label.toLowerCase().indexOf(InputString.toLowerCase()) < 0 && b.label.toLowerCase().indexOf(InputString.toLowerCase()) > -1) {
             return 1;
