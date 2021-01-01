@@ -29,7 +29,7 @@ class HTMLViewer extends Component {
 
   handleClick (e) {
     const element = e.target;
-    if (element.matches('a') && element.dataset) {
+    if (element.matches('a') && element.dataset && this.props.handleClick != undefined) {
       this.props.handleClick(element, element.dataset);
     }
   }
