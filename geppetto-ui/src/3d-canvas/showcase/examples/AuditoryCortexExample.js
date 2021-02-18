@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
-import model from './model.json';
 import CameraControls from '../../../camera-controls/CameraControls';
+import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -24,11 +24,9 @@ const styles = () => ({
 class AuditoryCortexExample extends Component {
   constructor (props) {
     super(props);
-    GEPPETTO.Manager.loadModel(model);
-    Instances.getInstance(INSTANCE_NAME);
     this.canvasRef = React.createRef();
-
     this.state = {
+      modelLoaded:false,
       data: [
         {
           instancePath: 'acnet2.baskets_12',
@@ -80,10 +78,17 @@ class AuditoryCortexExample extends Component {
     this.hoverHandler = this.hoverHandler.bind(this);
   }
 
+  componentDidMount() {
+    import(/* webpackChunkName: "acnet_model.json" */'./acnet_model.json').then(model => {
+      GEPPETTO.Manager.loadModel(model);
+      Instances.getInstance(INSTANCE_NAME);
+      this.setState({modelLoaded: true})
+    })
+
+  }
+
   cameraHandler (obj) {
     this.lastCameraUpdate = obj;
-    console.log('Camera has changed:');
-    console.log(obj);
   }
 
   selectionHandler (selectedMap) {
@@ -101,8 +106,8 @@ class AuditoryCortexExample extends Component {
     const newSelected = selected;
     let done = false;
     for (const instance of newData) {
-      if (instance.instancePath == path) {
-        if (geometryIdentifier == '') {
+      if (instance.instancePath === path) {
+        if (geometryIdentifier === '') {
           if (path in newSelected) {
             instance.color = newSelected[path].color;
             delete newSelected[path];
@@ -179,7 +184,7 @@ class AuditoryCortexExample extends Component {
 
   render () {
     const { classes } = this.props;
-    const { data, cameraOptions } = this.state;
+    const { data, cameraOptions, modelLoaded } = this.state;
 
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -190,7 +195,7 @@ class AuditoryCortexExample extends Component {
       };
     }
 
-    return (
+    return modelLoaded ? (
       <div className={classes.container}>
         <Canvas
           ref={this.canvasRef}
@@ -202,7 +207,7 @@ class AuditoryCortexExample extends Component {
           hoverListeners={[this.hoverHandler]}
         />
       </div>
-    );
+    ) : <Loader active={true}/>
   }
 }
 
