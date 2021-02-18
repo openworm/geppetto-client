@@ -173,13 +173,9 @@ class AuditoryCortexExample extends Component {
     }
 
     this.setState(() => ({ data: newData, selected: newSelected }));
-    console.log('Selection Handler Called:');
-    console.log({ selectedMap, });
   }
 
   hoverHandler (obj) {
-    console.log('Hover handler called:');
-    console.log(obj);
   }
 
   render () {

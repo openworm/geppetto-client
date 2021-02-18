@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
+import Button from "@material-ui/core/Button";
 
 const COLORS = [
   { r: 0, g: 0.2, b: 0.6, a: 1 },
@@ -24,6 +25,7 @@ class AuditoryCortexExample2 extends Component {
     super(props);
     this.canvasRef = React.createRef();
     this.state = {
+      visible: false,
       data: [
         {
           instancePath: 'acnet2.baskets_12',
@@ -72,6 +74,7 @@ class AuditoryCortexExample2 extends Component {
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
   }
 
   cameraHandler (obj) {
@@ -126,9 +129,14 @@ class AuditoryCortexExample2 extends Component {
     console.log(obj);
   }
 
+  handleToggle () {
+    const { visible } = this.state;
+    this.setState({ visible: !visible });
+  }
+
   render () {
     const { classes } = this.props;
-    const { data, cameraOptions } = this.state;
+    const { data, cameraOptions, visible } = this.state;
 
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -146,7 +154,7 @@ class AuditoryCortexExample2 extends Component {
       }
     }
 
-    return (
+    return visible ? (
       <div className={classes.container}>
         <Canvas
           ref={this.canvasRef}
@@ -158,7 +166,14 @@ class AuditoryCortexExample2 extends Component {
           hoverListeners={[this.hoverHandler]}
         />
       </div>
-    );
+    ) :
+        <Button
+            variant="outlined"
+            color="primary"
+            onClick={this.handleToggle}
+        >
+            Show Example
+        </Button>
   }
 }
 

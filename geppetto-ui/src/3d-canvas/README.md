@@ -8,6 +8,14 @@
 
 ## Examples
 
+### 3D Canvas Auditory Cortex Example 2
+
+3D Canvas Auditory Cortex Example 2
+
+```
+3d-canvas/showcase/examples/AuditoryCortexExample2
+```
+
 ### 3D Canvas Auditory Cortex Example
 
 3D Canvas Auditory Cortex Example
