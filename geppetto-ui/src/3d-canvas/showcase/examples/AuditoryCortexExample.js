@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
@@ -21,12 +21,13 @@ const styles = () => ({
     alignItems: 'stretch',
   },
 });
+
 class AuditoryCortexExample extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
     this.state = {
-      modelLoaded:false,
+      hasModelLoaded: false,
       data: [
         {
           instancePath: 'acnet2.baskets_12',
@@ -48,27 +49,27 @@ class AuditoryCortexExample extends Component {
         near: 10,
         far: 2000000,
         baseZoom: 1,
-        cameraControls: { 
+        cameraControls: {
           instance: CameraControls,
           props: { wireframeButtonEnabled: false, }
         },
         incrementPan: {
-          x:0.01,
-          y:0.01
+          x: 0.01,
+          y: 0.01
         },
         incrementRotation: {
-          x:0.01,
-          y:0.01,
-          z:0.01,
+          x: 0.01,
+          y: 0.01,
+          z: 0.01,
         },
         incrementZoom: 0.1,
         reset: false,
         movieFilter: false,
-        autorotate:false,
-        wireframe:false,
+        autorotate: false,
+        wireframe: false,
         position: { x: 230.357, y: 256.435, z: 934.238 },
         rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
-        flip:[]
+        flip: []
       },
     };
 
@@ -78,13 +79,12 @@ class AuditoryCortexExample extends Component {
     this.hoverHandler = this.hoverHandler.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount () {
     import(/* webpackChunkName: "acnet_model.json" */'./acnet_model.json').then(model => {
       GEPPETTO.Manager.loadModel(model);
       Instances.getInstance(INSTANCE_NAME);
-      this.setState({modelLoaded: true})
+      this.setState({ hasModelLoaded: true })
     })
-
   }
 
   cameraHandler (obj) {
@@ -120,7 +120,7 @@ class AuditoryCortexExample extends Component {
           if (path in newSelected) {
             if (geometryIdentifier in newSelected[path]) {
               instance.visualGroups.custom[geometryIdentifier].color
-                = newSelected[path][geometryIdentifier].color;
+                                = newSelected[path][geometryIdentifier].color;
               delete newSelected[path][geometryIdentifier];
               if (Object.keys(newSelected[path]).length === 0) {
                 delete newSelected[path];
@@ -142,7 +142,7 @@ class AuditoryCortexExample extends Component {
                   newSelected[path] = {
                     [geometryIdentifier]: {
                       color:
-                        instance.visualGroups.custom[geometryIdentifier].color,
+                                            instance.visualGroups.custom[geometryIdentifier].color,
                     },
                   };
                   instance.visualGroups.custom[
@@ -180,7 +180,7 @@ class AuditoryCortexExample extends Component {
 
   render () {
     const { classes } = this.props;
-    const { data, cameraOptions, modelLoaded } = this.state;
+    const { data, cameraOptions, hasModelLoaded } = this.state;
 
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -191,7 +191,7 @@ class AuditoryCortexExample extends Component {
       };
     }
 
-    return modelLoaded ? (
+    return hasModelLoaded ? (
       <div className={classes.container}>
         <Canvas
           ref={this.canvasRef}

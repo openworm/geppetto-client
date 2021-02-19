@@ -3,7 +3,9 @@ import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Button from "@material-ui/core/Button";
+import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
 
+const INSTANCE_NAME = 'acnet2';
 const COLORS = [
   { r: 0, g: 0.2, b: 0.6, a: 1 },
   { r: 0.8, g: 0, b: 0, a: 1 },
@@ -25,7 +27,8 @@ class AuditoryCortexExample2 extends Component {
     super(props);
     this.canvasRef = React.createRef();
     this.state = {
-      visible: false,
+      showLoader: false,
+      hasModelLoaded: false,
       data: [
         {
           instancePath: 'acnet2.baskets_12',
@@ -76,11 +79,9 @@ class AuditoryCortexExample2 extends Component {
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   }
-
+  
   cameraHandler (obj) {
     this.lastCameraUpdate = obj;
-    console.log('Camera has changed:');
-    console.log(obj);
   }
 
   selectionHandler (
@@ -99,7 +100,7 @@ class AuditoryCortexExample2 extends Component {
     const newSelected = selected
     let done = false;
     for (const instance of data) {
-      if (instance.instancePath == path) {
+      if (instance.instancePath === path) {
         if (path in newSelected) {
           instance.color = newSelected[path];
           instance.showConnectionLines = false;
@@ -121,22 +122,24 @@ class AuditoryCortexExample2 extends Component {
       newSelected[path] = { ...currentColor };
     }
     this.setState(() => ({ data: newData, selected: newSelected }));
-    console.log({ selectedMap })
   }
 
   hoverHandler (obj) {
-    console.log('Hover handler called:');
-    console.log(obj);
   }
 
   handleToggle () {
-    const { visible } = this.state;
-    this.setState({ visible: !visible });
+    this.setState({ showLoader: true })
+
+    import(/* webpackChunkName: "acnet_model.json" */'./acnet_model.json').then(model => {
+      GEPPETTO.Manager.loadModel(model);
+      Instances.getInstance(INSTANCE_NAME);
+      this.setState({ hasModelLoaded: true, showLoader: false })
+    })
   }
 
   render () {
     const { classes } = this.props;
-    const { data, cameraOptions, visible } = this.state;
+    const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
 
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -154,7 +157,7 @@ class AuditoryCortexExample2 extends Component {
       }
     }
 
-    return visible ? (
+    return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
       <div className={classes.container}>
         <Canvas
           ref={this.canvasRef}
@@ -166,14 +169,14 @@ class AuditoryCortexExample2 extends Component {
           hoverListeners={[this.hoverHandler]}
         />
       </div>
-    ) :
-        <Button
-            variant="outlined"
-            color="primary"
-            onClick={this.handleToggle}
-        >
-            Show Example
-        </Button>
+    )
+      : <Button
+        variant="outlined"
+        color="primary"
+        onClick={this.handleToggle}
+      >
+          Show Example
+      </Button>
   }
 }
 

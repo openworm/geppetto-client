@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
+import Button from "@material-ui/core/Button";
+import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
@@ -22,10 +24,11 @@ const styles = () => ({
 class CA1Example extends Component {
   constructor (props) {
     super(props);
-    Instances.getInstance(INSTANCE_NAME);
     this.canvasRef = React.createRef();
 
     this.state = {
+      showLoader: false,
+      hasModelLoaded: false,
       data: [
         {
           instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
@@ -72,13 +75,11 @@ class CA1Example extends Component {
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
   }
 
   cameraHandler (obj) {
     this.lastCameraUpdate = obj;
-
-    console.log('Camera has changed:');
-    console.log(obj);
   }
 
   selectionHandler (selectedMap) {
@@ -163,13 +164,20 @@ class CA1Example extends Component {
     }
 
     this.setState(() => ({ data: newData, selected: newSelected }));
-    console.log('Selection Handler Called:');
-    console.log({ selectedMap, });
+  }
+
+  handleToggle () {
+    this.setState({ showLoader: true })
+    import(/* webpackChunkName: "ca1_model.json" */'./ca1_model.json').then(model => {
+      GEPPETTO.Manager.loadModel(model);
+      Instances.getInstance(INSTANCE_NAME);
+      this.setState({ hasModelLoaded: true, showLoader:false })
+    })
   }
 
   render () {
     const { classes } = this.props;
-    const { data, cameraOptions } = this.state;
+    const { data, cameraOptions, showLoader, hasModelLoaded } = this.state;
 
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -183,19 +191,26 @@ class CA1Example extends Component {
       };
     }
 
-    return (
-      <div className={classes.container}>
-        <Canvas
-          ref={this.canvasRef}
-          data={data}
-          cameraOptions={camOptions}
-          cameraHandler={this.cameraHandler}
-          selectionHandler={this.selectionHandler}
-          linesThreshold={10000}
-          backgroundColor={0x505050}
-        />
-      </div>
-    );
+    return showLoader ? <Loader active={true}/>
+      : hasModelLoaded ? (
+        <div className={classes.container}>
+          <Canvas
+            ref={this.canvasRef}
+            data={data}
+            cameraOptions={camOptions}
+            cameraHandler={this.cameraHandler}
+            selectionHandler={this.selectionHandler}
+            linesThreshold={10000}
+            backgroundColor={0x505050}
+          />
+        </div>
+      ) : <Button
+        variant="outlined"
+        color="primary"
+        onClick={this.handleToggle}
+      >
+      Show Example
+      </Button>
   }
 }
 
