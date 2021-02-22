@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Matrix } from '../../layouts/Matrix';
 import ConnectivityComponent from '../../ConnectivityComponent';
 import { withStyles } from '@material-ui/core';
+import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
 
 const styles = {
   connectivity: {
@@ -15,8 +16,15 @@ const styles = {
 class ConnectivityShowcaseMatrix extends Component {
   constructor (props) {
     super(props);
-    // GEPPETTO.Manager.loadModel(model);
+    this.state = { hasModelLoaded: false, }
     this.linkType = this.linkType.bind(this);
+  }
+
+  componentDidMount () {
+    import(/* webpackChunkName: "connectivity_model.json" */'../model.json').then(model => {
+      GEPPETTO.Manager.loadModel(model);
+      this.setState({ hasModelLoaded: true })
+    })
   }
 
   linkType (c) {
@@ -31,10 +39,10 @@ class ConnectivityShowcaseMatrix extends Component {
     const layout = new Matrix();
     const colors = ['#cb0000', '#003398'];
     const names = ['pyramidals_48', 'baskets_12'];
-    const size = { width: 600, height: 500 };
     const { classes } = this.props;
+    const { hasModelLoaded } = this.state;
 
-    return (
+    return hasModelLoaded ? (
       <div className={classes.connectivity}>
         <ConnectivityComponent
           id="ConnectivityContainerMatrix"
@@ -53,7 +61,7 @@ class ConnectivityShowcaseMatrix extends Component {
           library={null}
         />
       </div>
-    );
+    ) : <Loader active={true}/>
   }
 }
 
