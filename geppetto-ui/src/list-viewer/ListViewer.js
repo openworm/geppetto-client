@@ -348,7 +348,7 @@ export default class ListViewer extends React.Component {
       <div className="listviewer-container">
         <Filter />
         <Table />
-        <Pagination />
+        { this.props.showPagination === false ? null : <Pagination /> }
       </div>
     );
   }
@@ -379,7 +379,7 @@ export default class ListViewer extends React.Component {
       : {};
     const { events, ...others } = this.props;
     return (
-      <section className="listviewer">
+      <section className={ this.props.className ? this.props.className : "listviewer" }>
         <Griddle
           data={this.getData()}
           plugins={this.getPlugins()}
@@ -417,4 +417,8 @@ ListViewer.propTypes = {
    * Components passed in with a matching name will override the default in Griddle
    */
   customComponents: PropTypes.object,
+  /**
+   * Show Pagination button, used for changing pages
+   */
+  showPagination:  PropTypes.bool
 };

@@ -114,7 +114,7 @@ define(function (require) {
       // apply carousel
       if (this.isCarousel) {
         var slickDivElement = $('#' + this.imageContainerId + '.slickdiv');
-        slickDivElement.slick();
+        slickDivElement.not('.slick-initialized').slick();
 
         // reload slick carousel if it's first time clicking on arrow in any direction
         slickDivElement.find(".slick-arrow").on("click", function () {
