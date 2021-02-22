@@ -3,6 +3,8 @@ import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import * as THREE from 'three';
+import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
+import Button from "@material-ui/core/Button";
 
 const INSTANCES = [
   'VFB_00017894',
@@ -37,11 +39,10 @@ const styles = () => ({
 class VFBExample extends Component {
   constructor (props) {
     super(props);
-    for (const iname of INSTANCES) {
-      Instances.getInstance(iname);
-    }
     this.canvasRef = React.createRef();
     this.state = {
+      showLoader: false,
+      hasModelLoaded: false,
       data: [
         {
           instancePath: 'VFB_00017894',
@@ -87,12 +88,14 @@ class VFBExample extends Component {
       },
       flip: ['y', 'z',],
       rotateSpeed: 3,
-    },
+    }
 
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.onMount = this.onMount.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
+
   }
 
   componentDidMount () {
@@ -167,9 +170,6 @@ class VFBExample extends Component {
 
   cameraHandler (obj) {
     // this.lastCameraUpdate = obj;
-
-    console.log('Camera has changed:');
-    console.log(obj);
   }
 
   selectionHandler (selectedMap) {
@@ -187,8 +187,8 @@ class VFBExample extends Component {
     const newSelected = selected;
     let done = false;
     for (const instance of newData) {
-      if (instance.instancePath == path) {
-        if (geometryIdentifier == '') {
+      if (instance.instancePath === path) {
+        if (geometryIdentifier === '') {
           if (path in newSelected) {
             instance.color = newSelected[path].color;
             delete newSelected[path];
@@ -262,9 +262,21 @@ class VFBExample extends Component {
     return true;
   }
 
+  handleToggle () {
+    this.setState({ showLoader: true })
+
+    import(/* webpackChunkName: "vfb_model.json" */'./vfb_model.json').then(model => {
+      GEPPETTO.Manager.loadModel(model);
+      for (const iname of INSTANCES) {
+        Instances.getInstance(iname);
+      }
+      this.setState({ hasModelLoaded: true, showLoader: false })
+    })
+  }
+
   render () {
     const { classes } = this.props;
-    const { data, threeDObjects, modelVersion } = this.state;
+    const { data, threeDObjects, modelVersion, hasModelLoaded, showLoader } = this.state;
 
     let camOptions = this.cameraOptions;
     if (this.lastCameraUpdate) {
@@ -276,7 +288,7 @@ class VFBExample extends Component {
       };
     }
 
-    return (
+    return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
       <div className={classes.container}>
         <Canvas
           ref={this.canvasRef}
@@ -291,7 +303,13 @@ class VFBExample extends Component {
           backgroundColor={0x505050}
         />
       </div>
-    );
+    ) : <Button
+      variant="outlined"
+      color="primary"
+      onClick={this.handleToggle}
+    >
+      Show Example
+    </Button>
   }
 }
 
