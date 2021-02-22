@@ -28,7 +28,7 @@ import {
   getVoltageColor,
 } from '../utilities/GeppettoSimulation';
 import ColorController from './ColorController';
-import particle from '../assets/particle.png';
+import particle from "@geppettoengine/geppetto-ui/3d-canvas/textures/particle.png";
 
 const HOVER_COLOR = { r: 0.67, g: 0.84, b: 0.9 };
 const SELECTED_COLOR = { r: 1, g: 1, b: 0 };
