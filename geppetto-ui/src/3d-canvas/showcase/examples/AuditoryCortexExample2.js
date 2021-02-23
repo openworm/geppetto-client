@@ -90,7 +90,9 @@ class AuditoryCortexExample2 extends Component {
   handleClickOutside (event) {
 
     if (this.node && !this.node.contains(event.target)) {
-      this.setState({ hasModelLoaded: false })
+      if (event.offsetX <= event.target.clientWidth){
+        this.setState({ hasModelLoaded: false })
+      }
     }
   }
   
