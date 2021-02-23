@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
+import Button from "@material-ui/core/Button";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -28,6 +29,7 @@ class AuditoryCortexExample extends Component {
     this.canvasRef = React.createRef();
     this.state = {
       hasModelLoaded: false,
+      showLoader: true,
       data: [
         {
           instancePath: 'acnet2.baskets_12',
@@ -77,16 +79,41 @@ class AuditoryCortexExample extends Component {
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
+
   }
 
   componentDidMount () {
     import(/* webpackChunkName: "acnet_model.json" */'./acnet_model.json').then(model => {
       GEPPETTO.Manager.loadModel(model);
       Instances.getInstance(INSTANCE_NAME);
-      this.setState({ hasModelLoaded: true })
+      this.setState({ hasModelLoaded: true, showLoader: false })
+      document.addEventListener('mousedown', this.handleClickOutside);
     })
   }
+  
+  componentWillUnmount () {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+  
+  handleClickOutside (event) {
 
+    if (this.node && !this.node.contains(event.target)) {
+      this.setState({ hasModelLoaded: false })
+    }
+  }
+
+  handleToggle () {
+    this.setState({ showLoader: true })
+
+    import(/* webpackChunkName: "acnet_model.json" */'./acnet_model.json').then(model => {
+      GEPPETTO.Manager.loadModel(model);
+      Instances.getInstance(INSTANCE_NAME);
+      this.setState({ hasModelLoaded: true, showLoader: false })
+    })
+  }
+  
   cameraHandler (obj) {
     this.lastCameraUpdate = obj;
   }
@@ -139,12 +166,7 @@ class AuditoryCortexExample extends Component {
             if (instance.visualGroups) {
               if (instance.visualGroups.custom) {
                 if (instance.visualGroups.custom[geometryIdentifier]) {
-                  newSelected[path] = {
-                    [geometryIdentifier]: {
-                      color:
-                                            instance.visualGroups.custom[geometryIdentifier].color,
-                    },
-                  };
+                  newSelected[path] = { [geometryIdentifier]: { color: instance.visualGroups.custom[geometryIdentifier].color, }, };
                   instance.visualGroups.custom[
                     geometryIdentifier
                   ].color = SELECTION_COLOR;
@@ -180,7 +202,7 @@ class AuditoryCortexExample extends Component {
 
   render () {
     const { classes } = this.props;
-    const { data, cameraOptions, hasModelLoaded } = this.state;
+    const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
 
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -191,8 +213,8 @@ class AuditoryCortexExample extends Component {
       };
     }
 
-    return hasModelLoaded ? (
-      <div className={classes.container}>
+    return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
+      <div ref={node => this.node = node} className={classes.container}>
         <Canvas
           ref={this.canvasRef}
           data={data}
@@ -203,7 +225,13 @@ class AuditoryCortexExample extends Component {
           hoverListeners={[this.hoverHandler]}
         />
       </div>
-    ) : <Loader active={true}/>
+    ) : <Button
+      variant="outlined"
+      color="primary"
+      onClick={this.handleToggle}
+    >
+      Show Example
+    </Button>
   }
 }
 

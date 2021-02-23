@@ -95,15 +95,19 @@ class VFBExample extends Component {
     this.selectionHandler = this.selectionHandler.bind(this);
     this.onMount = this.onMount.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
-
+    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
   componentDidMount () {
-    const { modelVersion } = this.state;
-    GEPPETTO.on(GEPPETTO.Events.Model_loaded, 
-      () => {
-        this.setState(() => ({ modelVersion: modelVersion + 1 }))
-      });
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+  componentWillUnmount () {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+  handleClickOutside (event) {
+    if (this.node && !this.node.contains(event.target)) {
+      this.setState({ hasModelLoaded: false })
+    }
   }
 
   /**
@@ -254,8 +258,6 @@ class VFBExample extends Component {
     }
 
     this.setState(() => ({ data: newData, selected: newSelected }));
-    console.log('Selection Handler Called:');
-    console.log({ selectedMap, });
   }
 
   getModelVersion () {
@@ -289,7 +291,7 @@ class VFBExample extends Component {
     }
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
-      <div className={classes.container}>
+      <div ref={node => this.node = node} className={classes.container}>
         <Canvas
           ref={this.canvasRef}
           modelVersion={modelVersion}

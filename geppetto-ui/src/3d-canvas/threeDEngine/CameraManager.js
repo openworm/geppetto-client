@@ -32,7 +32,7 @@ export default class CameraManager {
 
     if (
       reset
-      || (position == undefined && rotation == undefined && zoomTo == undefined)
+      || (position === undefined && rotation === undefined && zoomTo === undefined)
     ) {
       this.resetCamera();
     } else {
@@ -68,7 +68,7 @@ export default class CameraManager {
   }
   /**
    *
-   * @param instances
+   * @param axis
    */
   flipCamera (axis) {
     if (axis === 'y') {

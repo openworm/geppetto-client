@@ -77,7 +77,21 @@ class AuditoryCortexExample2 extends Component {
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+  }
+
+  componentDidMount () {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+  componentWillUnmount () {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+  handleClickOutside (event) {
+
+    if (this.node && !this.node.contains(event.target)) {
+      this.setState({ hasModelLoaded: false })
+    }
   }
   
   cameraHandler (obj) {
@@ -125,6 +139,7 @@ class AuditoryCortexExample2 extends Component {
   }
 
   hoverHandler (obj) {
+    console.log('Hover handler called:');
   }
 
   handleToggle () {
@@ -158,7 +173,7 @@ class AuditoryCortexExample2 extends Component {
     }
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
-      <div className={classes.container}>
+      <div ref={node => this.node = node} className={classes.container}>
         <Canvas
           ref={this.canvasRef}
           data={data}
