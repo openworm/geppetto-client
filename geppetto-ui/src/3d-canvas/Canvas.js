@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
-import { cameraControlsActions, } from '../camera-controls/CameraControls';
+import { cameraControlsActions } from "@geppettoengine/geppetto-ui/camera-controls/CameraControls";
 
 const styles = () => ({
   container: {
@@ -17,7 +17,7 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
-    this.cameraControlsHandler = this.cameraControlsHandler.bind(this);
+    this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
   }
 
   componentDidMount () {
@@ -54,16 +54,22 @@ class Canvas extends Component {
     );
   }
 
-
-  shouldEngineTraverse () {
-    // TODO: check if new instance added, check if split meshes changed?
-    return true;
-  }
-
-  cameraControlsHandler (action) {
-    const { cameraOptions } = this.props;
-    const { incrementPan, incrementRotation, incrementZoom, movieFilter } = cameraOptions;
-    
+  defaultCameraControlsHandler (action) {
+    const defaultProps = {
+      incrementPan: {
+        x: 0.01,
+        y: 0.01
+      },
+      incrementRotation: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+      incrementZoom: 0.1,
+      movieFilter: false,
+    }
+    const mergedProps = { ...defaultProps, ...this.props.cameraOptions.cameraControls }
+    const { incrementPan, incrementRotation, incrementZoom, movieFilter } = mergedProps
     if (this.threeDEngine) {
       switch (action) {
       case cameraControlsActions.PAN_LEFT:
@@ -114,9 +120,17 @@ class Canvas extends Component {
       }
     }
   }
+  
+  
+  shouldEngineTraverse () {
+    // TODO: check if new instance added, check if split meshes changed?
+    return true;
+  }
 
   render () {
     const { classes, data, cameraOptions, threeDObjects } = this.props;
+    const { cameraControls } = cameraOptions
+    const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
 
     if (this.threeDEngine) {
       this.threeDEngine.update(
@@ -131,14 +145,15 @@ class Canvas extends Component {
         {
           <cameraOptions.cameraControls.instance
             ref={this.cameraControls} 
-            wireframeButtonEnabled={cameraOptions.cameraControls.props.wireframeButtonEnabled}
-            cameraControlsHandler={this.cameraControlsHandler}
+            wireframeButtonEnabled={cameraControls.props.wireframeButtonEnabled}
+            cameraControlsHandler={cameraControlsHandler}
           />
         }
       </div>
     );
   }
 }
+
 
 Canvas.defaultProps = {
   cameraOptions: {
@@ -147,25 +162,14 @@ Canvas.defaultProps = {
     far: 2000000,
     position: { x: 0, y: 0, z: 0 },
     baseZoom: 1,
-    incrementPan: {
-      x:0.01,
-      y:0.01
-    },
-    incrementRotation: {
-      x:0.01,
-      y:0.01,
-      z:0.01,
-    },
-    incrementZoom: 0.1,
     reset: false,
-    movieFilter:false,
     autorotate:false,
     wireframe:false,
     flip: [],
     zoomTo: [],
     cameraControls:  { 
       instance: null,
-      props: {}
+      props: {},
     },
     rotateSpeed: 0.5,
   },

@@ -54,19 +54,19 @@ class AuditoryCortexExample2 extends Component {
         zoomTo: ['acnet2.baskets_12[7]'],
         cameraControls: { 
           instance: CameraControls,
-          props: { wireframeButtonEnabled: false, }
+          props: { wireframeButtonEnabled: false, },
+          incrementPan: {
+            x:0.05,
+            y:0.05
+          },
+          incrementRotation: {
+            x:0.05,
+            y:0.05,
+            z:0.05,
+          },
+          incrementZoom: 0.5,
+          reset: false,
         },
-        incrementPan: {
-          x:0.05,
-          y:0.05
-        },
-        incrementRotation: {
-          x:0.05,
-          y:0.05,
-          z:0.05,
-        },
-        incrementZoom: 0.5,
-        reset: false,
         movieFilter: false,
         autorotate:false,
         wireframe:false
