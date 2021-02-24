@@ -29,7 +29,6 @@ export default class CameraManager {
       rotateSpeed
     } = cameraOptions;
 
-
     if (
       reset
       || (position === undefined && rotation === undefined && zoomTo === undefined)

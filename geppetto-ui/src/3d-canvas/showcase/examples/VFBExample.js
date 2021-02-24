@@ -86,7 +86,7 @@ class VFBExample extends Component {
         instance: CameraControls,
         props: { wireframeButtonEnabled: true, }
       },
-      flip: ['y', 'z',],
+      flip: ['y', 'z'],
       rotateSpeed: 3,
     }
 
@@ -171,11 +171,14 @@ class VFBExample extends Component {
   onMount (scene) {
     const bb = new THREE.Box3().setFromObject(scene);
     const plane = this.get3DPlane(bb.min.x, bb.min.y, bb.min.z, bb.max.x, bb.max.y, bb.max.z)
+    const axesHelper = new THREE.AxesHelper( 100 );
+    scene.add( axesHelper );
     this.setState(() => ({ threeDObjects: [plane] }));
+
   }
 
   cameraHandler (obj) {
-    // this.lastCameraUpdate = obj;
+    this.lastCameraUpdate = obj;
   }
 
   selectionHandler (selectedMap) {
@@ -262,10 +265,6 @@ class VFBExample extends Component {
     this.setState(() => ({ data: newData, selected: newSelected }));
   }
 
-  getModelVersion () {
-    return true;
-  }
-
   handleToggle () {
     this.setState({ showLoader: true })
 
@@ -288,7 +287,6 @@ class VFBExample extends Component {
         ...this.cameraOptions,
         position: this.lastCameraUpdate.position,
         rotation: this.lastCameraUpdate.rotation,
-        flip: []
       };
     }
 

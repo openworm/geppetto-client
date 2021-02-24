@@ -53,20 +53,9 @@ class AuditoryCortexExample extends Component {
         baseZoom: 1,
         cameraControls: {
           instance: CameraControls,
-          props: { wireframeButtonEnabled: false, }
+          props: { wireframeButtonEnabled: false, },
         },
-        incrementPan: {
-          x: 0.01,
-          y: 0.01
-        },
-        incrementRotation: {
-          x: 0.01,
-          y: 0.01,
-          z: 0.01,
-        },
-        incrementZoom: 0.1,
         reset: false,
-        movieFilter: false,
         autorotate: false,
         wireframe: false,
         position: { x: 230.357, y: 256.435, z: 934.238 },
@@ -115,7 +104,7 @@ class AuditoryCortexExample extends Component {
       this.setState({ hasModelLoaded: true, showLoader: false })
     })
   }
-  
+
   cameraHandler (obj) {
     this.lastCameraUpdate = obj;
   }

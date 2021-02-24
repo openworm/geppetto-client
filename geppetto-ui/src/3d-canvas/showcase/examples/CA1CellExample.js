@@ -55,19 +55,8 @@ class CA1Example extends Component {
         reset: false,
         cameraControls: { 
           instance: CameraControls,
-          props: { wireframeButtonEnabled: false, }
+          props: {}
         },
-        incrementPan: {
-          x:0.01,
-          y:0.01
-        },
-        incrementRotation: {
-          x:0.01,
-          y:0.01,
-          z:0.01,
-        },
-        incrementZoom: 0.1,
-        wireframe:false,
         flip:[],
       },
     };

@@ -395,7 +395,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
     _this.target.addVectors(_this.object.position, base);
     _this.object.up.copy(_this.up0);
-    _this.object.up.applyEuler(new THREE.Euler(x, y, z));
+    //_this.object.up.applyEuler(new THREE.Euler(x, y, z));
 
     _eye.subVectors(_this.object.position, _this.target);
 
