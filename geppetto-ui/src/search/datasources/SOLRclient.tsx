@@ -126,12 +126,6 @@ function refineResults(e) {
             if (cA < cB) {
               return 1;
             }
-            if (a.label.length < b.label.length) {
-              return -1;
-            }
-            if (a.label.length > b.label.length) {
-              return 1;
-            }
           }
         }
         // if not found in one then advance the other
