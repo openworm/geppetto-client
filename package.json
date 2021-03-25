@@ -76,7 +76,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.0",
     "react-slick": "^0.23.2",
-    "react-sortable-tree": "^2.6.2",
+    "react-sortable-tree": "2.6.1",
     "react-tabtab": "^2.0.0",
     "remarkable": "^1.7.3",
     "slick-carousel": "^1.6.0",
