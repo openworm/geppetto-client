@@ -13,7 +13,7 @@ define(function (require) {
       super(props);
 
       this.state = { content: this.props.content, };
-
+      this.htmlViewer = React.createRef();
       this.handleClick = this.handleClick.bind(this);
     }
 
@@ -28,7 +28,7 @@ define(function (require) {
     }
 
     componentDidMount (){
-      var element = ReactDOM.findDOMNode(this.refs.htmlViewer);
+      var element = ReactDOM.findDOMNode(this.htmlViewer.current);
       element.setAttribute('tabIndex', -1);
     }
 
@@ -41,7 +41,7 @@ define(function (require) {
 
     render () {
       return (
-        <div key={this.props.id + "_component"} id={this.props.id + "_component"} className="htmlViewer" ref={"htmlViewer"} style={this.props.style} className={this.props.class}>
+        <div key={this.props.id + "_component"} id={this.props.id + "_component"} className="htmlViewer" ref={this.htmlViewer} style={this.props.style} className={this.props.class}>
           <div dangerouslySetInnerHTML={{ __html: this.state.content }} onClick={this.handleClick}></div>
         </div>
       )
