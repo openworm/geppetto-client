@@ -9,6 +9,7 @@ define(function (require) {
   var StopButton = require('./buttons/StopButton');
   var HelpButton = require('./buttons/HelpButton');
   var MenuButton = require('../../controls/menuButton/MenuButton');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   var GEPPETTO = require('geppetto');
 
@@ -21,7 +22,9 @@ define(function (require) {
         disableRun: true,
         disablePlay: true,
         disablePause: true,
-        disableStop: true
+        disableStop: true,
+        experimentStatus: undefined,
+        projectStatus: undefined,
       }
     },
 
@@ -42,84 +45,54 @@ define(function (require) {
       var projectPersisted = experiment.getParent().persisted;
       var login = GEPPETTO.UserController.isLoggedIn() && GEPPETTO.UserController.hasPersistence();
       var readOnlyProject = window.Project.isReadOnly();
-            
+
       if (writePermission && runPermission && projectPersisted && login && !readOnlyProject){
         return true;
       }
-            
+
       return false;
     },
-        
+
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (nextProps.controlsDisabled && nextProps.controlsDisabled !== this.props.controlsDisabled) {
+        this.setState({ disableRun: true, disablePlay: true, disablePause: true, disableStop: true });
+      }
+
+      if ((nextProps.experimentStatus !== this.props.experimentStatus)) {
+        switch (nextProps.experimentStatus) {
+        case StoreManager.clientActions.EXPERIMENT_FAILED:
+          var activeExperiment = window.Project.getActiveExperiment();
+          if (activeExperiment != null || undefined){
+            if (activeExperiment.getId() == nextProps.experimentId){
+              this.setState({ disableRun: false, disablePlay: true, disablePause: true, disableStop: true });
+            }
+          }
+          break;
+        case StoreManager.clientActions.EXPERIMENT_DELETED:
+          var experiment = window.Project.getActiveExperiment();
+          if (experiment == null || undefined){
+            this.setState({ disableRun: true, disablePlay: true, disablePause: true, disableStop: true });
+          }
+          break;
+        default:
+          this.updateStatus();
+        }
+      }
+
+      if (nextProps.projectStatus !== this.props.projectStatus) {
+        this.updateStatus();
+      }
+    },
+
     componentDidMount: function () {
       var self = this;
 
-      GEPPETTO.on(GEPPETTO.Events.Experiment_loaded, function () {
-        self.updateStatus();
-      });
-            
-      GEPPETTO.on(GEPPETTO.Events.Project_persisted, function () {
-        self.updateStatus();
-      });
-            
-      GEPPETTO.on(GEPPETTO.Events.Project_loaded, function () {
-        self.updateStatus();
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_running, function () {
-        self.updateStatus();
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_failed, function (id) {
-        var activeExperiment = window.Project.getActiveExperiment();
-        if (activeExperiment != null || undefined){
-          if (activeExperiment.getId() == id){
-            self.setState({ disableRun: false, disablePlay: true, disablePause: true, disableStop: true });
-          }
-        }
-      });
-            
-      GEPPETTO.on(GEPPETTO.Events.Experiment_completed, function () {
-        self.updateStatus();
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_play, function (options) {
-        self.updateStatus();
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_resume, function () {
-        self.updateStatus();
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_pause, function () {
-        self.updateStatus();
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_stop, function (options) {
-        self.updateStatus();
-      });
-            
-      GEPPETTO.on(GEPPETTO.Events.Experiment_deleted, function () {
-        var experiment = window.Project.getActiveExperiment();
-        if (experiment == null || undefined){
-          self.setState({ disableRun: true, disablePlay: true, disablePause: true, disableStop: true });
-        }
-      });
-
-            
-      GEPPETTO.on('disable_all', function () {
-        self.setState({ disableRun: true, disablePlay: true, disablePause: true, disableStop: true });
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_over, function () {
-        self.updateStatus();
-      });
-            
       this.updateStatus();
     },
-        
+
     updateStatus:function (){
       var experiment = window.Project.getActiveExperiment();
-            
+
       if (experiment != null || undefined){
         if (experiment.getStatus() == GEPPETTO.Resources.ExperimentStatus.COMPLETED) {
           if (GEPPETTO.ExperimentsController.isPaused()){

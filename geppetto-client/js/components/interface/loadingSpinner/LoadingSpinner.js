@@ -2,6 +2,7 @@ define(function (require) {
   var React = require('react');
   var CreateClass = require('create-react-class');
   var GEPPETTO = require('geppetto');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   require('./LoadingSpinner.less');
 
@@ -48,22 +49,29 @@ define(function (require) {
       }).bind(this), 20000);
 
     },
-    
+
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (this.props.spinnerVisible !== nextProps.spinnerVisible) {
+        if (nextProps.spinnerVisible) {
+          this.showSpinner(nextProps.spinnerMessage);
+        } else {
+          setTimeout(this.hideSpinner, 500);
+        }
+      }
+    },
+
     componentDidMount: function (){
-      var that = this;
-      
       GEPPETTO.Spinner = this;
-      
-      // Loading spinner initialization
-      GEPPETTO.on(GEPPETTO.Events.Show_spinner, function (label) {
-        that.showSpinner(label);
+
+      StoreManager.eventsCallback[StoreManager.clientActions.SHOW_SPINNER].list.push(action => {
+        this.showSpinner(action.data.message);
       });
-      
-      GEPPETTO.on(GEPPETTO.Events.Hide_spinner, function (label) {
-        setTimeout(that.hideSpinner, 500);
+
+      StoreManager.eventsCallback[StoreManager.clientActions.HIDE_SPINNER].list.push(action => {
+        setTimeout(this.hideSpinner, 500);
       });
     },
-    
+
     render: function () {
       if (this.visible){
         return (

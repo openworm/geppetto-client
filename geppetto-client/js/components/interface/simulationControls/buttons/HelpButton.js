@@ -6,22 +6,18 @@ define(function (require) {
     GEPPETTO = require('geppetto'),
     $ = require('jquery'),
     HelpModal = require('../HelpModal');
+    var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   return CreateClass({
     mixins: [require('../../../controls/mixins/Button')],
 
     componentDidMount: function () {
-
-      GEPPETTO.on('simulation:show_helpwindow',function (){
+      StoreManager.eventsCallback[StoreManager.clientActions.SHOW_HELP].list.push(action => {
         ReactDOM.render(React.createFactory(HelpModal)({ show:true }), document.getElementById('modal-region'));
 
         $("#help-modal").css("margin-right", "-20px");
         $('#help-modal').css('max-height', $(window).height() * 0.7);
         $('#help-modal .modal-body').css('max-height', $(window).height() * 0.5);
-      });
-
-      GEPPETTO.on('simulation:hide_helpwindow',function (){
-        GEPPETTO.ComponentFactory.addComponent('LOADINGSPINNER', { show : true, keyboard : false, logo: "gpt-gpt_logo" }, document.getElementById("modal-region"));
       });
     },
 
@@ -32,7 +28,8 @@ define(function (require) {
         className: 'pull-right help-button',
         icon:'fa fa-info-circle',
         onClick: function (){
-          GEPPETTO.CommandController.execute("G.showHelpWindow(true)", true); 
+          // GEPPETTO.CommandController.execute("G.showHelpWindow(true)", true);
+          StoreManager.actionsHandler[StoreManager.clientActions.SHOW_HELP]();
         }
       }
     }

@@ -6,6 +6,7 @@
  */
 
 define(function (require) {
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   return function (GEPPETTO) {
 
@@ -63,12 +64,12 @@ define(function (require) {
            * differently handle the reconnection scenario
            */
           if (messageHandlers.length > 0) {
-            GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_PROJECT);
+            StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
             var parameters = {};
             parameters["connectionID"] = GEPPETTO.MessageSocket.lostConnectionId;
             parameters["projectId"] = GEPPETTO.MessageSocket.projectId;
             GEPPETTO.MessageSocket.send("reconnect", parameters);
-            GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+            StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
           } else {
             messageHandlers.push(GEPPETTO.MessageHandler);
             messageHandlers.push(GEPPETTO.GlobalHandler);
@@ -162,7 +163,7 @@ define(function (require) {
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
           GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
           GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, GEPPETTO.Resources.SERVER_CONNECTION_ERROR);
-          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+          StoreManager.actionsHandler[StoreManager.clientActions.WEBSOCKET_DISCONNECTED]();
         }
       },
 
@@ -173,7 +174,7 @@ define(function (require) {
         if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.RECONNECTING && command !== "reconnect") {
           GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR,
             "Websocket connection currently not available, wait for reconnection and try again.");
-          GEPPETTO.trigger('stop_spin_logo');
+          StoreManager.actionsHandler[StoreManager.clientActions.STOP_LOGO]();
           return;
         }
         var requestID = this.createRequestID();
@@ -198,7 +199,7 @@ define(function (require) {
           GEPPETTO.MessageSocket.socket.send(messageTemplate);
         } else if (this.isReady() > 1){
           // connection is either closing (2) or already closed (3).
-          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+          StoreManager.actionsHandler[StoreManager.clientActions.WEBSOCKET_DISCONNECTED]();
         } else {
           // must be in connecting (0) state
           var that = this;
@@ -220,7 +221,7 @@ define(function (require) {
         GEPPETTO.MessageSocket.socket.close();
         // dispose of handlers upon closing connection
         messageHandlers = [];
-        GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+        StoreManager.actionsHandler[StoreManager.clientActions.WEBSOCKET_DISCONNECTED]();
 
       },
 

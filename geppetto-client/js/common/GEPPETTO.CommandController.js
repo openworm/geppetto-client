@@ -3,6 +3,8 @@
  *
  */
 define(function (require) {
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+
   return function (GEPPETTO) {
     GEPPETTO.CommandController = {
       // Set of commands being inherited from Backbone ojects, ignored them while displaying autocomplete commands
@@ -261,14 +263,14 @@ define(function (require) {
        * Clear commands
        */
       clear: function () {
-        GEPPETTO.trigger(GEPPETTO.Events.Command_clear);
+        StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_CLEAR]();
       },
 
       /**
        * Toggle implicit commands
        */
       toggleImplicit: function () {
-        GEPPETTO.trigger(GEPPETTO.Events.Command_toggle_implicit);
+        StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_TOGGLE_IMPLICIT]();
       },
 
       /**
@@ -288,12 +290,12 @@ define(function (require) {
         }
 
         if (debug === true) {
-          GEPPETTO.trigger(GEPPETTO.Events.Command_log_debug, message);
+          StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_LOG_DEBUG](message);
         } else {
           if (run){
-            GEPPETTO.trigger(GEPPETTO.Events.Command_log_run, message);
+            StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_LOG_RUN](message);
           } else {
-            GEPPETTO.trigger(GEPPETTO.Events.Command_log, message);
+            StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_LOG](message);
           }
         }
       },

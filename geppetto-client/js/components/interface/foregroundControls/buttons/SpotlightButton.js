@@ -18,9 +18,9 @@ define(function (require) {
         icon: 'fa fa-search',
         onClick: function () {
           if (GEPPETTO.Spotlight != undefined){
-            GEPPETTO.trigger('spin_logo');
+            this.props.spinLogo();
             GEPPETTO.Spotlight.open(GEPPETTO.Resources.SEARCH_FLOW);
-            GEPPETTO.trigger('stop_spin_logo');
+            this.props.stopLogo();
           }
         }
       };

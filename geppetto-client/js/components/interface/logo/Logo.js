@@ -7,15 +7,13 @@ define(function (require) {
   var GEPPETTO = require('geppetto');
 
   var logoDiv = CreateClass({
-    componentDidMount: function () {
-      GEPPETTO.on('spin_logo', function (label) {
-        // TODO Fix this to use state instead and not touching the dom element with jQuery
-        $("#geppettologo").addClass("fa-spin").attr('title', 'Loading data');
-      }.bind($("." + this.props.logo)));
 
-      GEPPETTO.on('stop_spin_logo', function (label) {
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (nextProps.logoSpinning) {
+        $("#geppettologo").addClass("fa-spin").attr('title', 'Loading data');
+      } else {
         $("#geppettologo").removeClass("fa-spin").attr('title', '');
-      }.bind($("." + this.props.logo)));
+      }
     },
 
     render: function () {

@@ -7,6 +7,7 @@
  * @author Giovanni Idili
  */
 
+import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
 
 var Instance = require('../model/Instance').default;
 var ArrayInstance = require('../model/ArrayInstance').default;
@@ -54,7 +55,7 @@ export default {
 
       var message = GEPPETTO.Resources.HIDE_ASPECT + this.getPath();
     }
-    GEPPETTO.trigger(GEPPETTO.Events.Visibility_changed, this);
+    StoreManager.actionsHandler[StoreManager.clientActions.VISIBILITY_CHANGED](this);
 
     return message;
   },
@@ -95,8 +96,8 @@ export default {
 
       var message = GEPPETTO.Resources.HIDE_ASPECT + this.getPath();
     }
-            
-    GEPPETTO.trigger(GEPPETTO.Events.Visibility_changed, this);
+
+    StoreManager.actionsHandler[StoreManager.clientActions.VISIBILITY_CHANGED](this);
     return message;
   },
 
@@ -150,7 +151,10 @@ export default {
 
     GEPPETTO.SceneController.setColor(this.getInstancePath(), color);
 
-    GEPPETTO.trigger(GEPPETTO.Events.Color_set, { instance: this, color: color });
+    StoreManager.actionsHandler[StoreManager.clientActions.COLOR_SET]({
+      instance: this,
+      color: color
+    });
 
     return this;
   },
@@ -176,7 +180,7 @@ export default {
         message = GEPPETTO.Resources.SELECTING_ASPECT + this.getInstancePath();
 
         // signal selection has changed in simulation pass instance
-        GEPPETTO.trigger(GEPPETTO.Events.Select, this, geometryIdentifier, point);
+        StoreManager.select(this, geometryIdentifier, point)
       } else {
         message = GEPPETTO.Resources.ASPECT_ALREADY_SELECTED;
       }
@@ -223,7 +227,7 @@ export default {
         GEPPETTO.SceneController.deselectInstance(this.getInstancePath());
         this.selected = false;
         // trigger event that selection has been changed
-        GEPPETTO.trigger(GEPPETTO.Events.Select, this);
+        StoreManager.actionsHandler[StoreManager.clientActions.SELECT](this, undefined, undefined);
       } else {
         message = GEPPETTO.Resources.ASPECT_NOT_SELECTED;
       }
@@ -287,4 +291,3 @@ export default {
     return this;
   }
 }
-

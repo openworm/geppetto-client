@@ -7,6 +7,7 @@ define(function (require) {
   require('./SandboxConsole')(GEPPETTO);
   require('./console.less');
   require('./jsConsole.less');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   return class Console extends AbstractComponent {
     constructor (props) {
@@ -346,28 +347,32 @@ define(function (require) {
       return GEPPETTO.CommandController.availableCommands();
     }
 
-    componentDidUpdate () {
-      // NOTE: nothing here for now as we are not using react render flow
-    }
-
-    componentWillUnmount () {
-      // stop listening to events on unmount
-      GEPPETTO.off(GEPPETTO.Events.Command_log, this.log, this);
-      GEPPETTO.off(GEPPETTO.Events.Command_log_debug, this.debugLog, this);
-      GEPPETTO.off(GEPPETTO.Events.Command_log_run, this.logRunCommand, this);
-      GEPPETTO.off(GEPPETTO.Events.Command_clear, this.clear, this);
-      GEPPETTO.off(GEPPETTO.Events.Command_toggle_implicit, this.toggleImplicitCommands, this);
+    UNSAFE_componentWillReceiveProps (nextProps) {
+      if (nextProps.log_timestamp !== this.props.log_timestamp) {
+        switch (nextProps.log_mode) {
+        case StoreManager.clientActions.COMMAND_LOG:
+          this.log(nextProps.log_message);
+          break;
+        case StoreManager.clientActions.COMMAND_LOG_RUN:
+          this.logRunCommand(nextProps.log_message);
+          break;
+        case StoreManager.clientActions.COMMAND_LOG_DEBUG:
+          this.debugLog(nextProps.log_message);
+          break
+        case StoreManager.clientActions.COMMAND_CLEAR:
+          this.clear();
+          break;
+        case StoreManager.clientActions.COMMAND_TOGGLE_IMPLICIT:
+          this.toggleImplicitCommands()
+          break;
+        default:
+          console.log("just another log");
+        }
+      }
     }
 
     componentDidMount () {
       this.createConsole();
-
-      // listen to events
-      GEPPETTO.on(GEPPETTO.Events.Command_log, this.log, this);
-      GEPPETTO.on(GEPPETTO.Events.Command_log_debug, this.debugLog, this);
-      GEPPETTO.on(GEPPETTO.Events.Command_log_run, this.logRunCommand, this);
-      GEPPETTO.on(GEPPETTO.Events.Command_clear, this.clear, this);
-      GEPPETTO.on(GEPPETTO.Events.Command_toggle_implicit, this.toggleImplicitCommands, this);
     }
 
     render () {

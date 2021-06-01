@@ -131,6 +131,7 @@ define(['jquery'], function () {
         for (var i = 0; i < instances.length; i++) {
           instances[i].select();
         }
+        console.log("I am in the scene controller selector");
 
       },
 

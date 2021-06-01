@@ -21,6 +21,11 @@ define(function (require) {
   var ToggleButton = require('./../../controls/toggleButton/ToggleButton');
   var colorpicker = require('./vendor/js/bootstrap-colorpicker.min');
   var PlotCtrlr = require('./../../widgets/plot/controllers/PlotsController');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+  
+  var { connect } = require('react-redux');
+  const { diffArrays } = require('../../../../../geppetto-ui/src/utils');
+
 
   $.widget.bridge('uitooltip', $.ui.tooltip);
 
@@ -149,7 +154,7 @@ define(function (require) {
     }
   });
 
-  GEPPETTO.ParameterInputComponent = CreateClass({
+  var _ParameterInputComponent = CreateClass({
     refresh: function () {
       this.forceUpdate();
     },
@@ -166,23 +171,31 @@ define(function (require) {
       });
     },
 
+    componentWillReceiveProps: function (nextProps) {
+      if (nextProps.experimentStatus !== this.props.experimentStatus) {
+        switch (nextProps.projectStatus) {
+        case StoreManager.clientActions.EXPERIMENT_COMPLETED:
+          this.refresh();
+          break;
+        case StoreManager.clientActions.EXPERIMENT_RUNNING:
+          this.refresh();
+          break;
+        case StoreManager.clientActions.EXPERIMENT_FAILED:
+          this.refresh();
+          break;
+        default:
+          break;
+        }
+      }
+    },
+
     componentDidMount: function () {
-      // listen to experiment status change and trigger a re-render to refresh input / read-only status
-      GEPPETTO.on(GEPPETTO.Events.Experiment_completed, this.refresh, this);
-      GEPPETTO.on(GEPPETTO.Events.Experiment_running, this.refresh, this);
-      GEPPETTO.on(GEPPETTO.Events.Experiment_failed, this.refresh, this);
       var status = window.Project.getActiveExperiment().getStatus();
       if (GEPPETTO.UserController.hasPersistence() && !window.Project.persisted) {
         this.attachTooltip("Save project (★) to enable editing.");
       } else if (status != GEPPETTO.Resources.ExperimentStatus.DESIGN) {
         this.attachTooltip("Experiment status is " + status + ". Create new experiment to enable parameter editing.");
       }
-    },
-
-    componentWillUnmount: function () {
-      GEPPETTO.off(GEPPETTO.Events.Experiment_failed, this.refresh, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_running, this.refresh, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_completed, this.refresh, this);
     },
 
     render: function () {
@@ -270,7 +283,19 @@ define(function (require) {
     }
   });
 
-  GEPPETTO.ControlsComponent = CreateClass({
+  // Redux Wrapper to connect the GEPPETTO component
+  GEPPETTO.ParameterInputComponent = connect(
+    (state, ownProps) => ({
+      rowData: ownProps.rowData,
+      metadata: ownProps.metadata,
+      experimentStatus: state.client.experiment.status,
+    }),
+    null,
+    null,
+    { withRef: true }
+  )(_ParameterInputComponent);
+
+  var _ControlsComponent = CreateClass({
     colorPickerBtnId: '',
     colorPickerActionFn: '',
 
@@ -357,19 +382,25 @@ define(function (require) {
           $(this).css("color", e.color.toHex());
         });
       }
-
-      // listen to experiment status change and trigger a re-render to update controls
-      GEPPETTO.on(GEPPETTO.Events.Experiment_completed, this.refresh, this);
-      GEPPETTO.on(GEPPETTO.Events.Experiment_running, this.refresh, this);
-      GEPPETTO.on(GEPPETTO.Events.Experiment_failed, this.refresh, this);
     },
 
-    componentWillUnmount: function () {
-      GEPPETTO.off(GEPPETTO.Events.Experiment_failed, this.refresh, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_running, this.refresh, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_completed, this.refresh, this);
+    componentWillReceiveProps: function (nextProps) {
+      if (nextProps.experimentStatus !== this.props.experimentStatus) {
+        switch (nextProps.projectStatus) {
+        case StoreManager.clientActions.EXPERIMENT_COMPLETED:
+          this.refresh();
+          break;
+        case StoreManager.clientActions.EXPERIMENT_RUNNING:
+          this.refresh();
+          break;
+        case StoreManager.clientActions.EXPERIMENT_FAILED:
+          this.refresh();
+          break;
+        default:
+          break;
+        }
+      }
     },
-
 
     // Utility method to iterate over a config property and populate a list of control buttons to be created
     addControlButtons: function (controlsConfig, showControlsConfig, configPropertyName, buttonsList, targetPath, projectId, experimentId) {
@@ -547,7 +578,18 @@ define(function (require) {
     }
   });
 
-  var FilterComponent = CreateClass({
+  GEPPETTO.ControlsComponent = connect(
+    (state, ownProps) => ({
+      rowData: ownProps.rowData,
+      metadata: ownProps.metadata,
+      experimentStatus: state.client.experiment.status,
+    }),
+    null,
+    null,
+    { withRef: true }
+  )(_ControlsComponent);
+
+  var _FilterComponent = CreateClass({
 
     optionsMap: {
       VISUAL_INSTANCES: ['visualInstancesFilterBtn'],
@@ -657,12 +699,10 @@ define(function (require) {
       }
     },
 
-    componentDidMount: function () {
-      GEPPETTO.on(GEPPETTO.Events.Control_panel_open, this.refreshToggleState, this);
-    },
-
-    componentWillUnmount: function () {
-      GEPPETTO.off(GEPPETTO.Events.Control_panel_open, this.refreshToggleState, this);
+    componentWillReceiveProps: function (nextProps) {
+      if (nextProps.controlPanelVisible !== this.props.controlPanelVisible && this.props.controlPanelVisible) {
+        this.refreshToggleState();
+      }
     },
 
     computeResult: function (controlId) {
@@ -965,6 +1005,18 @@ define(function (require) {
       )
     }
   });
+
+  var FilterComponent = connect(
+    (state, ownProps) => ({
+      id: ownProps.id,
+      rowData: ownProps.rowData,
+      metadata: ownProps.metadata,
+      controlPanelVisible: state.client.components.control_panel.visible,
+    }),
+    null,
+    null,
+    { withRef: true }
+  )(_FilterComponent);
 
   // Control panel default configuration
   var defaultControlPanelColumnMeta = [
@@ -1570,7 +1622,7 @@ define(function (require) {
                   }
                 } catch (e) {
                   GEPPETTO.CommandController.log(GEPPETTO.Resources.CONTROL_PANEL_ERROR_RUNNING_SOURCE_SCRIPT + " " + sourceActionStr, true);
-                  GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+                  StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
                 }
               } else {
                 // if no source assume the record has a property with the column name
@@ -1682,10 +1734,6 @@ define(function (require) {
       GEPPETTO.ControlPanel = this;
     },
 
-    componentWillUnmount: function () {
-      GEPPETTO.off(null, null, this);
-    },
-
     setTab: function (filterTabOption){
       // only do something if builtin filters are being used
       if (this.props.useBuiltInFilters === true) {
@@ -1726,7 +1774,7 @@ define(function (require) {
       // refresh to reflect latest state (might have changed)
       this.refresh();
 
-      GEPPETTO.trigger(GEPPETTO.Events.Control_panel_open);
+      this.props.controlPanelOpen();
     },
 
     close: function () {
@@ -1735,7 +1783,7 @@ define(function (require) {
       // hide control panel
       $("#controlpanel").hide();
 
-      GEPPETTO.trigger(GEPPETTO.Events.Control_panel_close);
+      this.props.controlPanelClose();
     },
 
     setFilter: function (filterText) {
@@ -1988,6 +2036,44 @@ define(function (require) {
       return $("#controlpanel").is(':visible');
     },
 
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (this.props.listenToInstanceCreationEvents) {
+        var instancesToAdd = diffArrays(nextProps.geppettoInstances, this.props.geppettoInstances);
+        var instancesToDelete = diffArrays(this.props.geppettoInstances, nextProps.geppettoInstances);
+
+        if (instancesToAdd.length > 0) {
+          var instances = Instances.getInstance(instancesToAdd);
+          this.handleAddData(instances);
+        }
+
+        if (instancesToDelete.length > 0) {
+          this.handleDeleteData(instancesToDelete);
+        }
+      }
+
+      if (nextProps.projectStatus !== this.props.projectStatus && nextProps.projectStatus === StoreManager.clientActions.PROJECT_LOADED) {
+        this.clearData();
+      }
+
+      if (nextProps.projectSaved !== this.props.projectSaved && nextProps.projectSaved) {
+        if (this.isOpen()){
+          this.refreshData();
+        }
+      }
+
+      if (nextProps.experimentSaved !== this.props.experimentSaved && nextProps.experimentSaved) {
+        if (this.isOpen()){
+          this.refreshData();
+        }
+      }
+
+      if (nextProps.parametersSet !== undefined && nextProps.parametersSet !== this.props.parametersSet) {
+        if (this.isOpen()){
+          this.refreshData();
+        }
+      }
+    },
+
     componentDidMount: function () {
       var escape = 27;
       var pKey = 80;
@@ -2017,34 +2103,6 @@ define(function (require) {
           that.close();
         }
       });
-
-      // listen to events we need to react to
-      GEPPETTO.on(GEPPETTO.Events.Project_loaded, function () {
-        that.clearData();
-      }, this);
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_properties_saved, function () {
-        if (that.isOpen()){
-          that.refreshData();
-        }
-      }, this);
-
-      GEPPETTO.on(GEPPETTO.Events.Project_properties_saved, function () {
-        if (that.isOpen()){
-          that.refreshData();
-        }
-      }, this);
-
-      GEPPETTO.on(GEPPETTO.Events.Parameters_set, function () {
-        if (that.isOpen()){
-          that.refreshData();
-        }
-      }, this);
-
-      if (this.props.listenToInstanceCreationEvents) {
-        GEPPETTO.on(GEPPETTO.Events.Instance_deleted, this.handleDeleteData, this);
-        GEPPETTO.on(GEPPETTO.Events.Instances_created, this.handleAddData, this);
-      }
 
       if (GEPPETTO.ForegroundControls != undefined) {
         GEPPETTO.ForegroundControls.refresh();

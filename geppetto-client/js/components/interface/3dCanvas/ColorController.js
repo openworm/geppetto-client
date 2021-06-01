@@ -1,6 +1,9 @@
 /**
  * This controller is used by the 3d engine to modulate the color of the meshes
  */
+
+var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+
 define(['jquery'], function () {
 
 
@@ -12,19 +15,23 @@ define(['jquery'], function () {
 
     var that = this;
 
-    GEPPETTO.on(GEPPETTO.Events.Experiment_update, function (parameters) {
-      if (parameters.playAll != null || parameters.step != undefined) {
+    var handleUpdates = () => {
+      if (StoreManager.store.getState().client.experiment.status === StoreManager.clientActions.EXPERIMENT_UPDATE) {
+        var parameters = StoreManager.store.getState().client.experiment.parameters;
+        if (parameters.playAll != null || parameters.step != undefined) {
         // update scene brightness
-        for (var key in that.listeners) {
-          if (that.listeners[key] != null || undefined) {
-            for (var i = 0; i < that.listeners[key].length; i++) {
-              that.listeners[key][i](Instances.getInstance(key), parameters.step);
+          for (var key in that.listeners) {
+            if (that.listeners[key] != null || undefined) {
+              for (var i = 0; i < that.listeners[key].length; i++) {
+                that.listeners[key][i](Instances.getInstance(key), parameters.step);
+              }
             }
           }
         }
       }
-    });
+    };
 
+    this.unsubscriber = StoreManager.store.subscribe(handleUpdates);
   }
 
 
@@ -197,7 +204,7 @@ define(['jquery'], function () {
      */
     addColorListener: function (instance, modulation, colorfn) {
       var that = this;
-      GEPPETTO.trigger(GEPPETTO.Events.Lit_entities_changed);
+      StoreManager.actionsHandler[StoreManager.clientActions.LIT_ENTITIES_CHANGED]();
       this.addOnNodeUpdatedCallback(modulation, function (stateVariableInstance, step) {
         if ((stateVariableInstance.getTimeSeries() != undefined)
                     && (step < stateVariableInstance.getTimeSeries().length)) {
@@ -237,7 +244,7 @@ define(['jquery'], function () {
       if (i > -1) {
         this.litUpInstances.splice(i, 1);
       }
-      GEPPETTO.trigger(GEPPETTO.Events.Lit_entities_changed);
+      StoreManager.actionsHandler[StoreManager.clientActions.LIT_ENTITIES_CHANGED]();
       if (this.litUpInstances.length == 0) {
         this.colorFunctionSet = false;
       }
@@ -248,4 +255,3 @@ define(['jquery'], function () {
 
   return ColorController;
 });
-

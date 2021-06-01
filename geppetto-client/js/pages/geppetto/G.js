@@ -12,6 +12,7 @@ define(function (require) {
     var $ = require('jquery');
     var React = require('react');
     var ClipboardModal = require('../../components/interface/jsEditor/ClipboardModal');
+    var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
     /**
      * @exports geppetto-objects/G
@@ -185,7 +186,7 @@ define(function (require) {
         var returnMessage;
 
         if (mode) {
-          GEPPETTO.trigger('simulation:show_helpwindow');
+          StoreManager.actionsHandler[StoreManager.clientActions.SHOW_HELP]();
           returnMessage = GEPPETTO.Resources.SHOW_HELP_WINDOW;
         } else {
           var modalVisible = $('#help-modal').hasClass('in');
@@ -194,7 +195,7 @@ define(function (require) {
             returnMessage = GEPPETTO.Resources.HELP_ALREADY_HIDDEN;
           } else {
             // hide help window
-            GEPPETTO.trigger('simulation:hide_helpwindow');
+            StoreManager.actionsHandler[StoreManager.clientActions.HIDE_HELP]();
             returnMessage = GEPPETTO.Resources.HIDE_HELP_WINDOW;
             $('#help-modal').modal('hide');
           }
@@ -207,10 +208,10 @@ define(function (require) {
         var modalVisible = $('#tutorial_dialog').is(':visible');
 
         if (modalVisible) {
-          GEPPETTO.trigger(GEPPETTO.Events.Hide_Tutorial);
+          StoreManager.actionsHandler[StoreManager.clientActions.SHOW_TUTORIAL]();
           returnMessage = GEPPETTO.Resources.HIDE_TUTORIAL;
         } else {
-          GEPPETTO.trigger(GEPPETTO.Events.Show_Tutorial);
+          StoreManager.actionsHandler[StoreManager.clientActions.HIDE_TUTORIAL]();
           returnMessage = GEPPETTO.Resources.SHOW_TUTORIAL;
         }
         return returnMessage;

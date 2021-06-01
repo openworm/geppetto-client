@@ -3,10 +3,13 @@ define(function (require) {
   var React = require('react');
   var CreateClass = require('create-react-class');
   var GEPPETTO = require('geppetto');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   $.widget.bridge('uitooltip', $.ui.tooltip);
 
   var saveControlComp = CreateClass({
+    projectStatus: null,
+
     attachTooltip: function () {
       var self = this;
       $('.SaveButton').uitooltip({
@@ -36,37 +39,41 @@ define(function (require) {
       };
     },
 
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (this.props.projectStatus !== nextProps.projectStatus) {
+        switch (nextProps.projectStatus) {
+        case StoreManager.clientActions.PROJECT_LOADED:
+          this.setState(this.evaluateState());
+          break;
+        case StoreManager.clientActions.PROJECT_PERSISTED:
+          this.setState({ disableSave: false });
+          // update contents of what's displayed on tooltip
+          $('.SaveButton').uitooltip({
+            content: "The project was persisted and added to your dashboard!",
+            position: { my: "right center", at: "left center" }
+          });
+          $(".SaveButton").mouseover().delay(2000).queue(function () {
+            $(this).mouseout().dequeue();
+          });
+          this.setState({ disableSave: true });
+          break;
+        default:
+          break;
+        }
+      }
+
+      if (nextProps.spinPersistRunning) {
+        this.setState({ icon: "fa fa-star fa-spin" });
+      } else {
+        this.setState({ icon: "fa fa-star" });
+      }
+    },
+
     componentDidMount: function () {
 
       var self = this;
 
-      GEPPETTO.on(GEPPETTO.Events.Project_persisted, function () {
-        self.setState({ disableSave: false });
-        // update contents of what's displayed on tooltip
-        $('.SaveButton').uitooltip({
-          content: "The project was persisted and added to your dashboard!",
-          position: { my: "right center", at: "left center" }
-        });
-        $(".SaveButton").mouseover().delay(2000).queue(function () {
-          $(this).mouseout().dequeue(); 
-        });
-        self.setState({ disableSave: true });
-      });
-
-      GEPPETTO.on('spin_persist', function () {
-        self.setState({ icon: "fa fa-star fa-spin" });
-      }.bind($(".saveButton")));
-
-      GEPPETTO.on('stop_spin_persist', function () {
-        self.setState({ icon: "fa fa-star" });
-      }.bind($(".saveButton")));
-
-
       self.attachTooltip();
-
-      GEPPETTO.on(GEPPETTO.Events.Project_loaded, function () {
-        self.setState(self.evaluateState());
-      });
 
       if (window.Project != undefined) {
         this.setState(this.evaluateState());
@@ -82,11 +89,11 @@ define(function (require) {
       // update contents of what's displayed on tooltip
       $('.SaveButton').uitooltip({ content: "The project is getting persisted..." });
       $(".SaveButton").mouseover().delay(2000).queue(function () {
-        $(this).mouseout().dequeue(); 
+        $(this).mouseout().dequeue();
       });
       self.setState({ disableSave: true });
       GEPPETTO.CommandController.execute("Project.persist();");
-      GEPPETTO.trigger("spin_persist");
+      this.props.spinPersist();
     },
 
     render: function () {

@@ -8,6 +8,9 @@ define(function (require) {
   var React = require('react');
   var CreateClass = require('create-react-class'), $ = require('jquery');
   var GEPPETTO = require('geppetto');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+
+  var { connect } = require('react-redux');
 
   require('./ExperimentsTable.less');
 
@@ -159,7 +162,7 @@ define(function (require) {
   /**
    * Creates table row for displaying an experiment's simulator configurations
    */
-  var SimulatorRow = CreateClass({
+  var _SimulatorRow = CreateClass({
     refresh: function (){
       if (window.Project.getActiveExperiment()){
         if (this.props.experiment.getId() == window.Project.getActiveExperiment().getId()){
@@ -168,18 +171,21 @@ define(function (require) {
       } else {
         this.forceUpdate();
       }
-          
     },
 
-    componentWillUnmount: function () {
-      GEPPETTO.off(GEPPETTO.Events.Experiment_updated, this.refresh, this);
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (nextProps.experimentStatus !== this.props.experimentStatus) {
+        switch (nextProps.experimentStatus) {
+        case StoreManager.clientActions.EXPERIMENT_UPDATED:
+          this.refresh();
+          break;
+        }
+      }
     },
 
     componentDidMount: function () {
       var row = "#simulatorRowId-" + this.props.experiment.getId();
-            
-      GEPPETTO.on(GEPPETTO.Events.Experiment_updated, this.refresh, this);
-            
+
       // Handle edits to editable fields
       $(row).parent().find("td[contenteditable='true']").keydown(function (e) {
         if (e.keyCode == 13) {
@@ -190,15 +196,15 @@ define(function (require) {
           window.getSelection().removeAllRanges();
         }
       });
-            
+
       $(row).parent().find("td[contenteditable='true']").blur(function (e) {
         // get experiment ID for the edited field
         var val = $(this).html();
         var field = $(this).attr("name");
-                
+
         // remove empty spaces
         val = val.replace(/&nbsp;/g,'').replace(/<br>/g,'').replace(/<br\/>/g,'').trim();
-                
+
         var setterStr = "";
 
         switch (field) {
@@ -307,6 +313,19 @@ define(function (require) {
     }
   });
 
+  const SimulatorRow = connect(
+    (state, ownProps) => ({
+      key: ownProps.key,
+      editable: ownProps.editable,
+      simulator: ownProps.simulator,
+      experiment: ownProps.experiment,
+      experimentStatus: state.client.experiment.status,
+    }),
+    null,
+    null,
+    { withRef: true }
+  )(_SimulatorRow);
+
   /**
    * Creates <td> element to display the status of an experiment
    */
@@ -394,7 +413,7 @@ define(function (require) {
             
       var login = GEPPETTO.UserController.isLoggedIn();
       if (login){
-        GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_EXPERIMENT);
+        this.props.showSpinner(GEPPETTO.Resources.LOADING_EXPERIMENT);
       } else {
         GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.ERROR,
           GEPPETTO.Resources.OPERATION_NOT_SUPPORTED + GEPPETTO.Resources.USER_NOT_LOGIN);
@@ -519,21 +538,6 @@ define(function (require) {
         }
       });
 
-      GEPPETTO.on(GEPPETTO.Events.Project_loaded, this.projectLoaded, this);
-
-      GEPPETTO.on(GEPPETTO.Events.Project_persisted, this.refresh, this);
-            
-      GEPPETTO.on(GEPPETTO.Events.Experiment_status_check, this.updateExperimentsTableStatus, this);
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_loaded, this.updateExperimentStatus, this);
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_created, this.newExperiment, this);
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_renamed, this.refresh, this);
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_deleted, this.experimentDeleted , this);
-            
-
       $("#experiments").resizable({
         handles: 'n',
         minHeight: 100,
@@ -548,24 +552,46 @@ define(function (require) {
           $("#experiments").get(0).style.top = "0px";
         }.bind(this)
       });
-            
+
       // As every other component this could be loaded after the project has been loaded so when we mount it we populate it with whatever is present
       if (window.Project != undefined){
         this.populate();
         this.updateStatus();
       }
-         
+
       $("#experimentsButton").show();
     },
-    
-    componentWillUnmount () {
-      GEPPETTO.off(GEPPETTO.Events.Project_loaded, this.projectLoaded, this);
-      GEPPETTO.off(GEPPETTO.Events.Project_persisted, this.refresh, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_deleted, this.experimentDeleted, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_loaded, this.updateExperimentStatus, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_status_check, this.updateExperimentsTableStatus, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_created, this.newExperiment, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_renamed, this.refresh, this);
+
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (nextProps.projectStatus !== this.props.projectStatus) {
+        switch (nextProps.projectStatus) {
+        case StoreManager.clientActions.PROJECT_LOADED:
+          this.projectLoaded();
+          break;
+        case StoreManager.clientActions.PROJECT_PERSISTED:
+          this.refresh();
+          break;
+        }
+      }
+      if (nextProps.experimentStatus !== this.props.experimentStatus) {
+        switch (nextProps.experimentStatus) {
+        case StoreManager.clientActions.EXPERIMENT_DELETED:
+          this.experimentDeleted();
+          break;
+        case StoreManager.clientActions.EXPERIMENT_LOADED:
+          this.updateExperimentStatus();
+          break;
+        case StoreManager.clientActions.EXPERIMENT_STATUS_CHECK:
+          this.updateExperimentsTableStatus();
+          break;
+        case StoreManager.clientActions.EXPERIMENT_CREATED:
+          this.newExperiment();
+          break;
+        case StoreManager.clientActions.EXPERIMENT_RENAMED:
+          this.refresh();
+          break;
+        }
+      }
     },
     
     projectLoaded: function () {
@@ -798,7 +824,7 @@ define(function (require) {
         if (experiment != null) {
           var editablePermissions = GEPPETTO.UserController.hasWritePermissions();
           var editable = false;
-                    
+
           if (!editablePermissions){
             editable = false;
           } else {
@@ -807,7 +833,7 @@ define(function (require) {
               editable = true;
             }
           }
-                    
+
           var expandableRowId = "collapsable-" + experiment.getId();
           rows.push(<ExperimentRow experiment={experiment} rowNumber={rownumber} editable={editable}
             ref={expandableRowId} key={experiment.name + "-" + experiment.getId()} fnClick={this.onClick.bind(this,expandableRowId)}/>);

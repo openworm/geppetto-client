@@ -12,6 +12,7 @@ define(function (require) {
   var _ = require('underscore');
   var Instance = require('@geppettoengine/geppetto-core/model/Instance');
   require('../../controls/mixins/bootstrap/modal.js')
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   var d3 = require("d3");
 
@@ -157,7 +158,9 @@ define(function (require) {
       // track change in state of the widget
       this.dirtyView = true;
 
-      GEPPETTO.on(GEPPETTO.Events.Color_set, this.onColorChange(this));
+      StoreManager.eventsCallback[StoreManager.clientActions.COLOR_SET].list.push(action => {
+        this.onColorChange(action.data.instance);
+      });
 
       return this;
     },

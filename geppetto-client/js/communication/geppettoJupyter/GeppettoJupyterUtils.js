@@ -1,3 +1,5 @@
+import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
+
 const handle_output = function (data) {
   // data is the object passed to the callback from the kernel execution
   switch (data.msg_type) {
@@ -6,8 +8,8 @@ const handle_output = function (data) {
     GEPPETTO.CommandController.log(data.content.evalue.trim());
     console.error("ERROR while executing a Python command:");
     console.error(data.content.traceback);
-    GEPPETTO.trigger(GEPPETTO.Events.Error_while_exec_python_command, data.content);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    StoreManager.actionsHandler[StoreManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND](data.content);
+    StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
     break;
   case 'execute_result':
     GEPPETTO.CommandController.log(data.content.data['text/plain'].trim(), true);
@@ -16,7 +18,11 @@ const handle_output = function (data) {
     } catch (error) {
       var response = data.content.data['text/plain'].replace(/^'(.*)'$/, '$1');
     }
-    GEPPETTO.trigger(GEPPETTO.Events.Receive_Python_Message, { id: data.parent_header.msg_id, type: data.msg_type, response: response });
+    StoreManager.actionsHandler[StoreManager.clientActions.RECEIVE_PYTHON_MESSAGE]({
+      id: data.parent_header.msg_id,
+      type: data.msg_type,
+      response: response
+    });
     break;
   case "display_data":
     // FIXME
@@ -32,9 +38,9 @@ const execPythonMessage = function (command, callback = handle_output) {
   var messageID = kernel.execute(command, { iopub: { output: callback } }, { silent: false, stop_on_error: true, store_history: true });
 
   return new Promise((resolve, reject) =>
-    GEPPETTO.on(GEPPETTO.Events.Receive_Python_Message, function (data) {
-      if (data.id == messageID) {
-        resolve(data.response);
+    StoreManager.eventsCallback[StoreManager.clientActions.RECEIVE_PYTHON_MESSAGE].list.push(action => {
+      if (action.data.id == messageID) {
+        resolve(action.data.response);
       }
     })
   );

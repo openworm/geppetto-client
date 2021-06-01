@@ -17,15 +17,10 @@ define(function (require) {
       return { loading: true };
     },
 
-    componentDidMount: function () {
-      GEPPETTO.on('jupyter_geppetto_extension_ready', data => {
-        this.setState({ loading: false })
-      });
-    },
-
-
-    componentWillUnmount: function () {
-      GEPPETTO.off('jupyter_geppetto_extension_ready')
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (nextProps.extensionLoaded && nextProps.extensionLoaded !== this.props.extensionLoaded) {
+        this.setState({ loading: false });
+      }
     },
 
     render: function () {

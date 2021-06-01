@@ -7,6 +7,8 @@ define(function (require) {
   var GEPPETTO = require('geppetto');
   var slick = require('slick-carousel');
 
+  const { diffArrays } = require('../../../../../../geppetto-ui/src/utils');
+
   class SlideshowImageComponent extends React.Component {
     constructor (props) {
       super(props);
@@ -65,7 +67,7 @@ define(function (require) {
             actionStr = actionStr.replace(/\$entity\$/gi, that.state.imageID);
             GEPPETTO.CommandController.execute(actionStr);
 
-          }); 
+          });
         }
       };
 
@@ -124,15 +126,20 @@ define(function (require) {
           }
         }, { passive: true });
       }
-
-      GEPPETTO.on(GEPPETTO.Events.Instance_deleted, this.deletedInstance, this);
-      GEPPETTO.on(GEPPETTO.Events.Instance_added, this.addedInstance, this);
     }
 
-    componentWillUnmount () {
-      // Remove listeners once unmounted
-      GEPPETTO.off(GEPPETTO.Events.Instance_deleted, this.deletedInstance, this);
-      GEPPETTO.off(GEPPETTO.Events.Instances_created, this.addedInstance, this);
+    UNSAFE_componentWillReceiveProps (nextProps) {
+      var instancesToAdd = diffArrays(nextProps.geppettoInstances, this.props.geppettoInstances);
+      var instancesToDelete = diffArrays(this.props.geppettoInstances, nextProps.geppettoInstances);
+
+      if (instancesToAdd.length > 0) {
+        var instances = Instances.getInstance(instancesToAdd);
+        this.addedInstance(instances);
+      }
+
+      if (instancesToDelete.length > 0) {
+        this.deletedInstance(instancesToDelete);
+      }
     }
 
     /**

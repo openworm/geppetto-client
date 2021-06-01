@@ -6,6 +6,7 @@ import {
   createMuiTheme,
   MuiThemeProvider
 } from "@material-ui/core/styles";
+import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
 
 require("./ButtonBarComponent.less");
 
@@ -70,13 +71,15 @@ export default class ButtonBarComponent extends React.Component {
           }
         }
       });
-      this.props.geppetto.on(GEPPETTO.Events.Color_set, function (instance) {
-        if (that.props != null || that.props != undefined){
-          if (instance.instance.getInstancePath() == that.props.instancePath){
-            that.forceUpdate();
-            if (that.props.instance != null || that.props.instance != undefined){
-              that.props.resize();
-            }
+
+      StoreManager.eventsCallback[StoreManager.clientActions.COLOR_SET].list.push(action => {
+        var color = action.data.color;
+        var instance = action.data.instance;
+
+        if (instance.instance.getInstancePath() == that.props.instancePath){
+          that.forceUpdate();
+          if (that.props.instance != null || that.props.instance != undefined){
+            that.props.resize();
           }
         }
       });

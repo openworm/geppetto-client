@@ -13,6 +13,7 @@ define(function (require) {
   var Typography = require('@material-ui/core/Typography').default;
   var MenuButton = require('../../controls/menuButton/MenuButton');
   var typeahead = require("typeahead.js/dist/typeahead.jquery.min.js");
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   var resultsViewState = false;
 
@@ -219,7 +220,8 @@ define(function (require) {
     keyCloseHandler (event){
       if (event.keyCode === this.escape) {
         this.close();
-        GEPPETTO.trigger("query_closed");
+        // TODO: plug the component in the redux connector and replace this with the function prop
+        StoreManager.actionsHandler[StoreManager.clientActions.HIDE_QUERYBUILDER]();
       }
     }
 
@@ -240,7 +242,8 @@ define(function (require) {
     handleClickOutside (event) {
       if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
         this.close();
-        GEPPETTO.trigger("query_closed");
+        // TODO: plug the component in the redux connector and replace this with the function prop
+        StoreManager.actionsHandler[StoreManager.clientActions.HIDE_QUERYBUILDER]();
       }
     }
 
@@ -1161,7 +1164,8 @@ define(function (require) {
         }, this);
 
         var loadHandler = function (self) {
-          GEPPETTO.on("query_closed", function () {
+          // TODO: plug the component in the redux connector and replace this with the prop passed from the store
+          StoreManager.eventsCallback[StoreManager.clientActions.HIDE_QUERYBUILDER].list.push(action => {
             if (self.state.open) {
               self.toggleMenu();
             }

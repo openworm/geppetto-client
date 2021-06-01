@@ -20,15 +20,14 @@ define(function (require) {
         = {
         callbackCommand: null,
         compulsoryActions: {},
-            
+
         addCompulsoryAction: function (suggestion, flow) {
-                
           if (!this.compulsoryActions[flow]) {
             this.compulsoryActions[flow] = [];
           }
           this.compulsoryActions[flow].push(suggestion);
         },
-            
+
         showSpotlightForRun: function (callbackCommand){
           this.callbackCommand = callbackCommand;
           var anythingRecorded = false;
@@ -51,8 +50,6 @@ define(function (require) {
             // if not, bring up spotlight configured for the RUN flow
             GEPPETTO.Spotlight.open(GEPPETTO.Resources.RUN_FLOW);
 
-            // listen to spotlight exit event and handle it running the callbackCommand passed in
-            GEPPETTO.on(GEPPETTO.Events.Spotlight_closed, this.onSpotlightExitFlowCallback, this);
           } else {
             // nothing to do - run callbackCommand directly
             GEPPETTO.CommandController.execute(callbackCommand, true);
@@ -76,7 +73,7 @@ define(function (require) {
             }
           });
         },
-            
+
         /*
          * Handles flow on run experiment
          */
@@ -88,8 +85,7 @@ define(function (require) {
               GEPPETTO.CommandController.execute(value + "('" + callbackCommand + "')", true);
             });
           }
-              
-              
+
         },
 
         /*
@@ -105,9 +101,8 @@ define(function (require) {
           }
         },
 
-        onSpotlightExitFlowCallback : function (){
+        onSpotlightExitFlowCallback : function () {
           GEPPETTO.CommandController.execute(this.callbackCommand, true);
-          GEPPETTO.off(GEPPETTO.Events.Spotlight_closed, this.onSpotlightExitFlowCallback, this);
         }
       };
 

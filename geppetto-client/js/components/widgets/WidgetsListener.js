@@ -7,6 +7,7 @@
 define(function (require) {
 
   var $ = require('jquery');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   return function (GEPPETTO) {
 
@@ -83,7 +84,7 @@ define(function (require) {
             }
           }
 
-          GEPPETTO.trigger(GEPPETTO.Events.Component_destroyed, widgetID);
+          StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER](widgetID);
         });
 
         // register resize handler for widget
