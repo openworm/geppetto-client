@@ -4,7 +4,7 @@ define(function (require) {
     $ = require('jquery'),
     Button = require('../../controls/mixins/bootstrap/button'),
     GEPPETTO = require('geppetto');
-    var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+    var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
   require('./Tutorial.less');
 
@@ -288,7 +288,7 @@ define(function (require) {
     }
 
     UNSAFE_componentWillReceiveProps (nextProps) {
-      if (this.props.modelStatus !== nextProps.modelStatus && nextProps.modelStatus === StoreManager.clientActions.MODEL_LOADED) {
+      if (this.props.modelStatus !== nextProps.modelStatus && nextProps.modelStatus === EventManager.clientActions.MODEL_LOADED) {
         if (!this.dontShowTutorial) {
           // default tutorial when user doesn't specify one for this event
           if (this.props.tutorialURL != undefined) {

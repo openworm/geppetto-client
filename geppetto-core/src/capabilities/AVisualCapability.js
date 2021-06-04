@@ -7,7 +7,7 @@
  * @author Giovanni Idili
  */
 
-import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
+import EventManager from '@geppettoengine/geppetto-client/common/EventManager';
 
 var Instance = require('../model/Instance').default;
 var ArrayInstance = require('../model/ArrayInstance').default;
@@ -55,7 +55,7 @@ export default {
 
       var message = GEPPETTO.Resources.HIDE_ASPECT + this.getPath();
     }
-    StoreManager.actionsHandler[StoreManager.clientActions.VISIBILITY_CHANGED](this);
+    EventManager.actionsHandler[EventManager.clientActions.VISIBILITY_CHANGED](this);
 
     return message;
   },
@@ -97,7 +97,7 @@ export default {
       var message = GEPPETTO.Resources.HIDE_ASPECT + this.getPath();
     }
 
-    StoreManager.actionsHandler[StoreManager.clientActions.VISIBILITY_CHANGED](this);
+    EventManager.actionsHandler[EventManager.clientActions.VISIBILITY_CHANGED](this);
     return message;
   },
 
@@ -151,7 +151,7 @@ export default {
 
     GEPPETTO.SceneController.setColor(this.getInstancePath(), color);
 
-    StoreManager.actionsHandler[StoreManager.clientActions.COLOR_SET]({
+    EventManager.actionsHandler[EventManager.clientActions.COLOR_SET]({
       instance: this,
       color: color
     });
@@ -180,7 +180,7 @@ export default {
         message = GEPPETTO.Resources.SELECTING_ASPECT + this.getInstancePath();
 
         // signal selection has changed in simulation pass instance
-        StoreManager.select(this, geometryIdentifier, point)
+        EventManager.select(this, geometryIdentifier, point)
       } else {
         message = GEPPETTO.Resources.ASPECT_ALREADY_SELECTED;
       }
@@ -227,7 +227,7 @@ export default {
         GEPPETTO.SceneController.deselectInstance(this.getInstancePath());
         this.selected = false;
         // trigger event that selection has been changed
-        StoreManager.actionsHandler[StoreManager.clientActions.SELECT](this, undefined, undefined);
+        EventManager.actionsHandler[EventManager.clientActions.SELECT](this, undefined, undefined);
       } else {
         message = GEPPETTO.Resources.ASPECT_NOT_SELECTED;
       }

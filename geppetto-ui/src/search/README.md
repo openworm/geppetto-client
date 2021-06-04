@@ -1,4 +1,4 @@
-# Search Component
+# Search
 
 ## Component dependencies
 
@@ -32,6 +32,7 @@ SOLR is pretty straight forward and use what the name points, CUSTOM refers to a
       "key": "facets_annotation",
       "filter_name": "Classes",
       "type": "array",
+      "disableGlobal": true,
       "values": [
         {
           "key": "Anatomy",
@@ -132,3 +133,23 @@ function refineResults(searchString, results, resultsHandler) {
     resultsHandler("OK", refinedResults, searchString);
 }
 ```
+
+
+```element
+search/showcase/Search
+```
+
+## Examples
+
+### Search Example
+
+Example of a simple search.
+
+```
+search/showcase/examples/SearchShowcase
+```
+
+## Libraries
+
+[@axios](https://www.npmjs.com/package/axios)
+[@Material-ui/core](https://www.npmjs.com/package/@material-ui/core)

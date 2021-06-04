@@ -72,6 +72,8 @@ export const clientActions = {
   DISABLE_CONTROLS: "DISABLE_CONTROLS",
 };
 
+export const IMPORT_APPLICATION_STATE = 'IMPORT_APPLICATION_STATE';
+
 export const selectInstance = ( scope, geometryIdentifier, point ) => ({
   type: clientActions.SELECT,
   data: {
@@ -252,10 +254,12 @@ export const startTutorial = () => ({ type: clientActions.START_TUTORIAL, });
 
 export const stopTutorial = () => ({ type: clientActions.STOP_TUTORIAL, });
 
-export const showSpinner = message => ({
+export const showSpinner = (message, offAction=null) => ({
   type: clientActions.SHOW_SPINNER,
-  data: { message: message },
+  data: { message, offAction },
 });
+
+export const waitData = showSpinner;
 
 export const hideSpinner = () => ({ type: clientActions.HIDE_SPINNER, });
 
@@ -380,3 +384,4 @@ export const stopPersist = () => ({ type: clientActions.STOP_PERSIST, });
 export const jupyterGeppettoExtensionReady = () => ({ type: clientActions.JUPYTER_GEPPETTO_EXTENSION_READY, });
 
 export const disableControls = () => ({ type: clientActions.DISABLE_CONTROLS, });
+

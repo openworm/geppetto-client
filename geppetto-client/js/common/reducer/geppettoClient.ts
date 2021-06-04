@@ -1,6 +1,94 @@
-import { clientActions } from '../actions/actions'
+import { clientActions } from '../actions'
 
-export const clientInitialStatus = {
+export interface ClientState {
+  colorChanged: {
+    instance: string,
+    color: string,
+  },
+  components: {
+    canvas: {
+      available: Boolean,
+      latestUpdate: Date,
+    },
+    control_panel: {
+      available: Boolean,
+      visible: Boolean,
+    },
+    help: {
+      available: Boolean,
+      visible: Boolean,
+    },
+    logo: {
+      latestUpdate: Date,
+      running: Boolean,
+    },
+    persist_spinner: { running: Boolean },
+    queryBuilder: {
+      available: Boolean,
+      visible: Boolean,
+    },
+    spinner: { [offAction: string]: string },
+    spotlight: {
+      available: Boolean,
+      visible: Boolean,
+    },
+    tutorial: {
+      running: Boolean,
+      visible: Boolean,
+    },
+  },
+  controls_disabled: Boolean,
+  error: {
+    latestUpdate: Date,
+    message: string,
+  },
+  experiment: {
+    id: string,
+    status: any,
+    parameters: any,
+    properties: {
+      parameters_set: any,
+      properties_saved: Boolean,
+    },
+  },
+  info: {
+    latestUpdate: Date,
+    message: string,
+  },
+  instances: [],
+  instance_focused: any,
+  instance_selected: any,
+  jupyter_geppetto_extension: { loaded: Boolean, },
+  logs: {
+    mode: any,
+    message: string,
+    timestamp: Date,
+  },
+  model: {
+    id: string,
+    status: any
+  },
+  project: {
+    id: string,
+    status: any,
+    properties: {
+      public: Boolean,
+      properties_saved: Boolean,
+      config_loaded: Boolean,
+      configuration: any,
+    },
+  },
+  pythonMessages: {
+    id: string,
+    type: any,
+    response: any,
+    timestamp: Date,
+  },
+  visibility_records: any[],
+  websocket_status: any,
+}
+
+export const clientInitialState: ClientState = {
   colorChanged: {
     instance: undefined,
     color: undefined,
@@ -27,10 +115,7 @@ export const clientInitialStatus = {
       available: false,
       visible: false,
     },
-    spinner: {
-      visible: false,
-      message: undefined,
-    },
+    spinner: {},
     spotlight: {
       available: false,
       visible: false,
@@ -99,6 +184,14 @@ export default function geppettoClientReducer ( state = {}, action ) {
 }
 
 function clientReducer (state, action) {
+
+  // Hide the spinner when the correspondin offAction arrives
+  if (state?.components?.spinner && state.components.spinner[action.type]) {
+    delete state.components.spinner[action.type];
+    state.components.spinner = { ...state.components.spinner };
+  }
+
+
   switch (action.type) {
   case clientActions.SELECT:
     if (action.data !== undefined) {
@@ -342,24 +435,24 @@ function clientReducer (state, action) {
       }
     };
   case clientActions.INSTANCE_DELETED:
-    var _instances = state.instances.filter( item => {
+    const deletedInstances = state.instances.filter( item => {
       item !== action.data
     });
     return {
       ...state,
-      instances: _instances,
+      instances: deletedInstances,
     };
   case clientActions.INSTANCES_CREATED:
-    var _instances = [...state.instances];
+    const createdInstances = [...state.instances];
     action.data.forEach( instance => {
       let path = instance.getInstancePath();
       if (state.instances.indexOf(path) == -1) {
-        _instances.push(path);
+        createdInstances.push(path);
       }
     });
     return {
       ...state,
-      instances: _instances,
+      instances: createdInstances,
     };
   case clientActions.SHOW_TUTORIAL:
     return {
@@ -428,25 +521,14 @@ function clientReducer (state, action) {
       }
     };
   case clientActions.SHOW_SPINNER:
+    const offAction = action.data.offAction || clientActions.HIDE_SPINNER;
     return {
       ...state,
       components: {
         ...state.components,
         spinner: {
           ...state.components.spinner,
-          visible: true,
-          message: action.data.message,
-        }
-      }
-    };
-  case clientActions.HIDE_SPINNER:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        spinner: {
-          ...state.components.spinner,
-          visible: false,
+          [offAction]: action.data.message
         }
       }
     };

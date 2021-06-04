@@ -1,4 +1,4 @@
-import Node from "../../../../geppetto-ui/src/flex-layout/src/model/Node";
+import Node from "@geppettoengine/geppetto-ui/flex-layout/src/model/Node";
 
 /*
  * status can be one of:
@@ -14,10 +14,16 @@ export enum WidgetStatus {
   MINIMIZED = "MINIMIZED",
 }
 
+/**
+ * Extended Node interface
+ */
 export interface ExtendedNode extends Node {
   config: Widget;
 }
 
+/**
+ * Widget interface
+ */
 export interface Widget {
   id: string;
   status: WidgetStatus;
@@ -30,4 +36,20 @@ export interface Widget {
   enableDrag?: boolean;
   enableRename?: boolean;
   pos?: number;
+  session: any;
+  config: any;
 }
+
+/**
+ * Widget Component interface.
+ */
+export interface WidgetComponent extends React.ReactElement {
+  exportSession: () => any;
+  importSession: (any) => void;
+}
+
+export interface WidgetMap {
+  [id: string]: Widget
+}
+
+export interface ComponentMap { [name: string]: React.ReactElement<any, any> }

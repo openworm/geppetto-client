@@ -3,7 +3,7 @@
  *
  */
 define(function (require) {
-  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
   return function (GEPPETTO) {
     GEPPETTO.CommandController = {
@@ -263,14 +263,14 @@ define(function (require) {
        * Clear commands
        */
       clear: function () {
-        StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_CLEAR]();
+        EventManager.actionsHandler[EventManager.clientActions.COMMAND_CLEAR]();
       },
 
       /**
        * Toggle implicit commands
        */
       toggleImplicit: function () {
-        StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_TOGGLE_IMPLICIT]();
+        EventManager.actionsHandler[EventManager.clientActions.COMMAND_TOGGLE_IMPLICIT]();
       },
 
       /**
@@ -290,12 +290,12 @@ define(function (require) {
         }
 
         if (debug === true) {
-          StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_LOG_DEBUG](message);
+          EventManager.actionsHandler[EventManager.clientActions.COMMAND_LOG_DEBUG](message);
         } else {
           if (run){
-            StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_LOG_RUN](message);
+            EventManager.actionsHandler[EventManager.clientActions.COMMAND_LOG_RUN](message);
           } else {
-            StoreManager.actionsHandler[StoreManager.clientActions.COMMAND_LOG](message);
+            EventManager.actionsHandler[EventManager.clientActions.COMMAND_LOG](message);
           }
         }
       },

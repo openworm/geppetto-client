@@ -3,7 +3,7 @@ define(function (require) {
   var React = require('react');
   var CreateClass = require('create-react-class');
   var GEPPETTO = require('geppetto');
-  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
   $.widget.bridge('uitooltip', $.ui.tooltip);
 
@@ -42,10 +42,10 @@ define(function (require) {
     UNSAFE_componentWillReceiveProps: function (nextProps) {
       if (this.props.projectStatus !== nextProps.projectStatus) {
         switch (nextProps.projectStatus) {
-        case StoreManager.clientActions.PROJECT_LOADED:
+        case EventManager.clientActions.PROJECT_LOADED:
           this.setState(this.evaluateState());
           break;
-        case StoreManager.clientActions.PROJECT_PERSISTED:
+        case EventManager.clientActions.PROJECT_PERSISTED:
           this.setState({ disableSave: false });
           // update contents of what's displayed on tooltip
           $('.SaveButton').uitooltip({

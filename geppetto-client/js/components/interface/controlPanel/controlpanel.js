@@ -21,7 +21,7 @@ define(function (require) {
   var ToggleButton = require('./../../controls/toggleButton/ToggleButton');
   var colorpicker = require('./vendor/js/bootstrap-colorpicker.min');
   var PlotCtrlr = require('./../../widgets/plot/controllers/PlotsController');
-  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
   
   var { connect } = require('react-redux');
   const { diffArrays } = require('../../../../../geppetto-ui/src/utils');
@@ -174,13 +174,13 @@ define(function (require) {
     componentWillReceiveProps: function (nextProps) {
       if (nextProps.experimentStatus !== this.props.experimentStatus) {
         switch (nextProps.projectStatus) {
-        case StoreManager.clientActions.EXPERIMENT_COMPLETED:
+        case EventManager.clientActions.EXPERIMENT_COMPLETED:
           this.refresh();
           break;
-        case StoreManager.clientActions.EXPERIMENT_RUNNING:
+        case EventManager.clientActions.EXPERIMENT_RUNNING:
           this.refresh();
           break;
-        case StoreManager.clientActions.EXPERIMENT_FAILED:
+        case EventManager.clientActions.EXPERIMENT_FAILED:
           this.refresh();
           break;
         default:
@@ -292,7 +292,7 @@ define(function (require) {
     }),
     null,
     null,
-    { withRef: true }
+    { forwardRef: true }
   )(_ParameterInputComponent);
 
   var _ControlsComponent = CreateClass({
@@ -387,13 +387,13 @@ define(function (require) {
     componentWillReceiveProps: function (nextProps) {
       if (nextProps.experimentStatus !== this.props.experimentStatus) {
         switch (nextProps.projectStatus) {
-        case StoreManager.clientActions.EXPERIMENT_COMPLETED:
+        case EventManager.clientActions.EXPERIMENT_COMPLETED:
           this.refresh();
           break;
-        case StoreManager.clientActions.EXPERIMENT_RUNNING:
+        case EventManager.clientActions.EXPERIMENT_RUNNING:
           this.refresh();
           break;
-        case StoreManager.clientActions.EXPERIMENT_FAILED:
+        case EventManager.clientActions.EXPERIMENT_FAILED:
           this.refresh();
           break;
         default:
@@ -586,7 +586,7 @@ define(function (require) {
     }),
     null,
     null,
-    { withRef: true }
+    { forwardRef: true }
   )(_ControlsComponent);
 
   var _FilterComponent = CreateClass({
@@ -1015,7 +1015,7 @@ define(function (require) {
     }),
     null,
     null,
-    { withRef: true }
+    { forwardRef: true }
   )(_FilterComponent);
 
   // Control panel default configuration
@@ -1622,7 +1622,7 @@ define(function (require) {
                   }
                 } catch (e) {
                   GEPPETTO.CommandController.log(GEPPETTO.Resources.CONTROL_PANEL_ERROR_RUNNING_SOURCE_SCRIPT + " " + sourceActionStr, true);
-                  StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
+                  EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
                 }
               } else {
                 // if no source assume the record has a property with the column name
@@ -2051,7 +2051,7 @@ define(function (require) {
         }
       }
 
-      if (nextProps.projectStatus !== this.props.projectStatus && nextProps.projectStatus === StoreManager.clientActions.PROJECT_LOADED) {
+      if (nextProps.projectStatus !== this.props.projectStatus && nextProps.projectStatus === EventManager.clientActions.PROJECT_LOADED) {
         this.clearData();
       }
 

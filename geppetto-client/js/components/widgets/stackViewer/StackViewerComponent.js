@@ -403,6 +403,7 @@ define(function (require) {
       while (GEPPETTO.SceneController.getSelection()[0] != undefined) {
         GEPPETTO.SceneController.getSelection()[0].deselect();
       }
+      
       $.each([this.state.stack[0]], function (i, item) {
         (function (i, that, shift) {
           var shift = GEPPETTO.isKeyPressed("shift");

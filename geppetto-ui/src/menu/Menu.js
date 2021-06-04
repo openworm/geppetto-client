@@ -191,7 +191,7 @@ Menu.propTypes = {
         /**
          * Defines the name displayed on the button itself.
          */
-        label: PropTypes.string.isRequired,
+        label: PropTypes.any.isRequired,
         /**
          * Defines where the window with the full menu expanded for that button has to appear. this might be one of the
          * following choices: 'bottom-end', 'bottom-start', 'bottom', 'left-end', 'left-start', 'left', 'right-end',

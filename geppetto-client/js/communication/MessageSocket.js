@@ -6,7 +6,7 @@
  */
 
 define(function (require) {
-  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
   return function (GEPPETTO) {
 
@@ -64,12 +64,12 @@ define(function (require) {
            * differently handle the reconnection scenario
            */
           if (messageHandlers.length > 0) {
-            StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
+            EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
             var parameters = {};
             parameters["connectionID"] = GEPPETTO.MessageSocket.lostConnectionId;
             parameters["projectId"] = GEPPETTO.MessageSocket.projectId;
             GEPPETTO.MessageSocket.send("reconnect", parameters);
-            StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
+            EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
           } else {
             messageHandlers.push(GEPPETTO.MessageHandler);
             messageHandlers.push(GEPPETTO.GlobalHandler);
@@ -163,7 +163,7 @@ define(function (require) {
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
           GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
           GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, GEPPETTO.Resources.SERVER_CONNECTION_ERROR);
-          StoreManager.actionsHandler[StoreManager.clientActions.WEBSOCKET_DISCONNECTED]();
+          EventManager.actionsHandler[EventManager.clientActions.WEBSOCKET_DISCONNECTED]();
         }
       },
 
@@ -174,7 +174,7 @@ define(function (require) {
         if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.RECONNECTING && command !== "reconnect") {
           GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR,
             "Websocket connection currently not available, wait for reconnection and try again.");
-          StoreManager.actionsHandler[StoreManager.clientActions.STOP_LOGO]();
+          EventManager.actionsHandler[EventManager.clientActions.STOP_LOGO]();
           return;
         }
         var requestID = this.createRequestID();
@@ -199,7 +199,7 @@ define(function (require) {
           GEPPETTO.MessageSocket.socket.send(messageTemplate);
         } else if (this.isReady() > 1){
           // connection is either closing (2) or already closed (3).
-          StoreManager.actionsHandler[StoreManager.clientActions.WEBSOCKET_DISCONNECTED]();
+          EventManager.actionsHandler[EventManager.clientActions.WEBSOCKET_DISCONNECTED]();
         } else {
           // must be in connecting (0) state
           var that = this;
@@ -221,7 +221,7 @@ define(function (require) {
         GEPPETTO.MessageSocket.socket.close();
         // dispose of handlers upon closing connection
         messageHandlers = [];
-        StoreManager.actionsHandler[StoreManager.clientActions.WEBSOCKET_DISCONNECTED]();
+        EventManager.actionsHandler[EventManager.clientActions.WEBSOCKET_DISCONNECTED]();
 
       },
 
