@@ -109,11 +109,15 @@ define(function (require) {
           var host = urljoin(GEPPETTO.MessageSocket.protocol + window.location.host.replace("8081","8080"), '/GeppettoServlet');
         } else {
           var baseHost = GEPPETTO.MessageSocket.protocol + window.location.host;
-          var contextPath = window.location.pathname.substring(0,window.location.pathname.lastIndexOf("/"));
-          if (!contextPath.endsWith(GEPPETTO_CONFIGURATION.contextPath.replace(/^\/|\/$/g, ''))){
-            contextPath = urljoin(contextPath, GEPPETTO_CONFIGURATION.contextPath);
+          if (GEPPETTO_CONFIGURATION.contextPath[0] == "/") {
+            var host = urljoin(baseHost, GEPPETTO_CONFIGURATION.contextPath , "GeppettoServlet")
+          } else {
+            var contextPath = window.location.pathname.substring(0,window.location.pathname.lastIndexOf("/"));
+            if (!contextPath.endsWith(GEPPETTO_CONFIGURATION.contextPath.replace(/^\/|\/$/g, ''))){
+              contextPath = urljoin(contextPath, GEPPETTO_CONFIGURATION.contextPath);
+            }
+            var host = urljoin(baseHost, contextPath , "GeppettoServlet")
           }
-          var host = urljoin(baseHost, contextPath , "GeppettoServlet")
         }
         GEPPETTO.MessageSocket.connect(host);
         console.log("Host for MessageSocket to connect: " + host);
