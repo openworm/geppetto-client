@@ -179,7 +179,7 @@ define(function (require) {
       if (this.state.imageID === "") {
         checked = this.getImageInstanceVisibility(thumbImage.reference);
       }
-      const imgElement = <div id={imageContainerId} className="query-results-image collapse in">
+      const imgElement = <div id={imageContainerId} className="query-results-image collapse in"> {thumbImage.name}
         <a href='' onClick={action}>
           <img className="query-results-image invert" src={thumbImage.data} />
         </a>
