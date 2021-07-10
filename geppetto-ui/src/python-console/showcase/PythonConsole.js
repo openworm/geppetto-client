@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import pythonConsoleGif from './console.gif';
+import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
 
 class PythonConsole extends Component {
   constructor (props) {
     super(props);
+    this.state = { gif: false, }
+  }
+
+  componentDidMount () {
+    import(/* webpackChunkName: "console.gif" */'./console.gif').then(gif => {
+      this.setState({ gif: gif.default })
+    })
   }
 
   render () {
-    return <img src={pythonConsoleGif} />;
+    const { gif } = this.state;
+    return gif ? <img src={gif} /> : <Loader active={true}/>
   }
 }
 

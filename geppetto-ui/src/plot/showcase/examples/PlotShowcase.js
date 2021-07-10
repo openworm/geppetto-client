@@ -1,31 +1,36 @@
 import React, { Component } from "react";
-import model from './../model.json';
 import PlotComponent from "./../../PlotComponent";
-import ExternalInstance from '@geppettoengine/geppetto-core/model/ExternalInstance';
+import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
 
 export default class PlotShowcase extends Component {
   constructor (props) {
     super(props);
-    this.instancePath = "nwbfile.acquisition.test_sine_1";
-    GEPPETTO.Manager.loadModel(model);
-    Instances.getInstance(this.instancePath);
-    Instances.getInstance(`${this.instancePath}.data`);
-    Instances.getInstance(`${this.instancePath}.timestamps`);
+    this.state = { hasModelLoaded: false, }
   }
 
-  extractLegendName (instanceY) {
-    let legendName = instanceY.getInstancePath()
-      .split('.')
-      .filter((word, index, arr) => index != 0 && index != arr.length - 1)
-      .join('.');
+  componentDidMount () {
+    import(/* webpackChunkName: "plot_model.json" */'../model.json').then(model => {
+      GEPPETTO.Manager.loadModel(model);
+      this.instancePath = "nwbfile.acquisition.test_sine_1";
+      Instances.getInstance(this.instancePath);
+      Instances.getInstance(`${this.instancePath}.data`);
+      Instances.getInstance(`${this.instancePath}.timestamps`);
+      this.setState({ hasModelLoaded: true })
+    })
+  }
 
-    return legendName
+
+  extractLegendName (instanceY) {
+    return instanceY.getInstancePath()
+      .split('.')
+      .filter((word, index, arr) => index !== 0 && index !== arr.length - 1)
+      .join('.')
   }
 
   render () {
+    const { hasModelLoaded } = this.state;
     const color = 'white';
     const guestList = [];
-
     const plots = [{
       x: `${this.instancePath}.timestamps`,
       y: `${this.instancePath}.data`,
@@ -42,13 +47,13 @@ export default class PlotShowcase extends Component {
       )
     }
 
-    return (
+    return hasModelLoaded ? (
       <div style={{ width: 600, height: 500 }}>
         <PlotComponent
           plots={plots}
           id={this.instancePath ? this.instancePath : "empty"}
           extractLegendName={this.extractLegendName} />
       </div>
-    );
+    ) : <Loader active={true}/>
   }
 }
