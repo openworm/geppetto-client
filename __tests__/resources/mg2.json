@@ -1,0 +1,5455 @@
+{
+  "eClass": "GeppettoModel",
+  "libraries": [
+    {
+      "eClass": "GeppettoLibrary",
+      "id": "mgvlibrary",
+      "name": "MGV",
+      "synched": false,
+      "types": [
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "eClass": "SimpleType",
+          "id": "MG_E_3_COGNITION",
+          "name": "Cognition",
+          "superType": [
+            {
+              "$ref": "//@libraries.0/@types.1",
+              "eClass": "SimpleType"
+            }
+          ]
+        },
+        {
+          "eClass": "SimpleType",
+          "id": "UBERON_0011300",
+          "name": "gray matter of telencephalon",
+          "superType": [
+            {
+              "$ref": "//@libraries.0/@types.255",
+              "eClass": "SimpleType"
+            }
+          ]
+        },
+        {
+          "eClass": "SimpleType",
+          "id": "UBERON_0019264",
+          "name": "gray matter of forebrain",
+          "superType": [
+            {
+              "$ref": "//@libraries.0/@types.256",
+              "eClass": "SimpleType"
+            }
+          ]
+        },
+        {
+          "eClass": "SimpleType",
+          "id": "UBERON_0003528",
+          "name": "brain gray matter",
+          "superType": [
+            {
+              "$ref": "//@libraries.0/@types.142",
+              "eClass": "SimpleType"
+            }
+          ]
+        },
+        {
+          "eClass": "SimpleType",
+          "id": "PartOf",
+          "name": "PartOf",
+          "superType": [
+            {
+              "$ref": "//@libraries.1/@types.17",
+              "eClass": "SimpleType"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "synched": true
+    }
+  ],
+  "tags": [
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    }
+  ],
+  "worlds": [
+    {
+      "eClass": "World",
+      "instances": [
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_9075",
+          "name": "substantia nigra, pars reticulata, left",
+          "position": {
+            "eClass": "Point",
+            "x": -13.1,
+            "y": -25.2,
+            "z": -14.6
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"substantia nigra pars reticulata - left\", \"x\": -13.1, \"y\": -25.2, \"z\": -14.6, \"id\": \"MG_C_3160_SUBS_NIGR\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_9078",
+          "name": "substantia nigra, pars reticulata, right",
+          "position": {
+            "eClass": "Point",
+            "x": 13.1,
+            "y": -25.2,
+            "z": -14.6
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"substantia nigra pars reticulata - right\", \"x\": 13.1, \"y\": -25.2, \"z\": -14.6, \"id\": \"MG_C_3161_SUBS_NIGR\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_9054",
+          "name": "red nucleus, left",
+          "position": {
+            "eClass": "Point",
+            "x": -6.0,
+            "y": -24.2,
+            "z": -9.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Red nucleus - left\", \"x\": -6.0, \"y\": -24.2, \"z\": -9.9, \"id\": \"MG_C_3154_RED_NUCL\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_9057",
+          "name": "red nucleus, right",
+          "position": {
+            "eClass": "Point",
+            "x": 6.0,
+            "y": -24.2,
+            "z": -9.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Red nucleus - right\", \"x\": 6.0, \"y\": -24.2, \"z\": -9.9, \"id\": \"MG_C_3155_RED_NUCL\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_E_71_ATTE_VIS",
+          "name": "Bottom Up Visual Attention",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.253",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"affects\": {\"pathways\": {\"MG_P_3591_FROM_MAGN_RETI_GANG_CELL_TO_LATE_GENI_NUCL\": {}, \"MG_P_3593_FROM_LATE_GENI_NUCL___LEFT_TO_V1\": {}, \"MG_P_3593_FROM_LATE_GENI_NUCL___LEFT_TO_V2\": {}, \"MG_P_3593_FROM_LATE_GENI_NUCL___LEFT_TO_V3\": {}, \"MG_P_3593_FROM_LATE_GENI_NUCL___LEFT_TO_V5\": {}, \"MG_P_3593_FROM_LATE_GENI_NUCL___LEFT_TO_V6\": {}, \"MG_P_1345\": {}, \"MG_P_1344\": {}, \"MG_P_1340\": {}, \"MG_P_1338\": {}, \"MG_P_1339\": {}, \"MG_P_3599_FROM_BROD_AREA_19_ASSO_VISU_CORT_V4\": {}, \"MG_P_3599_FROM_BROD_AREA_19_ASSO_VISU_CORT_V4_1\": {}, \"MG_P_3599_FROM_BROD_AREA_19_ASSO_VISU_CORT_V4_2\": {}, \"MG_P_3602_FROM_SUPE_COLL_TO_INFE_NUCL_OF_THE_PULV_LEFT_MEDI_DIVI\": {}, \"MG_P_3602_FROM_SUPE_COLL_TO_INFE_NUCL_OF_THE_PULV_LEFT_MEDI_DIVI_1\": {}, \"MG_P_3602_FROM_SUPE_COLL_TO_INFE_NUCL_OF_THE_PULV_LEFT_MEDI_DIVI_2\": {}, \"MG_P_3602_FROM_SUPE_COLL_TO_INFE_NUCL_OF_THE_PULV_LEFT_MEDI_DIVI_3\": {}, \"MG_P_3602_FROM_SUPE_COLL_TO_INFE_NUCL_OF_THE_PULV_LEFT_MEDI_DIVI_4\": {}, \"MG_P_3607_FROM_SUPE_COLL_TO_MEDI_DORS_NUCL_OF_THE_THAL\": {}, \"MG_P_3607_FROM_SUPE_COLL_TO_MEDI_DORS_NUCL_OF_THE_THAL_1\": {}, \"MG_P_3607_FROM_SUPE_COLL_TO_MEDI_DORS_NUCL_OF_THE_THAL_2\": {}, \"MG_P_3610_FROM_PULV_NUCL_OF_THE_THAL_TO_LIP\": {}, \"MG_P_3610_FROM_PULV_NUCL_OF_THE_THAL_TO_LIP_1\": {}, \"MG_P_3610_FROM_PULV_NUCL_OF_THE_THAL_TO_LIP_2\": {}, \"MG_P_3610_FROM_PULV_NUCL_OF_THE_THAL_TO_FEF\": {}, \"MG_P_3610_FROM_PULV_NUCL_OF_THE_THAL_TO_FEF_2\": {}, \"MG_P_3610_FROM_PULV_NUCL_OF_THE_THAL_TO_FEF_1\": {}, \"MG_P_3610_FROM_PULV_NUCL_OF_THE_THAL_TO_PFC\": {}, \"MG_P_3610_FROM_PULV_NUCL_OF_THE_THAL_TO_PFC_1\": {}, \"MG_P_3610_FROM_PULV_NUCL_OF_THE_THAL_TO_PFC_2\": {}, \"MG_P_3619_FROM_LIP_TO_FEF\": {}, \"MG_P_3619_FROM_LIP_TO_FEF_1\": {}, \"MG_P_3619_FROM_LIP_TO_FEF_2\": {}, \"MG_P_3622_FROM_MEDI_DORS_THAL_TO_FEF\": {}, \"MG_P_3622_FROM_MEDI_DORS_THAL_TO_FEF_1\": {}, \"MG_P_3622_FROM_MEDI_DORS_THAL_TO_FEF_2\": {}, \"MG_P_3625_FROM_FEF_TO_PFC\": {}, \"MG_P_3625_FROM_FEF_TO_PFC_1\": {}, \"MG_P_3625_FROM_FEF_TO_PFC_2\": {}, \"MG_P_3628_FROM_IT_TO_PFC\": {}, \"MG_P_3628_FROM_IT_TO_PFC_1\": {}, \"MG_P_3628_FROM_IT_TO_PFC_2\": {}, \"MG_P_3628_FROM_V4_TO_IT\": {}, \"MG_P_3628_FROM_V4_TO_IT_1\": {}, \"MG_P_3628_FROM_V4_TO_IT_2\": {}}, \"nodes\": {\"MG_C_521_RETINA\": {}, \"MG_C_3126_SUPE_COLL\": {}, \"MG_C_3125_SUPE_COLL\": {}, \"MG_C_81_SUPE_COLL\": {}}}, \"subevents\": [], \"description\": null, \"source\": \"User defined\"}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_E_72_TOP_DOWN_VISU_ATTE",
+          "name": "Top Down Visual Attention",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.253",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"affects\": {\"pathways\": {\"MG_P_3634_FROM_PFC_TO_IT\": {}, \"MG_P_3634_FROM_PFC_TO_I_1\": {}, \"MG_P_3634_FROM_PFC_TO_I_2\": {}, \"MG_P_3637_FROM_PFC_TO_STRI\": {}, \"MG_P_3637_FROM_PFC_TO_STRI_1\": {}, \"MG_P_3637_FROM_PFC_TO_STRI_2\": {}, \"MG_P_3640_FROM_PFC_TO_FEF\": {}, \"MG_P_3640_FROM_PFC_TO_FEF_1\": {}, \"MG_P_3640_FROM_PFC_TO_FEF_2\": {}, \"MG_P_3643_FROM_PULV_TO_PFC\": {}, \"MG_P_3643_FROM_PULV_TO_PFC_1\": {}, \"MG_P_3643_FROM_PULV_TO_PFC_2\": {}, \"MG_P_3646_FROM_FEF_TO_V4\": {}, \"MG_P_3646_FROM_FEF_TO_V4_2\": {}, \"MG_P_3646_FROM_FEF_TO_V4_1\": {}, \"MG_P_3649_FROM_FEF_TO_PULV_NUCL_OF_THE_THAL\": {}, \"MG_P_3649_FROM_FEF_TO_PULV_NUCL_OF_THE_THAL_2\": {}, \"MG_P_3649_FROM_FEF_TO_PULV_NUCL_OF_THE_THAL_1\": {}, \"MG_P_3652_FROM_INFE_TEMP_GYRU_TO_PULV\": {}, \"MG_P_3652_FROM_INFE_TEMP_1\": {}, \"MG_P_3652_FROM_INFE_TEMP_2\": {}, \"MG_P_3655_FROM_V4_TO_PULV\": {}, \"MG_P_3655_FROM_V4_TO_PULV_1\": {}, \"MG_P_3655_FROM_V4_TO_PULV_2\": {}, \"MG_P_3658_FROM_LIP_TO_PULV\": {}, \"MG_P_3658_FROM_LIP_TO_PULV_1\": {}, \"MG_P_3658_FROM_LIP_TO_PULV_2\": {}, \"MG_P_3661_FROM_STRI_TO_SNR\": {}, \"MG_P_3661_FROM_STRI_TO_SNR_1\": {}, \"MG_P_3661_FROM_STRI_TO_SNR_2\": {}, \"MG_P_3664_FROM_SNR_TO_SC\": {}, \"MG_P_3664_FROM_SNR_TO_SC_1\": {}, \"MG_P_3664_FROM_SNR_TO_SC_2\": {}, \"MG_P_3667_FROM_FEF_TO_SC\": {}, \"MG_P_3667_FROM_FEF_TO_SC_1\": {}, \"MG_P_3667_FROM_FEF_TO_SC_2\": {}, \"MG_P_3670_FROM_PULV_TO_SC\": {}, \"MG_P_3670_FROM_PULV_TO_SC_2\": {}, \"MG_P_3670_FROM_PULV_TO_SC_1\": {}, \"MG_P_3673_FROM_SC_TO_RED_NUCL\": {}, \"MG_P_3673_FROM_SC_TO_RED_NUCL_1\": {}, \"MG_P_3673_FROM_SC_TO_RED_NUCL_2\": {}, \"MG_P_3673_FROM_SC_TO_MAO\": {}, \"MG_P_3673_FROM_SC_TO_PN\": {}}, \"nodes\": {}}, \"subevents\": [], \"description\": null, \"source\": \"User defined\"}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3097_LATE_GENI",
+          "name": "lateral geniculate nucleus, parvocellular part - right",
+          "position": {
+            "eClass": "Point",
+            "x": 26.2,
+            "y": -25.5,
+            "z": 0.5
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"dorsal lateral geniculate nucleus, right, parvocellular layers\", \"x\": 26.2, \"y\": -25.5, \"z\": 0.5, \"id\": \"HBA_4497\", \"source\": \"allen_structure_graph\"}], \"details\": {\"id\": \"MG_C_3097_LATE_GENI\", \"name\": \"lateral geniculate nucleus, parvocellular part - right\", \"SUBCLASS_OF\": {\"id\": 1316, \"name\": \"subcortical region\", \"SUBCLASS_OF\": 740, \"x\": null, \"y\": null, \"z\": null, \"owner\": null, \"mg_id\": \"MG_C_416_SUBC_REGI\", \"source\": \"User defined\", \"time_of_ingestion\": \"2021-04-22T10:26:20.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": null, \"published_at\": \"2021-04-20T17:20:32.994Z\", \"created_at\": \"2021-04-20T17:20:32.995Z\", \"updated_at\": \"2021-07-22T09:20:06.117Z\"}, \"x\": 26.2, \"y\": -25.5, \"z\": 0.5, \"owner\": null, \"mg_id\": \"MG_C_3097_LATE_GENI\", \"source\": \"User defined\", \"time_of_ingestion\": \"2021-04-22T10:26:20.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": {\"id\": 14163, \"name\": \"dorsal lateral geniculate nucleus, right, parvocellular layers\", \"SUBCLASS_OF\": 3436, \"x\": null, \"y\": null, \"z\": null, \"owner\": null, \"mg_id\": \"HBA_4497\", \"source\": \"allen_structure_graph\", \"time_of_ingestion\": \"2021-04-22T10:26:21.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": null, \"published_at\": \"2021-04-20T17:30:42.188Z\", \"created_at\": \"2021-04-20T17:30:42.190Z\", \"updated_at\": \"2021-04-26T10:13:56.011Z\"}, \"published_at\": \"2021-04-20T17:20:21.787Z\", \"created_at\": \"2021-04-20T17:20:21.787Z\", \"updated_at\": \"2021-08-10T14:17:20.979Z\", \"subclasses\": [], \"PART_OF\": [], \"parts\": [], \"affected_by\": [], \"scale\": [], \"scenarios\": [{\"id\": 4, \"name\": \"PaoloCognitionEvents\", \"description\": null, \"owner\": 1, \"published_at\": \"2021-08-09T18:26:44.490Z\", \"created_at\": \"2021-08-09T17:41:49.754Z\", \"updated_at\": \"2021-08-09T22:14:23.320Z\"}], \"node_mathematizations\": [], \"equivalents\": [], \"meshes\": [], \"strapi_id\": \"MG_C_3097_LATE_GENI\", \"parents\": [], \"children\": []}}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3096_LATE_GENI",
+          "name": "lateral geniculate nucleus, parvocellular part - left",
+          "position": {
+            "eClass": "Point",
+            "x": -26.2,
+            "y": -25.5,
+            "z": 0.5
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"dorsal lateral geniculate nucleus, left, parvocellular layers\", \"x\": -26.2, \"y\": -25.5, \"z\": 0.5, \"id\": \"HBA_4442\", \"source\": \"allen_structure_graph\"}], \"details\": {\"id\": \"MG_C_3096_LATE_GENI\", \"name\": \"lateral geniculate nucleus, parvocellular part - left\", \"SUBCLASS_OF\": {\"id\": 1316, \"name\": \"subcortical region\", \"SUBCLASS_OF\": 740, \"x\": null, \"y\": null, \"z\": null, \"owner\": null, \"mg_id\": \"MG_C_416_SUBC_REGI\", \"source\": \"User defined\", \"time_of_ingestion\": \"2021-04-22T10:26:20.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": null, \"published_at\": \"2021-04-20T17:20:32.994Z\", \"created_at\": \"2021-04-20T17:20:32.995Z\", \"updated_at\": \"2021-07-22T09:20:06.117Z\"}, \"x\": -26.2, \"y\": -25.5, \"z\": 0.5, \"owner\": null, \"mg_id\": \"MG_C_3096_LATE_GENI\", \"source\": \"User defined\", \"time_of_ingestion\": \"2021-04-22T10:26:20.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": {\"id\": 14159, \"name\": \"dorsal lateral geniculate nucleus, left, parvocellular layers\", \"SUBCLASS_OF\": 3436, \"x\": null, \"y\": null, \"z\": null, \"owner\": null, \"mg_id\": \"HBA_4442\", \"source\": \"allen_structure_graph\", \"time_of_ingestion\": \"2021-04-22T10:26:21.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": null, \"published_at\": \"2021-04-20T17:30:42.001Z\", \"created_at\": \"2021-04-20T17:30:42.001Z\", \"updated_at\": \"2021-04-26T10:13:55.525Z\"}, \"published_at\": \"2021-04-20T17:20:21.755Z\", \"created_at\": \"2021-04-20T17:20:21.755Z\", \"updated_at\": \"2021-08-10T14:17:29.082Z\", \"subclasses\": [], \"PART_OF\": [], \"parts\": [], \"affected_by\": [], \"scale\": [], \"scenarios\": [{\"id\": 4, \"name\": \"PaoloCognitionEvents\", \"description\": null, \"owner\": 1, \"published_at\": \"2021-08-09T18:26:44.490Z\", \"created_at\": \"2021-08-09T17:41:49.754Z\", \"updated_at\": \"2021-08-09T22:14:23.320Z\"}], \"node_mathematizations\": [], \"equivalents\": [], \"meshes\": [], \"strapi_id\": \"MG_C_3096_LATE_GENI\", \"parents\": [], \"children\": []}}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3093_LATE_GENI",
+          "name": "lateral geniculate nucleus - right",
+          "position": {
+            "eClass": "Point",
+            "x": 26.2,
+            "y": -26.5,
+            "z": 0.5
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"dorsal lateral geniculate nucleus, right\", \"x\": 26.2, \"y\": -26.5, \"z\": 0.5, \"id\": \"HBA_4495\", \"source\": \"allen_structure_graph\"}], \"details\": {\"id\": \"MG_C_3093_LATE_GENI\", \"name\": \"lateral geniculate nucleus - right\", \"SUBCLASS_OF\": {\"id\": 1316, \"name\": \"subcortical region\", \"SUBCLASS_OF\": 740, \"x\": null, \"y\": null, \"z\": null, \"owner\": null, \"mg_id\": \"MG_C_416_SUBC_REGI\", \"source\": \"User defined\", \"time_of_ingestion\": \"2021-04-22T10:26:20.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": null, \"published_at\": \"2021-04-20T17:20:32.994Z\", \"created_at\": \"2021-04-20T17:20:32.995Z\", \"updated_at\": \"2021-07-22T09:20:06.117Z\"}, \"x\": 26.2, \"y\": -26.5, \"z\": 0.5, \"owner\": null, \"mg_id\": \"MG_C_3093_LATE_GENI\", \"source\": \"User defined\", \"time_of_ingestion\": \"2021-04-22T10:26:20.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": {\"id\": 14161, \"name\": \"dorsal lateral geniculate nucleus, right\", \"SUBCLASS_OF\": 3436, \"x\": null, \"y\": null, \"z\": null, \"owner\": null, \"mg_id\": \"HBA_4495\", \"source\": \"allen_structure_graph\", \"time_of_ingestion\": \"2021-04-22T10:26:21.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": null, \"published_at\": \"2021-04-20T17:30:42.080Z\", \"created_at\": \"2021-04-20T17:30:42.080Z\", \"updated_at\": \"2021-04-26T10:13:55.768Z\"}, \"published_at\": \"2021-04-20T17:20:21.659Z\", \"created_at\": \"2021-04-20T17:20:21.660Z\", \"updated_at\": \"2021-08-10T14:17:35.703Z\", \"subclasses\": [], \"PART_OF\": [], \"parts\": [], \"affected_by\": [], \"scale\": [], \"scenarios\": [{\"id\": 4, \"name\": \"PaoloCognitionEvents\", \"description\": null, \"owner\": 1, \"published_at\": \"2021-08-09T18:26:44.490Z\", \"created_at\": \"2021-08-09T17:41:49.754Z\", \"updated_at\": \"2021-08-09T22:14:23.320Z\"}], \"node_mathematizations\": [], \"equivalents\": [], \"meshes\": [], \"strapi_id\": \"MG_C_3093_LATE_GENI\", \"parents\": [], \"children\": []}}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3092_LATE_GENI",
+          "name": "lateral geniculate nucleus - left",
+          "position": {
+            "eClass": "Point",
+            "x": -26.2,
+            "y": -26.5,
+            "z": 0.5
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"dorsal lateral geniculate nucleus, left\", \"x\": -26.2, \"y\": -26.5, \"z\": 0.5, \"id\": \"HBA_4440\", \"source\": \"allen_structure_graph\"}], \"details\": {\"id\": \"MG_C_3092_LATE_GENI\", \"name\": \"lateral geniculate nucleus - left\", \"SUBCLASS_OF\": {\"id\": 1316, \"name\": \"subcortical region\", \"SUBCLASS_OF\": 740, \"x\": null, \"y\": null, \"z\": null, \"owner\": null, \"mg_id\": \"MG_C_416_SUBC_REGI\", \"source\": \"User defined\", \"time_of_ingestion\": \"2021-04-22T10:26:20.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": null, \"published_at\": \"2021-04-20T17:20:32.994Z\", \"created_at\": \"2021-04-20T17:20:32.995Z\", \"updated_at\": \"2021-07-22T09:20:06.117Z\"}, \"x\": -26.2, \"y\": -26.5, \"z\": 0.5, \"owner\": null, \"mg_id\": \"MG_C_3092_LATE_GENI\", \"source\": \"User defined\", \"time_of_ingestion\": \"2021-04-22T10:26:20.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": {\"id\": 14157, \"name\": \"dorsal lateral geniculate nucleus, left\", \"SUBCLASS_OF\": 3436, \"x\": null, \"y\": null, \"z\": null, \"owner\": null, \"mg_id\": \"HBA_4440\", \"source\": \"allen_structure_graph\", \"time_of_ingestion\": \"2021-04-22T10:26:21.000Z\", \"acronyms\": \"\", \"definition\": \"\", \"EQUIVALENT_TO\": null, \"published_at\": \"2021-04-20T17:30:41.872Z\", \"created_at\": \"2021-04-20T17:30:41.872Z\", \"updated_at\": \"2021-04-26T10:13:55.276Z\"}, \"published_at\": \"2021-04-20T17:20:21.623Z\", \"created_at\": \"2021-04-20T17:20:21.623Z\", \"updated_at\": \"2021-08-10T14:17:45.385Z\", \"subclasses\": [], \"PART_OF\": [], \"parts\": [], \"affected_by\": [], \"scale\": [], \"scenarios\": [{\"id\": 4, \"name\": \"PaoloCognitionEvents\", \"description\": null, \"owner\": 1, \"published_at\": \"2021-08-09T18:26:44.490Z\", \"created_at\": \"2021-08-09T17:41:49.754Z\", \"updated_at\": \"2021-08-09T22:14:23.320Z\"}], \"node_mathematizations\": [], \"equivalents\": [], \"meshes\": [], \"strapi_id\": \"MG_C_3092_LATE_GENI\", \"parents\": [], \"children\": []}}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0001926",
+          "name": "lateral geniculate body",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Entire lateral geniculate body\", \"id\": \"SNOMED_362377006\", \"source\": \"snomed_anatomical_body_structure\"}, {\"name\": \"lateral geniculate nucleus\", \"acronyms\": \"LGd,LGdm,LGdp,LGds\", \"id\": \"MG_C_12_LATE_GENI\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0013543",
+          "name": "Brodmann (1909) area 12",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Brodmann Area 12: medial prefrontal cortex\", \"acronyms\": \"CgGf,CgGf-s,CgGf-i\", \"id\": \"MG_C_21_BROD_AREA\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0002973",
+          "name": "parahippocampal gyrus",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Entire parahippocampal gyrus\", \"id\": \"SNOMED_279205000\", \"source\": \"snomed_anatomical_body_structure\"}, {\"name\": \"parahippocampal cortex and facial fusiform area\", \"acronyms\": \"PHG,PHG-l,PHG-cos,FuG,FuG-its,FuG-l,FuG-cos\", \"id\": \"MG_C_30_PARA_CORT\", \"source\": \"medicine_graph\"}, {\"name\": \"parahippocampal gyrus\", \"id\": \"HBA_4242\", \"source\": \"allen_structure_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0002739",
+          "name": "medial dorsal nucleus of thalamus",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"medial dorsal nucleus of the thalamus\", \"acronyms\": \"DT,DTA,AD,AM,AV,LD,ILc,CM,pf,LGd,LGdm,LGdp,LGds,DTL,DTLd,LP,Pla,Pli,Plil,Plim,Pll,Plm,DTLv,VMb,VA,VAmc,VAp,VLa,VLp,VM,VPI,VPL,VPLa,VPLp,VPM,MG,MGd,MGad,MGpd,MGmc,MGv,DTM,MD,MDp,MDm,MDd,MDl,MV,Pt,Sm,DTP,L,Po,SG,ILr,CL,CeM,Pc,Rh\", \"id\": \"MG_C_41_MEDI_DORS\", \"source\": \"medicine_graph\"}, {\"name\": \"Entire dorsomedial nucleus of thalamus\", \"id\": \"SNOMED_279149008\", \"source\": \"snomed_anatomical_body_structure\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0002771",
+          "name": "middle temporal gyrus",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Entire middle temporal gyrus\", \"id\": \"SNOMED_279190006\", \"source\": \"snomed_anatomical_body_structure\"}, {\"name\": \"middle temporal gyrus\", \"acronyms\": \"MTG,MTG-s,MTG-i\", \"id\": \"MG_C_52_MIDD_TEMP\", \"source\": \"medicine_graph\"}, {\"name\": \"middle temporal gyrus\", \"id\": \"HBA_4140\", \"source\": \"allen_structure_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_56_BROD_AREA",
+          "name": "Brodmann Area 5a, rostral: superior parietal lobule",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_74_BROD_AREA",
+          "name": "Brodmann Area 20, anterior: inferior temporal gyrus",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_76_BROD_AREA",
+          "name": "Brodmann Area 19: associative visual cortex (V4)",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_77_BROD_AREA",
+          "name": "Brodmann Area 7a, caudal: intraparietal sulcus and inferior parietal lobule",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0013539",
+          "name": "Brodmann (1909) area 8",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Brodmann Area 8: frontal eye field\", \"acronyms\": \"MFG,MFG-s,MFG-i,PrG,PrG-prc,PrG-sl,PrG-il,PrG-cs\", \"id\": \"MG_C_80_BROD_AREA\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0001945",
+          "name": "superior colliculus",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"superior colliculus\", \"acronyms\": \"SC,StL,DpG,DpWh,MGr,MWh,SuG,SuWh\", \"id\": \"MG_C_81_SUPE_COLL\", \"source\": \"medicine_graph\"}, {\"name\": \"superior colliculus\", \"id\": \"HBA_9114\", \"source\": \"allen_structure_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0001966",
+          "name": "substantia nigra pars reticulata",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"substantia nigra pars reticulata\", \"acronyms\": \"SNR\", \"id\": \"MG_C_94_SUBS_NIGR\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0002981",
+          "name": "pulvinar nucleus",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"pulvinar nucleus of the thalamus\", \"acronyms\": \"DTL,DTLd,LP,Pla,Pli,Plil,Plim,Pll,Plm,DTLv,VMb,VA,VAmc,VAp,VLa,VLp,VM,VPI,VPL,VPLa,VPLp,VPM\", \"id\": \"MG_C_100_PULV_NUCL\", \"source\": \"medicine_graph\"}, {\"name\": \"Entire pulvinar\", \"id\": \"SNOMED_279157006\", \"source\": \"snomed_anatomical_body_structure\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_102_BROD_AREA",
+          "name": "Brodmann Area 5b, caudal: superior parietal lobule",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_103_LATE_INTR",
+          "name": "lateral intraparietal cortex (LIP)",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_114_BROD_AREA",
+          "name": "Brodmann Area 7b, rostral: precuneus and superior parietal lobule",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_220_MAGN_RETI",
+          "name": "magnocellular retinal ganglion cell",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.234",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3094_BROD_AREA",
+          "name": "Brodmann Area 17: primary visual cortex (V1) - left",
+          "position": {
+            "eClass": "Point",
+            "x": -3.3,
+            "y": -72.3,
+            "z": 19.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3095_BROD_AREA",
+          "name": "Brodmann Area 17: primary visual cortex (V1) - right",
+          "position": {
+            "eClass": "Point",
+            "x": 3.3,
+            "y": -72.3,
+            "z": 19.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_9115",
+          "name": "superior colliculus, left",
+          "position": {
+            "eClass": "Point",
+            "x": -9.1,
+            "y": -34.5,
+            "z": -4.3
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"superior colliculus - left\", \"x\": -9.1, \"y\": -34.5, \"z\": -4.3, \"id\": \"MG_C_3125_SUPE_COLL\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_9123",
+          "name": "superior colliculus, right",
+          "position": {
+            "eClass": "Point",
+            "x": 9.1,
+            "y": -34.5,
+            "z": -4.3
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"superior colliculus - right\", \"x\": 9.1, \"y\": -34.5, \"z\": -4.3, \"id\": \"MG_C_3126_SUPE_COLL\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3166_LATE_INTR",
+          "name": "lateral intraparietal cortex (LIP) - left",
+          "position": {
+            "eClass": "Point",
+            "x": -45.4,
+            "y": -24.6,
+            "z": 51.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3167_LATE_INTR",
+          "name": "lateral intraparietal cortex (LIP) - right",
+          "position": {
+            "eClass": "Point",
+            "x": 45.4,
+            "y": -24.6,
+            "z": 51.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3168_BROD_AREA",
+          "name": "Brodmann Area 7a, caudal: intraparietal sulcus and inferior parietal lobule - left",
+          "position": {
+            "eClass": "Point",
+            "x": -51.3,
+            "y": -52.2,
+            "z": 32.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3169_BROD_AREA",
+          "name": "Brodmann Area 7a, caudal: intraparietal sulcus and inferior parietal lobule - right",
+          "position": {
+            "eClass": "Point",
+            "x": 51.3,
+            "y": -52.2,
+            "z": 32.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3190_BROD_AREA",
+          "name": "Brodmann Area 18: secondary visual cortex (V2) - left",
+          "position": {
+            "eClass": "Point",
+            "x": -9.7,
+            "y": -74.7,
+            "z": -4.4
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3191_BROD_AREA",
+          "name": "Brodmann Area 18: secondary visual cortex (V2) - right",
+          "position": {
+            "eClass": "Point",
+            "x": 9.7,
+            "y": -74.7,
+            "z": -4.4
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4414",
+          "name": "inferior nucleus of the pulvinar, left",
+          "position": {
+            "eClass": "Point",
+            "x": -19.8,
+            "y": -26.3,
+            "z": 6.8
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"pulvinar nucleus of the thalamus - left\", \"x\": -19.8, \"y\": -26.3, \"z\": 6.8, \"id\": \"MG_C_3192_PULV_NUCL\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4469",
+          "name": "inferior nucleus of the pulvinar, right",
+          "position": {
+            "eClass": "Point",
+            "x": 19.8,
+            "y": -26.3,
+            "z": 6.8
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"pulvinar nucleus of the thalamus - right\", \"x\": 19.8, \"y\": -26.3, \"z\": 6.8, \"id\": \"MG_C_3193_PULV_NUCL\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4246",
+          "name": "parahippocampal gyrus, right",
+          "position": {
+            "eClass": "Point",
+            "x": 28.7,
+            "y": -27.4,
+            "z": -10.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"parahippocampal cortex and facial fusiform area - right\", \"x\": 28.4, \"y\": -19.0, \"z\": -26.8, \"id\": \"MG_C_3195_PARA_CORT\", \"source\": \"medicine_graph\"}, {\"name\": \"Hippocampus - right\", \"x\": 28.7, \"y\": -27.4, \"z\": -10.9, \"id\": \"MG_C_3235_HIPP_RI\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4148",
+          "name": "inferior temporal gyrus, left",
+          "position": {
+            "eClass": "Point",
+            "x": -50.0,
+            "y": -32.4,
+            "z": -21.2
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Brodmann Area 20, anterior: inferior temporal gyrus - left \", \"x\": -50.0, \"y\": -31.4, \"z\": -20.2, \"id\": \"MG_C_3216_BROD_AREA\", \"source\": \"medicine_graph\"}, {\"name\": \"inferior temporal gyrus - left\", \"x\": -50.0, \"y\": -32.4, \"z\": -21.2, \"id\": \"MG_C_3224_INFE_TEMP\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4152",
+          "name": "inferior temporal gyrus, right",
+          "position": {
+            "eClass": "Point",
+            "x": 50.0,
+            "y": -32.4,
+            "z": -21.2
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Brodmann Area 20, anterior: inferior temporal gyrus - right\", \"x\": 50.0, \"y\": -31.4, \"z\": -20.2, \"id\": \"MG_C_3217_BROD_AREA\", \"source\": \"medicine_graph\"}, {\"name\": \"inferior temporal gyrus - right\", \"x\": 50.0, \"y\": -32.4, \"z\": -21.2, \"id\": \"MG_C_3225_INFE_TEMP\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3226_BROD_AREA",
+          "name": "Brodmann Area 8: frontal eye field - left",
+          "position": {
+            "eClass": "Point",
+            "x": -38.5,
+            "y": 3.5,
+            "z": 42.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3227_BROD_AREA",
+          "name": "Brodmann Area 8: frontal eye field - right",
+          "position": {
+            "eClass": "Point",
+            "x": 38.5,
+            "y": 3.5,
+            "z": 42.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4401",
+          "name": "mediodorsal nucleus of the thalamus, left",
+          "position": {
+            "eClass": "Point",
+            "x": -15.1,
+            "y": -25.8,
+            "z": 7.1
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"medial dorsal nucleus of the thalamus - left\", \"x\": -15.1, \"y\": -25.8, \"z\": 7.1, \"id\": \"MG_C_3238_MEDI_DORS\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4456",
+          "name": "mediodorsal nucleus of the thalamus, right",
+          "position": {
+            "eClass": "Point",
+            "x": 15.1,
+            "y": -25.8,
+            "z": 7.1
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"medial dorsal nucleus of the thalamus - right\", \"x\": 15.1, \"y\": -25.8, \"z\": 7.1, \"id\": \"MG_C_3239_MEDI_DORS\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3246_BROD_AREA",
+          "name": "Brodmann Area 19: associative visual cortex (V4) - left",
+          "position": {
+            "eClass": "Point",
+            "x": -2.0,
+            "y": -68.9,
+            "z": 19.1
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3247_BROD_AREA",
+          "name": "Brodmann Area 19: associative visual cortex (V4) - right",
+          "position": {
+            "eClass": "Point",
+            "x": 2.0,
+            "y": -68.9,
+            "z": 19.1
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4141",
+          "name": "middle temporal gyrus, left",
+          "position": {
+            "eClass": "Point",
+            "x": -54.6,
+            "y": -31.9,
+            "z": -8.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"middle temporal gyrus - left\", \"x\": -54.6, \"y\": -31.9, \"z\": -8.0, \"id\": \"MG_C_3248_MIDD_TEMP\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4144",
+          "name": "middle temporal gyrus, right",
+          "position": {
+            "eClass": "Point",
+            "x": 54.6,
+            "y": -31.9,
+            "z": -8.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"middle temporal gyrus - right\", \"x\": 54.6, \"y\": -31.9, \"z\": -8.0, \"id\": \"MG_C_3249_MIDD_TEMP\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3268_BROD_AREA",
+          "name": "Brodmann Area 5a, rostral: superior parietal lobule - left",
+          "position": {
+            "eClass": "Point",
+            "x": -23.7,
+            "y": -63.7,
+            "z": 54.8
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3269_BROD_AREA",
+          "name": "Brodmann Area 5a, rostral: superior parietal lobule - right",
+          "position": {
+            "eClass": "Point",
+            "x": 23.7,
+            "y": -63.2,
+            "z": 54.8
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3272_BROD_AREA",
+          "name": "Brodmann Area 7b, rostral: precuneus and superior parietal lobule - left",
+          "position": {
+            "eClass": "Point",
+            "x": -23.7,
+            "y": -63.2,
+            "z": 58.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3273_BROD_AREA",
+          "name": "Brodmann Area 7b, rostral: precuneus and superior parietal lobule - right",
+          "position": {
+            "eClass": "Point",
+            "x": 23.7,
+            "y": -63.2,
+            "z": 58.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3280_BROD_AREA",
+          "name": "Brodmann Area 5b, caudal: superior parietal lobule - left",
+          "position": {
+            "eClass": "Point",
+            "x": -23.7,
+            "y": -65.7,
+            "z": 57.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3281_BROD_AREA",
+          "name": "Brodmann Area 5b, caudal: superior parietal lobule - right",
+          "position": {
+            "eClass": "Point",
+            "x": 23.7,
+            "y": -65.2,
+            "z": 57.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3282_BROD_AREA",
+          "name": "Brodmann Area 12: medial prefrontal cortex - left",
+          "position": {
+            "eClass": "Point",
+            "x": -3.6,
+            "y": 24.5,
+            "z": 15.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3283_BROD_AREA",
+          "name": "Brodmann Area 12: medial prefrontal cortex - right",
+          "position": {
+            "eClass": "Point",
+            "x": 3.6,
+            "y": 24.5,
+            "z": 15.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3403_VENT_STRI",
+          "name": "ventral striatum - left",
+          "position": {
+            "eClass": "Point",
+            "x": -17.0,
+            "y": -10.0,
+            "z": 3.1
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3404_VENT_STRI",
+          "name": "ventral striatum - right",
+          "position": {
+            "eClass": "Point",
+            "x": 17.0,
+            "y": -10.0,
+            "z": 3.1
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.248",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "MG_C_3621_PARA_CORT",
+          "name": "parahippocampal cortex, posterior",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4245",
+          "name": "parahippocampal gyrus, left, bank of the cos",
+          "position": {
+            "eClass": "Point",
+            "x": -25.0,
+            "y": -25.0,
+            "z": -26.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"parahippocampal cortex, posterior - left\", \"x\": -28.0, \"y\": -32.0, \"z\": -18.0, \"id\": \"MG_C_3622_PARA_CORT\", \"source\": \"medicine_graph\"}, {\"name\": \"Brodmann Area 35/36: Parahippocampal gyrus, caudal- left\", \"x\": -25.0, \"y\": -25.0, \"z\": -26.0, \"id\": \"MG_C_3619_BROD_AREA\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0005403",
+          "name": "ventral striatum",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.254",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0006473",
+          "name": "Brodmann (1909) area 18",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Entire Brodmann area 18, parastriate\", \"id\": \"SNOMED_384773000\", \"source\": \"snomed_anatomical_body_structure\"}, {\"name\": \"Brodmann Area 18: secondary visual cortex (V2)\", \"acronyms\": \"LiG,LiG-pest,LiG-str\", \"id\": \"MG_C_37_BROD_AREA\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0001947",
+          "name": "red nucleus",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Entire red nucleus\", \"id\": \"SNOMED_279287006\", \"source\": \"snomed_anatomical_body_structure\"}, {\"name\": \"red nucleus\", \"acronyms\": \"RN,RMC,RPC\", \"id\": \"MG_C_53_RED_NUCL\", \"source\": \"medicine_graph\"}, {\"name\": \"red nucleus\", \"id\": \"HBA_9053\", \"source\": \"allen_structure_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4243",
+          "name": "parahippocampal gyrus, left",
+          "position": {
+            "eClass": "Point",
+            "x": -28.7,
+            "y": -27.4,
+            "z": -10.9
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"parahippocampal cortex and facial fusiform area - left\", \"x\": -28.4, \"y\": -19.0, \"z\": -26.8, \"id\": \"MG_C_3194_PARA_CORT\", \"source\": \"medicine_graph\"}, {\"name\": \"Hippocampus - left\", \"x\": -28.7, \"y\": -27.4, \"z\": -10.9, \"id\": \"MG_C_3234_HIPP_LE\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4248",
+          "name": "parahippocampal gyrus, right, bank of the cos",
+          "position": {
+            "eClass": "Point",
+            "x": 28.0,
+            "y": -32.0,
+            "z": -18.0
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"parahippocampal cortex, posterior - right\", \"x\": 28.0, \"y\": -32.0, \"z\": -18.0, \"id\": \"MG_C_3623_PARA_CORT\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0014287",
+          "name": "medial accessory olive",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4416",
+          "name": "inferior nucleus of the pulvinar, left, medial division",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_4471",
+          "name": "inferior nucleus of the pulvinar, right, medial division",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": []}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0002151",
+          "name": "pontine nuclear group",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"Entire pontine nucleus\", \"id\": \"SNOMED_304942009\", \"source\": \"snomed_anatomical_body_structure\"}, {\"name\": \"pontine nuclei\", \"id\": \"HBA_9133\", \"source\": \"allen_structure_graph\"}]}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.119",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.136",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1104",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.120",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.137",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1105",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.136",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.147",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1112",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.137",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.121",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1113",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.138",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.56",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1178",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.139",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.57",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1179",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.130",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.122",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1222",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.131",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.123",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1223",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.122",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.130",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1226",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.123",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.131",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1227",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.132",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.115",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1246",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.133",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.116",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1247",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.115",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.147",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1250",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.116",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.121",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1251",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.119",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.115",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1254",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.120",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.116",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1255",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.119",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.132",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1264",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.120",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.133",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1265",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.132",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.147",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1266",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.133",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.121",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1267",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.56",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.126",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1304",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.57",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.127",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1305",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.147",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.56",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1308",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.121",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.57",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1309",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.128",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.147",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1333",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.129",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.121",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1334",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.109",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.128",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1335",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.110",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.129",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1336",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.109",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.117",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1337",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.110",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.118",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1338",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.117",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.109",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1339",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.118",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.110",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1340",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.117",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.128",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1342",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.118",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.129",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1343",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.97",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.94",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_250",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.105",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.94",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_251",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.100",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.94",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_252",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.107",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.94",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_253",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.99",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.94",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_310",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.102",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.104",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1565",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.111",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.119",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1568",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.112",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.120",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1569",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.108",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.92",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_554",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.97",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.100",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_632",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.107",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.100",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_637",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.100",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.107",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_638",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.104",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.105",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_640",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.104",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.107",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_641",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.104",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.100",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_642",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.104",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.97",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_643",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.145",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.99",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_652",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.106",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.100",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_677",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.113",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.115",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_845",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.114",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.116",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_846",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.115",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.134",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1044",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.116",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.135",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1045",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.119",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.134",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1058",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.120",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.135",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1059",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.134",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.115",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1064",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.135",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.116",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1065",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.134",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.147",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1066",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.135",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.121",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1067",
+          "name": "",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "StringArray"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.111",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.102",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_9115_UBERON_0001945",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.112",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.102",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_9123_UBERON_0001945",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.58",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.146",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_9054_UBERON_0001947",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.59",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.146",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_9057_UBERON_0001947",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.44",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.103",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_9075_UBERON_0001966",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.45",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.103",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_9078_UBERON_0001966",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.113",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.106",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3166_LATE_INTR_MG_C_103_LATE_INTR",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.114",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.106",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3167_LATE_INTR_MG_C_103_LATE_INTR",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.115",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.100",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3168_BROD_AREA_MG_C_77_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.116",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.100",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3169_BROD_AREA_MG_C_77_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.117",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.145",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3190_BROD_AREA_UBERON_0006473",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.118",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.145",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3191_BROD_AREA_UBERON_0006473",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.119",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.104",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4414_UBERON_0002981",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.120",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.104",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4469_UBERON_0002981",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.147",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.94",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4243_UBERON_0002973",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.121",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.94",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4246_UBERON_0002973",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.124",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.101",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3226_BROD_AREA_UBERON_0013539",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.125",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.101",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3227_BROD_AREA_UBERON_0013539",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.126",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.95",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4401_UBERON_0002739",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.127",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.95",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4456_UBERON_0002739",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.128",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.99",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3246_BROD_AREA_MG_C_76_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.129",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.99",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3247_BROD_AREA_MG_C_76_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.130",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.96",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4141_UBERON_0002771",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.131",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.96",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4144_UBERON_0002771",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.132",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.97",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3268_BROD_AREA_MG_C_56_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.133",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.97",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3269_BROD_AREA_MG_C_56_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.134",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.107",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3272_BROD_AREA_MG_C_114_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.135",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.107",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3273_BROD_AREA_MG_C_114_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.136",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.105",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3280_BROD_AREA_MG_C_102_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.137",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.105",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3281_BROD_AREA_MG_C_102_BROD_AREA",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.138",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.93",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3282_BROD_AREA_UBERON_0013543",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.139",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.93",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_3283_BROD_AREA_UBERON_0013543",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.143",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.147",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4245_HBA_4243",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.143",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.142",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4245_MG_C_3621_PARA_CORT",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.148",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.142",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4248_MG_C_3621_PARA_CORT",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.148",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.121",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4248_HBA_4246",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.94",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.35",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_UBERON_0002973_UBERON_0008885",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.150",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.119",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4416_HBA_4414",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.151",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.120",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_HBA_4471_HBA_4469",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.91",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.109",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3593_FROM_LATE_GENI_NUCL___LEFT_TO_V1",
+          "name": "from lateral geniculate nucleus - left to V1 - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.91",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.117",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3593_FROM_LATE_GENI_NUCL___LEFT_TO_V2",
+          "name": "from lateral geniculate nucleus - left to V2 - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.90",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.110",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3593_FROM_LATE_GENI_NUCL___LEFT_TO_V5",
+          "name": "from lateral geniculate nucleus - right to V1 - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.90",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.118",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3593_FROM_LATE_GENI_NUCL___LEFT_TO_V6",
+          "name": "from lateral geniculate nucleus - right to V2 - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.118",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.129",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1345",
+          "name": "from Brodmann Area 18: secondary visual cortex (V2) - right to Brodmann Area 19: associative visual cortex (V4) - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.117",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.128",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1344",
+          "name": "from Brodmann Area 18: secondary visual cortex (V2) - left to Brodmann Area 19: associative visual cortex (V4) - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.110",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.118",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1340",
+          "name": "from Brodmann Area 17: primary visual cortex (V1) - right to Brodmann Area 18: secondary visual cortex (V2) - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.110",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.129",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1338",
+          "name": "from Brodmann Area 17: primary visual cortex (V1) - right to Brodmann Area 19: associative visual cortex (V4) - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.109",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.117",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_1339",
+          "name": "from Brodmann Area 17: primary visual cortex (V1) - left to Brodmann Area 18: secondary visual cortex (V2) - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.99",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.106",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3599_FROM_BROD_AREA_19_ASSO_VISU_CORT_V4",
+          "name": "from Brodmann Area 19: associative visual cortex (V4) to LIP",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.128",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.113",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3599_FROM_BROD_AREA_19_ASSO_VISU_CORT_V4_1",
+          "name": "from Brodmann Area 19: associative visual cortex (V4) - left to LIP - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.129",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.114",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3599_FROM_BROD_AREA_19_ASSO_VISU_CORT_V4_2",
+          "name": "from Brodmann Area 19: associative visual cortex (V4) - right to LIP - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.113",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.124",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3619_FROM_LIP_TO_FEF_1",
+          "name": "from LIP - left to FEF - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.114",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.125",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3619_FROM_LIP_TO_FEF_2",
+          "name": "from LIP - right to FEF - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.124",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.138",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3625_FROM_FEF_TO_PFC_1",
+          "name": "from FEF - left  to PFC - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.125",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.139",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3625_FROM_FEF_TO_PFC_2",
+          "name": "from FEF - right to PFC - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.99",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.98",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3628_FROM_V4_TO_IT",
+          "name": "from V4 to IT",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.139",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.114",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3634_FROM_PFC_TO_I_2",
+          "name": "from PFC - right to IT - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.138",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.140",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3637_FROM_PFC_TO_STRI_1",
+          "name": "from PFC - left to striatum - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.139",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.141",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3637_FROM_PFC_TO_STRI_2",
+          "name": "from PFC - right to striatum - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.138",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.124",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3640_FROM_PFC_TO_FEF_1",
+          "name": "from PFC - left to FEF - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.139",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.125",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3640_FROM_PFC_TO_FEF_2",
+          "name": "from PFC - right to FEF - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.125",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.129",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3646_FROM_FEF_TO_V4_2",
+          "name": "from FEF - right to V4 - right",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.124",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.128",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "NON_DIRECTIONAL",
+            "value": 2
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "MG_P_3646_FROM_FEF_TO_V4_1",
+          "name": "from FEF - left to V4 - left",
+          "type": {
+            "$ref": "//@libraries.0/@types.252",
+            "eClass": "SimpleType"
+          }
+        }
+      ],
+      "name": "mgv",
+      "synched": false
+    }
+  ]
+}

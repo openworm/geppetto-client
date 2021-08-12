@@ -1,4 +1,4 @@
-var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
 class WidgetController {
 
@@ -47,7 +47,7 @@ class WidgetController {
       }
 
       // FIXME: Called twice
-      StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER](widget.getId());
+      EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER](widget.getId());
 
     });
 

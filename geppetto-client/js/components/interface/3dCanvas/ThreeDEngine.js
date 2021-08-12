@@ -13,7 +13,7 @@ define(['jquery'], function () {
   var ArrayInstance = require('@geppettoengine/geppetto-core/model/ArrayInstance');
   var Type = require('@geppettoengine/geppetto-core/model/Type');
   var Variable = require('@geppettoengine/geppetto-core/model/Variable');
-  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
   var THREE = require('three');
 
@@ -2040,7 +2040,7 @@ define(['jquery'], function () {
           }
         }
       }
-      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.COLOR_SET]({
+      GEPPETTO.EventManager.actionsHandler[GEPPETTO.EventManager.clientActions.COLOR_SET]({
         instance: instance,
         color: randomColor
       });

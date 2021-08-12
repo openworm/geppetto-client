@@ -14,7 +14,7 @@ define(function (require) {
 
   var Instance = require('@geppettoengine/geppetto-core/model/Instance');
   var Variable = require('@geppettoengine/geppetto-core/model/Variable');
-  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
   const { diffArrays } = require('../../../../../geppetto-ui/src/utils');
 
@@ -65,10 +65,10 @@ define(function (require) {
 
       if (this.props.projectStatus !== nextProps.projectStatus) {
         switch (nextProps.projectStatus) {
-        case StoreManager.clientActions.PROJECT_LOADED:
+        case EventManager.clientActions.PROJECT_LOADED:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break;
-        case StoreManager.clientActions.PROJECT_PERSISTED:
+        case EventManager.clientActions.PROJECT_PERSISTED:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break
         default:
@@ -78,16 +78,16 @@ define(function (require) {
 
       if (this.props.experimentStatus !== nextProps.experimentStatus) {
         switch (nextProps.experimentStatus) {
-        case StoreManager.clientActions.EXPERIMENT_RUNNING:
+        case EventManager.clientActions.EXPERIMENT_RUNNING:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break;
-        case StoreManager.clientActions.EXPERIMENT_COMPLETED:
+        case EventManager.clientActions.EXPERIMENT_COMPLETED:
           this.updateToolBarVisibilityState(this.checkHasWritePermission(nextProps.experimentId));
           break;
-        case StoreManager.clientActions.EXPERIMENT_FAILED:
+        case EventManager.clientActions.EXPERIMENT_FAILED:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break;
-        case StoreManager.clientActions.EXPERIMENT_ACTIVE:
+        case EventManager.clientActions.EXPERIMENT_ACTIVE:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break;
         default:
@@ -95,7 +95,7 @@ define(function (require) {
         }
       }
 
-      if (this.props.modelStatus !== nextProps.modelStatus && nextProps.modelStatus === StoreManager.clientActions.MODEL_LOADED) {
+      if (this.props.modelStatus !== nextProps.modelStatus && nextProps.modelStatus === EventManager.clientActions.MODEL_LOADED) {
         if (this.initialised){
           this.initialised = false;
           this.instances.initialize(true);

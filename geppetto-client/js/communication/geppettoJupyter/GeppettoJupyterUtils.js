@@ -1,4 +1,4 @@
-import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
+import EventManager from '@geppettoengine/geppetto-client/common/EventManager';
 
 const handle_output = function (data) {
   // data is the object passed to the callback from the kernel execution
@@ -8,8 +8,8 @@ const handle_output = function (data) {
     GEPPETTO.CommandController.log(data.content.evalue.trim());
     console.error("ERROR while executing a Python command:");
     console.error(data.content.traceback);
-    StoreManager.actionsHandler[StoreManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND](data.content);
-    StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
+    EventManager.actionsHandler[EventManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND](data.content);
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
     break;
   case 'execute_result':
     GEPPETTO.CommandController.log(data.content.data['text/plain'].trim(), true);
@@ -18,7 +18,7 @@ const handle_output = function (data) {
     } catch (error) {
       var response = data.content.data['text/plain'].replace(/^'(.*)'$/, '$1');
     }
-    StoreManager.actionsHandler[StoreManager.clientActions.RECEIVE_PYTHON_MESSAGE]({
+    EventManager.actionsHandler[EventManager.clientActions.RECEIVE_PYTHON_MESSAGE]({
       id: data.parent_header.msg_id,
       type: data.msg_type,
       response: response
@@ -38,7 +38,7 @@ const execPythonMessage = function (command, callback = handle_output) {
   var messageID = kernel.execute(command, { iopub: { output: callback } }, { silent: false, stop_on_error: true, store_history: true });
 
   return new Promise((resolve, reject) =>
-    StoreManager.eventsCallback[StoreManager.clientActions.RECEIVE_PYTHON_MESSAGE].list.push(action => {
+    EventManager.eventsCallback[EventManager.clientActions.RECEIVE_PYTHON_MESSAGE].add(action => {
       if (action.data.id == messageID) {
         resolve(action.data.response);
       }

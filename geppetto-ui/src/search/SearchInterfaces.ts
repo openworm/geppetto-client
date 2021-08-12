@@ -2,6 +2,7 @@ export interface SearchProps {
     datasource: string;
     searchConfiguration: any,
     datasourceConfiguration: any;
+    searchStyle?: any;
     customDatasourceHandler?: Function
 };
 
@@ -17,10 +18,13 @@ export interface ResultsProps {
   closeHandler: Function;
   clickHandler: Function;
   topAnchor: number;
+  searchStyle?: any;
 }
 
 export interface FiltersProps {
     filters: Array<any>;
+    searchStyle?: any;
+    filters_expanded?: Boolean;
     setFilters: Function;
     openFilters?: Function;
 }

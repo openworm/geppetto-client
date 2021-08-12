@@ -7,7 +7,7 @@
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
 
-var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
 define(['backbone'], function (require) {
 
@@ -126,7 +126,7 @@ define(['backbone'], function (require) {
     setActiveExperiment: function (experiment) {
       if (GEPPETTO.UserController.isLoggedIn()){
         this.activeExperiment = experiment;
-        StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_ACTIVE]();
+        EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_ACTIVE]();
       } else {
         return GEPPETTO.Resources.OPERATION_NOT_SUPPORTED + GEPPETTO.Resources.USER_NOT_LOGIN;
       }
@@ -196,9 +196,9 @@ define(['backbone'], function (require) {
     loadFromID: function (projectID, experimentID) {
 
       GEPPETTO.WidgetsListener.update(GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.DELETE);
-      StoreManager.actionsHandler[StoreManager.clientActions.PROJECT_LOADING]();
+      EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
-      StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
+      EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
 
       var loadStatus = GEPPETTO.Resources.LOADING_PROJECT;
 
@@ -229,8 +229,8 @@ define(['backbone'], function (require) {
       GEPPETTO.WidgetsListener.update(GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.DELETE);
 
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
-      StoreManager.actionsHandler[StoreManager.clientActions.PROJECT_LOADING]();
-      StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
+      EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
+      EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
 
       var loadStatus = GEPPETTO.Resources.LOADING_PROJECT;
 
@@ -256,11 +256,11 @@ define(['backbone'], function (require) {
      */
     loadFromContent: function (content) {
 
-      StoreManager.actionsHandler[StoreManager.clientActions.PROJECT_LOADING]();
+      EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
       GEPPETTO.WidgetsListener.update(GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.DELETE);
 
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
-      StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
+      EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
 
       var loadStatus = GEPPETTO.Resources.LOADING_PROJECT;
 

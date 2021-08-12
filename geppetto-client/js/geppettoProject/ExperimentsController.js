@@ -8,7 +8,7 @@ define(function (require) {
 
     var AParameterCapability = require('@geppettoengine/geppetto-core/capabilities/AParameterCapability');
     var AStateVariableCapability = require('@geppettoengine/geppetto-core/capabilities/AStateVariableCapability');
-    var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+    var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
     var ExperimentStateEnum = {
       STOPPED: 0,
@@ -88,7 +88,7 @@ define(function (require) {
             this.triggerPlayExperiment(experiment);
           }
 
-          StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_UPDATED]()
+          EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_UPDATED]()
         },
 
         /* 
@@ -146,7 +146,7 @@ define(function (require) {
           parameters["experimentId"] = experiment.id;
           parameters["projectId"] = experiment.getParent().getId();
 
-          StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_EXPERIMENT);
+          EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_EXPERIMENT);
           // before wiping widgets stop view monitoring otherwise we may wipe the experiment view
           GEPPETTO.ViewController.clearViewMonitor();
           // wipe widgets
@@ -290,13 +290,13 @@ define(function (require) {
           }
           // sending to the server request for data
           GEPPETTO.MessageSocket.send("get_experiment_state", parameters, callback);
-          StoreManager.actionsHandler[StoreManager.clientActions.SPIN_LOGO]();
+          EventManager.actionsHandler[EventManager.clientActions.SPIN_LOGO]();
         },
 
         pause: function () {
           this.state = ExperimentStateEnum.PAUSED;
           this.getWorker().postMessage([GEPPETTO.Events.Experiment_pause]);
-          StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_PAUSE]();
+          EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_PAUSE]();
         },
 
         isPaused: function () {
@@ -316,7 +316,7 @@ define(function (require) {
           if (this.isPaused()) {
             this.state = ExperimentStateEnum.PLAYING;
             GEPPETTO.ExperimentsController.getWorker().postMessage([GEPPETTO.Events.Experiment_resume]);
-            StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_RESUME]();
+            EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_RESUME]();
             return "Pause Experiment";
           }
         },
@@ -324,7 +324,7 @@ define(function (require) {
         stop: function () {
           this.terminateWorker();
           this.state = ExperimentStateEnum.STOPPED;
-          StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_STOP]();
+          EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_STOP]();
         },
 
         closeCurrentExperiment: function () {
@@ -351,11 +351,11 @@ define(function (require) {
           }
 
           this.state = ExperimentStateEnum.PLAYING;
-          StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_PLAY](this.playOptions);
+          EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_PLAY](this.playOptions);
 
           if (this.playOptions.playAll) {
             GEPPETTO.ExperimentsController.terminateWorker();
-            StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_UPDATE]({
+            EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_UPDATE]({
               step: this.maxSteps - 1,
               playAll: true
             });
@@ -384,7 +384,7 @@ define(function (require) {
                   Project.getActiveExperiment().playAll();
                 }
               } else {
-                StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_UPDATE]({
+                EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_UPDATE]({
                   step: currentStep,
                   playAll: false
                 });

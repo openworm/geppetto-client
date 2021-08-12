@@ -1,5 +1,5 @@
 const extend = require('@geppettoengine/geppetto-core/common/Utils').extend;
-var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 /**
  * Client class use to represent an instance object (instantiation of a variable).
  *
@@ -329,7 +329,7 @@ class Instance {
    *
    */
   getConnections (direction) {
-    StoreManager.actionsHandler[StoreManager.clientActions.SPIN_LOGO]();
+    EventManager.actionsHandler[EventManager.clientActions.SPIN_LOGO]();
     GEPPETTO.ModelFactory.updateConnectionInstances(this);
 
     var connections = this.connections;
@@ -359,7 +359,7 @@ class Instance {
       connections = filteredConnections;
     }
 
-    StoreManager.actionsHandler[StoreManager.clientActions.STOP_LOGO]();
+    EventManager.actionsHandler[EventManager.clientActions.STOP_LOGO]();
     return connections;
   }
 

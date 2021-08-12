@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import {
   controlPanelOpen,
   controlPanelClose,
+  hideSpinner,
   showSpinner,
   spinLogo,
   stopLogo,
@@ -26,7 +27,7 @@ export const Canvas = connect(
   }),
   dispatch => ({ updateCamera: () => dispatch(updateCamera()) }),
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_Canvas);
 
 import _Console from './interface/console/Console';
@@ -40,7 +41,7 @@ export const Console = connect(
   }),
   null,
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_Console);
 
 import _ControlPanel from './interface/controlPanel/controlpanel';
@@ -67,7 +68,7 @@ export const ControlPanel = connect(
     controlPanelClose: () => dispatch(controlPanelClose()),
   }),
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_ControlPanel);
 
 import _ExperimentControls from './interface/simulationControls/ExperimentControls';
@@ -95,7 +96,7 @@ export const ExperimentsTable = connect(
   }),
   dispatch => ({ showSpinner: message => dispatch(showSpinner(message)) }),
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_ExperimentsTable);
 
 import _HelpButton from './interface/simulationControls/buttons/HelpButton';
@@ -110,7 +111,7 @@ export const HelpButton = connect(
   }),
   null,
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_HelpButton);
 
 import _HelpModal from './interface/simulationControls/HelpModal';
@@ -118,19 +119,19 @@ export const HelpModal = connect(
   null,
   dispatch => ({ startTutorial: message => dispatch(startTutorial()) }),
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_HelpModal);
 
-import _LoadingSpinner from './interface/loadingSpinner/LoadingSpinner';
+import LoadingSpinnerBase from './interface/LoadingSpinner';
 export const LoadingSpinner = connect(
-  (state, ownProps) => ({
-    spinnerMessage: state.client.components.spinner.message,
-    spinnerVisible: state.client.components.spinner.visible,
+  state => ({ spinner: state.client.components.spinner }),
+  dispatch => ({ 
+    showSpinner: msg => dispatch(showSpinner(msg)),
+    hideSpinner: () => dispatch(hideSpinner()),
   }),
   null,
-  null,
-  { withRef: true }
-)(_LoadingSpinner);
+  { forwardRef: true }
+)(LoadingSpinnerBase);
 
 
 import _Logo from './interface/logo/Logo';
@@ -141,7 +142,7 @@ export const Logo = connect(
   }),
   null,
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_Logo);
 
 import _PythonConsole from '../../../geppetto-ui/src/python-console/PythonConsole';
@@ -153,7 +154,7 @@ export const PythonConsole = connect(
   }),
   null,
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_PythonConsole);
 
 import _SaveControl from './interface/save/SaveControl';
@@ -164,7 +165,7 @@ export const SaveControl = connect(
   }),
   dispatch => ({ spinPersist: message => dispatch(spinPersist()) }),
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_SaveControl);
 
 import _SlideshowImageComponent from './interface/query/customComponents/slideshowImageComponent';
@@ -177,7 +178,7 @@ export const SlideshowImageComponent = connect(
   }),
   null,
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_SlideshowImageComponent);
 
 import _Spotlight from './interface/spotlight/spotlight';
@@ -195,7 +196,7 @@ export const Spotlight = connect(
     spotlightLoaded: () => dispatch(spotlightLoaded()),
   }),
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_Spotlight);
 
 import _SpotlightButton from './interface/foregroundControls/buttons/SpotlightButton';
@@ -206,7 +207,7 @@ export const SpotlightButton = connect(
     stopLogo: () => dispatch(stopLogo()),
   }),
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_SpotlightButton);
 
 import _Tutorial from './interface/tutorial/Tutorial';
@@ -224,5 +225,5 @@ export const Tutorial = connect(
   }),
   null,
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(_Tutorial);

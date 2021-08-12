@@ -7,6 +7,9 @@ const Manager = require('@geppettoengine/geppetto-client/common/Manager').defaul
 const ModelFactory = require('@geppettoengine/geppetto-core/ModelFactory').default(GEPPETTO);
 const testModel = require('./resources/test_model.json');
 const AA = require('@geppettoengine/geppetto-core/model/ArrayElementInstance').default;
+const EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default;
+
+EventManager.setStore({ dispatch: m => null })
 
 GEPPETTO.ModelFactory = ModelFactory;
 GEPPETTO.Utility = {};
@@ -51,6 +54,16 @@ test('Merge models', () => {
   
   let diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0);
+
+  testModel.worlds[0].instances[0].name = 'aa';
+  testModel.worlds[0].instances[0].value.json = "{\"l\": [\"xx\", \"y\"]}";
+  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  expect(diffReport.variables.length).toBe(0); // The diffReport is only about new items
+  
+  expect(geppettoModel.getCurrentWorld().getInstances()[0].getName()).toBe('aa');
+  expect(geppettoModel.getCurrentWorld().getInstances()[0].getValue().l[0]).toBe('xx');
+  expect(Instances.a.getName()).toBe('aa');
+  expect(Instances.a.getValue().l[0]).toBe('xx');
 
   expect(ModelFactory.allPaths.length).toBe(11);
   GEPPETTO.Manager.addVariableToModel(testModel);
@@ -207,4 +220,46 @@ test('Merge models', () => {
   expect(window.conn1.a).toBeDefined();
   expect(window.conn1.b).toBeDefined();
   expect(window.conn1.b.getId()).toBe('o');
+
+
+  // Test case: a new instance is added together with a new connection
+  testModel.worlds[0].instances.push({
+    "eClass": "SimpleInstance",
+    "type": {
+      "eClass": "SimpleType",
+      "$ref": "//@libraries.0/@types.1"
+    },
+    "id": "o1",
+    "name": "O1"
+  });
+
+  testModel.worlds[0].instances.push({
+    "eClass": "SimpleConnectionInstance",
+    "a": {
+      "$ref": "//@worlds.0/@instances.1",
+      "eClass": "SimpleInstance"
+    },
+    "b": {
+      "$ref": "//@worlds.0/@instances.13",
+      "eClass": "SimpleInstance"
+    },
+    "type": {
+      "eClass": "SimpleType",
+      "$ref": "//@libraries.0/@types.1"
+    },
+    "id": "conn2",
+    "name": "connection2"
+  });
+
+  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  expect(diffReport.variables.length).toBe(0);
+  expect(diffReport.worlds[0].variables.length).toBe(0);
+  expect(diffReport.worlds[0].instances.length).toBe(2);
+  expect(ModelFactory.allPaths.length).toBe(21);
+  expect(Instances.length).toBe(15);
+  Instances.getInstance('conn2');
+  expect(window.conn2.a).toBeDefined();
+  expect(window.conn2.b).toBeDefined();
+  console.log(window.conn2)
+  expect(window.conn2.b.getId()).toBe('o1');
 });

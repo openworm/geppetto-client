@@ -9,7 +9,7 @@
 
 var ObjectWrapper = require('./ObjectWrapper').default;
 var ImportType = require('./ImportType').default;
-var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
 function Library (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -55,7 +55,7 @@ Library.prototype.removeImportType = function (importType) {
     
 Library.prototype.resolveAllImportTypes = function (callback) {
   if (this.importTypes.length > 0){
-    StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.RESOLVING_TYPES);
+    EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.RESOLVING_TYPES);
     var b = [];
     const BATCH = 50;
     for (var i = 0;i < this.importTypes.length;i++){
@@ -68,7 +68,7 @@ Library.prototype.resolveAllImportTypes = function (callback) {
       if (callback != undefined){
         callback();
       } 
-      StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
+      EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
     });
   }
 

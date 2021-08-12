@@ -5,7 +5,7 @@ define(function (require) {
 
     var React = require('react');
     var ReactDOM = require('react-dom');
-    var spinner = require('./interface/loadingSpinner/LoadingSpinner.js');
+
 
     var WidgetCapability = require('./widgets/WidgetCapability.js');
 
@@ -16,7 +16,6 @@ define(function (require) {
         'FORM': 'interface/form/Form',
         'PANEL': 'controls/panel/Panel',
         'LOGO': 'interface/logo/Logo',
-        'LOADINGSPINNER': 'interface/loadingSpinner/LoadingSpinner',
         'SAVECONTROL': 'interface/save/SaveControl',
         'TOGGLEBUTTON': 'controls/toggleButton/ToggleButton',
         'CONTROLPANEL': 'interface/controlPanel/controlpanel',
@@ -42,10 +41,6 @@ define(function (require) {
         'DRAWER': 'interface/drawer/TabbedDrawer'
       },
 
-      loadSpinner: function () {
-        // We require this synchronously to properly show spinner when loading projects
-        this.renderComponent(React.createFactory(spinner)(), document.getElementById("load-spinner"));
-      },
 
       componentsMap: {},
 
@@ -182,7 +177,6 @@ define(function (require) {
             case 'FORM': require(['./interface/form/Form'], cb); break;
             case 'PANEL': require(['./controls/panel/Panel'],cb); break;
             case 'LOGO': require(['./interface/logo/Logo'],cb); break;
-            case 'LOADINGSPINNER': require(['./interface/loadingSpinner/LoadingSpinner'],cb); break;
             case 'SAVECONTROL': require(['./interface/save/SaveControl'],cb); break;
             case 'TOGGLEBUTTON': require(['./controls/toggleButton/ToggleButton'],cb); break;
             case 'CONTROLPANEL': require(['./interface/controlPanel/controlpanel'],cb); break;

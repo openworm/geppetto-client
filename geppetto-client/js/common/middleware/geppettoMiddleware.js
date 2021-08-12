@@ -1,17 +1,15 @@
-import { clientActions } from '../actions/actions';
-import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
+import { clientActions } from '../actions';
+import EventManager, { callbacksList } from '@geppettoengine/geppetto-client/common/EventManager';
 
-export const callbacksList = {}
-for ( const action in clientActions ) {
-  callbacksList [action] = { 'list': []}
-}
 
 export function callbacksMiddleware ({ getState, dispatch }) {
   return function (next) {
     return function (action) {
+      
+      console.debug(action);
       var actionTriggered = false;
-      if (callbacksList[action.type] !== undefined && callbacksList[action.type].list.length > 0) {
-        callbacksList[action.type].list.map(item => {
+      if (callbacksList[action.type] !== undefined && callbacksList[action.type].size > 0) {
+        callbacksList[action.type].forEach(item => {
           item(action);
         });
       }
@@ -19,7 +17,7 @@ export function callbacksMiddleware ({ getState, dispatch }) {
       switch (action.type) {
       case clientActions.SELECT:
         // FIXME: do we really need the action focus changed? this can be handled directly by the SELECT action itself
-        StoreManager.actionsHandler[StoreManager.clientActions.FOCUS_CHANGED](action.data.scope);
+        EventManager.actionsHandler[EventManager.clientActions.FOCUS_CHANGED](action.data.scope);
         // FIXME: do we need to use the widgetsListener?
         GEPPETTO.WidgetsListener.update(GEPPETTO.Events.Select);
         break;
@@ -37,7 +35,7 @@ export function callbacksMiddleware ({ getState, dispatch }) {
         GEPPETTO.ProjectsController.refreshUserProjects();
         // From the GEPPETTO.Events
         if (GEPPETTO.UserController.isLoggedIn()) {
-          StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
+          EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
         }
         break;
       case clientActions.EXPERIMENT_OVER:

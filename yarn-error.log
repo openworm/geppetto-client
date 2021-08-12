@@ -1,0 +1,215 @@
+Arguments: 
+  /usr/local/bin/node /usr/share/yarn/bin/yarn.js
+
+PATH: 
+  /home/user/.local/share/umake/bin:/home/user/.local/bin:/opt/conda/bin:/opt/conda/condabin:/home/user/.local/share/umake/bin:/home/user/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin
+
+Yarn version: 
+  1.22.0
+
+Node version: 
+  14.16.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/user/medicine-graph-visualization/webapp/package.json: Unexpected token } in JSON at position 1695
+      at JSON.parse (<anonymous>)
+      at /usr/share/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/share/yarn/lib/cli.js:310:30)
+      at /usr/share/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "@geppettoengine/geppetto-client",
+    "version": "3.0.0",
+    "description": "Geppetto web frontend. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
+    "repository": "http://git.geppetto.org",
+    "license": "MIT",
+    "scripts": {
+      "lint": "eslint .",
+      "test": "jest"
+    },
+    "dependencies": {
+      "@date-io/core": "1.3.6",
+      "@fortawesome/fontawesome-svg-core": "^1.2.27",
+      "@fortawesome/free-solid-svg-icons": "^5.12.1",
+      "@fortawesome/react-fontawesome": "^0.1.9",
+      "@material-ui/pickers": "^3.1.2",
+      "anchorme": "^0.7.1",
+      "backbone": "^1.3.3",
+      "backbone-associations": "^0.6.2",
+      "backbone.localstorage": "^1.1.16",
+      "bloodhound-js": "^1.2.3",
+      "bootstrap": "^3.3.7",
+      "classnames": "latest",
+      "codemirror": "^5.42.0",
+      "@material-ui/core": "^4.9.14",
+      "ami.js": "^0.32.0",
+      "create-react-class": "^15.6.3",
+      "d3": "^4.2.7",
+      "d3-plugins-dist": "^3.2.0",
+      "dat.gui": "^0.7.6",
+      "date-fns": "^2.0.0-alpha.16",
+      "detector-webgl": "^2.0.0",
+      "express": "^4.16.4",
+      "express-ws": "^2.0.0",
+      "file-loader": "^2.0.0",
+      "file-saver": "^1.3.3",
+      "google-maps": "^3.2.1",
+      "griddle-0.6-fork": "https://github.com/MetaCell/griddle.git#griddle-0.6-fork-react16",
+      "griddle-react": "^1.13.1",
+      "handlebars": "^4.0.5",
+      "html2canvas": "^1.0.0-alpha.12",
+      "jquery": "^3.4.0",
+      "jquery-ui-bundle": "^1.12.1",
+      "js-cookie": "^2.1.3",
+      "jszip": "^3.2.1",
+      "less": "^3.9.0",
+      "lg-fullscreen": "^1.0.1",
+      "lg-pager": "^1.0.2",
+      "lg-thumbnail": "^1.1.0",
+      "lg-video": "^1.1.0",
+      "lightgallery": "^1.6.0",
+      "mathjs": "^3.5.3",
+      "openseadragon": "^2.2.1",
+      "pako": "^1.0.3",
+      "pixi.js": "^4.2.3",
+      "plotly.js": "^1.42.5",
+      "prop-types": "latest",
+      "remarkable": "^1.7.3",
+      "slick-carousel": "^1.6.0",
+      "stats.js": "^0.17.0",
+      "styled-components": "^4.3.2",
+      "text": "^0.1.0",
+      "three": "^0.87.0",
+      "three-render-objects": "1.13.3",
+      "typeahead.js": "^0.11.1",
+      "typeface-roboto": "^0.0.54",
+      "underscore": "~1.9.1",
+      "url-join": "^4.0.0",
+      "velocity.java": "^1.3.1"
+    },
+    "devDependencies": {
+      "@babel/core": "^7.4.5",
+      "@babel/plugin-proposal-class-properties": "^7.5.5",
+      "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+      "@babel/plugin-transform-runtime": "^7.4.5",
+      "@babel/preset-env": "^7.4.5",
+      "@babel/preset-react": "^7.0.0",
+      "@babel/preset-stage-2": "^7.0.0",
+      "@babel/preset-typescript": "^7.13.0",
+      "@babel/runtime": "^7.4.5",
+      "@types/jasmine": "3.6.0",
+      "@types/jest": "^26.0.15",
+      "@types/material-ui": "^0.21.5",
+      "@types/node": "^14.0.13",
+      "@types/react": "^16.4.9",
+      "@types/react-dom": "^16.0.7",
+      "awesome-typescript-loader": "^5.0.0-1",
+      "babel-eslint": "^10.0.1",
+      "babel-jest": "^24.9.0",
+      "babel-loader": "^8.0.6",
+      "babel-plugin-transform-decorators-legacy": "^1.3.5",
+      "babel-plugin-transform-object-assign": "^6.8.0",
+      "babel-plugin-transform-runtime": "^6.15.0",
+      "better-docs": "^2.3.2",
+      "copy-webpack-plugin": "^4.6.0",
+      "css-loader": "^3.0.0",
+      "eslint": "^6.0.1",
+      "eslint-plugin-jest": "^22.17.0",
+      "eslint-plugin-react": "^7.16.0",
+      "exports-loader": "^0.6.3",
+      "fetch-mock": "^9.10.7",
+      "html-webpack-plugin": "^3.2.0",
+      "ignore-loader": "^0.1.2",
+      "imports-loader": "^0.7.1",
+      "jasmine": "3.6.1",
+      "jest": "^26.6.3",
+      "jsdoc": "^3.6.6",
+      "jsdoc-to-markdown": "^6.0.1",
+      "json-loader": "^0.5.4",
+      "less-loader": "^5.0.0",
+      "mini-css-extract-plugin": "^0.7.0",
+      "raw-loader": "^0.5.1",
+      "react-test-renderer": "^16.11.0",
+      "redux-mock-store": "^1.5.4",
+      "redux-thunk": "^2.3.0",
+      "source-map-loader": "^0.2.3",
+      "style-loader": "^0.13.2",
+      "ts-loader": "^9.1.2",
+      "typedoc": "^0.11.1",
+      "typescript": "^4.2.4",
+      "url-loader": "^4.0.0",
+      "webpack": "^4.35.0",
+      "webpack-cli": "^3.3.5",
+      "webpack-dev-server": "^3.7.2"
+    },
+    "peerDependencies": {
+      "react": "^16.8.6",
+      "react-color": "^2.17.3",
+      "react-dnd": "^7.7.0",
+      "react-dnd-html5-backend": "^7.0.2",
+      "react-dom": "^16.8.6",
+      "react-dom-factories": "^1.0.2",
+      "react-dropzone": "^8.0.3",
+      "react-fontawesome": "^1.6.1",
+      "react-force-graph-2d": "^1.12.1",
+      "react-force-graph-3d": "^1.12.1",
+      "react-jsonschema-form": "^1.0.6",
+      "react-lazy-load": "^3.0.13",
+      "react-modal": "^3.8.1",
+      "react-overlays": "^0.8.0",
+      "react-player": "^0.18.0",
+      "react-plotly.js": "^2.3.0",
+      "react-redux": "^7.0.3",
+      "react-rnd": "^7.3.0",
+      "react-router": "^4.2.0",
+      "react-router-dom": "^4.2.0",
+      "react-slick": "^0.23.2",
+      "react-sortable-tree": "^2.6.2",
+      "react-tabtab": "^2.0.0",
+      "redux": "^4.0.1",
+      "redux-observable": "^1.2.0"
+    },
+    "buildOptions": {
+      "emitEntryPoint": true,
+      "compile": {
+        "exclude": [
+          "node_modules"
+        ]
+      }
+    },
+    "_removed_packages": {
+      "aws-sdk": "^2.362.0",
+      "image-webpack-loader": "^2.0.0",
+      "jquery.cookie": "^1.4.1",
+      "jsx": "^0.9.89",
+      "lg-autoplay": "^1.0.4",
+      "lg-zoom": "^1.1.0",
+      "lodash.clone": "^4.5.0",
+      "react-autosuggest": "^9.3.2",
+      "react-collapsible": "^2.3.1",
+      "three-loaders-collada": "^1.0.1",
+      "@material-ui/icons": "^3.0.1",
+      "react-event-listener": "^0.6.4",
+      "recompose": "^0.30.0",
+      "react-select": "^2.1.2",
+      "eslint-plugin-react": "^7.12.0"
+    },
+    "jest": {
+      "moduleNameMapper": {
+        "@geppettoengine/geppetto-client(.*)$": "<rootDir>/geppetto-client/js/$1",
+        "@geppettoengine/geppetto-core(.*)$": "<rootDir>/geppetto-core/src/$1",
+        "@geppettoengine/geppetto-ui(.*)$": "<rootDir>/geppetto-ui/src/$1"
+      }
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

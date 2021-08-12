@@ -1,0 +1,1738 @@
+{
+  "eClass": "GeppettoModel",
+  "libraries": [
+    {
+      "eClass": "GeppettoLibrary",
+      "id": "mgvlibrary",
+      "name": "MGV",
+      "synched": false,
+      "types": [
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        }
+      ]
+    },
+    {
+      "synched": true
+    }
+  ],
+  "tags": [
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    },
+    {
+      "synched": true
+    }
+  ],
+  "worlds": [
+    {
+      "eClass": "World",
+      "instances": [
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0001945",
+          "name": "superior colliculus",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"superior colliculus\", \"acronyms\": \"SC,StL,DpG,DpWh,MGr,MWh,SuG,SuWh\", \"id\": \"MG_C_81_SUPE_COLL\", \"source\": \"medicine_graph\"}, {\"name\": \"superior colliculus\", \"id\": \"HBA_9114\", \"source\": \"allen_structure_graph\"}]}"
+          }
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_9115",
+          "name": "superior colliculus, left",
+          "position": {
+            "eClass": "Point",
+            "x": -9.1,
+            "y": -34.5,
+            "z": -4.3
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"superior colliculus - left\", \"x\": -9.1, \"y\": -34.5, \"z\": -4.3, \"id\": \"MG_C_3125_SUPE_COLL\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "HBA_9123",
+          "name": "superior colliculus, right",
+          "position": {
+            "eClass": "Point",
+            "x": 9.1,
+            "y": -34.5,
+            "z": -4.3
+          },
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.221",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"superior colliculus - right\", \"x\": 9.1, \"y\": -34.5, \"z\": -4.3, \"id\": \"MG_C_3126_SUPE_COLL\", \"source\": \"medicine_graph\"}]}"
+          }
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "synched": true
+        },
+        {
+          "eClass": "SimpleInstance",
+          "id": "UBERON_0000966",
+          "name": "retina",
+          "synched": false,
+          "type": {
+            "$ref": "//@libraries.0/@types.70",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{\"synonyms\": [{\"name\": \"retina\", \"id\": \"MG_C_521_RETINA\", \"source\": \"medicine_graph\"}, {\"name\": \"Entire retina\", \"id\": \"SNOMED_181171005\", \"source\": \"snomed_anatomical_body_structure\"}]}"
+          }
+        },
+        {
+          "a": {
+            "$ref": "//@worlds.0/@instances.108",
+            "eClass": "SimpleInstance"
+          },
+          "b": {
+            "$ref": "//@worlds.0/@instances.278",
+            "eClass": "SimpleInstance"
+          },
+          "connectivity": {
+            "eClass": "EEnumLiteral",
+            "name": "DIRECTIONAL",
+            "value": 0
+          },
+          "eClass": "SimpleConnectionInstance",
+          "id": "PART_OF_MG_C_220_MAGN_RETI_UBERON_0000966",
+          "name": "PART_OF",
+          "type": {
+            "$ref": "//@libraries.0/@types.257",
+            "eClass": "SimpleType"
+          },
+          "value": {
+            "eClass": "JSON",
+            "json": "{}"
+          }
+        }
+      ],
+      "name": "mgv",
+      "synched": false
+    }
+  ]
+}

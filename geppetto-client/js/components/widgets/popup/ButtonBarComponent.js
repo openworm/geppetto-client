@@ -6,7 +6,7 @@ import {
   createMuiTheme,
   MuiThemeProvider
 } from "@material-ui/core/styles";
-import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
+import EventManager from '@geppettoengine/geppetto-client/common/EventManager';
 
 require("./ButtonBarComponent.less");
 
@@ -72,7 +72,7 @@ export default class ButtonBarComponent extends React.Component {
         }
       });
 
-      StoreManager.eventsCallback[StoreManager.clientActions.COLOR_SET].list.push(action => {
+      EventManager.eventsCallback[EventManager.clientActions.COLOR_SET].list.push(action => {
         var color = action.data.color;
         var instance = action.data.instance;
 

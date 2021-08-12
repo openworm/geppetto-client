@@ -1,0 +1,2130 @@
+{
+    "eClass": "GeppettoModel",
+    "libraries": [
+      {
+        "eClass": "GeppettoLibrary",
+        "id": "mgvlibrary",
+        "name": "MGV",
+        "synched": false,
+        "types": [
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "eClass": "SimpleType",
+            "id": "MG_C_416_SUBC_REGI",
+            "name": "subcortical region",
+            "superType": [
+              {
+                "$ref": "//@libraries.0/@types.221",
+                "eClass": "SimpleType"
+              }
+            ]
+          },
+          {
+            "eClass": "SimpleType",
+            "id": "UBERON_0001874",
+            "name": "putamen",
+            "superType": [
+              {
+                "$ref": "//@libraries.0/@types.250",
+                "eClass": "SimpleType"
+              }
+            ]
+          },
+          {
+            "eClass": "SimpleType",
+            "id": "UBERON_0009663",
+            "name": "telencephalic nucleus",
+            "superType": [
+              {
+                "$ref": "//@libraries.0/@types.251",
+                "eClass": "SimpleType"
+              }
+            ]
+          },
+          {
+            "eClass": "SimpleType",
+            "id": "UBERON_0002308",
+            "name": "nucleus of brain",
+            "superType": [
+              {
+                "$ref": "//@libraries.0/@types.240",
+                "eClass": "SimpleType"
+              }
+            ]
+          },
+          {
+            "eClass": "SimpleType",
+            "id": "Pathway",
+            "name": "Pathway",
+            "superType": [
+              {
+                "$ref": "//@libraries.1/@types.17",
+                "eClass": "SimpleType"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "synched": true
+      }
+    ],
+    "tags": [
+      {
+        "synched": true
+      },
+      {
+        "synched": true
+      },
+      {
+        "synched": true
+      },
+      {
+        "synched": true
+      },
+      {
+        "synched": true
+      },
+      {
+        "synched": true
+      }
+    ],
+    "worlds": [
+      {
+        "eClass": "World",
+        "instances": [
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "synched": true
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "MG_C_3150_HYPO_LE",
+            "name": "hypothalamus - left",
+            "position": {
+              "eClass": "Point",
+              "x": -1.5,
+              "y": -12.9,
+              "z": -4.6
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.248",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": []}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "MG_C_3151_HYPO_RI",
+            "name": "hypothalamus - right",
+            "position": {
+              "eClass": "Point",
+              "x": 1.5,
+              "y": -12.9,
+              "z": -4.6
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.248",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": []}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "UBERON_0008884",
+            "name": "left putamen",
+            "position": {
+              "eClass": "Point",
+              "x": -23.0,
+              "y": 7.0,
+              "z": -4.0
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.249",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"putamen, left\", \"id\": \"HBA_4288\", \"source\": \"allen_structure_graph\"}, {\"name\": \"putamen - left\", \"x\": -24.6, \"y\": -2.0, \"z\": 4.1, \"id\": \"MG_C_3242_PUTA_LE\", \"source\": \"medicine_graph\"}, {\"name\": \"putamen, dorsolateral - left\", \"x\": -28.0, \"y\": -5.0, \"z\": 2.0, \"id\": \"MG_C_3884_PUTA_DORS\", \"source\": \"medicine_graph\"}, {\"name\": \"putamen, ventromedial - left\", \"x\": -23.0, \"y\": 7.0, \"z\": -4.0, \"id\": \"MG_C_3881_PUTA_VENT\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "UBERON_0008885",
+            "name": "right putamen",
+            "position": {
+              "eClass": "Point",
+              "x": 23.0,
+              "y": 7.0,
+              "z": -4.0
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.249",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"putamen, right\", \"id\": \"HBA_4289\", \"source\": \"allen_structure_graph\"}, {\"name\": \"putamen - right\", \"x\": 24.6, \"y\": -2.0, \"z\": 4.1, \"id\": \"MG_C_3243_PUTA_RI\", \"source\": \"medicine_graph\"}, {\"name\": \"putamen, dorsolateral - right\", \"x\": 28.0, \"y\": -5.0, \"z\": 2.0, \"id\": \"MG_C_3885_PUTA_DORS\", \"source\": \"medicine_graph\"}, {\"name\": \"putamen, ventromedial - right\", \"x\": 23.0, \"y\": 7.0, \"z\": -4.0, \"id\": \"MG_C_3882_PUTA_VENT\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4295",
+            "name": "globus pallidus, external segment, left",
+            "position": {
+              "eClass": "Point",
+              "x": -19.1,
+              "y": -12.8,
+              "z": 4.1
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"globus pallidus externa (GPe) - left\", \"x\": -19.1, \"y\": -12.8, \"z\": 4.1, \"id\": \"MG_C_3158_GLOB_PALL\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4298",
+            "name": "globus pallidus, external segment, right",
+            "position": {
+              "eClass": "Point",
+              "x": 19.1,
+              "y": -12.8,
+              "z": 4.1
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"globus pallidus externa (GPe) - right\", \"x\": 19.1, \"y\": -12.8, \"z\": 4.1, \"id\": \"MG_C_3159_GLOB_PALL\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4296",
+            "name": "globus pallidus, internal segment, left",
+            "position": {
+              "eClass": "Point",
+              "x": -15.3,
+              "y": -10.8,
+              "z": 0.6
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"globus pallidus interna (GPi) - left\", \"x\": -15.3, \"y\": -10.8, \"z\": 0.6, \"id\": \"MG_C_3162_GLOB_PALL\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4299",
+            "name": "globus pallidus, internal segment, right",
+            "position": {
+              "eClass": "Point",
+              "x": 15.3,
+              "y": -10.8,
+              "z": 0.6
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"globus pallidus interna (GPi) - right\", \"x\": 15.3, \"y\": -10.8, \"z\": 0.6, \"id\": \"MG_C_3163_GLOB_PALL\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4280",
+            "name": "head of caudate nucleus, left",
+            "position": {
+              "eClass": "Point",
+              "x": -12.0,
+              "y": 18.0,
+              "z": 4.0
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"caudate - left\", \"x\": -17.9, \"y\": -3.3, \"z\": 9.9, \"id\": \"MG_C_3244_CAUD_LE\", \"source\": \"medicine_graph\"}, {\"name\": \"caudate, head - left\", \"x\": -12.0, \"y\": 18.0, \"z\": 4.0, \"id\": \"MG_C_3876_CAUD_HEAD\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4284",
+            "name": "head of caudate nucleus, right",
+            "position": {
+              "eClass": "Point",
+              "x": 12.0,
+              "y": 18.0,
+              "z": 4.0
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"caudate - right\", \"x\": 17.9, \"y\": -3.3, \"z\": 9.9, \"id\": \"MG_C_3245_CAUD_RI\", \"source\": \"medicine_graph\"}, {\"name\": \"caudate, head - right\", \"x\": 12.0, \"y\": 18.0, \"z\": 4.0, \"id\": \"MG_C_3877_CAUD_HEAD\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9074",
+            "name": "substantia nigra, pars compacta, left",
+            "position": {
+              "eClass": "Point",
+              "x": -9.6,
+              "y": -23.5,
+              "z": -10.3
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"substantia nigra pars compacta - left\", \"x\": -9.6, \"y\": -23.5, \"z\": -10.3, \"id\": \"MG_C_3100_SUBS_NIGR\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9077",
+            "name": "substantia nigra, pars compacta, right",
+            "position": {
+              "eClass": "Point",
+              "x": 9.6,
+              "y": -23.5,
+              "z": -10.3
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"substantia nigra pars compacta - right\", \"x\": 9.6, \"y\": -23.5, \"z\": -10.3, \"id\": \"MG_C_3101_SUBS_NIGR\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9075",
+            "name": "substantia nigra, pars reticulata, left",
+            "position": {
+              "eClass": "Point",
+              "x": -13.1,
+              "y": -25.2,
+              "z": -14.6
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"substantia nigra pars reticulata - left\", \"x\": -13.1, \"y\": -25.2, \"z\": -14.6, \"id\": \"MG_C_3160_SUBS_NIGR\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9078",
+            "name": "substantia nigra, pars reticulata, right",
+            "position": {
+              "eClass": "Point",
+              "x": 13.1,
+              "y": -25.2,
+              "z": -14.6
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"substantia nigra pars reticulata - right\", \"x\": 13.1, \"y\": -25.2, \"z\": -14.6, \"id\": \"MG_C_3161_SUBS_NIGR\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4518",
+            "name": "subthalamic nucleus, left",
+            "position": {
+              "eClass": "Point",
+              "x": -15.1,
+              "y": -22.5,
+              "z": -1.1
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"subthalamus (SbT) - left\", \"x\": -15.1, \"y\": -22.5, \"z\": -1.1, \"id\": \"MG_C_3156_SUBT_SBT\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4519",
+            "name": "subthalamic nucleus, right",
+            "position": {
+              "eClass": "Point",
+              "x": 15.1,
+              "y": -22.5,
+              "z": -1.1
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"subthalamus (SbT) - right\", \"x\": 15.1, \"y\": -22.5, \"z\": -1.1, \"id\": \"MG_C_3157_SUBT_SBT\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4313",
+            "name": "bed  nucleus of stria terminalis, left",
+            "position": {
+              "eClass": "Point",
+              "x": -8.0,
+              "y": -2.0,
+              "z": -2.5
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"bed nucleus of stria terminalis, left\", \"x\": -8.0, \"y\": -2.0, \"definition\": \"https://pubmed.ncbi.nlm.nih.gov/32019063/\", \"z\": -2.5, \"id\": \"MG_C_50387_BED_NUCL_OF_STRI_TERM_LEFT\", \"source\": \"scenarios\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4320",
+            "name": "bed  nucleus of stria terminalis, right",
+            "position": {
+              "eClass": "Point",
+              "x": 8.0,
+              "y": -2.0,
+              "z": -2.5
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"bed nucleus of stria terminalis, right\", \"x\": 8.0, \"y\": -2.0, \"definition\": \"https://pubmed.ncbi.nlm.nih.gov/32019063/\", \"z\": -2.5, \"id\": \"MG_C_50388_BED_NUCL_OF_STRI_TERM_RIGH\", \"source\": \"scenarios\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4524",
+            "name": "lateral habenular nucleus, left",
+            "position": {
+              "eClass": "Point",
+              "x": -1.6,
+              "y": -30.1,
+              "z": -0.5
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"lateral habenular nucleus, left\", \"x\": -1.6, \"y\": -30.1, \"z\": -0.5, \"id\": \"MG_C_50391_LATE_HABE_NUCL_LEFT\", \"source\": \"scenarios\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4529",
+            "name": "lateral habenular nucleus, right",
+            "position": {
+              "eClass": "Point",
+              "x": -1.6,
+              "y": -30.1,
+              "z": -0.5
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"lateral habenular nucleus, right\", \"x\": 1.6, \"y\": -30.1, \"z\": -0.5, \"id\": \"MG_C_50392_LATE_HABE_NUCL_RIGH\", \"source\": \"scenarios\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_13005",
+            "name": "lateral hypothalamic area, mammillary region, left",
+            "position": {
+              "eClass": "Point",
+              "x": 3.0,
+              "y": -18.3,
+              "z": -5.9
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"mammillary region, left\", \"x\": -3.0, \"y\": -3.3, \"z\": -5.9, \"id\": \"MG_C_50395_MAMM_REGI_LEFT\", \"source\": \"scenarios\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_13006",
+            "name": "lateral hypothalamic area, mammillary region, right",
+            "position": {
+              "eClass": "Point",
+              "x": 14.5,
+              "y": -20.1,
+              "z": -5.3
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"mammillary region, right\", \"x\": 3.0, \"y\": -3.3, \"z\": -5.9, \"id\": \"MG_C_50396_MAMM_REGI_RIGH\", \"source\": \"scenarios\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9146",
+            "name": "lateral parabrachial nucleus, left",
+            "position": {
+              "eClass": "Point",
+              "x": -8.6,
+              "y": -36.85,
+              "z": -25.75
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"lateral parabrachial nucleus, left\", \"x\": -8.6, \"y\": -16.85, \"z\": -8.75, \"id\": \"MG_C_50397_LATE_PARA_NUCL_LEFT\", \"source\": \"scenarios\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9147",
+            "name": "lateral parabrachial nucleus, right",
+            "position": {
+              "eClass": "Point",
+              "x": 10.45,
+              "y": -33.85,
+              "z": -25.85
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"lateral parabrachial nucleus, right\", \"x\": 8.6, \"y\": -16.85, \"z\": -8.75, \"id\": \"MG_C_50398_LATE_PARA_NUCL_RIGH\", \"source\": \"scenarios\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4291",
+            "name": "nucleus accumbens, left",
+            "position": {
+              "eClass": "Point",
+              "x": -6.9,
+              "y": 7.7,
+              "z": -6.5
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"nucleus accumbens - left\", \"x\": -6.9, \"y\": 7.7, \"z\": -6.5, \"id\": \"MG_C_3180_NUCL_ACCU\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_4292",
+            "name": "nucleus accumbens, right",
+            "position": {
+              "eClass": "Point",
+              "x": 6.9,
+              "y": 7.7,
+              "z": -6.5
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"nucleus accumbens - right\", \"x\": 6.9, \"y\": 7.7, \"z\": -6.5, \"id\": \"MG_C_3181_NUCL_ACCU\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9054",
+            "name": "red nucleus, left",
+            "position": {
+              "eClass": "Point",
+              "x": -6.0,
+              "y": -24.2,
+              "z": -9.9
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"Red nucleus - left\", \"x\": -6.0, \"y\": -24.2, \"z\": -9.9, \"id\": \"MG_C_3154_RED_NUCL\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9057",
+            "name": "red nucleus, right",
+            "position": {
+              "eClass": "Point",
+              "x": 6.0,
+              "y": -24.2,
+              "z": -9.9
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"Red nucleus - right\", \"x\": 6.0, \"y\": -24.2, \"z\": -9.9, \"id\": \"MG_C_3155_RED_NUCL\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9067",
+            "name": "ventral tegmental area, left",
+            "position": {
+              "eClass": "Point",
+              "x": -3.2,
+              "y": -25.4,
+              "z": -17.1
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"ventral tegmental area - left\", \"x\": -3.2, \"y\": -25.4, \"z\": -17.1, \"id\": \"MG_C_3074_VENT_TEGM\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "HBA_9068",
+            "name": "ventral tegmental area, right",
+            "position": {
+              "eClass": "Point",
+              "x": 3.2,
+              "y": -25.4,
+              "z": -17.1
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": [{\"name\": \"ventral tegmental area - right\", \"x\": 3.2, \"y\": -25.4, \"z\": -17.1, \"id\": \"MG_C_3075_VENT_TEGM\", \"source\": \"medicine_graph\"}]}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "MG_C_50393_VENT_PALL_LEFT",
+            "name": "ventral pallidum, left",
+            "position": {
+              "eClass": "Point",
+              "x": -14.3,
+              "y": 3.1,
+              "z": -10.2
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": []}"
+            }
+          },
+          {
+            "eClass": "SimpleInstance",
+            "id": "MG_C_50394_VENT_PALL_RIGH",
+            "name": "ventral pallidum, right",
+            "position": {
+              "eClass": "Point",
+              "x": 14.3,
+              "y": 3.1,
+              "z": -10.2
+            },
+            "synched": false,
+            "type": {
+              "$ref": "//@libraries.0/@types.221",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "JSON",
+              "json": "{\"synonyms\": []}"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.40",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.44",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1344",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.41",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.45",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1345",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.40",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.38",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1348",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.41",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.39",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1349",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.40",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.36",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1350",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.41",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.37",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1351",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.42",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.40",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1352",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.43",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.41",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1353",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.34",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.44",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1366",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.35",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.45",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1367",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.34",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.36",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1370",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.35",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.37",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1371",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.42",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.34",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1372",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.43",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.35",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1373",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.34",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.38",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1376",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.35",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.39",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_1377",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.36",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.46",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_833",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.37",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.47",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_834",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.46",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.44",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_835",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.47",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.45",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_836",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.46",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.38",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_837",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          },
+          {
+            "a": {
+              "$ref": "//@worlds.0/@instances.47",
+              "eClass": "SimpleInstance"
+            },
+            "b": {
+              "$ref": "//@worlds.0/@instances.39",
+              "eClass": "SimpleInstance"
+            },
+            "connectivity": {
+              "eClass": "EEnumLiteral",
+              "name": "NON_DIRECTIONAL",
+              "value": 2
+            },
+            "eClass": "SimpleConnectionInstance",
+            "id": "MG_P_838",
+            "name": "",
+            "type": {
+              "$ref": "//@libraries.0/@types.252",
+              "eClass": "SimpleType"
+            },
+            "value": {
+              "eClass": "StringArray"
+            }
+          }
+        ],
+        "name": "mgv",
+        "synched": false
+      }
+    ]
+  }

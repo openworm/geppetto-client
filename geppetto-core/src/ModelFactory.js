@@ -38,7 +38,7 @@ export default function (GEPPETTO) {
   var AStateVariableCapability = require('./capabilities/AStateVariableCapability').default;
   var ADerivedStateVariableCapability = require('./capabilities/ADerivedStateVariableCapability').default;
 
-  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
   /**
    * @class GEPPETTO.ModelFactory
@@ -628,21 +628,32 @@ export default function (GEPPETTO) {
         // check if it's a connection
         if (instance.getMetaType() === GEPPETTO.Resources.SIMPLE_CONNECTION_INSTANCE_NODE){
           
-          
-          if (instance.a.$ref !== undefined) {
-            instance.a = this.resolve(instance.a.$ref);
+          if (!instance.a) {
+            console.error(`Error while adding connection ${instance.getId()}: cannot find first connection`, instance)
+          }
+          if (instance.a?.$ref !== undefined) {
+            const ref = instance.a.$ref;
+            instance.a = this.resolve(ref);
             if (instance.a) {
               instance.a.addConnection(instance);
+            } else {
+              console.error(`Error resolving reference ${ref}  while adding connection ${instance.getId()} `)
             }
+          } 
+          
+          if (!instance.b) {
+            console.error(`Error while adding connection ${instance.getId()}: cannot find second connection`, instance)
           }
           
-          
-          if (instance.b.$ref !== undefined) {
-            instance.b = this.resolve(instance.b.$ref);
+          if (instance.b?.$ref !== undefined) {
+            const ref = instance.b.$ref;
+            instance.b = this.resolve(ref);
             if (instance.b) {
               instance.b.addConnection(instance);
+            } else {
+              console.error(`Error resolving reference ${ref}  while adding connection ${instance.getId()} `)
             }
-          }
+          } 
           
           return;
         }
@@ -916,43 +927,49 @@ export default function (GEPPETTO) {
         const wrappedObj = parent.wrappedObj;
         const diffReportInst = [];
 
+        if (wrappedObj.instances == undefined) {
+          wrappedObj.instances = [];
+        }
+
         for (var x = 0; x < diffInst.length; x++) {
           if (diffInst[x].getWrappedObj().synched == true) {
             // if synch placeholder var, skip it
             continue;
           }
 
-          var match = currentModelInst.find(currModelVar => diffInst[x].getPath() == currModelVar.getPath());
-
-          // if no match, add it, it's actually new
-          if (!match) {
-    
-            if (wrappedObj.instances == undefined) {
-              wrappedObj.instances = [];
-            }
-
+          diffInst[x].parent = this.geppettoModel;
+          
+          this.populateTypeReferences(diffInst[x]);
+          
+          const match = currentModelInst[diffInst[x].getId()];
+          if (match) {
+            const matchIdx = currentModelInst.findIndex(currModelVar => diffInst[x].getPath() == currModelVar.getPath());
+            currentModelInst[matchIdx] = diffInst[x];
+            currentModelInst[match.getId()] = diffInst[x];
+            Instances[match.getId()] = diffInst[x];
+          } else {
+            // if no match, add it, it's actually new
+            diffReportInst.push(diffInst[x]);
             // append variable to raw model
             wrappedObj.instances.push(diffInst[x].getWrappedObj());
 
             // add variable to geppetto object model
-            diffInst[x].parent = this.geppettoModel;
+            
             currentModelInst.push(diffInst[x]);
-
-          
-            // populate references for new vars
-            this.populateTypeReferences(diffInst[x]);
+            
 
             // find new potential instance paths and add to the list
             const newInstancePath = createInstancePathObj(diffInst[x]);
             this.allPaths.push(newInstancePath);
             this.allPathsIndexing.push(newInstancePath);
 
-            diffReportInst.push(diffInst[x]);
-
             // let's populate the shortcut in the parent of the variable, this might not exist if it was a fetch
-            this.geppettoModel[diffInst[x].getId()] = diffInst[x];
+            
             // window.Instances.push(diffInst[x]);
+          
+            this.geppettoModel[diffInst[x].getId()] = diffInst[x];
           }
+
         }
         return diffReportInst;
       },
@@ -2881,7 +2898,7 @@ export default function (GEPPETTO) {
         // re-run model shortcuts
         this.populateChildrenShortcuts(this.geppettoModel);
 
-        StoreManager.actionsHandler[StoreManager.clientActions.INSTANCE_DELETE](instancePath);
+        EventManager.actionsHandler[EventManager.clientActions.INSTANCE_DELETE](instancePath);
       },
 
       /**
@@ -2977,9 +2994,11 @@ export default function (GEPPETTO) {
             reference = this.geppettoModel.getWorlds()[index];
           } else if (raw[i].indexOf('instances') > -1) {           
             reference = reference.getInstances()[index];
-          }
+          } 
         }
-
+        if (!reference) {
+          console.error(`Error resolving reference ${refStr}`);
+        }
         return reference;
       },
 

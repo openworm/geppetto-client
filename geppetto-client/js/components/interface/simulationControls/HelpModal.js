@@ -4,7 +4,7 @@ define(function (require) {
     React = require('react'),
     Button = require('../../controls/mixins/bootstrap/button'),
     GEPPETTO = require('geppetto');
-    var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+    var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
   require("./HelpModal.less");
 
@@ -14,7 +14,7 @@ define(function (require) {
     ],
 
     startTutorial: function () {
-      StoreManager.actionsHandler[StoreManager.clientActions.START_TUTORIAL]();
+      EventManager.actionsHandler[EventManager.clientActions.START_TUTORIAL]();
       GEPPETTO.tutorialEnabled = true;
       this.hide();
     },

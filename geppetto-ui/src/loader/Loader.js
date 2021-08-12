@@ -22,16 +22,6 @@ class Loader extends Component {
     this.state = { messageIndex: 0, };
   }
 
-  componentDidMount () {
-    const { messagesInterval } = this.props;
-
-    setInterval(() => {
-      const { messageIndex } = this.state;
-      const { messages } = this.props;
-      this.setState({ messageIndex: (messageIndex + 1) % messages.length });
-    }, messagesInterval);
-  }
-
   render () {
     const {
       classes,
@@ -43,10 +33,21 @@ class Loader extends Component {
       backgroundStyle,
       children,
       className,
+      messagesInterval
     } = this.props;
-    const { messageIndex } = this.state;
+    
+    if (messagesInterval && messages.length) {
+      setTimeout(() => {
+        const { messageIndex } = this.state;
+        const { messages, active } = this.props;
+        if (messages.length && active) {
+          this.setState({ messageIndex: (messageIndex + 1) % messages.length });
+        }
+        
+      }, messagesInterval);
+    }
 
-    const message = messages.length > 0 ? messages[messageIndex] : '';
+    const message = messages.length > 0 ? messages[this.state.messageIndex % messages.length] : '';
     const progress = elapsed ? (
       <LinearProgress
         variant="determinate"
