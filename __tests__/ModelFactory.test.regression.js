@@ -1,17 +1,18 @@
 
 const GEPPETTO = {};
-window.GEPPETTO = GEPPETTO;
-require('../js/common/GEPPETTO.Resources').default(GEPPETTO);
-require('../js/pages/geppetto/GEPPETTO.Events').default(GEPPETTO);
-const Manager = require('../js/common/Manager').default;
-const ModelFactory = require('../js/geppettoModel/ModelFactory').default(GEPPETTO);
-const testModel = require('./resources/test_model.json');
-const AA = require('../js/geppettoModel/model/ArrayElementInstance').default;
 
+window.GEPPETTO = GEPPETTO;
+GEPPETTO.Resources = require('@geppettoengine/geppetto-core/Resources').default;
+require('@geppettoengine/geppetto-client/pages/geppetto/GEPPETTO.Events').default(GEPPETTO);
+const Manager = require('@geppettoengine/geppetto-client/common/Manager').default;
+const ModelFactory = require('@geppettoengine/geppetto-core/ModelFactory').default(GEPPETTO);
+const testModel = require('./resources/test_model.json');
+const AA = require('@geppettoengine/geppetto-core/model/ArrayElementInstance').default;
 GEPPETTO.Utility = {};
 GEPPETTO.Utility.extractMethodsFromObject = () => [];
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 GEPPETTO.Manager = new Manager();
+GEPPETTO.ModelFactory = ModelFactory;
 console.warn = () => null;
 GEPPETTO.CommandController = {
   log: console.log,

@@ -9,3 +9,11 @@
 This is the client library of Geppetto which includes all the frontend components and widgets, the WebSocket API implementation to talk to the backend and all the infrastructure to manage the Geppetto Model in Javascript.
 
 For information about how this fits into [Geppetto](http://www.geppetto.org/) refer to the umbrella project [org.geppetto](https://github.com/openworm/org.geppetto) on GitHub.
+
+# Geppetto Core
+
+The Core components of Geppetto Client (work in progress)
+
+# Geppetto UI
+
+The UI components of Geppetto Client (work in progress)

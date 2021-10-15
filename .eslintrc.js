@@ -1,8 +1,8 @@
 /**
-|--------------------------------------------------
-| sudo npm install -g eslint babel-eslint
-|--------------------------------------------------
-*/
+ *|--------------------------------------------------
+ *| sudo npm install -g eslint babel-eslint
+ *|--------------------------------------------------
+ */
 module.exports = {
   extends: [
     "eslint:recommended",
@@ -35,7 +35,7 @@ module.exports = {
     "no-control-regex": 0, // allow regex
     "no-redeclare": 0, // allow redeclare a variable
     "no-inner-declarations": 0, // allow define functions inside functions
-    "indent": ["error", 2,  {
+    "indent": ["error", 2, {
       "ObjectExpression": "first",
       "ArrayExpression": "first"
     }], // 2 spaces for indentation and consistent alignment
