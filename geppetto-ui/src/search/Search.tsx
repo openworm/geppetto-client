@@ -184,7 +184,7 @@ function StyledCheckbox(props) {
             fontSize: '20px' }}
           className="fa fa-square"
           onClick={() => {
-            props.filterHandler(props.filter);
+            props.filterHandler(props.filter, props.filtersListener);
           }}/>
       );
       break;
@@ -200,7 +200,7 @@ function StyledCheckbox(props) {
             paddingRight: '4px', }}
           className="fa fa-plus-square"
           onClick={() => {
-            props.filterHandler(props.filter);
+            props.filterHandler(props.filter, props.filtersListener);
           }}/>
       );
       break;
@@ -216,7 +216,7 @@ function StyledCheckbox(props) {
             paddingRight: '4px', }}
           className="fa fa-minus-square"
           onClick={() => {
-            props.filterHandler(props.filter);
+            props.filterHandler(props.filter, props.filtersListener);
           }}/>
       );
       break;
@@ -231,7 +231,7 @@ function StyledCheckbox(props) {
             paddingRight: '4px',  }}
           className="fa fa-square"
           onClick={() => {
-            props.filterHandler(props.filter);
+            props.filterHandler(props.filter, props.filtersListener);
           }}/>
       );
       break;
@@ -249,11 +249,18 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
           {data.map((item, index) => {
             return ( <MenuItem style={ searchStyle.singleResult }
               key={index}
+              className="searchResult"
               onClick={() => {
                 clickHandler(item[mapping["id"]]);
                 closeHandler(false);
               }}>
               {item[mapping["name"]]}
+              { item[mapping["labels"]] && <span className="label types badges">
+                {item[mapping["labels"]].map((label, index) => {
+                	return <span className={"label label-" + label}>{label}</span>;
+                })}
+              </span>
+              }
             </MenuItem> );
           })}
         </MenuList>
@@ -268,7 +275,7 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
  * @param openFilters: Function
  */
 
-const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilters, filters_expanded }) => {
+const Filters: FC<FiltersProps> = ({ filters, searchStyle, filtersListener, setFilters, openFilters, filters_expanded }) => {
   var paperRef = useRef(null);
   const [ state, setState ] = useState({ open: filters_expanded, top: "0", left: "0" });
 
@@ -289,7 +296,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
     }
   };
 
-  const filterHandler = item => {
+  const filterHandler = (item, filtersListener) => {
     if (item.enabled === undefined) {
       item.enabled = "disabled"
     } else {
@@ -315,6 +322,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
       });
     }
     setFilters(item);
+    filtersListener(item);
     setState(() => { return { open: true, top: state.top, left: state.left} });
   };
 
@@ -360,6 +368,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
                       <StyledCheckbox
                         filter={item}
                         checked={item.enabled}
+                        filtersListener={filtersListener}
                         filterHandler={filterHandler} />
                       <span>
                         {item.filter_name}
@@ -374,6 +383,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
                       : <StyledCheckbox
                           filter={item}
                           checked={item.enabled}
+                          filtersListener={filtersListener}
                           filterHandler={filterHandler} /> }
                       <span>
                         {item.filter_name}
@@ -385,6 +395,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
                             <StyledCheckbox
                               filter={value}
                               checked={value.enabled}
+                              filtersListener={filtersListener}
                               filterHandler={filterHandler} />
                             <span style={{verticalAlign: "middle"}}>
                               {value.filter_name}
@@ -683,6 +694,7 @@ class Search extends Component<SearchProps, SearchState> {
                       <InputAdornment position="end">
                         <Filters
                           filters_expanded={this.props.searchConfiguration.filters_expanded}
+                          filtersListener={this.props.filtersListener}
                           searchStyle={searchStyle}
                           filters={this.state.filters}
                           setFilters={this.setFilters} />

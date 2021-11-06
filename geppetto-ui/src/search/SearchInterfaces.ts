@@ -3,6 +3,7 @@ export interface SearchProps {
     searchConfiguration: any,
     datasourceConfiguration: any;
     searchStyle?: any;
+    filtersListener? : any;
     customDatasourceHandler?: Function
 };
 
@@ -24,6 +25,7 @@ export interface ResultsProps {
 export interface FiltersProps {
     filters: Array<any>;
     searchStyle?: any;
+    filtersListener? : any;
     filters_expanded?: Boolean;
     setFilters: Function;
     openFilters?: Function;
