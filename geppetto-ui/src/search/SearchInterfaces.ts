@@ -15,7 +15,7 @@ export interface SearchState {
 
 export interface ResultsProps {
   data: Array<any>;
-  mapping: any;
+  configuration: any;
   closeHandler: Function;
   clickHandler: Function;
   topAnchor: number;

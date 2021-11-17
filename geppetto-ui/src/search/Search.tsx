@@ -238,7 +238,7 @@ function StyledCheckbox(props) {
   }
 }
 
-const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, topAnchor, searchStyle }) => {
+const Results: FC<ResultsProps> = ({ data, configuration, closeHandler, clickHandler, topAnchor, searchStyle }) => {
   // if data are available we display the list of results
   if (data == undefined || data.length == 0) return null;
   let clone = Object.assign({}, searchStyle.paperResults);
@@ -251,12 +251,12 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
               key={index}
               className="searchResult"
               onClick={() => {
-                clickHandler(item[mapping["id"]]);
+                clickHandler(item[configuration.resultsMapping["id"]]);
                 closeHandler(false);
               }}>
-              {item[mapping["name"]]}
-              { item[mapping["labels"]] && <span className="label types badges">
-                {item[mapping["labels"]].map((label, index) => {
+              {configuration.label_manipulation ? configuration.label_manipulation(item[configuration.resultsMapping["name"]]) : item[configuration.resultsMapping["name"]]}
+              { item[configuration.resultsMapping["labels"]] && <span className="label types badges">
+                {item[configuration.resultsMapping["labels"]].map((label, index) => {
                 	return <span className={"label label-" + label}>{label}</span>;
                 })}
               </span>
@@ -708,7 +708,7 @@ class Search extends Component<SearchProps, SearchState> {
                     <Results
                       data={filteredResults}
                       searchStyle={searchStyle}
-                      mapping={this.props.searchConfiguration.resultsMapping}
+                      configuration={this.props.searchConfiguration}
                       closeHandler={this.openSearch}
                       clickHandler={this.props.searchConfiguration.clickHandler}
                       topAnchor={this.resultsHeight} />
