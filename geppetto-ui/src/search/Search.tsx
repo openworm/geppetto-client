@@ -484,6 +484,8 @@ class Search extends Component<SearchProps, SearchState> {
         this.handleResize = this.handleResize.bind(this);
         this.handleResults = this.handleResults.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.filterSelection = this.filterSelection.bind(this);
+        this.lookupFilter = this.lookupFilter.bind(this);
         this.datasourceConfiguration = JSON.parse(JSON.stringify(props.datasourceConfiguration));
       };
 
@@ -511,13 +513,15 @@ class Search extends Component<SearchProps, SearchState> {
         const id = result[this.props.searchConfiguration.resultsMapping["id"]];
         let shortForm = result && result.short_form;
         let self = this;
-        const neo4jLabels = Object.values(self.props.searchConfiguration.Neo4jLabels);
-        result.facets_annotation.forEach( annotation => {
-          let facet = "facets_annotation:" + annotation;
-          if ( neo4jLabels.includes(annotation) && !self.datasourceConfiguration.query_settings.fq.includes(facet) ) {
-            self.datasourceConfiguration.query_settings.fq.push(facet); 
-          }
-        });
+        if ( self.props.searchConfiguration.Neo4jLabels ) {
+          const neo4jLabels = Object.values(self.props.searchConfiguration.Neo4jLabels);
+          result.facets_annotation.forEach( annotation => {
+            let facet = "facets_annotation:" + annotation;
+            if ( neo4jLabels.includes(annotation) && !self.datasourceConfiguration.query_settings.fq.includes(facet) ) {
+              self.datasourceConfiguration.query_settings.fq.push(facet); 
+            }
+          });
+        }
         
         this.props.searchConfiguration.clickHandler(id);
       }
@@ -685,6 +689,43 @@ class Search extends Component<SearchProps, SearchState> {
       componentWillMount() {
         this.getResults = this.getDatasource[this.props.datasource]
       };
+      
+      lookupFilter (item, bq, filterValue){
+        let lookup = "facets_annotation:" + item.key;
+        let re = new RegExp(lookup, 'g');
+        let found = bq.match(re);
+        if ( found ){
+          return bq.replace(found[0] + filterValue, "");
+        }
+        return bq;
+      }
+
+      filterSelection (item) {    
+        let bq = this.datasourceConfiguration.query_settings.bq;
+
+        switch (item.enabled) {
+          case "disabled":
+            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_positive);
+            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_negative);
+            break;
+          case "positive":
+            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_negative);
+            bq += " facets_annotation:" + item.key + "^100";
+            break;
+          case "negative":
+            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_positive);
+            bq += " facets_annotation:" + item.key + "^0.001";
+            break;
+          default:
+            break;
+        }
+        let updatedConfiguration = Object.assign(this.datasourceConfiguration , {
+          query_settings : {
+            ...this.datasourceConfiguration.query_settings,
+            bq : bq
+          }
+        });        
+      }
 
       render() {
         if (!this.state.isOpen) {
@@ -712,7 +753,7 @@ class Search extends Component<SearchProps, SearchState> {
                       <InputAdornment position="end">
                         <Filters
                           filters_expanded={this.props.searchConfiguration.filters_expanded}
-                          filtersListener={this.props.filtersListener}
+                          filtersListener={this.filterSelection}
                           searchStyle={searchStyle}
                           filters={this.state.filters}
                           setFilters={this.setFilters} />
