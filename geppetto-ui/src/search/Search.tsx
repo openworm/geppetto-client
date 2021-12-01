@@ -719,7 +719,7 @@ class Search extends Component<SearchProps, SearchState> {
           default:
             break;
         }
-        let updatedConfiguration = Object.assign(this.datasourceConfiguration , {
+        Object.assign(this.datasourceConfiguration , {
           query_settings : {
             ...this.datasourceConfiguration.query_settings,
             bq : bq
