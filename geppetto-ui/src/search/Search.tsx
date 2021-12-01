@@ -251,7 +251,7 @@ const Results: FC<ResultsProps> = ({ data, configuration, closeHandler, clickHan
               key={index}
               className="searchResult"
               onClick={() => {
-                clickHandler(item[configuration.resultsMapping["id"]]);
+                clickHandler(item);
                 closeHandler(false);
               }}>
               {configuration.label_manipulation ? configuration.label_manipulation(item[configuration.resultsMapping["name"]]) : item[configuration.resultsMapping["name"]]}
@@ -459,6 +459,7 @@ class Search extends Component<SearchProps, SearchState> {
     private getResults: Function;
     private resultsHeight: number;
     private inputRef: any;
+    private datasourceConfiguration: any;
 
     constructor (props: SearchProps) {
         super(props);
@@ -477,11 +478,13 @@ class Search extends Component<SearchProps, SearchState> {
         this.resultsHeight = 0;
 
         this.openSearch = this.openSearch.bind(this);
+        this.clickHandler = this.clickHandler.bind(this);
         this.setFilters = this.setFilters.bind(this);
         this.escFunction = this.escFunction.bind(this);
         this.handleResize = this.handleResize.bind(this);
         this.handleResults = this.handleResults.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.datasourceConfiguration = JSON.parse(JSON.stringify(props.datasourceConfiguration));
       };
 
       // literal object to extract the getter function based on the datasource we pick
@@ -502,6 +505,21 @@ class Search extends Component<SearchProps, SearchState> {
         if (event !== undefined && requestedAction) {
           event.stopPropagation();
         }
+      }
+      
+      clickHandler(result) {
+        const id = result[this.props.searchConfiguration.resultsMapping["id"]];
+        let shortForm = result && result.short_form;
+        let self = this;
+        const neo4jLabels = Object.values(self.props.searchConfiguration.Neo4jLabels);
+        result.facets_annotation.forEach( annotation => {
+          let facet = "facets_annotation:" + annotation;
+          if ( neo4jLabels.includes(annotation) && !self.datasourceConfiguration.query_settings.fq.includes(facet) ) {
+            self.datasourceConfiguration.query_settings.fq.push(facet); 
+          }
+        });
+        
+        this.props.searchConfiguration.clickHandler(id);
       }
 
       // results handler, the name says everything
@@ -617,7 +635,7 @@ class Search extends Component<SearchProps, SearchState> {
         this.getResults(e.target.value,
                         this.handleResults,
                         this.props.searchConfiguration.sorter,
-                        this.props.datasourceConfiguration);
+                        this.datasourceConfiguration);
       };
 
       handleResize() {
@@ -710,7 +728,7 @@ class Search extends Component<SearchProps, SearchState> {
                       searchStyle={searchStyle}
                       configuration={this.props.searchConfiguration}
                       closeHandler={this.openSearch}
-                      clickHandler={this.props.searchConfiguration.clickHandler}
+                      clickHandler={this.clickHandler}
                       topAnchor={this.resultsHeight} />
                   </Grid>
                 </Grid>
