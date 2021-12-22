@@ -914,43 +914,49 @@ export default function (GEPPETTO) {
         const wrappedObj = parent.wrappedObj;
         const diffReportInst = [];
 
+        if (wrappedObj.instances == undefined) {
+          wrappedObj.instances = [];
+        }
+
         for (var x = 0; x < diffInst.length; x++) {
           if (diffInst[x].getWrappedObj().synched == true) {
             // if synch placeholder var, skip it
             continue;
           }
 
-          var match = currentModelInst.find(currModelVar => diffInst[x].getPath() == currModelVar.getPath());
-
-          // if no match, add it, it's actually new
-          if (!match) {
-    
-            if (wrappedObj.instances == undefined) {
-              wrappedObj.instances = [];
-            }
-
+          diffInst[x].parent = this.geppettoModel;
+          
+          this.populateTypeReferences(diffInst[x]);
+          
+          const match = currentModelInst[diffInst[x].getId()];
+          if (match) {
+            const matchIdx = currentModelInst.findIndex(currModelVar => diffInst[x].getPath() == currModelVar.getPath());
+            currentModelInst[matchIdx] = diffInst[x];
+            currentModelInst[match.getId()] = diffInst[x];
+            Instances[match.getId()] = diffInst[x];
+          } else {
+            // if no match, add it, it's actually new
+            diffReportInst.push(diffInst[x]);
             // append variable to raw model
             wrappedObj.instances.push(diffInst[x].getWrappedObj());
 
             // add variable to geppetto object model
-            diffInst[x].parent = this.geppettoModel;
+            
             currentModelInst.push(diffInst[x]);
-
-          
-            // populate references for new vars
-            this.populateTypeReferences(diffInst[x]);
+            
 
             // find new potential instance paths and add to the list
             const newInstancePath = createInstancePathObj(diffInst[x]);
             this.allPaths.push(newInstancePath);
             this.allPathsIndexing.push(newInstancePath);
 
-            diffReportInst.push(diffInst[x]);
-
             // let's populate the shortcut in the parent of the variable, this might not exist if it was a fetch
-            this.geppettoModel[diffInst[x].getId()] = diffInst[x];
+            
             // window.Instances.push(diffInst[x]);
+          
+            this.geppettoModel[diffInst[x].getId()] = diffInst[x];
           }
+
         }
         return diffReportInst;
       },
