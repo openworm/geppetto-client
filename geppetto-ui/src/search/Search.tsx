@@ -184,7 +184,7 @@ function StyledCheckbox(props) {
             fontSize: '20px' }}
           className="fa fa-square"
           onClick={() => {
-            props.filterHandler(props.filter);
+            props.filterHandler(props.filter, props.filtersListener);
           }}/>
       );
       break;
@@ -200,7 +200,7 @@ function StyledCheckbox(props) {
             paddingRight: '4px', }}
           className="fa fa-plus-square"
           onClick={() => {
-            props.filterHandler(props.filter);
+            props.filterHandler(props.filter, props.filtersListener);
           }}/>
       );
       break;
@@ -216,7 +216,7 @@ function StyledCheckbox(props) {
             paddingRight: '4px', }}
           className="fa fa-minus-square"
           onClick={() => {
-            props.filterHandler(props.filter);
+            props.filterHandler(props.filter, props.filtersListener);
           }}/>
       );
       break;
@@ -231,14 +231,14 @@ function StyledCheckbox(props) {
             paddingRight: '4px',  }}
           className="fa fa-square"
           onClick={() => {
-            props.filterHandler(props.filter);
+            props.filterHandler(props.filter, props.filtersListener);
           }}/>
       );
       break;
   }
 }
 
-const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, topAnchor, searchStyle }) => {
+const Results: FC<ResultsProps> = ({ data, configuration, closeHandler, clickHandler, topAnchor, searchStyle }) => {
   // if data are available we display the list of results
   if (data == undefined || data.length == 0) return null;
   let clone = Object.assign({}, searchStyle.paperResults);
@@ -249,11 +249,18 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
           {data.map((item, index) => {
             return ( <MenuItem style={ searchStyle.singleResult }
               key={index}
+              className="searchResult"
               onClick={() => {
-                clickHandler(item[mapping["id"]]);
+                clickHandler(item);
                 closeHandler(false);
               }}>
-              {item[mapping["name"]]}
+              {configuration.label_manipulation ? configuration.label_manipulation(item[configuration.resultsMapping["name"]]) : item[configuration.resultsMapping["name"]]}
+              { item[configuration.resultsMapping["labels"]] && <span className="label types badges">
+                {item[configuration.resultsMapping["labels"]].map((label, index) => {
+                	return <span className={"label label-" + label}>{label}</span>;
+                })}
+              </span>
+              }
             </MenuItem> );
           })}
         </MenuList>
@@ -268,7 +275,7 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
  * @param openFilters: Function
  */
 
-const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilters, filters_expanded }) => {
+const Filters: FC<FiltersProps> = ({ filters, searchStyle, filtersListener, setFilters, openFilters, filters_expanded }) => {
   var paperRef = useRef(null);
   const [ state, setState ] = useState({ open: filters_expanded, top: "0", left: "0" });
 
@@ -289,7 +296,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
     }
   };
 
-  const filterHandler = item => {
+  const filterHandler = (item, filtersListener) => {
     if (item.enabled === undefined) {
       item.enabled = "disabled"
     } else {
@@ -315,6 +322,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
       });
     }
     setFilters(item);
+    filtersListener(item);
     setState(() => { return { open: true, top: state.top, left: state.left} });
   };
 
@@ -360,6 +368,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
                       <StyledCheckbox
                         filter={item}
                         checked={item.enabled}
+                        filtersListener={filtersListener}
                         filterHandler={filterHandler} />
                       <span>
                         {item.filter_name}
@@ -374,6 +383,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
                       : <StyledCheckbox
                           filter={item}
                           checked={item.enabled}
+                          filtersListener={filtersListener}
                           filterHandler={filterHandler} /> }
                       <span>
                         {item.filter_name}
@@ -385,6 +395,7 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilte
                             <StyledCheckbox
                               filter={value}
                               checked={value.enabled}
+                              filtersListener={filtersListener}
                               filterHandler={filterHandler} />
                             <span style={{verticalAlign: "middle"}}>
                               {value.filter_name}
@@ -448,6 +459,7 @@ class Search extends Component<SearchProps, SearchState> {
     private getResults: Function;
     private resultsHeight: number;
     private inputRef: any;
+    private datasourceConfiguration: any;
 
     constructor (props: SearchProps) {
         super(props);
@@ -466,11 +478,15 @@ class Search extends Component<SearchProps, SearchState> {
         this.resultsHeight = 0;
 
         this.openSearch = this.openSearch.bind(this);
+        this.clickHandler = this.clickHandler.bind(this);
         this.setFilters = this.setFilters.bind(this);
         this.escFunction = this.escFunction.bind(this);
         this.handleResize = this.handleResize.bind(this);
         this.handleResults = this.handleResults.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.filterSelection = this.filterSelection.bind(this);
+        this.lookupFilter = this.lookupFilter.bind(this);
+        this.datasourceConfiguration = JSON.parse(JSON.stringify(props.datasourceConfiguration));
       };
 
       // literal object to extract the getter function based on the datasource we pick
@@ -491,6 +507,23 @@ class Search extends Component<SearchProps, SearchState> {
         if (event !== undefined && requestedAction) {
           event.stopPropagation();
         }
+      }
+      
+      clickHandler(result) {
+        const id = result[this.props.searchConfiguration.resultsMapping["id"]];
+        let shortForm = result && result.short_form;
+        let self = this;
+        if ( self.props.searchConfiguration.Neo4jLabels ) {
+          const neo4jLabels = Object.values(self.props.searchConfiguration.Neo4jLabels);
+          result.facets_annotation.forEach( annotation => {
+            let facet = "facets_annotation:" + annotation;
+            if ( neo4jLabels.includes(annotation) && !self.datasourceConfiguration.query_settings.fq.includes(facet) ) {
+              self.datasourceConfiguration.query_settings.fq.push(facet); 
+            }
+          });
+        }
+        
+        this.props.searchConfiguration.clickHandler(id);
       }
 
       // results handler, the name says everything
@@ -606,7 +639,7 @@ class Search extends Component<SearchProps, SearchState> {
         this.getResults(e.target.value,
                         this.handleResults,
                         this.props.searchConfiguration.sorter,
-                        this.props.datasourceConfiguration);
+                        this.datasourceConfiguration);
       };
 
       handleResize() {
@@ -656,6 +689,43 @@ class Search extends Component<SearchProps, SearchState> {
       componentWillMount() {
         this.getResults = this.getDatasource[this.props.datasource]
       };
+      
+      lookupFilter (item, bq, filterValue){
+        let lookup = "facets_annotation:" + item.key;
+        let re = new RegExp(lookup, 'g');
+        let found = bq.match(re);
+        if ( found ){
+          return bq.replace(found[0] + filterValue, "");
+        }
+        return bq;
+      }
+
+      filterSelection (item) {    
+        let bq = this.datasourceConfiguration.query_settings.bq;
+
+        switch (item.enabled) {
+          case "disabled":
+            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_positive);
+            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_negative);
+            break;
+          case "positive":
+            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_negative);
+            bq += " facets_annotation:" + item.key + "^100";
+            break;
+          case "negative":
+            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_positive);
+            bq += " facets_annotation:" + item.key + "^0.001";
+            break;
+          default:
+            break;
+        }
+        Object.assign(this.datasourceConfiguration , {
+          query_settings : {
+            ...this.datasourceConfiguration.query_settings,
+            bq : bq
+          }
+        });        
+      }
 
       render() {
         if (!this.state.isOpen) {
@@ -683,6 +753,7 @@ class Search extends Component<SearchProps, SearchState> {
                       <InputAdornment position="end">
                         <Filters
                           filters_expanded={this.props.searchConfiguration.filters_expanded}
+                          filtersListener={this.filterSelection}
                           searchStyle={searchStyle}
                           filters={this.state.filters}
                           setFilters={this.setFilters} />
@@ -696,9 +767,9 @@ class Search extends Component<SearchProps, SearchState> {
                     <Results
                       data={filteredResults}
                       searchStyle={searchStyle}
-                      mapping={this.props.searchConfiguration.resultsMapping}
+                      configuration={this.props.searchConfiguration}
                       closeHandler={this.openSearch}
-                      clickHandler={this.props.searchConfiguration.clickHandler}
+                      clickHandler={this.clickHandler}
                       topAnchor={this.resultsHeight} />
                   </Grid>
                 </Grid>

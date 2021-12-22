@@ -9,13 +9,7 @@ define(['jquery'], function () {
 
 
   function ModalFactory () {
-    /*
-     * Due to a bootstrap bug, multiple modals can't be open at same
-     * time. This line allows multiple modals to be open
-     * simultaneously without going in an infinite loop.
-     */
-    $.fn.modal.Constructor.prototype.enforceFocus = function () {
-    };
+
   }
 
   ModalFactory.prototype
