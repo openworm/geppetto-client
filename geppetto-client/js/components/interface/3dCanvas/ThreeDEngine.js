@@ -30,59 +30,50 @@ define(['jquery'], function () {
   THREE.ShaderPass = require('imports-loader?THREE=three!exports-loader?THREE.ShaderPass!three\/examples\/js\/postprocessing\/ShaderPass');
   THREE.FilmPass = require('imports-loader?THREE=three!exports-loader?THREE.FilmPass!three\/examples\/js\/postprocessing\/FilmPass');
 
-  class ThreeDEngine {
-    constructor (container, viewerId) {
-      this.container = container;
-      this.colorController = new (require('./ColorController'))(this);
-      this.viewerId = viewerId;
-      // Engine components
-      this.scene = new THREE.Scene();
-      this.camera = null;
-      this.controls = null;
-      this.renderer = null;
-      this.stats = null;
-      this.projector = null;
-      this.sceneCenter = new THREE.Vector3();
-      this.cameraPosition = new THREE.Vector3();
-      this.mouse = { x: 0, y: 0 };
-      // The content of the scene
-      this.meshes = {};
-      this.splitMeshes = {};
-      this.connectionLines = {};
-      this.visualModelMap = {};
-      this.complexity = 0;
-      this.sceneMaxRadius = 0; // maximum radius of bounding sphere in scene
-      this.linePrecisionMinRadius = 300; // Default expected minimum radius
-      this.minAllowedLinePrecision = 1; // default line precision, can't go lower than this
-      // Settings
-      this.linesThreshold = 2000;
-      this.baseZoom = 1;
-      this.aboveLinesThreshold = false;
-      this.wireframe = false;
-      this.isAnimated = false;
-      this.debugUpdate = false;
-      this.needsUpdate = false;
-      this.pickingEnabled = true; // flag to enable disable 3d picking
-      this.linesUserInput = false;
-      this.linesUserPreference = undefined;
-      this.hoverListeners = undefined;
-      this.THREE = THREE;
-      
-      this.setupCamera = this.setupCamera.bind(this);
-      this.setupRenderer = this.setupRenderer.bind(this);
-      this.setupLights = this.setupLights.bind(this);
-      this.setupControls = this.setupControls.bind(this);
-      this.setupListeners = this.setupListeners.bind(this);
-      this.animate = this.animate.bind(this);
-      
-      // Initialisation
-      this.setupCamera();
-      this.setupRenderer();
-      this.setupLights();
-      this.setupControls();
-      this.setupListeners();
-      this.animate();
-    }
+  function ThreeDEngine (container, viewerId) {
+    this.container = container;
+    this.colorController = new (require('./ColorController'))(this);
+    this.viewerId = viewerId;
+    // Engine components
+    this.scene = new THREE.Scene();
+    this.camera = null;
+    this.controls = null;
+    this.renderer = null;
+    this.stats = null;
+    this.projector = null;
+    this.sceneCenter = new THREE.Vector3();
+    this.cameraPosition = new THREE.Vector3();
+    this.mouse = { x: 0, y: 0 };
+    // The content of the scene
+    this.meshes = {};
+    this.splitMeshes = {};
+    this.connectionLines = {};
+    this.visualModelMap = {};
+    this.complexity = 0;
+    this.sceneMaxRadius = 0; // maximum radius of bounding sphere in scene
+    this.linePrecisionMinRadius = 300; // Default expected minimum radius
+    this.minAllowedLinePrecision = 1; // default line precision, can't go lower than this
+    // Settings
+    this.linesThreshold = 2000;
+    this.baseZoom = 1;
+    this.aboveLinesThreshold = false;
+    this.wireframe = false;
+    this.isAnimated = false;
+    this.debugUpdate = false;
+    this.needsUpdate = false;
+    this.pickingEnabled = true; // flag to enable disable 3d picking
+    this.linesUserInput = false;
+    this.linesUserPreference = undefined;
+    this.hoverListeners = undefined;
+    this.THREE = THREE;
+    
+    // Initialisation
+    this.setupCamera();
+    this.setupRenderer();
+    this.setupLights();
+    this.setupControls();
+    this.setupListeners();
+    this.animate();
   }
 
 
