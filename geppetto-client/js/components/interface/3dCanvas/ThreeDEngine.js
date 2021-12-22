@@ -67,6 +67,14 @@ define(['jquery'], function () {
       this.linesUserPreference = undefined;
       this.hoverListeners = undefined;
       this.THREE = THREE;
+      
+      this.setupCamera = this.setupCamera().bind(this);
+      this.setupRenderer = this.setupRenderer().bind(this);
+      this.setupLights = this.setupLights().bind(this);
+      this.setupControls = this.setupControls().bind(this);
+      this.setupListeners = this.setupListeners().bind(this);
+      this.animate = this.animate.bind(this)();
+      
       // Initialisation
       this.setupCamera();
       this.setupRenderer();
