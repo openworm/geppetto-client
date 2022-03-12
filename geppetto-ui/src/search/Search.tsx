@@ -256,7 +256,7 @@ const Results: FC<ResultsProps> = ({ data, configuration, closeHandler, clickHan
               }}>
               {configuration.label_manipulation ? configuration.label_manipulation(item[configuration.resultsMapping["name"]]) : item[configuration.resultsMapping["name"]]}
               { item[configuration.resultsMapping["labels"]] && <span className="label types badges">
-                {item[configuration.resultsMapping["labels"]].sort().map((label, index) => {
+                {item[configuration.resultsMapping["labels"]].sort().reverse().map((label, index) => {
                 	return <span className={"label label-" + label}>{label}</span>;
                 })}
               </span>
