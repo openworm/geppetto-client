@@ -636,7 +636,7 @@ class Search extends Component<SearchProps, SearchState> {
       // wrapper to call the getter with all the required params for the generic datasource call.
       requestData(e) {
         window.spotlightString = e.target.value;
-        this.getResults(e.target.value.replace('{','\{').replace('}','\}'),
+        this.getResults(replace(replace(e.target.value,'{','\{'),'}','\}'),
                         this.handleResults,
                         this.props.searchConfiguration.sorter,
                         this.datasourceConfiguration);
