@@ -476,6 +476,7 @@ class Search extends Component<SearchProps, SearchState> {
 
         this.results = [];
         this.resultsHeight = 0;
+        this.queryCount = 0;
 
         this.openSearch = this.openSearch.bind(this);
         this.clickHandler = this.clickHandler.bind(this);
@@ -527,16 +528,18 @@ class Search extends Component<SearchProps, SearchState> {
       }
 
       // results handler, the name says everything
-      handleResults(status:string, data:any, value:string) {
+      handleResults(status:string, data:any, value:string, queryNumber:number) {
         switch(status) {
             case "OK":
-                if (this.state.value !== value) {
-                  if (value === "") {
-                    this.results = [];
-                  } else {
-                    this.results = data;
+                if (queryNumber === this.queryCount) {
+                  if (this.state.value !== value) {
+                    if (value === "") {
+                      this.results = [];
+                    } else {
+                      this.results = data;
+                    }
+                    this.setState({ value: value });
                   }
-                  this.setState({ value: value });
                 }
                 break;
             case "ERROR":
@@ -636,9 +639,11 @@ class Search extends Component<SearchProps, SearchState> {
       // wrapper to call the getter with all the required params for the generic datasource call.
       requestData(e) {
         window.spotlightString = e.target.value;
+        this.queryCount += 1;
         this.getResults(e.target.value,
                         this.handleResults,
                         this.props.searchConfiguration.sorter,
+                        this.queryCount,
                         this.datasourceConfiguration);
       };
 

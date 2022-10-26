@@ -29,7 +29,7 @@ let solrConfiguration:any = {
     }
 }
 
-export function getResultsSOLR ( searchString: string, returnResults: Function, sorter: Function, configuration?: any) {
+export function getResultsSOLR ( searchString: string, returnResults: Function, sorter: Function, queryNumber: number, configuration?: any) {
     var url:string = configuration.url;
 
     if (configuration.url === undefined) {
@@ -52,7 +52,7 @@ export function getResultsSOLR ( searchString: string, returnResults: Function, 
             worker.onmessage = function (e) {
                 switch(e.data.resultMessage) {
                     case "OK":
-                        returnResults("OK", e.data.params.results, searchString);
+                        returnResults("OK", e.data.params.results, searchString, queryNumber);
                         window.URL.revokeObjectURL(blobUrl);
                         break;
                 }
@@ -64,7 +64,7 @@ export function getResultsSOLR ( searchString: string, returnResults: Function, 
         .catch(function(error) {
             console.log('%c --- SOLR datasource error --- ', 'background: black; color: red');
             console.log(error);
-            returnResults("ERROR", undefined, searchString);
+            returnResults("ERROR", undefined, searchString, queryNumber);
         })
 };
 
