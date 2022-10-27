@@ -641,7 +641,7 @@ class Search extends Component<SearchProps, SearchState> {
       requestData(e) {
         window.spotlightString = e.target.value;
         this.queryCount += 1;
-        this.getResults(e.target.value.value.split(" ").join(" AND ") + " OR " + e.target.value.split(" ").join("* AND ") + "* OR *" + e.target.value.split(" ").join("* AND *") + "*",
+        this.getResults(e.target.value.value,
                         this.handleResults,
                         this.props.searchConfiguration.sorter,
                         this.queryCount,
