@@ -639,9 +639,9 @@ class Search extends Component<SearchProps, SearchState> {
 
       // wrapper to call the getter with all the required params for the generic datasource call.
       requestData(e) {
-        window.spotlightString = e.target.value.split(" ").join(" AND ");
+        window.spotlightString = e.target.value;
         this.queryCount += 1;
-        this.getResults(e.target.value + " OR " + e.target.value.split(" AND ").join("* AND ") + "* OR *" + e.target.value.split(" AND ").join("* AND *") + "*",
+        this.getResults(e.target.value.value.split(" ").join(" AND ") + " OR " + e.target.value.split(" ").join("* AND ") + "* OR *" + e.target.value.split(" ").join("* AND *") + "*",
                         this.handleResults,
                         this.props.searchConfiguration.sorter,
                         this.queryCount,
