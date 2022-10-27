@@ -458,6 +458,7 @@ class Search extends Component<SearchProps, SearchState> {
     private results: Array<any>;
     private getResults: Function;
     private resultsHeight: number;
+    private queryCount: number;
     private inputRef: any;
     private datasourceConfiguration: any;
 
