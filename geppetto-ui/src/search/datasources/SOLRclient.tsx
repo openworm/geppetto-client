@@ -4,7 +4,7 @@ const globalConfiguration:any = {
     "url": "https://solr-dev.virtualflybrain.org/solr/ontology/select",
     "query_settings":
     {
-        "q": "$SEARCH_TERM$ OR $SEARCH_TERM$* OR *$SEARCH_TERM$*",
+        "q": "$SEARCH_TERM$",
         "defType": "edismax",
         "qf": "label synonym label_autosuggest_ws label_autosuggest_e label_autosuggest synonym_autosuggest_ws synonym_autosuggest_e synonym_autosuggest shortform_autosuggest has_narrow_synonym_annotation has_broad_synonym_annotation",
         "indent": "true",
