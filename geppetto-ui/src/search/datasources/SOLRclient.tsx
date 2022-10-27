@@ -86,6 +86,19 @@ function refineResults(e) {
         if (InputString.toLowerCase() == b.label.toLowerCase()) {
             return 1;
         }
+        if (InputString == a.label.split(' (')[0]) {
+            return -1;
+        }
+        if (InputString == b.label.split(' (')[0]) {
+            return 1;
+        }
+        // close match without case matching
+        if (InputString.toLowerCase() == a.label.split(' (')[0].toLowerCase()) {
+            return -1;
+        }
+        if (InputString.toLowerCase() == b.label.split(' (')[0].toLowerCase()) {
+            return 1;
+        }
         // match ignoring joinging nonwords
         if (InputString.toLowerCase().split(/\W+/).join(' ') == a.label.toLowerCase().split(/\W+/).join(' ')) {
             return -1;
