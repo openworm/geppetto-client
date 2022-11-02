@@ -641,7 +641,7 @@ class Search extends Component<SearchProps, SearchState> {
       requestData(e) {
         window.spotlightString = e.target.value;
         this.queryCount += 1;
-        this.getResults(e.target.value.value,
+        this.getResults(e.target.value,
                         this.handleResults,
                         this.props.searchConfiguration.sorter,
                         this.queryCount,
@@ -695,7 +695,7 @@ class Search extends Component<SearchProps, SearchState> {
       componentWillMount() {
         this.getResults = this.getDatasource[this.props.datasource]
       };
-      
+
       lookupFilter (item, bq, filterValue){
         let lookup = "facets_annotation:" + item.key;
         let re = new RegExp(lookup, 'g');
@@ -706,7 +706,7 @@ class Search extends Component<SearchProps, SearchState> {
         return bq;
       }
 
-      filterSelection (item) {    
+      filterSelection (item) {
         let bq = this.datasourceConfiguration.query_settings.bq;
 
         switch (item.enabled) {
@@ -730,7 +730,7 @@ class Search extends Component<SearchProps, SearchState> {
             ...this.datasourceConfiguration.query_settings,
             bq : bq
           }
-        });        
+        });
       }
 
       render() {
