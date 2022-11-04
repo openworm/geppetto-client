@@ -44,7 +44,11 @@ export function getResultsSOLR ( searchString: string, returnResults: Function, 
 
     // hack to clone the object
     let tempConfig:any = JSON.parse(JSON.stringify(solrConfiguration));
-    tempConfig.params.json.params.q = solrConfiguration.params.json.params.q.replace(/\$SEARCH_TERM\$/g, searchString.trim().split(" ").join(" AND ") + " OR " + searchString.trim().split(" ").join("* AND ") + "* OR *" + searchString.trim().split(" ").join("* AND *") + "*");
+    let query:Array<string> = [];
+    for (let key in searchString.trim().split(" ")) {
+        query.push("(" + key + " OR " + key + "* OR *" + key + " OR *" + key + "*)")
+    }
+    tempConfig.params.json.params.q = solrConfiguration.params.json.params.q.replace(/\$SEARCH_TERM\$/g, query.join(" AND "));
 
     axios.get(`${url}`, tempConfig)
         .then(function(response) {
