@@ -39,6 +39,9 @@ export function getResultsSOLR ( searchString: string, returnResults: Function, 
         solrConfiguration.params.json.params = configuration.query_settings;
     }
 
+    //encode curly brackets
+    searchString = searchString.split("{").join("\\{").split("}").join("\\}")
+
     // hack to clone the object
     let tempConfig:any = JSON.parse(JSON.stringify(solrConfiguration));
     tempConfig.params.json.params.q = solrConfiguration.params.json.params.q.replace(/\$SEARCH_TERM\$/g, searchString.trim().split(" ").join(" AND ") + " OR " + searchString.trim().split(" ").join("* AND ") + "* OR *" + searchString.trim().split(" ").join("* AND *") + "*");
