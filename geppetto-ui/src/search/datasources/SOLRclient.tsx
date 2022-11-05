@@ -46,7 +46,8 @@ export function getResultsSOLR ( searchString: string, returnResults: Function, 
     let tempConfig:any = JSON.parse(JSON.stringify(solrConfiguration));
     let query:Array<string> = [];
     for (let key in searchString.trim().split(" ")) {
-        query.push("(" + key + " OR " + key + "* OR *" + key + " OR *" + key + "*)")
+        let token:string = searchString.trim().split(" ")[key]
+        query.push("(" + token + " OR " + token + "* OR *" + token + " OR *" + token + "*)")
     }
     tempConfig.params.json.params.q = solrConfiguration.params.json.params.q.replace(/\$SEARCH_TERM\$/g, query.join(" AND "));
 
