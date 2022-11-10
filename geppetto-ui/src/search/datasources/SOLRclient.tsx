@@ -45,7 +45,7 @@ export function getResultsSOLR ( searchString: string, returnResults: Function, 
     // hack to clone the object
     let tempConfig:any = JSON.parse(JSON.stringify(solrConfiguration));
     let query:Array<string> = [];
-    for (let key in searchString.trim().split(" ")) {
+    for (let key in searchString.trim().replace("-"," ").replace("+"," ").replace("_"," ").split(" ")) {
         let token:string = searchString.trim().split(" ")[key]
         query.push("(" + token + " OR " + token + "* OR *" + token + " OR *" + token + "*)")
     }
