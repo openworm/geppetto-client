@@ -242,7 +242,9 @@ function refineResults(e) {
                                 newRecord[key] = item[key];
                         }
                     });
-                    refinedResults.push(newRecord);
+                    if (!refinedResults.includes(newRecord)) {
+                        refinedResults.push(newRecord);
+                    }
                 }
             });
             let newRecord:any = {}
@@ -255,7 +257,9 @@ function refineResults(e) {
                     }
                 }
             });
-            refinedResults.push(newRecord);
+            if (!refinedResults.includes(newRecord)) {
+                refinedResults.push(newRecord);
+            }
         } else {
             let newRecord:any = {}
             Object.keys(item).map(key => {
@@ -265,7 +269,9 @@ function refineResults(e) {
                     newRecord[key] = item[key];
                 }
             });
-            refinedResults.push(newRecord);
+            if (!refinedResults.includes(newRecord)) {
+                refinedResults.push(newRecord);
+            }
         }
     });
 
