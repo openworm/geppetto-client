@@ -275,7 +275,7 @@ function refineResults(e) {
         }
     });
 
-    var sortedResults: Array<any> = Array.from(new Set(refinedResults.sort(sorter)));
+    var sortedResults: Array<any> = refinedResults.sort(sorter);
     this.postMessage({resultMessage: "OK", params: {results: sortedResults}});
     self.close();
 }
