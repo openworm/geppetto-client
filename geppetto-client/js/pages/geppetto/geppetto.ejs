@@ -147,42 +147,39 @@
       </div>
     </div>
 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K7DDZVVXM7"></script>
     <script>
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-45841517-1']);
-      _gaq.push(['_trackPageview']);
-      (function () {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src =
-          ('https:' == document.location.protocol
-            ? 'https://ssl'
-            : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(ga, s);
-      })();
-      (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        (i[r] =
-          i[r] ||
-          function () {
-            (i[r].q = i[r].q || []).push(arguments);
-          }),
-          (i[r].l = 1 * new Date());
-        (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m);
-      })(
-        window,
-        document,
-        'script',
-        '//www.google-analytics.com/analytics.js',
-        'ga'
-      );
-      ga('create', 'UA-45841517-1', 'geppetto.org');
-      ga('send', 'pageview');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-K7DDZVVXM7');
+    </script>
+    <script>
+    // Ensure gtag.js is loaded
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    
+    // Define a compatibility layer for window.ga calls
+    window.ga = function(command, hitType, eventCategory, eventAction, eventLabel, eventValue) {
+      if (command && hitType) {
+        if (hitType === 'send' && eventCategory === 'event') {
+          // Translate to a GA4-compatible event
+          gtag('event', eventAction, {
+            'event_category': eventCategory,
+            'event_label': eventLabel,
+            'value': eventValue
+          });
+        } else if (hitType === 'send' && eventCategory === 'pageview') {
+          // Translate pageviews
+          gtag('event', 'page_view', {
+            'page_path': eventAction, // Assuming eventAction contains the page path
+          });
+        }
+        // Add more translations as needed
+      }
+    };
     </script>
     <script
       charset="utf-8"
