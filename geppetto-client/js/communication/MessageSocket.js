@@ -87,6 +87,10 @@ define(function (require) {
             GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
             GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
             break;
+          case 1002:
+            GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+            GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
+            break; 
           default:
             if (GEPPETTO.MessageSocket.lostConnectionId === undefined) {
               GEPPETTO.MessageSocket.lostConnectionId = GEPPETTO.MessageSocket.getClientID();
