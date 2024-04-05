@@ -104,6 +104,7 @@ function GlobalHandler (GEPPETTO) {
     GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
     GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
     GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+    window.location.reload();
   };
 
   GEPPETTO.GlobalHandler
