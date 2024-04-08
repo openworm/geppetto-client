@@ -92,6 +92,7 @@ define(function (require) {
             GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
             GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
             GEPPETTO.MessageSocket.attempts++;
+            window.location.reload();
             break; 
           default:
             if (GEPPETTO.MessageSocket.lostConnectionId === undefined) {
