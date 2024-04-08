@@ -86,15 +86,18 @@ define(function (require) {
           case 1000:
             GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
             GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
+            GEPPETTO.MessageSocket.attempts++;
             break;
           case 1002:
             GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
             GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
+            GEPPETTO.MessageSocket.attempts++;
             break; 
           default:
             if (GEPPETTO.MessageSocket.lostConnectionId === undefined) {
               GEPPETTO.MessageSocket.lostConnectionId = GEPPETTO.MessageSocket.getClientID();
             }
+            GEPPETTO.MessageSocket.attempts++;
             GEPPETTO.MessageSocket.reconnect(e);
           }
         };
@@ -134,15 +137,18 @@ define(function (require) {
             case 'ECONNREFUSED':
               console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
               GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, true);
+              GEPPETTO.MessageSocket.attempts++;
               break;
             case undefined:
               console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
               GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_RECONNECTION, true);
+              GEPPETTO.MessageSocket.attempts++;
               break;
             default:
               console.log("%c WebSocket Status - Closed ", 'background: #000; color: red');
               GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
               GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, message);
+              GEPPETTO.MessageSocket.attempts++;
               break;
             }
           }
