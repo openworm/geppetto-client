@@ -183,7 +183,7 @@ define(function (require) {
       send: function (command, parameter, callback) {
         if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.RECONNECTING && command !== "reconnect") {
           GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR,
-            "Websocket connection currently not available, wait for reconnection and try again.");
+            "Your connection to the VFB server dropped, click OK to reconnect/reload your open images.");
           GEPPETTO.trigger('stop_spin_logo');
           return;
         }
