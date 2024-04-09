@@ -164,20 +164,27 @@
     // Define a compatibility layer for window.ga calls
     window.ga = function(command, hitType, eventCategory, eventAction, eventLabel, eventValue) {
       if (command && hitType) {
-        if (hitType === 'send' && eventCategory === 'event') {
+        if (command === 'vfb.send', hitType === 'pageview') {
+          // Translate pageview
+          gtag('event', hitType, {
+            'page_path': eventCategory
+          });
+        } else if (command === 'vfb.send' && hitType === 'event') {
           // Translate to a GA4-compatible event
-          gtag('event', eventAction, {
+          gtag(hitType, eventCategory, {
             'event_category': eventCategory,
+            'event_label': eventAction,
+            'value': eventLabel
+          });
+        } else {
+          // Translate others
+          gtag(command, hitType, {
+            'event_category': eventCategory,
+            'event_action': eventAction,
             'event_label': eventLabel,
             'value': eventValue
           });
-        } else if (hitType === 'send' && eventCategory === 'pageview') {
-          // Translate pageviews
-          gtag('event', 'page_view', {
-            'page_path': eventAction, // Assuming eventAction contains the page path
-          });
         }
-        // Add more translations as needed
       }
     };
     </script>
