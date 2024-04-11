@@ -164,9 +164,9 @@
     // Define a compatibility layer for window.ga calls
     window.ga = function(command, hitType, eventCategory, eventAction, eventLabel, eventValue) {
       if (command && hitType) {
-        if (command === 'vfb.send', hitType === 'pageview') {
+        if (command === 'vfb.send' && (hitType === 'pageview' || hitType === 'page_view')) {
           // Translate pageview
-          gtag('event', hitType, {
+          gtag('event', 'pageview', {
             'page_path': eventCategory
           });
         } else if (command === 'vfb.send' && hitType === 'event') {
