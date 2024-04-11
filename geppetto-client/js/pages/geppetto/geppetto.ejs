@@ -166,8 +166,8 @@
       if (command && hitType) {
         if (command === 'vfb.send' && (hitType === 'pageview' || hitType === 'page_view')) {
           // Translate pageview
-          gtag('event', 'pageview', {
-            'page_path': eventCategory
+          gtag('event', 'page_view', {
+            'page_location': eventCategory
           });
         } else if (command === 'vfb.send' && hitType === 'event') {
           // Translate to a GA4-compatible event
