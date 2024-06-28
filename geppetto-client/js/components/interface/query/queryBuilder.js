@@ -349,9 +349,45 @@ define(function (require) {
             if (Object.prototype.hasOwnProperty.call(that.configuration.DataSources, key)) {
               var dataSource = that.configuration.DataSources[key];
               var searchQuery = $("#query-typeahead").val();
-              var url = dataSource.url.replace(/\$SEARCH_TERM\$/g, searchQuery);
-              that.updateResults = true;
-              that.requestDataSourceResults(key, url, dataSource.crossDomain);
+              // Hack to pass through VFBu bypassing SOLR call
+              if (searchQuery.includes("VFBu_")) {
+                that.QueryBuilder.updateDataSourceResults("VFB", {
+                  "responseHeader": {
+                    "status": 0,
+                    "QTime": 218,
+                    "params": {
+                      "q": searchQuery + " OR " + searchQuery + "* OR *" + searchQuery + "*",
+                      "defType": "edismax",
+                      "qf": "label^100 synonym^100 label_autosuggest_ws label_autosuggest_e label_autosuggest synonym_autosuggest_ws synonym_autosuggest shortform_autosuggest",
+                      "indent": "true",
+                      "fl": "short_form label synonym id facets_annotation type:\"class\"",
+                      "pf": "true",
+                      "start": "0",
+                      "rows": "100",
+                      "wt": "json",
+                      "bq": "shortform_autosuggest:VFB*^110.0 shortform_autosuggest:FBbt*^100.0 label_s:\"\"^2 synonym_s:\"\" short_form=FBbt_00003982^2 facets_annotation:Deprecated^0.001"
+                    }
+                  },
+                  "response": {
+                    "numFound": 1,
+                    "start": 0,
+                    "numFoundExact": true,
+                    "docs": [
+                      {
+                        "label": "Uploaded Data " + searchQuery,
+                        "short_form": searchQuery,
+                        "facets_annotation": ["Entity", "Anatomy", "Individual", "Nervous_system", "has_image"],
+                        "id": "http://virtualflybrain.org/reports/" + searchQuery,
+                        "type": "class"
+                      }
+                    ]
+                  }
+                });
+              } else {
+                var url = dataSource.url.replace(/\$SEARCH_TERM\$/g, searchQuery);
+                that.updateResults = true;
+                that.requestDataSourceResults(key, url, dataSource.crossDomain);
+              }
             }
           }
         }, 150);
