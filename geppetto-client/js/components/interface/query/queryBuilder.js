@@ -351,7 +351,7 @@ define(function (require) {
               var searchQuery = $("#query-typeahead").val();
               // Hack to pass through VFBu bypassing SOLR call
               if (searchQuery.includes("VFBu_")) {
-                that.QueryBuilder.updateDataSourceResults("VFB", {
+                that.updateDataSourceResults("VFB", {
                   "responseHeader": {
                     "status": 0,
                     "QTime": 218,
