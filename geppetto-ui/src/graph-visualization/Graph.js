@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types';
 import * as d3 from 'd3-force-3d'
 import * as THREE from 'three'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import ForceGraph2D from 'react-force-graph-2d';
 import ForceGraph3D from 'react-force-graph-3d';
 
@@ -80,7 +81,7 @@ export default class GeppettoGraphVisualization extends Component {
   // add a obj file to the scene from url
   addToScene () {
     const { url, wireframe = true } = this.props
-    var loader = new THREE.OBJLoader();
+    var loader = new OBJLoader();
     // load a resource
     loader.load(
       // resource URL
