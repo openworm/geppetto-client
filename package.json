@@ -64,8 +64,8 @@
     "react-dom-factories": "^1.0.2",
     "react-dropzone": "^8.0.3",
     "react-fontawesome": "^1.6.1",
-    "react-force-graph-2d": "^1.12.1",
-    "react-force-graph-3d": "^1.12.1",
+    "react-force-graph-2d": "1.12.1",
+    "react-force-graph-3d": "1.12.1",
     "react-jsonschema-form": "^1.0.6",
     "react-lazy-load": "^3.0.13",
     "react-modal": "^3.8.1",
@@ -134,5 +134,9 @@
       "@geppettoengine/geppetto-core(.*)$": "<rootDir>/geppetto-core/src/$1",
       "@geppettoengine/geppetto-ui(.*)$": "<rootDir>/geppetto-ui/src/$1"
     }
+  },
+  "resolutions": {
+    "three": "0.153.0",
+    "three-render-objects": "1.13.3"
   }
 }
