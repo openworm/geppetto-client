@@ -7,6 +7,8 @@
 
 define(function (require) {
 
+  var MessageReassembler = require('./MessageReassembler');
+
   return function (GEPPETTO) {
 
     var messageHandlers = [];
@@ -17,6 +19,9 @@ define(function (require) {
     var FileSaver = require('file-saver');
 
     var callbackHandler = {};
+
+    // Create an instance of the message reassembler
+    var messageReassembler = new MessageReassembler();
 
     /**
      * Web socket creation and communication
@@ -310,7 +315,17 @@ define(function (require) {
     }
 
     function parseAndNotify (messageData) {
-      var parsedServerMessage = JSON.parse(messageData);
+      // Process potential paginated message
+      var processedMessage = messageReassembler.processMessage(messageData);
+      
+      // If null, this is a paginated message still being assembled
+      if (processedMessage === null) {
+        return; // Wait for more chunks
+      }
+      
+      // If processedMessage is a string, parse it (original message)
+      var parsedServerMessage = (typeof processedMessage === 'string') ? 
+        JSON.parse(processedMessage) : processedMessage;
 
       // notify all handlers
       for (var i = 0, len = messageHandlers.length; i < len; i++) {
