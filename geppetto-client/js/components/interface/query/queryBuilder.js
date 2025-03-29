@@ -172,6 +172,9 @@ define(function (require) {
         value: 0,
         display: false,
         allColumnsToShow: null,
+        showLongQueryMessage: false,
+        queryStartTime: null,
+        longQueryTimeout: null
       }
 
       this.displayName = 'QueryBuilder';
@@ -214,6 +217,11 @@ define(function (require) {
       this.resultSetSelectionChange = this.resultSetSelectionChange.bind(this);
       this.queryOptionSelected = this.queryOptionSelected.bind(this);
       this.getSorterColumn = this.getSorterColumn.bind(this);
+      this.cancelQuery = this.cancelQuery.bind(this);
+      this.clearLongQueryTimeout = this.clearLongQueryTimeout.bind(this);
+
+      // Store reference to the active query request
+      this.queryRequest = null;
     }
 
     keyCloseHandler (event){
@@ -270,6 +278,7 @@ define(function (require) {
       document.removeEventListener('mousedown', this.handleClickOutside);
       document.removeEventListener("keydown", this.keyOpenHandler, false);
       document.removeEventListener("keydown", this.keyCloseHandler, false);
+      this.clearLongQueryTimeout();
     }
 
     switchView (resultsView, clearQueryItems) {
@@ -765,8 +774,40 @@ define(function (require) {
       };
     }
 
+    clearLongQueryTimeout() {
+      if (this.state.longQueryTimeout) {
+        clearTimeout(this.state.longQueryTimeout);
+        this.setState({ 
+          showLongQueryMessage: false,
+          longQueryTimeout: null,
+          queryStartTime: null
+        });
+      }
+    }
+
+    cancelQuery() {
+      this.clearErrorMessage();
+      this.clearLongQueryTimeout();
+      
+      // If there's an active query and it can be aborted
+      if (this.queryRequest && typeof this.queryRequest.abort === 'function') {
+        this.queryRequest.abort();
+        this.queryRequest = null;
+      }
+      
+      this.showBrentSpiner(false);
+      this.setErrorMessage('Query cancelled');
+      
+      // Clear the error message after a brief delay
+      setTimeout(() => {
+        this.clearErrorMessage();
+      }, 2000);
+    }
+
     runQuery () {
       this.clearErrorMessage();
+      this.clearLongQueryTimeout();
+
       if (this.props.model.items.length > 0) {
 
         var allSelected = true;
@@ -812,6 +853,9 @@ define(function (require) {
 
             var that = this;
             var queryDoneCallback = function (jsonResults) {
+              // Clear long query timeout as the query is complete
+              that.clearLongQueryTimeout();
+              
               var queryLabel = "";
               var verboseLabel = "";
               var verboseLabelPlain = "";
@@ -891,8 +935,18 @@ define(function (require) {
             // hide footer and show spinner
             this.showBrentSpiner(true);
 
+            // Set up long query notification timer - show message after 5 seconds
+            const longQueryTimeout = setTimeout(() => {
+              this.setState({ showLongQueryMessage: true });
+            }, 5000);
+            
+            this.setState({
+              queryStartTime: Date.now(),
+              longQueryTimeout: longQueryTimeout
+            });
+
             // run query on queries controller
-            GEPPETTO.QueriesController.runQuery(queryDTOs, queryDoneCallback);
+            this.queryRequest = GEPPETTO.QueriesController.runQuery(queryDTOs, queryDoneCallback);
           } else {
             /*
              * if we already have results for the an identical query switch to results and select the right tab
@@ -1181,6 +1235,12 @@ define(function (require) {
                             && <Typography component="div" key={index}>
                               <div className="result-verbose-label" dangerouslySetInnerHTML={getVerboseLabelMarkup()}></div>
                               <div className="clearer"></div>
+                              {this.state.showLongQueryMessage && this.state.showSpinner ? 
+                                <div className="query-long-running-message">
+                                  This query is returning a lot of results and might take up to 2 minutes. 
+                                  <a href="#" onClick={(e) => {e.preventDefault(); this.cancelQuery();}}>Click here to cancel</a> or wait for results.
+                                </div> : null
+                              }
                               <Griddle
                                 showFilter={true}
                                 initialSort={this.sorterColumn.column}
@@ -1295,7 +1355,14 @@ define(function (require) {
               <input id='query-typeahead' className="typeahead" type="text" placeholder="Search for the item you'd like to query against..." />
             </div>
             <QueryFooter containerClass={footerClass} count={this.props.model.count} onRun={this.runQuery} />
-            <div id="brent-spiner" className={spinnerClass}></div>
+            <div id="brent-spiner" className={spinnerClass}>
+              {this.state.showLongQueryMessage && 
+                <div className="query-long-running-message">
+                  This query is returning a lot of results and might take up to 2 minutes. 
+                  <a href="#" onClick={(e) => {e.preventDefault(); this.cancelQuery();}}>Click here to cancel</a> or wait for results.
+                </div>
+              }
+            </div>
             <div id="query-error-message">{this.state.errorMsg}</div>
           </div>
         );
