@@ -1354,7 +1354,13 @@ define(function (require) {
               <button id="add-query-btn" className="fa fa-plus" title="add query" />
               <input id='query-typeahead' className="typeahead" type="text" placeholder="Search for the item you'd like to query against..." />
             </div>
-            <QueryFooter containerClass={footerClass} count={this.props.model.count} onRun={this.runQuery} />
+            <QueryFooter 
+              containerClass={footerClass} 
+              count={this.props.model.count} 
+              onRun={this.runQuery} 
+              showLongQueryMessage={this.state.showLongQueryMessage}
+              onCancelQuery={this.cancelQuery} 
+            />
             <div id="brent-spiner" className={spinnerClass}>
               {this.state.showLongQueryMessage && 
                 <div className="query-long-running-message">
