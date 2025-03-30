@@ -788,6 +788,8 @@ define(function (require) {
           var compoundId = this.getCompoundQueryId(this.props.model.items);
           var match = false;
 
+          this.setCount(this.props.model.count);
+
           for (var i = 0; i < this.props.model.results.length; i++) {
             if (this.props.model.results[i].id == compoundId) {
               match = true;
