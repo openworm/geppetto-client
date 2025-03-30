@@ -1077,7 +1077,6 @@ define(function (require) {
     }
 
     setErrorMessage (message) {
-      console.debug('Query Builder error message:', message);
       this.setState({ errorMsg: message });
     }
 
