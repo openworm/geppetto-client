@@ -1361,7 +1361,14 @@ define(function (require) {
               showLongQueryMessage={this.state.showLongQueryMessage}
               onCancelQuery={this.cancelQuery} 
             />
-            <div id="brent-spiner" className={spinnerClass}></div>
+            <div id="brent-spiner" className={spinnerClass}>
+              {this.state.showLongQueryMessage && 
+                <div className="query-long-running-message">
+                  This query is returning a lot of results and might take up to 2 minutes. 
+                  <a href="#" onClick={(e) => {e.preventDefault(); this.cancelQuery();}}>Click here to cancel</a> or wait for results.
+                </div>
+              }
+            </div>
             <div id="query-error-message">{this.state.errorMsg}</div>
           </div>
         );
