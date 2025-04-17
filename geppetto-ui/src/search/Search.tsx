@@ -342,7 +342,9 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, filtersListener, setF
           setFilters(item);
           break;
         }
-      });
+      // Pass each filter to the filtersListener to update BQ
+      filtersListener(item);
+    });
     setState(() => { return { open: true, top: state.top, left: state.left} });
   };
 
@@ -731,6 +733,23 @@ class Search extends Component<SearchProps, SearchState> {
             bq : bq
           }
         });
+        
+        // Rerun the search with updated filters
+        this.rerunCurrentSearch();
+      }
+
+      // Add a new method to rerun the current search
+      rerunCurrentSearch() {
+        if (this.state.value) {
+          this.queryCount += 1;
+          this.getResults(
+            this.state.value,
+            this.handleResults,
+            this.props.searchConfiguration.sorter,
+            this.queryCount,
+            this.datasourceConfiguration
+          );
+        }
       }
 
       render() {
