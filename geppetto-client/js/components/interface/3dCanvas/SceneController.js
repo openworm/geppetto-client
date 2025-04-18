@@ -42,10 +42,19 @@ define(['jquery'], function () {
        */
       isVisible: function (variables) {
         var visible = false;
+        if (!variables || variables.length === 0) {
+          return visible;
+        }
+        
         for (var i = 0; i < variables.length; i++) {
-          if (variables[i].isVisible()) {
-            visible = true;
-            break;
+          try {
+            if (variables[i] && typeof variables[i].isVisible === 'function' && variables[i].isVisible()) {
+              visible = true;
+              break;
+            }
+          } catch (e) {
+            console.warn("Error checking visibility for variable:", e);
+            // Continue with the next variable
           }
         }
         return visible;
