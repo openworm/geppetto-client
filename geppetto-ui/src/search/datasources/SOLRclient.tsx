@@ -29,7 +29,7 @@ let solrConfiguration:any = {
     }
 }
 
-export function getResultsSOLR ( searchString: string, returnResults: Function, sorter: Function, queryNumber: number, configuration?: any) {
+export function getResultsSOLR ( searchString: string, returnResults: Function, sorter: (a: any, b: any) => number, queryNumber: number, configuration?: any) {
     var url:string = configuration.url;
 
     if (configuration.url === undefined) {
