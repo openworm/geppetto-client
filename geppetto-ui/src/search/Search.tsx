@@ -461,6 +461,7 @@ class Search extends Component<SearchProps, SearchState> {
     private queryCount: number;
     private inputRef: any;
     private datasourceConfiguration: any;
+    private managedFilterQueries: Array<string>;
 
     constructor (props: SearchProps) {
         super(props);
@@ -487,8 +488,9 @@ class Search extends Component<SearchProps, SearchState> {
         this.handleResults = this.handleResults.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.filterSelection = this.filterSelection.bind(this);
-        this.lookupFilter = this.lookupFilter.bind(this);
         this.datasourceConfiguration = JSON.parse(JSON.stringify(props.datasourceConfiguration));
+        this.managedFilterQueries = [];
+        this.syncDatasourceFilters(initialFilters);
       };
 
       // literal object to extract the getter function based on the datasource we pick
@@ -559,8 +561,86 @@ class Search extends Component<SearchProps, SearchState> {
             return item;
           }
         });
-        this.setState({ filters: newFilters });
+        this.syncDatasourceFilters(newFilters);
+        this.setState({ filters: newFilters }, () => {
+          // Re-query Solr with updated fq when filters change and there's an active search
+          if (this.state.value && this.state.value.length > 0) {
+            this.queryCount += 1;
+            this.getResults(
+              this.state.value,
+              this.handleResults,
+              this.props.searchConfiguration.sorter,
+              this.queryCount,
+              this.datasourceConfiguration
+            );
+          }
+        });
       };
+
+      buildFilterClause(field, value, enabled) {
+        if (field === undefined || value === undefined) {
+          return undefined;
+        }
+
+        switch (enabled) {
+          case "positive":
+            return field + ":" + value;
+          case "negative":
+            return "NOT " + field + ":" + value;
+          default:
+            return undefined;
+        }
+      }
+
+      buildManagedFilterQueries(filters) {
+        let managedQueries:Set<string> = new Set();
+
+        filters.forEach(filter => {
+          switch (filter.type) {
+            case 'string':
+              let stringClause = this.buildFilterClause(filter.solr_field || filter.key,
+                                                        filter.solr_value || filter.key,
+                                                        filter.enabled);
+              if (stringClause !== undefined) {
+                managedQueries.add(stringClause);
+              }
+              break;
+            case 'array':
+              if (filter.values !== undefined) {
+                filter.values.forEach(innerFilter => {
+                  let arrayClause = this.buildFilterClause(filter.key,
+                                                           innerFilter.solr_value || innerFilter.key,
+                                                           innerFilter.enabled);
+                  if (arrayClause !== undefined) {
+                    managedQueries.add(arrayClause);
+                  }
+                });
+              }
+              break;
+            default:
+              break;
+          }
+        });
+
+        return Array.from(managedQueries);
+      }
+
+      syncDatasourceFilters(filters) {
+        let querySettings = (this.datasourceConfiguration.query_settings !== undefined)
+          ? this.datasourceConfiguration.query_settings
+          : {};
+        let currentFq = Array.isArray(querySettings.fq) ? querySettings.fq : [];
+        let unmanagedQueries = currentFq.filter(query => !this.managedFilterQueries.includes(query));
+        let managedQueries = this.buildManagedFilterQueries(filters);
+
+        this.managedFilterQueries = managedQueries;
+        Object.assign(this.datasourceConfiguration, {
+          query_settings : {
+            ...querySettings,
+            fq : Array.from(new Set([].concat(unmanagedQueries, managedQueries)))
+          }
+        });
+      }
 
       // filter the results when 1 or more than one filter is provided
       applyFilters() {
@@ -696,41 +776,9 @@ class Search extends Component<SearchProps, SearchState> {
         this.getResults = this.getDatasource[this.props.datasource]
       };
 
-      lookupFilter (item, bq, filterValue){
-        let lookup = "facets_annotation:" + item.key;
-        let re = new RegExp(lookup, 'g');
-        let found = bq.match(re);
-        if ( found ){
-          return bq.replace(found[0] + filterValue, "");
-        }
-        return bq;
-      }
-
       filterSelection (item) {
-        let bq = this.datasourceConfiguration.query_settings.bq;
-
-        switch (item.enabled) {
-          case "disabled":
-            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_positive);
-            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_negative);
-            break;
-          case "positive":
-            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_negative);
-            bq += " facets_annotation:" + item.key + "^100";
-            break;
-          case "negative":
-            bq = this.lookupFilter(item, bq, this.props.searchConfiguration.filter_positive);
-            bq += " facets_annotation:" + item.key + "^0.001";
-            break;
-          default:
-            break;
-        }
-        Object.assign(this.datasourceConfiguration , {
-          query_settings : {
-            ...this.datasourceConfiguration.query_settings,
-            bq : bq
-          }
-        });
+        // Filter state now drives Solr fq clauses via setFilters.
+        return item;
       }
 
       render() {
