@@ -247,8 +247,15 @@ const Results: FC<ResultsProps> = ({ data, configuration, closeHandler, clickHan
       <Paper style={ searchStyle.paperResults } id="paperResults">
         <MenuList>
           {data.map((item, index) => {
+            const resultKey =
+              item[configuration.resultsMapping["id"]] ||
+              item[configuration.resultsMapping["name"]] ||
+              index;
+            const labels = item[configuration.resultsMapping["labels"]]
+              ? [...item[configuration.resultsMapping["labels"]]].sort().reverse()
+              : [];
             return ( <MenuItem style={ searchStyle.singleResult }
-              key={index}
+              key={resultKey}
               className="searchResult"
               onClick={() => {
                 clickHandler(item);
@@ -256,8 +263,8 @@ const Results: FC<ResultsProps> = ({ data, configuration, closeHandler, clickHan
               }}>
               {configuration.label_manipulation ? configuration.label_manipulation(item[configuration.resultsMapping["name"]]) : item[configuration.resultsMapping["name"]]}
               { item[configuration.resultsMapping["labels"]] && <span className="label types badges">
-                {item[configuration.resultsMapping["labels"]].sort().reverse().map((label, index) => {
-                	return <span className={"label label-" + label}>{label}</span>;
+                {labels.map((label, labelIndex) => {
+	                	return <span key={`${resultKey}-${label}-${labelIndex}`} className={"label label-" + label}>{label}</span>;
                 })}
               </span>
               }
@@ -279,6 +286,23 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, filtersListener, setF
   var paperRef = useRef(null);
   const [ state, setState ] = useState({ open: filters_expanded, top: "0", left: "0" });
 
+  const getNextEnabledState = (enabled) => {
+    if (enabled === undefined) {
+      return "disabled";
+    }
+
+    switch(enabled) {
+      case "disabled":
+        return "positive";
+      case "positive":
+        return "negative";
+      case "negative":
+        return "disabled";
+      default:
+        return "disabled";
+    }
+  };
+
   // hook for the event listener to detect when we click outside the component
   useEffect(() => {
     document.addEventListener("click", handleClickOutside, false);
@@ -297,49 +321,46 @@ const Filters: FC<FiltersProps> = ({ filters, searchStyle, filtersListener, setF
   };
 
   const filterHandler = (item, filtersListener) => {
-    if (item.enabled === undefined) {
-      item.enabled = "disabled"
-    } else {
-      switch(item.enabled) {
-        case "disabled":
-          item.enabled = "positive"
-          break;
-        case "positive":
-          item.enabled = "negative"
-          break;
-        case "negative":
-          item.enabled = "disabled"
-          break;
-        default:
-          item.enabled = "disabled"
-          break;
-      }
+    const nextEnabledState = getNextEnabledState(item.enabled);
+    const updatedItem = (item.type === 'array')
+      ? {
+          ...item,
+          enabled: nextEnabledState,
+          values: (item.values || []).map(singleCheck => ({
+            ...singleCheck,
+            enabled: nextEnabledState
+          }))
+        }
+      : {
+          ...item,
+          enabled: nextEnabledState
+        };
+
+    setFilters(updatedItem);
+    if (filtersListener) {
+      filtersListener(updatedItem);
     }
-    if (item.type === 'array') {
-      item.values.map(singleCheck => {
-        singleCheck.enabled = item.enabled;
-        setFilters(singleCheck);
-      });
-    }
-    setFilters(item);
-    filtersListener(item);
     setState(() => { return { open: true, top: state.top, left: state.left} });
   };
 
   const resetFilters = () => {
-    filters.map((item, index) => {
+    filters.forEach((item) => {
       switch (item.type) {
         case 'string':
-          item.enabled = "disabled";
-          setFilters(item);
+          setFilters({
+            ...item,
+            enabled: "disabled"
+          });
           break;
         case 'array':
-          item.enabled = "disabled";
-          item.values.map(singleCheck => {
-            singleCheck.enabled = "disabled";
-            setFilters(singleCheck);
+          setFilters({
+            ...item,
+            enabled: "disabled",
+            values: (item.values || []).map(singleCheck => ({
+              ...singleCheck,
+              enabled: "disabled"
+            }))
           });
-          setFilters(item);
           break;
         }
       });
@@ -462,6 +483,7 @@ class Search extends Component<SearchProps, SearchState> {
     private inputRef: any;
     private datasourceConfiguration: any;
     private managedFilterQueries: Array<string>;
+    private currentSearchValue: string;
 
     constructor (props: SearchProps) {
         super(props);
@@ -479,6 +501,7 @@ class Search extends Component<SearchProps, SearchState> {
         this.results = [];
         this.resultsHeight = 0;
         this.queryCount = 0;
+        this.currentSearchValue = "";
 
         this.openSearch = this.openSearch.bind(this);
         this.clickHandler = this.clickHandler.bind(this);
@@ -501,6 +524,7 @@ class Search extends Component<SearchProps, SearchState> {
 
       // handle the component opening / closing
       openSearch(requestedAction) {
+        this.currentSearchValue = "";
         if (requestedAction !== undefined) {
           this.results = [];
           this.setState({ isOpen: requestedAction, value: "" });
@@ -535,6 +559,7 @@ class Search extends Component<SearchProps, SearchState> {
         switch(status) {
             case "OK":
                 if (queryNumber === this.queryCount) {
+                  this.currentSearchValue = value;
                   // Filter toggles can trigger a re-query with the same search term,
                   // so we still need to refresh results even when `value` is unchanged.
                   if (value === "") {
@@ -556,18 +581,38 @@ class Search extends Component<SearchProps, SearchState> {
       setFilters(filter) {
         let newFilters = this.state.filters.map(item => {
           if (item.key === filter.key) {
-            return filter;
-          } else {
-            return item;
+            if (filter.type === 'array') {
+              return {
+                ...filter,
+                values: (filter.values || []).map(innerFilter => ({ ...innerFilter }))
+              };
+            }
+            return { ...filter };
           }
+
+          if (item.type === 'array' && Array.isArray(item.values)) {
+            return {
+              ...item,
+              values: item.values.map(innerFilter => {
+                if (innerFilter.key === filter.key) {
+                  return { ...innerFilter, ...filter };
+                }
+                return { ...innerFilter };
+              })
+            };
+          }
+
+          return { ...item };
         });
         this.syncDatasourceFilters(newFilters);
         this.setState({ filters: newFilters }, () => {
           // Re-query Solr with updated fq when filters change and there's an active search
-          if (this.state.value && this.state.value.length > 0) {
+          const activeSearchValue = this.currentSearchValue || this.state.value;
+          if (activeSearchValue && activeSearchValue.length > 0) {
+            window.spotlightString = activeSearchValue;
             this.queryCount += 1;
             this.getResults(
-              this.state.value,
+              activeSearchValue,
               this.handleResults,
               this.props.searchConfiguration.sorter,
               this.queryCount,
@@ -719,9 +764,10 @@ class Search extends Component<SearchProps, SearchState> {
 
       // wrapper to call the getter with all the required params for the generic datasource call.
       requestData(e) {
-        window.spotlightString = e.target.value;
+        this.currentSearchValue = e.target.value;
+        window.spotlightString = this.currentSearchValue;
         this.queryCount += 1;
-        this.getResults(e.target.value,
+        this.getResults(this.currentSearchValue,
                         this.handleResults,
                         this.props.searchConfiguration.sorter,
                         this.queryCount,
