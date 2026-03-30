@@ -535,14 +535,14 @@ class Search extends Component<SearchProps, SearchState> {
         switch(status) {
             case "OK":
                 if (queryNumber === this.queryCount) {
-                  if (this.state.value !== value) {
-                    if (value === "") {
-                      this.results = [];
-                    } else {
-                      this.results = data;
-                    }
-                    this.setState({ value: value });
+                  // Filter toggles can trigger a re-query with the same search term,
+                  // so we still need to refresh results even when `value` is unchanged.
+                  if (value === "") {
+                    this.results = [];
+                  } else {
+                    this.results = data;
                   }
+                  this.setState({ value: value });
                 }
                 break;
             case "ERROR":
