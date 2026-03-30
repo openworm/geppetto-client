@@ -247,10 +247,11 @@ const Results: FC<ResultsProps> = ({ data, configuration, closeHandler, clickHan
       <Paper style={ searchStyle.paperResults } id="paperResults">
         <MenuList>
           {data.map((item, index) => {
-            const resultKey =
-              item[configuration.resultsMapping["id"]] ||
-              item[configuration.resultsMapping["name"]] ||
-              index;
+            const resultId = item[configuration.resultsMapping["id"]];
+            const resultName = item[configuration.resultsMapping["name"]];
+            const resultKey = [resultId, resultName, index]
+              .filter(value => value !== undefined && value !== null && value !== "")
+              .join("-");
             const labels = item[configuration.resultsMapping["labels"]]
               ? [...item[configuration.resultsMapping["labels"]]].sort().reverse()
               : [];

@@ -69,6 +69,29 @@ export function getResultsSOLR ( searchString: string, returnResults: Function, 
 
 function refineResults(docs: Array<any>, searchString: string): Array<any> {
     var refinedResults:Array<any> = [];
+    let seenRecords:Set<string> = new Set();
+
+    const getRecordKey = (record:any) => {
+        return Object.keys(record)
+            .sort()
+            .map(key => {
+                let value = record[key];
+                if (Array.isArray(value)) {
+                    value = [...value].sort().join("|");
+                }
+                return key + ":" + value;
+            })
+            .join("||");
+    };
+
+    const pushUniqueRecord = (record:any) => {
+        let recordKey = getRecordKey(record);
+        if (!seenRecords.has(recordKey)) {
+            seenRecords.add(recordKey);
+            refinedResults.push(record);
+        }
+    };
+
     docs.map(item => {
         if (item.hasOwnProperty("synonym")) {
             item.synonym.map(innerItem => {
@@ -85,9 +108,7 @@ function refineResults(docs: Array<any>, searchString: string): Array<any> {
                                 newRecord[key] = item[key];
                         }
                     });
-                    if (!refinedResults.includes(newRecord)) {
-                        refinedResults.push(newRecord);
-                    }
+                    pushUniqueRecord(newRecord);
                 }
             });
             let newRecord:any = {}
@@ -100,9 +121,7 @@ function refineResults(docs: Array<any>, searchString: string): Array<any> {
                     }
                 }
             });
-            if (!refinedResults.includes(newRecord)) {
-                refinedResults.push(newRecord);
-            }
+            pushUniqueRecord(newRecord);
         } else {
             let newRecord:any = {}
             Object.keys(item).map(key => {
@@ -112,9 +131,7 @@ function refineResults(docs: Array<any>, searchString: string): Array<any> {
                     newRecord[key] = item[key];
                 }
             });
-            if (!refinedResults.includes(newRecord)) {
-                refinedResults.push(newRecord);
-            }
+            pushUniqueRecord(newRecord);
         }
     });
 
