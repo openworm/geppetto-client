@@ -1339,7 +1339,30 @@ define(function (require) {
                 ids.push([instances[instance].parent.getId()]);
               }
               labels.push(instances[instance].parent.getName());
-              if (instances[instance].parent.isSelected() || (typeof instances[instance].parent[instances[instance].parent.getId() + '_obj'] != 'undefined' && instances[instance].parent[instances[instance].parent.getId() + '_obj'].isSelected()) || (typeof instances[instance].parent[instances[instance].parent.getId() + '_swc'] != 'undefined' && instances[instance].parent[instances[instance].parent.getId() + '_swc'].isSelected())) {
+              
+              // Safe check for selection state
+              let isSelected = false;
+              
+              // Check if the parent itself is selected
+              if (instances[instance].parent.isSelected()) {
+                isSelected = true;
+              } 
+              // Check if obj property exists and is selected
+              else if (instances[instance].parent.hasOwnProperty(instances[instance].parent.getId() + '_obj')) {
+                const objProperty = instances[instance].parent[instances[instance].parent.getId() + '_obj'];
+                if (objProperty && typeof objProperty.isSelected === 'function' && objProperty.isSelected()) {
+                  isSelected = true;
+                }
+              } 
+              // Check if swc property exists and is selected
+              else if (instances[instance].parent.hasOwnProperty(instances[instance].parent.getId() + '_swc')) {
+                const swcProperty = instances[instance].parent[instances[instance].parent.getId() + '_swc'];
+                if (swcProperty && typeof swcProperty.isSelected === 'function' && swcProperty.isSelected()) {
+                  isSelected = true;
+                }
+              }
+              
+              if (isSelected) {
                 colors.push('0Xffcc00'); // selected
               } else if (instances[instance].parent.getColor() !== undefined){
                 colors.push(instances[instance].parent.getColor().replace('#', '0X'));
