@@ -949,6 +949,21 @@ define(function (require) {
       // retrieve matching queries for variable type
       var matchingQueries = GEPPETTO.ModelFactory.getMatchingQueries(variable.getType(), resultType);
 
+      // VFB: narrow the offered queries to the term's VFBquery "Query For" set
+      // (get_term_info.Queries, warmed via window.getVFBQueryTypes) so the builder
+      // matches the term-info panel. Defensive: only narrow when the cached set
+      // exists and the result is non-empty; otherwise keep the full list.
+      try {
+        var vfbId = variable.getId();
+        var vfbSet = (typeof window !== "undefined" && window._vfbQueryTypesCache) ? window._vfbQueryTypesCache[vfbId] : null;
+        if (vfbSet) {
+          var narrowed = matchingQueries.filter(function (q) { return vfbSet[q.getId()]; });
+          if (narrowed.length > 0) {
+            matchingQueries = narrowed;
+          }
+        }
+      } catch (e) { /* keep full getMatchingQueries list on any error */ }
+
       if (matchingQueries.length > 0) {
         // build item in model-friendly format
         var queryItem = {
