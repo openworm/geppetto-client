@@ -202,6 +202,47 @@ define(function (require) {
 
         var value = jsonImageVariable.initialValues[0].value;
         if (value.eClass == GEPPETTO.Resources.ARRAY_VALUE) {
+          /*
+           * Bring the thumbnail aligned to the currently loaded template to the
+           * front of the carousel (then a preferred-template order), so a
+           * multi-template result opens on the alignment that matches the open
+           * template instead of an arbitrary first image. Each image carries its
+           * template short_form in `reference` ("template,imageId"); stable
+           * otherwise. Mirrors VFBTermInfo carouselTemplateRank.
+           */
+          try {
+            var PREFERRED_TEMPLATES = ['VFB_00101567', 'VFB_00200000', 'VFB_00050000', 'VFB_00049000'];
+            var loadedTemplate = (typeof window !== "undefined") ? window.templateID : undefined;
+            var elementTemplate = function (el) {
+              try {
+                var iv = el.initialValue || {};
+                var ref = iv.reference || "";
+                if (ref.indexOf(",") > -1) {
+                  return ref.split(",")[0].replace(/[[\]]/g, "");
+                }
+                var data = iv.data || "";
+                var m = data.match(/\/i\/[^/]+\/[^/]+\/(VFB_\w+)\//);
+                return m ? m[1] : "";
+              } catch (eInner) {
+                return "";
+              }
+            };
+            var templateRank = function (tpl) {
+              if (loadedTemplate && tpl === loadedTemplate) {
+                return -1;
+              }
+              var idx = PREFERRED_TEMPLATES.indexOf(tpl);
+              return idx > -1 ? idx : 1000;
+            };
+            if (Array.isArray(value.elements) && value.elements.length > 1) {
+              value.elements = value.elements
+                .map(function (el, i) { return { el: el, i: i, rank: templateRank(elementTemplate(el)) }; })
+                .sort(function (a, b) { return (a.rank - b.rank) || (a.i - b.i); })
+                .map(function (o) { return o.el; });
+            }
+          } catch (eSort) {
+            /* keep original order on any error */
+          }
           if (value.elements.length > 1) {
             this.isCarousel = true;
             var imagesToLoad = 2;
