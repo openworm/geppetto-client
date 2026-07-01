@@ -416,7 +416,7 @@ define(function (require) {
         source: this.defaultDataSources,
         limit: 50,
         display: 'label',
-        templates: { suggestion: Handlebars.compile('<div>{{geticon icon}} {{label}}</div>') }
+        templates: { suggestion: Handlebars.compile('<div>{{geticon icon}} {{label}} {{facetbadges labels}}</div>') }
       }
       );
       that.initTypeAheadCreated = true;
@@ -440,6 +440,20 @@ define(function (require) {
         } else {
           return;
         }
+      });
+
+      /* Render solr unique_facets as category badges, matching the main search (Search.tsx) look */
+      Handlebars.registerHelper('facetbadges', function (labels) {
+        if (!labels || !labels.length) {
+          return;
+        }
+        var sorted = labels.slice().sort().reverse();
+        var html = "<span class='label types badges'>";
+        for (var i = 0; i < sorted.length; i++) {
+          html += "<span class='label label-" + sorted[i] + "'>" + sorted[i] + "</span>";
+        }
+        html += "</span>";
+        return new Handlebars.SafeString(html);
       });
 
       // this.initDataSourceResults(); 
@@ -632,6 +646,10 @@ define(function (require) {
       }
       obj["actions"] = newActions;
       obj["icon"] = this.configuration.DataSources[data_source_name].type[typeName].icon;
+      var labelsField = this.configuration.DataSources[data_source_name].labels;
+      if (labelsField && response[labelsField]) {
+        obj["labels"] = response[labelsField];
+      }
       this.dataSourceResults.add(obj);
     }
 
@@ -948,6 +966,21 @@ define(function (require) {
 
       // retrieve matching queries for variable type
       var matchingQueries = GEPPETTO.ModelFactory.getMatchingQueries(variable.getType(), resultType);
+
+      // VFB: narrow the offered queries to the term's VFBquery "Query For" set
+      // (get_term_info.Queries, warmed via window.getVFBQueryTypes) so the builder
+      // matches the term-info panel. Defensive: only narrow when the cached set
+      // exists and the result is non-empty; otherwise keep the full list.
+      try {
+        var vfbId = variable.getId();
+        var vfbSet = (typeof window !== "undefined" && window._vfbQueryTypesCache) ? window._vfbQueryTypesCache[vfbId] : null;
+        if (vfbSet) {
+          var narrowed = matchingQueries.filter(function (q) { return vfbSet[q.getId()]; });
+          if (narrowed.length > 0) {
+            matchingQueries = narrowed;
+          }
+        }
+      } catch (e) { /* keep full getMatchingQueries list on any error */ }
 
       if (matchingQueries.length > 0) {
         // build item in model-friendly format
