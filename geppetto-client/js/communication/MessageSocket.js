@@ -338,8 +338,29 @@ define(function (require) {
       // run callback if any
       if (parsedServerMessage.requestID != undefined){
         if (callbackHandler[parsedServerMessage.requestID] != undefined) {
-          callbackHandler[parsedServerMessage.requestID](parsedServerMessage.data);
-          delete callbackHandler[parsedServerMessage.requestID];
+          /*
+           * If the server reports an error for this request, do NOT invoke the
+           * stored callback -- it is a success continuation and would run on
+           * missing/garbage data. Drop it and signal the failure by requestID
+           * so the caller (e.g. VFBMain.fetchVariableThenRun) can retry or
+           * drain its loader entry rather than orphaning it forever. Requires
+           * the backend to echo the requestID on the error reply; harmless
+           * (no-op) until it does.
+           */
+          var msgType = parsedServerMessage.type;
+          var isErrorReply = msgType === "generic_error"
+            || msgType === "error_downloading_model"
+            || msgType === "error_downloading_results"
+            || msgType === "error_loading_project"
+            || msgType === "error_loading_simulation"
+            || msgType === "reconnection_error";
+          if (isErrorReply) {
+            delete callbackHandler[parsedServerMessage.requestID];
+            GEPPETTO.trigger('geppetto:request_failed', parsedServerMessage.requestID);
+          } else {
+            callbackHandler[parsedServerMessage.requestID](parsedServerMessage.data);
+            delete callbackHandler[parsedServerMessage.requestID];
+          }
         }
       }
 
