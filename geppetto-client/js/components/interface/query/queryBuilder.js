@@ -27,6 +27,11 @@ define(function (require) {
     results: [],
     // result count for the current query items
     count: 0,
+    /*
+     * true while an asynchronous count round-trip is in flight; lets the
+     * footer distinguish "counting" from a settled "0 results".
+     */
+    counting: false,
 
     // subscribe to model change notifications
     subscribe (callback, context) {
@@ -83,6 +88,7 @@ define(function (require) {
     clearItems () {
       this.items = [];
       this.count = 0;
+      this.counting = false;
       this.notifyChange();
     },
 
@@ -102,6 +108,13 @@ define(function (require) {
         }
       }
 
+      /*
+       * Flag the in-flight count so the footer shows "Counting..." rather
+       * than a stale "0 results" while we wait on the round-trip.
+       */
+      this.counting = true;
+      this.notifyChange();
+
       var getCountDoneCallback = function (count) {
         this.setCount(count, callback);
       };
@@ -111,6 +124,7 @@ define(function (require) {
 
     setCount (count, callback) {
       this.count = count;
+      this.counting = false;
       callback();
       this.notifyChange();
     },
@@ -162,6 +176,8 @@ define(function (require) {
       this.state = {
         resultsView: false,
         errorMsg: '',
+        // 'error' (default, alarm-red) or 'info' (soft progress notice)
+        errorMsgType: 'error',
         showSpinner: false,
         resultsColumns: null,
         resultsColumnMeta: null,
@@ -1055,8 +1071,8 @@ define(function (require) {
       // }
     }
 
-    setErrorMessage (message) {
-      this.setState({ errorMsg: message });
+    setErrorMessage (message, type) {
+      this.setState({ errorMsg: message, errorMsgType: type === 'info' ? 'info' : 'error' });
     }
 
     clearErrorMessage () {
@@ -1327,9 +1343,9 @@ define(function (require) {
               <button id="add-query-btn" className="fa fa-plus" title="add query" />
               <input id='query-typeahead' className="typeahead" type="text" placeholder="Search for the item you'd like to query against..." />
             </div>
-            <QueryFooter containerClass={footerClass} count={this.props.model.count} onRun={this.runQuery} />
+            <QueryFooter containerClass={footerClass} count={this.props.model.count} counting={this.props.model.counting} onRun={this.runQuery} />
             <div id="brent-spiner" className={spinnerClass}></div>
-            <div id="query-error-message">{this.state.errorMsg}</div>
+            <div id="query-error-message" className={this.state.errorMsgType === 'info' ? 'info' : ''}>{this.state.errorMsg}</div>
           </div>
         );
       }
