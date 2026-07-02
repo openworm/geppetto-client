@@ -983,20 +983,34 @@ define(function (require) {
       // retrieve matching queries for variable type
       var matchingQueries = GEPPETTO.ModelFactory.getMatchingQueries(variable.getType(), resultType);
 
-      // VFB: narrow the offered queries to the term's VFBquery "Query For" set
-      // (get_term_info.Queries, warmed via window.getVFBQueryTypes) so the builder
-      // matches the term-info panel. Defensive: only narrow when the cached set
-      // exists and the result is non-empty; otherwise keep the full list.
+      /*
+       * VFB: get_term_info.Queries is the authoritative "Query For" list for a
+       * term (warmed into window._vfbQueryTypesCache via window.getVFBQueryTypes).
+       * SOURCE the offered queries from that set -- resolve each entry to its
+       * model Query object -- rather than only narrowing the type-matched list.
+       * Painted-domain individuals load with a generic type that matches no
+       * query, so getMatchingQueries returns nothing even though the term
+       * advertises queries; sourcing recovers them. For well-formed terms the
+       * sourced set equals the type-matched set, so this is non-regressive.
+       * Count is irrelevant here: the set lists every query the term offers,
+       * warmed (count >= 0) or not (count -1). Fully defensive -- fall back to
+       * the type-matched list whenever the set or the model query list is not
+       * yet available (e.g. a query fired before the term/model finished
+       * loading), so this never throws or blanks the builder.
+       */
       try {
         var vfbId = variable.getId();
         var vfbSet = (typeof window !== "undefined" && window._vfbQueryTypesCache) ? window._vfbQueryTypesCache[vfbId] : null;
-        if (vfbSet) {
-          var narrowed = matchingQueries.filter(function (q) { return vfbSet[q.getId()]; });
-          if (narrowed.length > 0) {
-            matchingQueries = narrowed;
+        var allQueries = (typeof window !== "undefined" && window.Model && window.Model.getQueries) ? window.Model.getQueries() : [];
+        if (vfbSet && allQueries.length > 0) {
+          var sourced = allQueries.filter(function (q) {
+            return vfbSet[q.getId()] && (resultType == undefined || (q.getResultType && q.getResultType() == resultType));
+          });
+          if (sourced.length > 0) {
+            matchingQueries = sourced;
           }
         }
-      } catch (e) { /* keep full getMatchingQueries list on any error */ }
+      } catch (e) { /* keep the type-matched list on any error */ }
 
       if (matchingQueries.length > 0) {
         // build item in model-friendly format
