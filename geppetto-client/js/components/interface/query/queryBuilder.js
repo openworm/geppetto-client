@@ -799,7 +799,11 @@ define(function (require) {
       };
     }
 
-    runQuery () {
+    runQuery (opts) {
+      // opts.force runs the query even when count is 0/unknown (auto-run path,
+      // where the count is derived from the results rather than a count step).
+      // Note: bound as onRun -> called with a DOM event, which has no .force.
+      var force = !!(opts && opts.force === true);
       this.clearErrorMessage();
       if (this.props.model.items.length > 0) {
 
@@ -814,7 +818,7 @@ define(function (require) {
         if (!allSelected) {
           // show error message for unselected query items
           this.setErrorMessage('Please select an option for all query items.');
-        } else if (this.props.model.count == 0) {
+        } else if (!force && this.props.model.count == 0) {
           // show message for no query results
           this.setErrorMessage('There are no results for this query.');
         } else {
@@ -914,6 +918,26 @@ define(function (require) {
                   };
                 }
               }
+
+              /*
+               * The count comes from the results themselves -- no separate
+               * count round-trip. Update the model so the footer/label are
+               * right, and hand the real count back to VFB so it can refresh
+               * the term-info query metadata (window.vfbUpdateQueryCount).
+               */
+              that.props.model.count = formattedRecords.length;
+              that.props.model.counting = false;
+              try {
+                if (typeof window !== "undefined" && typeof window.vfbUpdateQueryCount === "function") {
+                  for (var qc = 0; qc < that.props.model.items.length; qc++) {
+                    var qitem = that.props.model.items[qc];
+                    var qsel = (qitem.selection != undefined) ? qitem.options[qitem.selection + 1] : undefined;
+                    if (qsel && qsel.queryObj && qitem.target && qitem.target.getId) {
+                      window.vfbUpdateQueryCount(qitem.target.getId(), qsel.queryObj.getId(), formattedRecords.length);
+                    }
+                  }
+                }
+              } catch (e) { /* metadata refresh is best-effort */ }
 
               // stop showing spinner
               that.showBrentSpiner(false);
@@ -1048,42 +1072,70 @@ define(function (require) {
         // add default option
         queryItem.options.splice(0, 0, { name: 'Select query for ' + term, value: -1 });
 
-        var callback = function () {
-          this.showBrentSpiner(false);
-        };
+        if (queryItemParam.skipCount) {
+          /*
+           * Auto-run path (term-info click / focus-term / ?q= deep link): add
+           * and select the item WITHOUT a run_query_count round-trip. The query
+           * is run directly (runQuery below, with force) and its count is taken
+           * from the returned rows -- the separate count step is redundant now
+           * that a count is as expensive as the query itself. Seed model.count
+           * from the preview if known (>= 0), else -1 ("unknown"), so the caller
+           * can decide run-vs-known-empty and the footer shows "Counting..."
+           * rather than a bogus number until the results land.
+           */
+          var selVal = -1;
+          if (queryItemParam.queryObj != undefined) {
+            for (var sh = 0; sh < queryItem.options.length; sh++) {
+              if (queryItem.options[sh].value != -1 && queryItem.options[sh].id == queryItemParam.queryObj.getId()) {
+                selVal = queryItem.options[sh].value;
+              }
+            }
+          }
+          queryItem.selection = selVal;
+          this.props.model.items.push(queryItem);
+          this.props.model.count = (typeof queryItemParam.previewCount === "number") ? queryItemParam.previewCount : -1;
+          this.props.model.notifyChange();
+          if (typeof cb === "function") {
+            cb();
+          }
+        } else {
+          var callback = function () {
+            this.showBrentSpiner(false);
+          };
 
-        // hide footer and show spinner
-        this.showBrentSpiner(true);
+          // hide footer and show spinner
+          this.showBrentSpiner(true);
 
-        // add query item to model
-        this.props.model.addItem(queryItem, callback.bind(this));
+          // add query item to model
+          this.props.model.addItem(queryItem, callback.bind(this));
 
-        // check if we have a queryObj parameter and set it as the selected item
-        var optionSelected = false;
-        if (queryItemParam.queryObj != undefined) {
-          // figure out which option it matches to and trigger selection
-          var val = -1;
-          for (var h = 0; h < queryItem.options.length; h++) {
-            if (queryItem.options[h].value != -1 && queryItem.options[h].id == queryItemParam.queryObj.getId()) {
-              val = queryItem.options[h].value;
+          // check if we have a queryObj parameter and set it as the selected item
+          var optionSelected = false;
+          if (queryItemParam.queryObj != undefined) {
+            // figure out which option it matches to and trigger selection
+            var val = -1;
+            for (var h = 0; h < queryItem.options.length; h++) {
+              if (queryItem.options[h].value != -1 && queryItem.options[h].id == queryItemParam.queryObj.getId()) {
+                val = queryItem.options[h].value;
+              }
+            }
+
+            if (val != -1) {
+              // queryOptionSelected invokes cb once the count round-trip returns
+              this.queryOptionSelected(queryItem, val, cb);
+              optionSelected = true;
             }
           }
 
-          if (val != -1) {
-            // queryOptionSelected invokes cb once the count round-trip returns
-            this.queryOptionSelected(queryItem, val, cb);
-            optionSelected = true;
+          /*
+           * No option was auto-selected (no queryObj passed, or it matched none
+           * of the options): the item sits in the builder for the user to choose
+           * from, but the caller's cb must still fire -- otherwise the busy
+           * spinner/cursor the caller raised never clears. cb is optional.
+           */
+          if (!optionSelected && typeof cb === "function") {
+            cb();
           }
-        }
-
-        /*
-         * No option was auto-selected (no queryObj passed, or it matched none of
-         * the options): the item sits in the builder for the user to choose from,
-         * but the caller's cb must still fire -- otherwise the busy spinner/cursor
-         * the caller raised before addQueryItem never clears. cb is optional.
-         */
-        if (!optionSelected && typeof cb === 'function') {
-          cb();
         }
       } else {
         // notify no queries available for the selected term

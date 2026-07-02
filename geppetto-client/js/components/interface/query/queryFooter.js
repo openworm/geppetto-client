@@ -11,10 +11,11 @@ define(function (require) {
     
     render () {
       /*
-       * While a count round-trip is in flight show "Counting..." instead of
-       * a stale "0 results", so the user can tell running from empty.
+       * Show "Counting..." while a count is in flight OR unknown (count < 0,
+       * the auto-run path before the query's results set the real count),
+       * instead of a stale "0 results" or a bogus "-1 results".
        */
-      var label = this.props.counting ? "Counting…" : (this.props.count.toString() + " results");
+      var label = (this.props.counting || this.props.count < 0) ? "Counting…" : (this.props.count.toString() + " results");
       return (
         <div id="querybuilder-footer" className={this.props.containerClass}>
           <button id="run-query-btn" className="fa fa-cogs querybuilder-button" title="Run query" onClick={this.props.onRun} />
