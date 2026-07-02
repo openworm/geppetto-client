@@ -1059,6 +1059,7 @@ define(function (require) {
         this.props.model.addItem(queryItem, callback.bind(this));
 
         // check if we have a queryObj parameter and set it as the selected item
+        var optionSelected = false;
         if (queryItemParam.queryObj != undefined) {
           // figure out which option it matches to and trigger selection
           var val = -1;
@@ -1069,12 +1070,31 @@ define(function (require) {
           }
 
           if (val != -1) {
+            // queryOptionSelected invokes cb once the count round-trip returns
             this.queryOptionSelected(queryItem, val, cb);
+            optionSelected = true;
           }
+        }
+
+        /*
+         * No option was auto-selected (no queryObj passed, or it matched none of
+         * the options): the item sits in the builder for the user to choose from,
+         * but the caller's cb must still fire -- otherwise the busy spinner/cursor
+         * the caller raised before addQueryItem never clears. cb is optional.
+         */
+        if (!optionSelected && typeof cb === 'function') {
+          cb();
         }
       } else {
         // notify no queries available for the selected term
         this.setErrorMessage("No queries available for the selected term.");
+        /*
+         * Terminal state, but still invoke the caller's cb so the busy
+         * spinner/cursor clears instead of hanging on this message.
+         */
+        if (typeof cb === 'function') {
+          cb();
+        }
       }
 
       /*
