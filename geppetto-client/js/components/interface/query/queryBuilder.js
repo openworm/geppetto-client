@@ -140,6 +140,21 @@ define(function (require) {
       this.notifyChange();
     },
 
+    appendResults (id, moreRecords) {
+      /*
+       * Progressive load-all: concatenate a freshly-fetched page into an
+       * existing result set and re-render (griddle re-sorts client-side).
+       */
+      for (var i = 0; i < this.results.length; i++) {
+        if (this.results[i].id == id) {
+          this.results[i].records = this.results[i].records.concat(moreRecords);
+          this.count = this.results[i].records.length;
+          break;
+        }
+      }
+      this.notifyChange();
+    },
+
     deleteResults (results) {
       GEPPETTO.CommandController.log("delete results", true);
       for (var i = 0; i < this.results.length; i++) {
@@ -938,6 +953,49 @@ define(function (require) {
                   }
                 }
               } catch (e) { /* metadata refresh is best-effort */ }
+
+              /*
+               * Progressive load-all: for streamable (server-paged) query types,
+               * keep fetching offset pages through the SAME backend path (identical
+               * rows) and append into griddle, driving the VFBLoadManager overlay.
+               */
+              try {
+                var PAGE_SIZE = (typeof window !== 'undefined' && window.VFB_QUERY_PAGE_SIZE) ? window.VFB_QUERY_PAGE_SIZE : 10000;
+                var streamable = (typeof window !== 'undefined' && window.VFB_STREAMABLE_QUERIES) ? window.VFB_STREAMABLE_QUERIES : ['AllAlignedImages'];
+                var qitem0 = that.props.model.items[0];
+                var qtype = (qitem0 && qitem0.selection != undefined && qitem0.options[qitem0.selection + 1].queryObj.getId) ? qitem0.options[qitem0.selection + 1].queryObj.getId() : undefined;
+                if (qtype && streamable.indexOf(qtype) > -1 && formattedRecords.length >= PAGE_SIZE) {
+                  var vfbStatus = function (loaded, done) {
+                    try { if (typeof window !== 'undefined' && typeof window.vfbQueryLoadStatus === 'function') { window.vfbQueryLoadStatus(loaded, done); } } catch (e) {}
+                  };
+                  var formatPage = function (pageJson) {
+                    var recs = datasourceConfig.resultsFilters.getRecords(JSON.parse(pageJson));
+                    return recs.map(function (record) {
+                      var instance = new Object();
+                      for (var cc = 0; cc < columnsPresent.length; cc++) {
+                        instance[columnsPresent[cc]] = datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, headersDatasourceFormat[cc]);
+                      }
+                      instance['controls'] = '';
+                      return instance;
+                    });
+                  };
+                  var loadedSoFar = formattedRecords.length;
+                  vfbStatus(loadedSoFar, false);
+                  var loadMore = function (offset) {
+                    GEPPETTO.QueriesController.runQuery(queryDTOs, function (pageJson) {
+                      var more = [];
+                      try { more = formatPage(pageJson); } catch (e) { more = []; }
+                      if (more.length > 0) {
+                        that.props.model.appendResults(compoundId, more);
+                        loadedSoFar += more.length;
+                        vfbStatus(loadedSoFar, false);
+                      }
+                      if (more.length >= PAGE_SIZE) { loadMore(offset + PAGE_SIZE); } else { vfbStatus(loadedSoFar, true); }
+                    }, offset, PAGE_SIZE);
+                  };
+                  loadMore(PAGE_SIZE);
+                }
+              } catch (e) { /* progressive load is best-effort; page 0 already shown */ }
 
               // stop showing spinner
               that.showBrentSpiner(false);

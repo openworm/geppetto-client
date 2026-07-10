@@ -20,7 +20,7 @@ define(function (require) {
          * @param queries
          * @param callback
          */
-        runQuery: function (queries, callback) {
+        runQuery: function (queries, callback, offset, limit) {
           var compoundQuery = [];
           for (var i = 0;i < queries.length;i++) {
             compoundQuery.push({
@@ -32,6 +32,8 @@ define(function (require) {
           var parameters = {};
           parameters["projectId"] = Project.getId();
           parameters["runnableQueries"] = compoundQuery;
+          if (offset !== undefined && offset !== null) { parameters["offset"] = offset; }
+          if (limit !== undefined && limit !== null) { parameters["limit"] = limit; }
 
           var c = callback;
           GEPPETTO.MessageSocket.send("run_query", parameters, function (data){
