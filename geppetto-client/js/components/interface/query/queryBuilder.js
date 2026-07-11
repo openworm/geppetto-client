@@ -973,12 +973,22 @@ define(function (require) {
                */
               try {
                 var PAGE_SIZE = (typeof window !== 'undefined' && window.VFB_QUERY_PAGE_SIZE) ? window.VFB_QUERY_PAGE_SIZE : 10000;
-                var streamable = (typeof window !== 'undefined' && window.VFB_STREAMABLE_QUERIES) ? window.VFB_STREAMABLE_QUERIES : ['AllAlignedImages'];
-                var qitem0 = that.props.model.items[0];
-                var qtype = (qitem0 && qitem0.selection != undefined && qitem0.options[qitem0.selection + 1].queryObj.getId) ? qitem0.options[qitem0.selection + 1].queryObj.getId() : undefined;
-                if (qtype && streamable.indexOf(qtype) > -1 && formattedRecords.length >= PAGE_SIZE) {
+                /*
+                 * Progressive load-all for ANY query: a full first page means
+                 * there are almost certainly more rows, so keep fetching offset
+                 * pages and appending. The guard below stops if a page repeats
+                 * the previous page's first row (a backend that ignores offset),
+                 * so a non-paging query can never loop on duplicates.
+                 */
+                if (formattedRecords.length >= PAGE_SIZE) {
                   var vfbStatus = function (loaded, done) {
                     try { if (typeof window !== 'undefined' && typeof window.vfbQueryLoadStatus === 'function') { window.vfbQueryLoadStatus(loaded, done); } } catch (e) {}
+                  };
+                  var firstRowSig = function (rawJson) {
+                    try {
+                      var pp = JSON.parse(rawJson);
+                      return (pp.results && pp.results[0]) ? JSON.stringify(pp.results[0].values) : null;
+                    } catch (e) { return null; }
                   };
                   var formatPage = function (pageJson) {
                     var recs = datasourceConfig.resultsFilters.getRecords(JSON.parse(pageJson));
@@ -992,9 +1002,21 @@ define(function (require) {
                     });
                   };
                   var loadedSoFar = formattedRecords.length;
+                  var prevSig = firstRowSig(jsonResults);
                   vfbStatus(loadedSoFar, false);
                   var loadMore = function (offset) {
                     GEPPETTO.QueriesController.runQuery(queryDTOs, function (pageJson) {
+                      var sig = firstRowSig(pageJson);
+                      if (sig !== null && sig === prevSig) {
+                        /*
+                         * Same first row as the previous page: this query's
+                         * backend is not honouring offset. Stop without
+                         * appending duplicates.
+                         */
+                        vfbStatus(loadedSoFar, true);
+                        return;
+                      }
+                      prevSig = sig;
                       var more = [];
                       try { more = formatPage(pageJson); } catch (e) { more = []; }
                       if (more.length > 0) {
