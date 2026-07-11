@@ -140,7 +140,7 @@ define(function (require) {
       this.notifyChange();
     },
 
-    appendResults (id, moreRecords) {
+    appendResults (id, moreRecords, partial) {
       /*
        * Progressive load-all: concatenate a freshly-fetched page into an
        * existing result set and re-render (griddle re-sorts client-side).
@@ -151,15 +151,17 @@ define(function (require) {
           var loaded = this.results[i].records.length;
           this.count = loaded;
           /*
-           * Keep the results header/label count in step with the running total
-           * as pages stream in (climbs 10000 -> 20000 -> ... -> full count),
-           * rather than freezing at the first page size.
+           * Keep the header count in step with the running total as pages
+           * stream in. While more pages are still expected, prefix ">" so the
+           * number reads as a lower bound (">30000"); the final page drops the
+           * prefix and shows the exact total.
            */
+          var pfx = partial ? "&gt;" : "";
           if (typeof this.results[i].verboseLabel === "string") {
-            this.results[i].verboseLabel = this.results[i].verboseLabel.replace(/^<span>\d+<\/span>/, "<span>" + loaded + "</span>");
+            this.results[i].verboseLabel = this.results[i].verboseLabel.replace(/^(&gt;)?<span>\d+<\/span>/, pfx + "<span>" + loaded + "</span>");
           }
           if (typeof this.results[i].verboseLabelPLain === "string") {
-            this.results[i].verboseLabelPLain = this.results[i].verboseLabelPLain.replace(/^\d+/, "" + loaded);
+            this.results[i].verboseLabelPLain = this.results[i].verboseLabelPLain.replace(/^>?\d+/, "" + loaded);
           }
           break;
         }
@@ -1003,6 +1005,8 @@ define(function (require) {
                   };
                   var loadedSoFar = formattedRecords.length;
                   var prevSig = firstRowSig(jsonResults);
+                  /* Full first page -> more expected: show the count as a lower bound (">N"). */
+                  that.props.model.appendResults(compoundId, [], true);
                   vfbStatus(loadedSoFar, false);
                   var loadMore = function (offset) {
                     GEPPETTO.QueriesController.runQuery(queryDTOs, function (pageJson) {
@@ -1010,8 +1014,8 @@ define(function (require) {
                       if (sig !== null && sig === prevSig) {
                         /*
                          * Same first row as the previous page: this query's
-                         * backend is not honouring offset. Stop without
-                         * appending duplicates.
+                         * backend is not honouring offset. Stop without appending
+                         * duplicates (count stays a ">" lower bound).
                          */
                         vfbStatus(loadedSoFar, true);
                         return;
@@ -1019,12 +1023,16 @@ define(function (require) {
                       prevSig = sig;
                       var more = [];
                       try { more = formatPage(pageJson); } catch (e) { more = []; }
+                      var isFull = more.length >= PAGE_SIZE;
                       if (more.length > 0) {
-                        that.props.model.appendResults(compoundId, more);
+                        that.props.model.appendResults(compoundId, more, isFull);
                         loadedSoFar += more.length;
                         vfbStatus(loadedSoFar, false);
+                      } else {
+                        /* No more rows: finalise the shown count to the exact total. */
+                        that.props.model.appendResults(compoundId, [], false);
                       }
-                      if (more.length >= PAGE_SIZE) { loadMore(offset + PAGE_SIZE); } else { vfbStatus(loadedSoFar, true); }
+                      if (isFull) { loadMore(offset + PAGE_SIZE); } else { vfbStatus(loadedSoFar, true); }
                     }, offset, PAGE_SIZE);
                   };
                   loadMore(PAGE_SIZE);
