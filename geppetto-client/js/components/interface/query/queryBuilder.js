@@ -148,7 +148,19 @@ define(function (require) {
       for (var i = 0; i < this.results.length; i++) {
         if (this.results[i].id == id) {
           this.results[i].records = this.results[i].records.concat(moreRecords);
-          this.count = this.results[i].records.length;
+          var loaded = this.results[i].records.length;
+          this.count = loaded;
+          /*
+           * Keep the results header/label count in step with the running total
+           * as pages stream in (climbs 10000 -> 20000 -> ... -> full count),
+           * rather than freezing at the first page size.
+           */
+          if (typeof this.results[i].verboseLabel === "string") {
+            this.results[i].verboseLabel = this.results[i].verboseLabel.replace(/^<span>\d+<\/span>/, "<span>" + loaded + "</span>");
+          }
+          if (typeof this.results[i].verboseLabelPLain === "string") {
+            this.results[i].verboseLabelPLain = this.results[i].verboseLabelPLain.replace(/^\d+/, "" + loaded);
+          }
           break;
         }
       }
