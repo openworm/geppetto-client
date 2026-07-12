@@ -1005,7 +1005,16 @@ define(function (require) {
                   };
                   var loadedSoFar = formattedRecords.length;
                   var lastRenderAt = loadedSoFar;
-                  var RENDER_EVERY = (typeof window !== 'undefined' && window.VFB_QUERY_RENDER_EVERY) ? window.VFB_QUERY_RENDER_EVERY : 100000;
+                  /*
+                   * Default: render the table ONCE at the end. The header count
+                   * updates independently every page (bumpHeader), so periodic
+                   * full re-renders aren't needed for progress — and each one
+                   * re-processes the whole growing set (griddle), a freeze that
+                   * grows with size (~4s@100k, ~12s@300k, ~20s@500k). Set
+                   * window.VFB_QUERY_RENDER_EVERY (e.g. 100000) to re-enable
+                   * periodic mid-load rendering if you want rows to appear early.
+                   */
+                  var RENDER_EVERY = (typeof window !== 'undefined' && window.VFB_QUERY_RENDER_EVERY) ? window.VFB_QUERY_RENDER_EVERY : Number.MAX_SAFE_INTEGER;
                   var prevSig = firstRowSig(jsonResults);
                   /*
                    * Progressive load with cheap feedback: render the ">N" header
