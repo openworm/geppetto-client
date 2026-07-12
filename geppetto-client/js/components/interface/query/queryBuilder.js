@@ -1004,16 +1004,35 @@ define(function (require) {
                     });
                   };
                   var loadedSoFar = formattedRecords.length;
+                  var lastRenderAt = loadedSoFar;
+                  var RENDER_EVERY = (typeof window !== 'undefined' && window.VFB_QUERY_RENDER_EVERY) ? window.VFB_QUERY_RENDER_EVERY : 100000;
                   var prevSig = firstRowSig(jsonResults);
                   /*
-                   * Render the ">N" lower-bound header ONCE, then append every
-                   * later page WITHOUT re-rendering the results table. griddle
-                   * re-sorts the whole set on each render, so re-rendering per
-                   * page is O(n^2) across a large load. Progress is shown by the
-                   * load overlay; the table is rendered once, when loading ends.
+                   * Progressive load with cheap feedback: render the ">N" header
+                   * once, then append later pages WITHOUT re-rendering the table
+                   * on every page (griddle re-processes the whole set per render,
+                   * so per-page rendering is O(n^2) on a large load). Instead:
+                   *  - bump just the header count text on every page (cheap DOM
+                   *    write, no griddle re-render) so the number keeps climbing;
+                   *  - do a full render every RENDER_EVERY rows so new data
+                   *    actually appears in the table during a big load;
+                   *  - one final render when loading completes.
                    */
                   that.props.model.appendResults(compoundId, [], true, false);
                   vfbStatus(loadedSoFar, false);
+                  /* Update only the results header count in place — no griddle re-render. */
+                  var bumpHeader = function () {
+                    try {
+                      var el = document.querySelector('.result-verbose-label');
+                      if (!el) { return; }
+                      for (var r = 0; r < that.props.model.results.length; r++) {
+                        if (that.props.model.results[r].id === compoundId) {
+                          el.innerHTML = that.props.model.results[r].verboseLabel;
+                          break;
+                        }
+                      }
+                    } catch (e) { /* header live-update is best-effort */ }
+                  };
                   var finish = function () {
                     that.props.model.appendResults(compoundId, [], false, true); /* exact count, deferred */
                     that.props.model.notifyChange();                             /* single final render */
@@ -1040,6 +1059,12 @@ define(function (require) {
                         that.props.model.appendResults(compoundId, more, true, true); /* append, defer render */
                         loadedSoFar += more.length;
                         vfbStatus(loadedSoFar, false);
+                        if (loadedSoFar - lastRenderAt >= RENDER_EVERY) {
+                          that.props.model.notifyChange(); /* periodic full render: new data visible */
+                          lastRenderAt = loadedSoFar;
+                        } else {
+                          bumpHeader();                    /* cheap: keep the count climbing */
+                        }
                       }
                       if (isFull) { loadMore(offset + PAGE_SIZE); } else { finish(); }
                     }, offset, PAGE_SIZE);
