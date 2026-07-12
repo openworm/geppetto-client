@@ -1059,7 +1059,8 @@ define(function (require) {
             this.showBrentSpiner(true);
 
             // run query on queries controller
-            GEPPETTO.QueriesController.runQuery(queryDTOs, queryDoneCallback);
+            GEPPETTO.QueriesController.runQuery(queryDTOs, queryDoneCallback, 0,
+              (typeof window !== 'undefined' && window.VFB_QUERY_PAGE_SIZE) ? window.VFB_QUERY_PAGE_SIZE : 10000);
           } else {
             /*
              * if we already have results for the an identical query switch to results and select the right tab
