@@ -1047,7 +1047,18 @@ define(function (require) {
                     that.props.model.notifyChange();                             /* single final render */
                     vfbStatus(loadedSoFar, true);
                   };
-                  var loadMore = function (offset) {
+                  /*
+                   * MAX_GAP_PROBES: how many CONSECUTIVE empty pages to skip
+                   * before treating an empty page as the real end. A stale edge
+                   * cache can leave an isolated empty page mid-stream (e.g. the
+                   * old 50k-ceiling boundary at offset=50000), which must never
+                   * silently truncate the result set -- so on an empty page we
+                   * probe the next offset instead of stopping, resetting the
+                   * counter whenever a page returns rows. Bounded so a genuine
+                   * end cannot loop. Override via window.VFB_QUERY_MAX_GAP_PROBES.
+                   */
+                  var MAX_GAP_PROBES = (typeof window !== 'undefined' && window.VFB_QUERY_MAX_GAP_PROBES) ? window.VFB_QUERY_MAX_GAP_PROBES : 2;
+                  var loadMore = function (offset, emptyProbes) {
                     GEPPETTO.QueriesController.runQuery(queryDTOs, function (pageJson) {
                       var sig = firstRowSig(pageJson);
                       if (sig !== null && sig === prevSig) {
@@ -1060,7 +1071,7 @@ define(function (require) {
                         vfbStatus(loadedSoFar, true);
                         return;
                       }
-                      prevSig = sig;
+                      if (sig !== null) { prevSig = sig; }
                       var more = [];
                       try { more = formatPage(pageJson); } catch (e) { more = []; }
                       var isFull = more.length >= PAGE_SIZE;
@@ -1075,10 +1086,16 @@ define(function (require) {
                           bumpHeader();                    /* cheap: keep the count climbing */
                         }
                       }
-                      if (isFull) { loadMore(offset + PAGE_SIZE); } else { finish(); }
+                      if (isFull) {
+                        loadMore(offset + PAGE_SIZE, 0);              /* full page: definitely more */
+                      } else if (more.length === 0 && emptyProbes < MAX_GAP_PROBES) {
+                        loadMore(offset + PAGE_SIZE, emptyProbes + 1); /* empty page: skip a possible stale-cache gap */
+                      } else {
+                        finish();                                     /* partial page, or end confirmed after probes */
+                      }
                     }, offset, PAGE_SIZE);
                   };
-                  loadMore(PAGE_SIZE);
+                  loadMore(PAGE_SIZE, 0);
                 }
               } catch (e) { /* progressive load is best-effort; page 0 already shown */ }
 
