@@ -140,7 +140,7 @@ define(function (require) {
       this.notifyChange();
     },
 
-    appendResults (id, moreRecords, partial) {
+    appendResults (id, moreRecords, partial, defer) {
       /*
        * Progressive load-all: concatenate a freshly-fetched page into an
        * existing result set and re-render (griddle re-sorts client-side).
@@ -166,7 +166,7 @@ define(function (require) {
           break;
         }
       }
-      this.notifyChange();
+      if (!defer) { this.notifyChange(); }
     },
 
     deleteResults (results) {
@@ -1005,18 +1005,30 @@ define(function (require) {
                   };
                   var loadedSoFar = formattedRecords.length;
                   var prevSig = firstRowSig(jsonResults);
-                  /* Full first page -> more expected: show the count as a lower bound (">N"). */
-                  that.props.model.appendResults(compoundId, [], true);
+                  /*
+                   * Render the ">N" lower-bound header ONCE, then append every
+                   * later page WITHOUT re-rendering the results table. griddle
+                   * re-sorts the whole set on each render, so re-rendering per
+                   * page is O(n^2) across a large load. Progress is shown by the
+                   * load overlay; the table is rendered once, when loading ends.
+                   */
+                  that.props.model.appendResults(compoundId, [], true, false);
                   vfbStatus(loadedSoFar, false);
+                  var finish = function () {
+                    that.props.model.appendResults(compoundId, [], false, true); /* exact count, deferred */
+                    that.props.model.notifyChange();                             /* single final render */
+                    vfbStatus(loadedSoFar, true);
+                  };
                   var loadMore = function (offset) {
                     GEPPETTO.QueriesController.runQuery(queryDTOs, function (pageJson) {
                       var sig = firstRowSig(pageJson);
                       if (sig !== null && sig === prevSig) {
                         /*
-                         * Same first row as the previous page: this query's
-                         * backend is not honouring offset. Stop without appending
-                         * duplicates (count stays a ">" lower bound).
+                         * Same first row as the previous page: backend not paging
+                         * this query. Stop (count stays a ">" lower bound) and
+                         * render what we have.
                          */
+                        that.props.model.notifyChange();
                         vfbStatus(loadedSoFar, true);
                         return;
                       }
@@ -1025,14 +1037,11 @@ define(function (require) {
                       try { more = formatPage(pageJson); } catch (e) { more = []; }
                       var isFull = more.length >= PAGE_SIZE;
                       if (more.length > 0) {
-                        that.props.model.appendResults(compoundId, more, isFull);
+                        that.props.model.appendResults(compoundId, more, true, true); /* append, defer render */
                         loadedSoFar += more.length;
                         vfbStatus(loadedSoFar, false);
-                      } else {
-                        /* No more rows: finalise the shown count to the exact total. */
-                        that.props.model.appendResults(compoundId, [], false);
                       }
-                      if (isFull) { loadMore(offset + PAGE_SIZE); } else { vfbStatus(loadedSoFar, true); }
+                      if (isFull) { loadMore(offset + PAGE_SIZE); } else { finish(); }
                     }, offset, PAGE_SIZE);
                   };
                   loadMore(PAGE_SIZE);
