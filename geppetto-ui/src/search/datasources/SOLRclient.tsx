@@ -52,6 +52,21 @@ export function getResultsSOLR ( searchString: string, returnResults: Function, 
     }
     tempConfig.params.json.params.q = solrConfiguration.params.json.params.q.replace(/\$SEARCH_TERM\$/g, query.join(" AND "));
 
+    /*
+     * Boost an exact phrase match on the raw (un-wildcarded) input. The q above
+     * expands every token to "(t OR t* OR *t OR *t*)", which defeats edismax's
+     * pf phrase boost, so a short exact label (e.g. "adult neuron") is scored
+     * below longer wildcard matches and falls past rows=. Add the phrase boost
+     * explicitly to bq so the exact term is retrieved; the configuration sorter
+     * then lifts it to the top.
+     */
+    if (searchTerm.length > 0) {
+        let phrase:string = searchTerm.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+        let phraseBoost:string = ' label:"' + phrase + '"^3000 synonym:"' + phrase + '"^1500';
+        let sp:any = tempConfig.params.json.params;
+        sp.bq = (sp.bq ? sp.bq + phraseBoost : phraseBoost.trim());
+    }
+
     axios.get(`${url}`, tempConfig)
         .then(function(response) {
             // Run refining and sorting inline using the custom sorter from configuration
