@@ -976,13 +976,20 @@ define(function (require) {
               try {
                 var PAGE_SIZE = (typeof window !== 'undefined' && window.VFB_QUERY_PAGE_SIZE) ? window.VFB_QUERY_PAGE_SIZE : 10000;
                 /*
+                 * Backend caps a plain (offset-less) first call at ROW_CAP rows. If page 0
+                 * comes back short of the cap it is already the FULL result and needs no
+                 * paging; only a page that HIT the cap means there is more to stream. Keep
+                 * in step with VFBquery RESULT_ROW_CAP. Override via window.VFB_QUERY_ROW_CAP.
+                 */
+                var ROW_CAP = (typeof window !== 'undefined' && window.VFB_QUERY_ROW_CAP) ? window.VFB_QUERY_ROW_CAP : 25000;
+                /*
                  * Progressive load-all for ANY query: a full first page means
                  * there are almost certainly more rows, so keep fetching offset
                  * pages and appending. The guard below stops if a page repeats
                  * the previous page's first row (a backend that ignores offset),
                  * so a non-paging query can never loop on duplicates.
                  */
-                if (formattedRecords.length >= PAGE_SIZE) {
+                if (formattedRecords.length >= ROW_CAP) {
                   var vfbStatus = function (loaded, done) {
                     try { if (typeof window !== 'undefined' && typeof window.vfbQueryLoadStatus === 'function') { window.vfbQueryLoadStatus(loaded, done); } } catch (e) {}
                   };
@@ -1048,17 +1055,13 @@ define(function (require) {
                     vfbStatus(loadedSoFar, true);
                   };
                   /*
-                   * MAX_GAP_PROBES: how many CONSECUTIVE empty pages to skip
-                   * before treating an empty page as the real end. A stale edge
-                   * cache can leave an isolated empty page mid-stream (e.g. the
-                   * old 50k-ceiling boundary at offset=50000), which must never
-                   * silently truncate the result set -- so on an empty page we
-                   * probe the next offset instead of stopping, resetting the
-                   * counter whenever a page returns rows. Bounded so a genuine
-                   * end cannot loop. Override via window.VFB_QUERY_MAX_GAP_PROBES.
+                   * Stream the remaining chunks CONTIGUOUSLY from where page 0
+                   * ended (loadedSoFar): page 0 was a plain, un-paged call that
+                   * hit the cap, and each further chunk is a real offset page.
+                   * The duplicate-first-row guard still stops a backend that
+                   * ignores offset, so this can never loop on repeats.
                    */
-                  var MAX_GAP_PROBES = (typeof window !== 'undefined' && window.VFB_QUERY_MAX_GAP_PROBES) ? window.VFB_QUERY_MAX_GAP_PROBES : 2;
-                  var loadMore = function (offset, emptyProbes) {
+                  var loadMore = function (offset) {
                     GEPPETTO.QueriesController.runQuery(queryDTOs, function (pageJson) {
                       var sig = firstRowSig(pageJson);
                       if (sig !== null && sig === prevSig) {
@@ -1087,15 +1090,13 @@ define(function (require) {
                         }
                       }
                       if (isFull) {
-                        loadMore(offset + PAGE_SIZE, 0);              /* full page: definitely more */
-                      } else if (more.length === 0 && emptyProbes < MAX_GAP_PROBES) {
-                        loadMore(offset + PAGE_SIZE, emptyProbes + 1); /* empty page: skip a possible stale-cache gap */
+                        loadMore(loadedSoFar);   /* full page: next chunk starts where we are */
                       } else {
-                        finish();                                     /* partial page, or end confirmed after probes */
+                        finish();                /* partial or empty page: end of stream */
                       }
                     }, offset, PAGE_SIZE);
                   };
-                  loadMore(PAGE_SIZE, 0);
+                  loadMore(loadedSoFar);
                 }
               } catch (e) { /* progressive load is best-effort; page 0 already shown */ }
 
