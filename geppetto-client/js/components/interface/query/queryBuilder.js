@@ -976,20 +976,18 @@ define(function (require) {
               try {
                 var PAGE_SIZE = (typeof window !== 'undefined' && window.VFB_QUERY_PAGE_SIZE) ? window.VFB_QUERY_PAGE_SIZE : 10000;
                 /*
-                 * Backend caps a plain (offset-less) first call at ROW_CAP rows. If page 0
-                 * comes back short of the cap it is already the FULL result and needs no
-                 * paging; only a page that HIT the cap means there is more to stream. Keep
-                 * in step with VFBquery RESULT_ROW_CAP. Override via window.VFB_QUERY_ROW_CAP.
+                 * Progressive load-all: a FULL first page (>= PAGE_SIZE) may be
+                 * incomplete — either a genuinely large result, or a stale/low
+                 * edge-cache entry (e.g. a plain key still holding an old
+                 * 10k-capped response while the true total is higher). The backend
+                 * does not surface the true count to the client, so rather than
+                 * trust the first page we keep pulling the next contiguous chunk
+                 * until one comes back short (< PAGE_SIZE = the genuine end); any
+                 * shortfall a cache returned is reconciled by the follow-on offset
+                 * pages. The duplicate-first-row guard stops a backend that ignores
+                 * offset, so this can never loop on repeats.
                  */
-                var ROW_CAP = (typeof window !== 'undefined' && window.VFB_QUERY_ROW_CAP) ? window.VFB_QUERY_ROW_CAP : 25000;
-                /*
-                 * Progressive load-all for ANY query: a full first page means
-                 * there are almost certainly more rows, so keep fetching offset
-                 * pages and appending. The guard below stops if a page repeats
-                 * the previous page's first row (a backend that ignores offset),
-                 * so a non-paging query can never loop on duplicates.
-                 */
-                if (formattedRecords.length >= ROW_CAP) {
+                if (formattedRecords.length >= PAGE_SIZE) {
                   var vfbStatus = function (loaded, done) {
                     try { if (typeof window !== 'undefined' && typeof window.vfbQueryLoadStatus === 'function') { window.vfbQueryLoadStatus(loaded, done); } } catch (e) {}
                   };
