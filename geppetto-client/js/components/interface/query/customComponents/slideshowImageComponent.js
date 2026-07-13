@@ -173,6 +173,17 @@ define(function (require) {
       });
     }
 
+    /*
+     * Force thumbnail image URLs to https. VFBquery/Neo4j stores some
+     * thumbnail URLs with an http:// scheme; on the https app those are
+     * mixed content and get blocked, so the thumbnail renders blank. Upgrade
+     * the scheme at render time so every query's thumbnails load regardless
+     * of the source's scheme.
+     */
+    secureUrl (url) {
+      return (typeof url === 'string') ? url.replace(/^http:\/\//i, 'https://') : url;
+    }
+
     buildImage (thumbImage, imageContainerId) {
       var action = this.getImageClickAction(thumbImage.reference);
       var checked = this.state.checked;
@@ -181,7 +192,7 @@ define(function (require) {
       }
       const imgElement = <div id={imageContainerId} className="query-results-image collapse in">
         <a href='' onClick={action}>
-          <img className="query-results-image invert" src={thumbImage.data} />
+          <img className="query-results-image invert" src={this.secureUrl(thumbImage.data)} />
         </a>
         {this.state.imageInstanceLoading
           ? (<div id={imageContainerId + "-loader"} className="loader"></div>)
@@ -276,7 +287,7 @@ define(function (require) {
 
                 return <div key={key} className="query-results-slick-image"> {image.name}
                   <a href='' onClick={action}>
-                    <img className="popup-image invert" src={image.data} />
+                    <img className="popup-image invert" src={that.secureUrl(image.data)} />
                   </a>
                   {loading
                     ? (<div id={image.reference + "-loader"} className="loader"></div>)
