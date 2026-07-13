@@ -315,6 +315,11 @@ define(function (require) {
       document.removeEventListener('mousedown', this.handleClickOutside);
       document.removeEventListener("keydown", this.keyOpenHandler, false);
       document.removeEventListener("keydown", this.keyCloseHandler, false);
+      if (this._viewportResizeHandler) {
+        window.removeEventListener('resize', this._viewportResizeHandler);
+        document.removeEventListener('visibilitychange', this._viewportResizeHandler);
+      }
+      if (this._viewportResizeTimer) { clearTimeout(this._viewportResizeTimer); }
     }
 
     switchView (resultsView, clearQueryItems) {
@@ -478,6 +483,36 @@ define(function (require) {
       document.addEventListener('mousedown', this.handleClickOutside);
       document.addEventListener("keydown", this.keyCloseHandler, false);
       document.addEventListener("keydown", this.keyOpenHandler, false);
+      /*
+       * The results Griddle gets a one-time bodyHeight (window.innerHeight-280);
+       * nothing recomputes it, so after a viewport change (window resize, or
+       * flicking off the tab/app and back) the scroll container keeps a stale
+       * height and clips rows below the fold with no visible scrollbar. Reapply
+       * the correct height directly to the scroll container(s) on resize and on
+       * becoming visible again -- DOM height only, no React re-render, so a huge
+       * result set is never re-processed just to refresh the scrollbar.
+       */
+      this._viewportResizeHandler = function () {
+        if (that._viewportResizeTimer) { clearTimeout(that._viewportResizeTimer); }
+        that._viewportResizeTimer = setTimeout(function () {
+          try {
+            var h = (window.innerHeight - 280) + 'px';
+            var labels = document.querySelectorAll('.result-verbose-label');
+            for (var i = 0; i < labels.length; i++) {
+              var container = labels[i].parentNode;
+              if (!container) { continue; }
+              var divs = container.getElementsByTagName('div');
+              for (var j = 0; j < divs.length; j++) {
+                if (divs[j].style && divs[j].style.overflowY === 'scroll') {
+                  divs[j].style.height = h;
+                }
+              }
+            }
+          } catch (e) { /* best-effort scroll-height refresh */ }
+        }, 150);
+      };
+      window.addEventListener('resize', this._viewportResizeHandler);
+      document.addEventListener('visibilitychange', this._viewportResizeHandler);
 
       Handlebars.registerHelper('geticon', function (icon) {
         if (icon) {
