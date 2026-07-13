@@ -149,7 +149,13 @@ define(function (require) {
         if (this.results[i].id == id) {
           this.results[i].records = this.results[i].records.concat(moreRecords);
           var loaded = this.results[i].records.length;
-          this.count = loaded;
+          /*
+           * Only the currently-displayed result drives the shared footer count.
+           * A background query still streaming (the user opened another query
+           * while this one loads) must update its OWN result header
+           * (verboseLabel below) but not clobber the visible query's footer.
+           */
+          if (this.results[i].selected) { this.count = loaded; }
           /*
            * Keep the header count in step with the running total as pages
            * stream in. While more pages are still expected, prefix ">" so the
@@ -185,6 +191,8 @@ define(function (require) {
       for (var i = 0; i < this.results.length; i++) {
         if (this.results[i].id == resultsSetId) {
           this.results[i].selected = true;
+          /* footer count follows the selected result set */
+          this.count = this.results[i].records ? this.results[i].records.length : this.count;
           // move selected at the top of the list to simulate history
           var match = this.results[i];
           this.results.splice(i, 1);
@@ -1076,7 +1084,8 @@ define(function (require) {
                       if (!el) { return; }
                       for (var r = 0; r < that.props.model.results.length; r++) {
                         if (that.props.model.results[r].id === compoundId) {
-                          el.innerHTML = that.props.model.results[r].verboseLabel;
+                          /* only live-update the header if THIS query is the one on screen */
+                          if (that.props.model.results[r].selected) { el.innerHTML = that.props.model.results[r].verboseLabel; }
                           break;
                         }
                       }
