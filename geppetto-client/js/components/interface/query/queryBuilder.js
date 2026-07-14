@@ -130,11 +130,16 @@ define(function (require) {
     },
 
     addResults (results) {
-      // loop results and unselect all
-      for (var i = 0; i < this.results.length; i++) {
-        this.results[i].selected = false;
+      /*
+       * Only steal selection when the incoming result is meant to be shown. A
+       * background query completing after the user switched away adds its
+       * result unselected and must not deselect the visible query.
+       */
+      if (results.selected) {
+        for (var i = 0; i < this.results.length; i++) {
+          this.results[i].selected = false;
+        }
       }
-
       // always add the new one at the start of the list to simulate history
       this.results.unshift(results);
       this.notifyChange();
@@ -896,6 +901,12 @@ define(function (require) {
         } else {
           // check if we already have results for the given compound query
           var compoundId = this.getCompoundQueryId(this.props.model.items);
+          /*
+           * Remember the most recent user-initiated query so an earlier query
+           * whose first page is still in flight can tell it has been superseded
+           * and must not steal the view / count / title when it returns.
+           */
+          this.props.model.activeQueryId = compoundId;
           var match = false;
 
           for (var i = 0; i < this.props.model.results.length; i++) {
@@ -922,6 +933,8 @@ define(function (require) {
 
             var that = this;
             var queryDoneCallback = function (jsonResults) {
+              /* superseded by another query the user opened meanwhile? */
+              var isActive = (that.props.model.activeQueryId === compoundId);
               var queryLabel = "";
               var verboseLabel = "";
               var verboseLabelPlain = "";
@@ -970,7 +983,7 @@ define(function (require) {
                 verboseLabel: '<span>' + formattedRecords.length.toString() + '</span> ' + verboseLabel,
                 verboseLabelPLain: formattedRecords.length.toString() + ' ' + verboseLabelPlain,
                 records: formattedRecords,
-                selected: true,
+                selected: isActive,
                 columnsToShow: columnsToShow,
                 columnsPresent: columnsPresent,
                 headersColumns: headersDatasourceFormat
@@ -997,8 +1010,10 @@ define(function (require) {
                * right, and hand the real count back to VFB so it can refresh
                * the term-info query metadata (window.vfbUpdateQueryCount).
                */
-              that.props.model.count = formattedRecords.length;
-              that.props.model.counting = false;
+              if (isActive) {
+                that.props.model.count = formattedRecords.length;
+                that.props.model.counting = false;
+              }
               try {
                 if (typeof window !== "undefined" && typeof window.vfbUpdateQueryCount === "function") {
                   for (var qc = 0; qc < that.props.model.items.length; qc++) {
@@ -1142,11 +1157,15 @@ define(function (require) {
                 }
               } catch (e) { /* progressive load is best-effort; page 0 already shown */ }
 
-              // stop showing spinner
-              that.showBrentSpiner(false);
-
-              // change state to switch to results view
-              that.switchView(true);
+              /*
+               * Only take over the view (hide spinner, switch to results) if
+               * this query is still the one on screen -- a superseded query
+               * finishing its first page must not pull focus back to itself.
+               */
+              if (isActive) {
+                that.showBrentSpiner(false);
+                that.switchView(true);
+              }
             };
 
             // hide footer and show spinner
