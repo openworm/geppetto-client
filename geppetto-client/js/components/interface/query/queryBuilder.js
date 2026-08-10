@@ -956,6 +956,16 @@ define(function (require) {
                     return that.state.resultsColumnMeta[counter].columnName;
                   }
                 }
+                /*
+                 * No configured column for this header: keep the backend's own
+                 * name rather than returning undefined. Returning undefined
+                 * made every unconfigured column in a result set share the one
+                 * `undefined` record key, so all but the last were silently
+                 * lost -- and a result set in which NO column is configured
+                 * produced an empty column list, which griddle reads as "no
+                 * filter" and answers by rendering the raw record keys instead.
+                 */
+                return header;
               });
               var recordsDatasourceFormat = datasourceConfig.resultsFilters.getRecords(JSON.parse(jsonResults));
               var formattedRecords = recordsDatasourceFormat.map(function (record) {
@@ -975,6 +985,29 @@ define(function (require) {
                 }
                 return false;
               });
+
+              /*
+               * Show any column the results carry that the client config has no
+               * metadata entry for at all, under its raw backend name, after the
+               * configured ones. A column that IS configured but deliberately
+               * left out of allColumnsToShow (id, for one) stays hidden -- only
+               * genuinely unknown columns are appended, so a backend that adds a
+               * field surfaces it instead of dropping it.
+               */
+              var isConfiguredColumn = function (col) {
+                for (var counter = 0; counter < that.state.resultsColumnMeta.length; counter++) {
+                  if (that.state.resultsColumnMeta[counter].columnName == col) {
+                    return true;
+                  }
+                }
+                return false;
+              };
+              for (var extra = 0; extra < columnsPresent.length; extra++) {
+                var extraColumn = columnsPresent[extra];
+                if (extraColumn != undefined && !isConfiguredColumn(extraColumn) && columnsToShow.indexOf(extraColumn) < 0) {
+                  columnsToShow.push(extraColumn);
+                }
+              }
 
               that.props.model.addResults({
                 id: compoundId,

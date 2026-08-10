@@ -51,9 +51,25 @@ define(function (require) {
     render () {
       // TODO: would be nicer to pass controls and config straight from the parent component rather than assume
       var config = this.props.metadata.queryBuilder.state.resultsControlsConfig;
-      var resultItemId = this.props.rowData.id;
+      /*
+       * Not every result set carries an id column. The controls column is
+       * synthesised per row rather than returned by the backend, so it can be
+       * rendered against a row whose backend columns all failed to resolve --
+       * griddle falls back to the raw record keys when the column list comes
+       * out empty, and the synthesised `controls` key is one of them. Every
+       * $ID$ substitution below then runs against undefined. Render no buttons
+       * rather than throw: an uncaught TypeError here takes the whole
+       * QueryBuilder down through the error boundary.
+       */
+      var resultItemId = (this.props.rowData != undefined && this.props.rowData.id != undefined)
+        ? String(this.props.rowData.id)
+        : '';
       var ctrlButtons = [];
-    
+
+      if (resultItemId === '') {
+        return <div></div>;
+      }
+
       // Add common control buttons to list
       for (var control in config.Common) {
         var add = true;
@@ -105,7 +121,7 @@ define(function (require) {
     
               // if conditional, swap icon with the other condition outcome
               if (Object.prototype.hasOwnProperty.call(control, "condition")) {
-                var otherConfig = that.resolveCondition(control, path);
+                var otherConfig = that.resolveCondition(control, resultItemId);
                 var element = $('#' + idVal);
                 element.removeClass();
                 element.addClass("btn queryresults-button fa " + otherConfig.icon);
