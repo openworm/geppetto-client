@@ -165,11 +165,14 @@ define(function (require) {
            * Keep the header count in step with the running total as pages
            * stream in. While more pages are still expected, prefix ">" so the
            * number reads as a lower bound (">30000"); the final page drops the
-           * prefix and shows the exact total.
+           * prefix and shows the exact total. The marker is wrapped in
+           * .loading-more so query.less can flash it red -- a static ">" is
+           * easy to read as part of the number, a flashing one says "still
+           * arriving". Removing the wrapper degrades to a plain ">".
            */
-          var pfx = partial ? "&gt;" : "";
+          var pfx = partial ? '<span class="loading-more" title="Still loading -- count so far">&gt;</span>' : "";
           if (typeof this.results[i].verboseLabel === "string") {
-            this.results[i].verboseLabel = this.results[i].verboseLabel.replace(/^(&gt;)?<span>\d+<\/span>/, pfx + "<span>" + loaded + "</span>");
+            this.results[i].verboseLabel = this.results[i].verboseLabel.replace(/^(<span class="loading-more"[^>]*>&gt;<\/span>)?<span>\d+<\/span>/, pfx + "<span>" + loaded + "</span>");
           }
           if (typeof this.results[i].verboseLabelPLain === "string") {
             this.results[i].verboseLabelPLain = this.results[i].verboseLabelPLain.replace(/^>?\d+/, "" + loaded);

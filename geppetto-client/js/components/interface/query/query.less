@@ -80,6 +80,25 @@
 	color: @primary_color;
 }
 
+/*
+ * ">" before the count means "at least this many -- pages are still
+ * streaming in". Flash it red so it reads as live progress rather than as
+ * part of the number; it is dropped when the exact total lands.
+ */
+#querybuilder .result-verbose-label span.loading-more {
+	color: red;
+	-webkit-animation: blinker 1s linear infinite;
+	animation: blinker 1s linear infinite;
+}
+
+/* Colour alone carries the meaning when the user has asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+	#querybuilder .result-verbose-label span.loading-more {
+		-webkit-animation: none;
+		animation: none;
+	}
+}
+
 #querybuilder .query-item-label {
 	font-weight: bold;
 	font-size: 20px;
@@ -561,4 +580,17 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Safari */
+@-webkit-keyframes blinker {
+  0% { opacity: 1; }
+  50% { opacity: 0.15; }
+  100% { opacity: 1; }
+}
+
+@keyframes blinker {
+  0% { opacity: 1; }
+  50% { opacity: 0.15; }
+  100% { opacity: 1; }
 }
