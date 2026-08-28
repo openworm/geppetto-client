@@ -41,6 +41,22 @@ define(function (require) {
      * visitor skips the broken path, and expires so that a browser which
      * later gets fixed earns compression back.
      */
+    /*
+     * How long a connection must stay open before it counts as stable and the
+     * reconnection budget is handed back. Comfortably longer than the failure
+     * it guards against, where the socket opens and dies within a second or
+     * two, and shorter than the time the budget takes to exhaust.
+     */
+    var STABLE_CONNECTION_MS = 30 * 1000;
+    var stableConnectionTimer = null;
+
+    function cancelStableConnectionTimer () {
+      if (stableConnectionTimer !== null) {
+        clearTimeout(stableConnectionTimer);
+        stableConnectionTimer = null;
+      }
+    }
+
     var NO_DEFLATE_PARAM = "nodeflate";
     var NO_DEFLATE_KEY = "geppetto.ws.nodeflate";
     var NO_DEFLATE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
@@ -154,13 +170,30 @@ define(function (require) {
           }
           GEPPETTO.MessageSocket.lostConnectionId = undefined;
 
-          // Reset the counter for reconnection
-          GEPPETTO.MessageSocket.attempts = 0;
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.OPEN;
+          /*
+           * Hand the reconnection budget back only once this connection has
+           * proven it can stay open. Resetting here on open instead - as this
+           * did - makes the budget unreachable when a connection opens and
+           * dies repeatedly: every open zeroes the count, so it never reaches
+           * the limit, the give-up branch never runs, and the client retries
+           * in silence for as long as the page is left open. A connection that
+           * survives to the timer below is genuinely healthy and has earned a
+           * full budget for whenever it eventually drops.
+           */
+          cancelStableConnectionTimer();
+          stableConnectionTimer = setTimeout(function () {
+            stableConnectionTimer = null;
+            if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.OPEN) {
+              GEPPETTO.MessageSocket.attempts = 0;
+            }
+          }, STABLE_CONNECTION_MS);
           console.log("%c WebSocket Status - Opened ", 'background: #444; color: #bada55')
         };
 
         GEPPETTO.MessageSocket.socket.onclose = function (e) {
+          // This connection did not last; it must not hand the budget back
+          cancelStableConnectionTimer();
           switch (e.code) {
           case 1000:
             GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
