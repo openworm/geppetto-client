@@ -56,8 +56,14 @@ function MessageReassembler() {
       return parsedMessage;
       
     } catch (e) {
-      console.error("Error processing message", e);
-      // If parsing fails, it's not JSON, return original
+      /*
+       * Returning the raw string here is a fallback for a message that was
+       * never JSON. It is NOT a recovery for a truncated payload: the caller
+       * parses the returned string again, so a broken payload simply throws
+       * a second time, uncaught. Log enough to tell the two cases apart -
+       * parseAndNotify guards the re-parse and reports the failure.
+       */
+      console.error("Error processing message (" + (typeof messageData === 'string' ? messageData.length + " chars" : typeof messageData) + ")", e);
       return messageData;
     }
   }

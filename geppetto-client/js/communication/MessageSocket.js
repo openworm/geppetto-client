@@ -323,9 +323,32 @@ define(function (require) {
         return; // Wait for more chunks
       }
       
-      // If processedMessage is a string, parse it (original message)
-      var parsedServerMessage = (typeof processedMessage === 'string') ? 
-        JSON.parse(processedMessage) : processedMessage;
+      /*
+       * If processedMessage is a string, parse it (original message).
+       *
+       * A truncated payload (seen from Safari 26 on a failing connection,
+       * where the frame decompresses but the JSON inside is cut mid-string)
+       * throws here. MessageReassembler.processMessage already swallowed the
+       * first parse failure and handed back the raw string, so without this
+       * guard the throw escapes onmessage uncaught, and parseAndNotify never
+       * reaches the handler/callback loop below - the app then waits forever
+       * for a reply that already arrived broken, with nothing shown to the
+       * user. Report it: the pending request cannot be recovered.
+       */
+      var parsedServerMessage;
+      try {
+        parsedServerMessage = (typeof processedMessage === 'string')
+          ? JSON.parse(processedMessage)
+          : processedMessage;
+      } catch (err) {
+        var truncatedLength = (typeof processedMessage === 'string') ? processedMessage.length : -1;
+        console.error("WebSocket - discarding a truncated or corrupt message of "
+          + truncatedLength + " characters: " + err);
+        if (typeof window.vfbReportWebsocketFailure === 'function') {
+          window.vfbReportWebsocketFailure('truncated-message');
+        }
+        return;
+      }
 
       // notify all handlers
       for (var i = 0, len = messageHandlers.length; i < len; i++) {
