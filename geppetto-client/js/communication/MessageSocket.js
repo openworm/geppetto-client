@@ -371,15 +371,58 @@ define(function (require) {
       var messageBytes = new Uint8Array(message);
 
       /*
+       * A malformed binary frame - empty, or one that fails to decompress,
+       * or one whose declared file name is truncated/garbage - is a
+       * transport failure (seen from Safari 26 on a flaky connection), not
+       * a real server message. It typically means a reply the app was
+       * actually waiting on (e.g. the reconnect handshake) was corrupted in
+       * transit, so from the user's point of view the app is now stuck, not
+       * just delayed. Without these guards it falls through to the file
+       * branch below and silently hands the user an empty file named
+       * "download" with no indication anything went wrong.
+       *
+       * Report it immediately as a WebSocket failure (dialog + GA) rather
+       * than only logging it: the transport can independently report
+       * "Opened" right around the same time, which reflects only the raw
+       * socket state and is not proof the app-level session recovered.
+       */
+      var reportCorruptFrame = function (reason) {
+        console.error("WebSocket - " + reason + " (" + messageBytes.length + " bytes)");
+        if (typeof window.vfbReportWebsocketFailure === 'function') {
+          window.vfbReportWebsocketFailure('corrupt-binary-frame: ' + reason);
+        }
+      };
+
+      if (messageBytes.length === 0) {
+        reportCorruptFrame('received an empty binary message');
+        return;
+      }
+
+      /*
        * if it's a binary message and first byte it's zero then assume it's a compressed json string
        * otherwise is a file and a 'save as' dialog is opened
        */
       if (messageBytes[0] == 0) {
-        var message = pako.ungzip(messageBytes.subarray(1), { to: "string" });
+        var message;
+        try {
+          message = pako.ungzip(messageBytes.subarray(1), { to: "string" });
+        } catch (err) {
+          reportCorruptFrame('failed to decompress a binary message: ' + err);
+          return;
+        }
         parseAndNotify(message);
       } else {
         var fileNameLength = messageBytes[1];
         var fileName = String.fromCharCode.apply(null, messageBytes.subarray(2, 2 + fileNameLength));
+        /*
+         * Only save when the declared file name is intact and printable;
+         * anything else is a corrupted or truncated frame, not a download
+         * the server initiated.
+         */
+        if (!fileNameLength || fileName.length !== fileNameLength || !/^[\x20-\x7e]+$/.test(fileName)) {
+          reportCorruptFrame('malformed binary message, not saving it as a file');
+          return;
+        }
         var blob = new Blob([message]);
         FileSaver.saveAs(blob.slice(2 + fileNameLength), fileName);
       }
