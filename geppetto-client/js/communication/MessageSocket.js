@@ -23,6 +23,72 @@ define(function (require) {
     // Create an instance of the message reassembler
     var messageReassembler = new MessageReassembler();
 
+    /*
+     * Some WebSocket stacks negotiate permessage-deflate and then fail to
+     * inflate what the server sends - Apple's NSURLSession implementation,
+     * used by Safari and by every browser on iOS, is the known case. The
+     * symptom is a frame that arrives and decompresses to truncated JSON,
+     * followed by the connection dropping.
+     *
+     * Browsers offer permessage-deflate unconditionally and expose no API to
+     * decline it, so the only lever is to ask the server not to accept the
+     * offer. Reconnecting with nodeflate=1 makes the server strip the
+     * extension for that handshake.
+     *
+     * The decision is evidence-based rather than a user-agent guess: we act
+     * only when a frame actually failed AND socket.extensions confirms
+     * compression was negotiated. The verdict is remembered so a returning
+     * visitor skips the broken path, and expires so that a browser which
+     * later gets fixed earns compression back.
+     */
+    var NO_DEFLATE_PARAM = "nodeflate";
+    var NO_DEFLATE_KEY = "geppetto.ws.nodeflate";
+    var NO_DEFLATE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+    // Used when Storage is unavailable (Safari private browsing throws on access)
+    var noDeflateMemoryFlag = false;
+
+    function deflateKnownBroken () {
+      if (noDeflateMemoryFlag) {
+        return true;
+      }
+      try {
+        var stored = window.localStorage.getItem(NO_DEFLATE_KEY);
+        if (stored === null) {
+          return false;
+        }
+        if (Date.now() - Number(stored) > NO_DEFLATE_TTL_MS) {
+          window.localStorage.removeItem(NO_DEFLATE_KEY);
+          return false;
+        }
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    function rememberDeflateBroken () {
+      noDeflateMemoryFlag = true;
+      try {
+        window.localStorage.setItem(NO_DEFLATE_KEY, String(Date.now()));
+      } catch (err) {
+        // Storage unavailable - the in-memory flag still covers this session
+      }
+    }
+
+    function withoutDeflate (host) {
+      if (host == null || host.indexOf(NO_DEFLATE_PARAM + "=1") > -1) {
+        return host;
+      }
+      return host + (host.indexOf("?") > -1 ? "&" : "?") + NO_DEFLATE_PARAM + "=1";
+    }
+
+    function deflateNegotiated () {
+      var socket = GEPPETTO.MessageSocket.socket;
+      return socket != null
+        && typeof socket.extensions === "string"
+        && socket.extensions.indexOf("permessage-deflate") > -1;
+    }
+
     /**
      * Web socket creation and communication
      */
@@ -46,6 +112,14 @@ define(function (require) {
 
       connect: function (host) {
         var that = this;
+        /*
+         * A browser previously seen to mishandle permessage-deflate asks the
+         * server to decline it, so the broken path is skipped on this and
+         * every later visit rather than being rediscovered each time.
+         */
+        if (deflateKnownBroken()) {
+          host = withoutDeflate(host);
+        }
         if (GEPPETTO.MessageSocket.socket !== null) {
           delete GEPPETTO.MessageSocket.socket;
         }
@@ -342,11 +416,7 @@ define(function (require) {
           : processedMessage;
       } catch (err) {
         var truncatedLength = (typeof processedMessage === 'string') ? processedMessage.length : -1;
-        console.error("WebSocket - discarding a truncated or corrupt message of "
-          + truncatedLength + " characters: " + err);
-        if (typeof window.vfbReportWebsocketFailure === 'function') {
-          window.vfbReportWebsocketFailure('truncated-message');
-        }
+        handleCorruptFrame("truncated-message: " + err, truncatedLength + " characters");
         return;
       }
 
@@ -389,6 +459,36 @@ define(function (require) {
 
     }
 
+    /**
+     * A frame arrived that could not be read. If compression was negotiated it
+     * is the prime suspect: drop it for this browser and reconnect, which
+     * recovers silently. Otherwise the transport itself is at fault and there
+     * is nothing to fall back to, so tell the user.
+     *
+     * @param context - short description of what failed, for the report
+     * @param size - size of the offending payload, for the log
+     */
+    function handleCorruptFrame (context, size) {
+      console.error("WebSocket - " + context + " (" + size + ")");
+      if (deflateNegotiated() && !deflateKnownBroken()) {
+        console.error("WebSocket - compression (permessage-deflate) was negotiated on this "
+          + "connection; disabling it for this browser and reconnecting uncompressed");
+        rememberDeflateBroken();
+        GEPPETTO.MessageSocket.attempts = 0;
+        GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+        try {
+          GEPPETTO.MessageSocket.socket.close();
+        } catch (err) {
+          // Already closing or closed - reconnecting below is what matters
+        }
+        GEPPETTO.MessageSocket.connect(withoutDeflate(GEPPETTO.MessageSocket.host));
+        return;
+      }
+      if (typeof window.vfbReportWebsocketFailure === 'function') {
+        window.vfbReportWebsocketFailure(context);
+      }
+    }
+
     function processBinaryMessage (message) {
 
       var messageBytes = new Uint8Array(message);
@@ -410,10 +510,7 @@ define(function (require) {
        * socket state and is not proof the app-level session recovered.
        */
       var reportCorruptFrame = function (reason) {
-        console.error("WebSocket - " + reason + " (" + messageBytes.length + " bytes)");
-        if (typeof window.vfbReportWebsocketFailure === 'function') {
-          window.vfbReportWebsocketFailure('corrupt-binary-frame: ' + reason);
-        }
+        handleCorruptFrame("corrupt-binary-frame: " + reason, messageBytes.length);
       };
 
       if (messageBytes.length === 0) {
