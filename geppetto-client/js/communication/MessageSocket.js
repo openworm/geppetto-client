@@ -509,6 +509,19 @@ define(function (require) {
         rememberDeflateBroken();
         GEPPETTO.MessageSocket.attempts = 0;
         GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+        /*
+         * Carry the current client id across the reconnection. onopen resumes
+         * an existing session by sending a reconnect message keyed on
+         * lostConnectionId, but that is normally set by the abnormal-close
+         * branch of onclose - closing deliberately below takes the clean-close
+         * branch instead. Without this the resume is sent with an undefined
+         * connection id, which the server cannot match: it logs
+         * "other.getUser() returned null" and drops the connection, so the
+         * client reconnects again and the pair repeats.
+         */
+        if (GEPPETTO.MessageSocket.lostConnectionId === undefined) {
+          GEPPETTO.MessageSocket.lostConnectionId = GEPPETTO.MessageSocket.getClientID();
+        }
         try {
           GEPPETTO.MessageSocket.socket.close();
         } catch (err) {
