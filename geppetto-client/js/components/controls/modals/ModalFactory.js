@@ -1,5 +1,6 @@
 define(['jquery'], function () {
 
+  var $ = require('jquery');
   var React = require('react');
   var InfoModal = require('./InfoModal');
   var ErrorModal = require('./ErrorModal');
@@ -26,8 +27,14 @@ define(['jquery'], function () {
        *            Title of message
        * @param msg -
        *            Message to display
+       * @param autoCloseMs -
+       *            optional. If set, the dialog dismisses itself after this
+       *            many ms instead of waiting for the user to click Ok.
+       * @param onAutoClose -
+       *            optional. Called once, after the auto-dismiss above. Not
+       *            called if the user dismisses the dialog manually first.
        */
-      infoDialog: function (title, msg) {
+      infoDialog: function (title, msg, autoCloseMs, onAutoClose) {
         var infoFactory = React.createFactory(InfoModal);
 
         ReactDOM.render(
@@ -41,6 +48,15 @@ define(['jquery'], function () {
 
           document.getElementById('modal-region')
         );
+
+        if (autoCloseMs) {
+          setTimeout(function () {
+            $('#infomodal').modal('hide');
+            if (typeof onAutoClose === 'function') {
+              onAutoClose();
+            }
+          }, autoCloseMs);
+        }
       },
 
 

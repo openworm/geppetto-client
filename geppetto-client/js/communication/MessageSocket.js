@@ -126,6 +126,10 @@ define(function (require) {
       autoReconnectInterval: 5 * 1000,
       socketStatus: GEPPETTO.Resources.SocketStatus.CLOSE,
 
+      // how long a genuinely-terminal connection-lost dialog stays up
+      // before it auto-dismisses and recovers on the user's behalf
+      giveUpDialogAutoCloseMs: 10 * 1000,
+
       connect: function (host) {
         var that = this;
         /*
@@ -284,7 +288,14 @@ define(function (require) {
         } else {
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
           GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
-          GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, GEPPETTO.Resources.SERVER_CONNECTION_ERROR);
+          // Retry budget exhausted after reconnectionLimit silent attempts.
+          // Let the user see why for a few seconds, then recover on their
+          // behalf instead of leaving them stuck on a dialog they have to
+          // act on themselves.
+          GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, GEPPETTO.Resources.SERVER_CONNECTION_ERROR,
+            GEPPETTO.MessageSocket.giveUpDialogAutoCloseMs, function () {
+              window.location.reload();
+            });
           GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
         }
       },
@@ -294,8 +305,10 @@ define(function (require) {
        */
       send: function (command, parameter, callback) {
         if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.RECONNECTING && command !== "reconnect") {
-          GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR,
-            "Your connection to the VFB server dropped, click OK to reconnect/reload your open images.");
+          // Reconnection is already retrying silently in the background (see
+          // reconnect() below) - no need to interrupt the user with a dialog
+          // they have to dismiss just because a send happened to land during
+          // that window. The command itself is dropped, same as before.
           GEPPETTO.trigger('stop_spin_logo');
           return;
         }

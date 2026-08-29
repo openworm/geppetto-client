@@ -100,11 +100,16 @@ function GlobalHandler (GEPPETTO) {
   };
 
   messageHandler[messageTypes.RECONNECTION_ERROR] = function (payload) {
-    GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.RECONNECTION_ERROR, payload.message);
+    // Server has confirmed the session can't be resumed. Let the user see
+    // why for a few seconds, then reload for them instead of an immediate
+    // reload that barely gives the dialog time to render.
+    GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.RECONNECTION_ERROR, payload.message,
+      GEPPETTO.MessageSocket.giveUpDialogAutoCloseMs, function () {
+        window.location.reload();
+      });
     GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
     GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
     GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
-    window.location.reload();
   };
 
   GEPPETTO.GlobalHandler
