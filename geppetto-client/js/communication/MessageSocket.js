@@ -73,6 +73,22 @@ define(function (require) {
     var reconnectTimer = null;
     var reconnectStartedAt = null;
 
+    /*
+     * Backbone's trigger runs listeners synchronously and lets their
+     * exceptions escape to the caller. A connection event is fired from the
+     * middle of the recovery sequence - before the next retry is scheduled,
+     * or before the queue is replayed - so an application listener that
+     * throws would otherwise stop the recovery it was only meant to observe.
+     * Report the listener's failure and carry on.
+     */
+    function safeTrigger (event, payload) {
+      try {
+        GEPPETTO.trigger(event, payload);
+      } catch (err) {
+        console.error("WebSocket - a listener for " + event + " threw: " + (err && err.message ? err.message : err));
+      }
+    }
+
     function cancelReconnectTimer () {
       if (reconnectTimer !== null) {
         clearTimeout(reconnectTimer);
@@ -168,8 +184,17 @@ define(function (require) {
           failed++;
         }
       }
-      if (replayed + failed > 0) {
-        console.log("WebSocket - " + replayed + " in-flight request(s) queued for replay, " + failed + " failed");
+      if (failed > 0) {
+        /*
+         * console.error rather than log: an unrepeatable request died with
+         * the socket and its caller will never get an answer. The embedding
+         * application routes console.error to its analytics, so these are
+         * visible after the fact rather than only in the user's own console.
+         */
+        console.error("WebSocket - " + failed + " in-flight request(s) lost on disconnect (not safe to replay), "
+          + replayed + " queued for replay");
+      } else if (replayed > 0) {
+        console.log("WebSocket - " + replayed + " in-flight request(s) queued for replay");
       }
     }
 
@@ -178,6 +203,8 @@ define(function (require) {
         var dropped = pendingQueue.shift();
         delete callbackHandler[dropped.requestID];
         GEPPETTO.trigger('geppetto:request_failed', dropped.requestID);
+        console.error("WebSocket - queue full at " + PENDING_QUEUE_LIMIT
+          + " commands, dropping the oldest (requestID " + dropped.requestID + ")");
       }
       pendingQueue.push({ requestID: requestID, template: template });
     }
@@ -190,7 +217,7 @@ define(function (require) {
         GEPPETTO.trigger('geppetto:request_failed', failed[i].requestID);
       }
       if (failed.length > 0) {
-        console.log("WebSocket - dropped " + failed.length + " queued command(s): " + reason);
+        console.error("WebSocket - dropped " + failed.length + " queued command(s): " + reason);
       }
     }
 
@@ -455,7 +482,7 @@ define(function (require) {
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.RECONNECTING;
           var delay = reconnectDelayMs(GEPPETTO.MessageSocket.attempts);
           console.log("WebSocket Status - attempt " + GEPPETTO.MessageSocket.attempts + ", retry in " + delay + "ms", e);
-          GEPPETTO.trigger(GEPPETTO.Events.Websocket_reconnecting, {
+          safeTrigger(GEPPETTO.Events.Websocket_reconnecting, {
             attempt: GEPPETTO.MessageSocket.attempts,
             delayMs: delay,
             elapsedMs: elapsed
@@ -474,9 +501,17 @@ define(function (require) {
            */
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
           GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
+          console.error("WebSocket - giving up after " + Math.round(elapsed / 1000) + "s and "
+            + GEPPETTO.MessageSocket.attempts + " attempt(s); last close: "
+            + (e && e.code ? e.code + " " + (e.reason || "") : "unknown"));
           failPending('reconnection budget exhausted');
           reconnectStartedAt = null;
-          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected, { reason: 'budget-exhausted', attempts: GEPPETTO.MessageSocket.attempts });
+          safeTrigger(GEPPETTO.Events.Websocket_disconnected, {
+            reason: 'budget-exhausted',
+            attempts: GEPPETTO.MessageSocket.attempts,
+            elapsedMs: elapsed,
+            closeCode: e && e.code
+          });
         }
       },
 
@@ -494,8 +529,24 @@ define(function (require) {
         for (var i = 0; i < queued.length; i++) {
           this.waitForConnection(queued[i].template, connectionInterval);
         }
-        console.log("%c WebSocket Status - session " + (resumed ? "resumed" : "re-established") + ", replayed " + queued.length + " command(s) ", 'background: #444; color: #bada55');
-        GEPPETTO.trigger(GEPPETTO.Events.Websocket_reconnected, { resumed: resumed, replayed: queued.length });
+        /*
+         * How long the user was actually without a working session, and how
+         * many retries it took. Reported by the application so a recovery
+         * that technically worked but took a minute is distinguishable from
+         * one that took a second.
+         */
+        var downtimeMs = reconnectStartedAt === null ? 0 : Date.now() - reconnectStartedAt;
+        var attempts = GEPPETTO.MessageSocket.attempts;
+        reconnectStartedAt = null;
+        console.log("%c WebSocket Status - session " + (resumed ? "resumed" : "re-established")
+          + " after " + downtimeMs + "ms and " + attempts + " attempt(s), replayed " + queued.length + " command(s) ",
+        'background: #444; color: #bada55');
+        safeTrigger(GEPPETTO.Events.Websocket_reconnected, {
+          resumed: resumed,
+          replayed: queued.length,
+          downtimeMs: downtimeMs,
+          attempts: attempts
+        });
       },
 
       /**
@@ -515,12 +566,12 @@ define(function (require) {
         if (GEPPETTO.MessageSocket.projectURL == null) {
           // Never loaded a project from a URL: nothing we can re-establish
           failPending('no project URL to re-establish the session with');
-          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected, { reason: 'resync-impossible' });
+          safeTrigger(GEPPETTO.Events.Websocket_disconnected, { reason: 'resync-impossible' });
           return;
         }
         GEPPETTO.MessageSocket.awaitingSession = true;
         GEPPETTO.MessageSocket.resyncing = true;
-        GEPPETTO.trigger(GEPPETTO.Events.Websocket_session_lost);
+        safeTrigger(GEPPETTO.Events.Websocket_session_lost);
         console.log("%c WebSocket Status - session lost on server, re-establishing on this connection ", 'background: #444; color: #bada55');
         // Bypass the queue: this is the command the queue is waiting on
         var requestID = this.createRequestID();
@@ -546,7 +597,7 @@ define(function (require) {
         GEPPETTO.MessageSocket.resyncing = false;
         failPending('session re-establish failed: ' + reason);
         console.error("WebSocket - session re-establish failed: " + reason);
-        GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected, { reason: 'resync-failed', detail: reason });
+        safeTrigger(GEPPETTO.Events.Websocket_disconnected, { reason: 'resync-failed', detail: reason });
       },
 
       /**
@@ -628,7 +679,7 @@ define(function (require) {
         GEPPETTO.MessageSocket.socket.close();
         // dispose of handlers upon closing connection
         messageHandlers = [];
-        GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+        safeTrigger(GEPPETTO.Events.Websocket_disconnected);
 
       },
 
