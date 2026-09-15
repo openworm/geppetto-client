@@ -45,8 +45,13 @@ function GlobalHandler (GEPPETTO) {
   // Error loading simulation, invalid url or simulation file
   messageHandler[messageTypes.ERROR_LOADING_PROJECT] = function (payload) {
     GEPPETTO.trigger('geppetto:error', payload.message);
-    GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.ERROR_LOADING_PROJECT, payload.message);
     GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    if (GEPPETTO.MessageSocket.resyncing) {
+      // Re-establishing the session failed; hand the decision to the app
+      GEPPETTO.MessageSocket.resyncFailed(payload.message);
+      return;
+    }
+    GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.ERROR_LOADING_PROJECT, payload.message);
   };
 
   // Error loading simulation, invalid url or simulation file
@@ -100,16 +105,14 @@ function GlobalHandler (GEPPETTO) {
   };
 
   messageHandler[messageTypes.RECONNECTION_ERROR] = function (payload) {
-    // Server has confirmed the session can't be resumed. Let the user see
-    // why for a few seconds, then reload for them instead of an immediate
-    // reload that barely gives the dialog time to render.
-    GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.RECONNECTION_ERROR, payload.message,
-      GEPPETTO.MessageSocket.giveUpDialogAutoCloseMs, function () {
-        window.location.reload();
-      });
-    GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+    /*
+     * The server could not resume our session - it is a different JVM, or
+     * the old one has forgotten us. The socket is open and has a fresh
+     * manager behind it, so re-establish the session on it rather than
+     * reload the page. The client keeps everything it has.
+     */
     GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
-    GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+    GEPPETTO.MessageSocket.resyncSession();
   };
 
   GEPPETTO.GlobalHandler

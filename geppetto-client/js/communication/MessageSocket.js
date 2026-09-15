@@ -57,6 +57,143 @@ define(function (require) {
       }
     }
 
+    /*
+     * Reconnection is budgeted in wall-clock time rather than attempts, and
+     * the retry interval backs off exponentially with jitter. An attempt
+     * count at a fixed interval measured the budget in seconds (10 x 5 s),
+     * which a closed laptop lid or a phone put in a pocket exhausted every
+     * time, and every exhaustion ended in a page reload. A budget in minutes
+     * survives those, while the backoff keeps a dead backend from being
+     * hammered. The clock starts at the first drop and is reset by a
+     * connection that stays open for STABLE_CONNECTION_MS.
+     */
+    var RECONNECT_BUDGET_MS = 5 * 60 * 1000;
+    var RECONNECT_MIN_DELAY_MS = 1000;
+    var RECONNECT_MAX_DELAY_MS = 30 * 1000;
+    var reconnectTimer = null;
+    var reconnectStartedAt = null;
+
+    function cancelReconnectTimer () {
+      if (reconnectTimer !== null) {
+        clearTimeout(reconnectTimer);
+        reconnectTimer = null;
+      }
+    }
+
+    function reconnectDelayMs (attempt) {
+      var base = Math.min(RECONNECT_MAX_DELAY_MS, RECONNECT_MIN_DELAY_MS * Math.pow(2, Math.max(0, attempt - 1)));
+      // full jitter: spread simultaneous reconnects from many tabs/users
+      return Math.floor(base / 2 + Math.random() * (base / 2));
+    }
+
+    /*
+     * A laptop waking or a network coming back is the moment a retry is
+     * most likely to succeed, so skip the remaining backoff and try now.
+     */
+    function retryNowIfReconnecting () {
+      if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.RECONNECTING
+        && reconnectTimer !== null) {
+        cancelReconnectTimer();
+        console.log("%c WebSocket Status - network/visibility changed, reconnecting now ", 'background: #444; color: #bada55');
+        GEPPETTO.MessageSocket.connect(GEPPETTO.MessageSocket.host);
+      }
+    }
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('online', retryNowIfReconnecting);
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) {
+          retryNowIfReconnecting();
+        }
+      });
+    }
+
+    /*
+     * Commands issued while the socket is down are queued and replayed once
+     * the session is back (resumed on the old server, or re-established on a
+     * new one). Dropping them - as send() used to - left half-loaded terms
+     * with the spinner stopped even when the reconnect itself succeeded.
+     * Queue entries keep their requestID so callers' callbacks still fire.
+     */
+    var PENDING_QUEUE_LIMIT = 100;
+    var pendingQueue = [];
+
+    // How long a session re-establish may take before it counts as failed
+    var RESYNC_TIMEOUT_MS = 60 * 1000;
+    var resyncTimer = null;
+
+    function cancelResyncTimer () {
+      if (resyncTimer !== null) {
+        clearTimeout(resyncTimer);
+        resyncTimer = null;
+      }
+    }
+
+    /*
+     * Requests sent and not yet answered on the current socket. When the
+     * socket dies their replies die with it (the server wrote them to a
+     * connection that no longer exists), so on an abnormal close they are
+     * re-queued for replay if they are safe to repeat, and failed otherwise.
+     * Everything VFB sends is a read and safe; commands with side effects
+     * (running an experiment, persisting a project) are not replayed.
+     */
+    var REPLAYABLE_COMMANDS = {
+      fetch_variable: true,
+      fetch: true,
+      resolve_import_type: true,
+      resolve_import_value: true,
+      run_query: true,
+      run_query_count: true,
+      geppetto_version: true,
+      get_model_tree: true,
+      get_simulation_tree: true
+    };
+    var inFlight = {};
+
+    function trackInFlight (requestID, command, template) {
+      inFlight[requestID] = { command: command, template: template };
+    }
+
+    function requeueInFlight () {
+      var lost = inFlight;
+      inFlight = {};
+      var replayed = 0;
+      var failed = 0;
+      for (var id in lost) {
+        if (REPLAYABLE_COMMANDS[lost[id].command] === true) {
+          queuePending(id, lost[id].template);
+          replayed++;
+        } else {
+          delete callbackHandler[id];
+          GEPPETTO.trigger('geppetto:request_failed', id);
+          failed++;
+        }
+      }
+      if (replayed + failed > 0) {
+        console.log("WebSocket - " + replayed + " in-flight request(s) queued for replay, " + failed + " failed");
+      }
+    }
+
+    function queuePending (requestID, template) {
+      if (pendingQueue.length >= PENDING_QUEUE_LIMIT) {
+        var dropped = pendingQueue.shift();
+        delete callbackHandler[dropped.requestID];
+        GEPPETTO.trigger('geppetto:request_failed', dropped.requestID);
+      }
+      pendingQueue.push({ requestID: requestID, template: template });
+    }
+
+    function failPending (reason) {
+      var failed = pendingQueue;
+      pendingQueue = [];
+      for (var i = 0; i < failed.length; i++) {
+        delete callbackHandler[failed[i].requestID];
+        GEPPETTO.trigger('geppetto:request_failed', failed[i].requestID);
+      }
+      if (failed.length > 0) {
+        console.log("WebSocket - dropped " + failed.length + " queued command(s): " + reason);
+      }
+    }
+
     var NO_DEFLATE_PARAM = "nodeflate";
     var NO_DEFLATE_KEY = "geppetto.ws.nodeflate";
     var NO_DEFLATE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
@@ -122,13 +259,16 @@ define(function (require) {
       host: undefined,
       projectId: undefined,
       lostConnectionId: undefined,
-      reconnectionLimit: 10,
-      autoReconnectInterval: 5 * 1000,
+      // wall-clock budget for a reconnection episode; see RECONNECT_BUDGET_MS
+      reconnectBudgetMs: RECONNECT_BUDGET_MS,
       socketStatus: GEPPETTO.Resources.SocketStatus.CLOSE,
 
-      // how long a genuinely-terminal connection-lost dialog stays up
-      // before it auto-dismisses and recovers on the user's behalf
-      giveUpDialogAutoCloseMs: 10 * 1000,
+      /*
+       * Set while a reconnect is waiting on the server's verdict (resume or
+       * re-establish). Commands sent in this window are queued, not sent, so
+       * they cannot race ahead of the session they need.
+       */
+      awaitingSession: false,
 
       connect: function (host) {
         var that = this;
@@ -161,20 +301,40 @@ define(function (require) {
            * attach the handlers once socket is opened on the first connection
            * differently handle the reconnection scenario
            */
+          cancelReconnectTimer();
+          GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.OPEN;
           if (messageHandlers.length > 0) {
-            GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_PROJECT);
+            /*
+             * Ask the server to resume the session it held for our previous
+             * connection. It answers by resuming silently (the fast path:
+             * same JVM, within its retention window) or with
+             * reconnection_error, which GlobalHandler turns into a session
+             * re-establish on this same socket (see resyncSession). Either
+             * way the queued commands wait for sessionReady().
+             */
+            GEPPETTO.MessageSocket.awaitingSession = true;
+            GEPPETTO.MessageSocket.resyncing = false;
             var parameters = {};
             parameters["connectionID"] = GEPPETTO.MessageSocket.lostConnectionId;
             parameters["projectId"] = GEPPETTO.MessageSocket.projectId;
             GEPPETTO.MessageSocket.send("reconnect", parameters);
-            GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+            /*
+             * The server says nothing on a successful resume, only on a
+             * failed one. Messages on a socket are handled in order, so a
+             * cheap request sent right behind the resume is answered only
+             * after the resume was processed: if its reply arrives and no
+             * reconnection_error has, the old session is back.
+             */
+            GEPPETTO.MessageSocket.send("geppetto_version", null, function () {
+              if (GEPPETTO.MessageSocket.awaitingSession && !GEPPETTO.MessageSocket.resyncing) {
+                GEPPETTO.MessageSocket.sessionReady(true);
+              }
+            });
           } else {
             messageHandlers.push(GEPPETTO.MessageHandler);
             messageHandlers.push(GEPPETTO.GlobalHandler);
           }
           GEPPETTO.MessageSocket.lostConnectionId = undefined;
-
-          GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.OPEN;
           /*
            * Hand the reconnection budget back only once this connection has
            * proven it can stay open. Resetting here on open instead - as this
@@ -190,6 +350,7 @@ define(function (require) {
             stableConnectionTimer = null;
             if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.OPEN) {
               GEPPETTO.MessageSocket.attempts = 0;
+              reconnectStartedAt = null;
             }
           }, STABLE_CONNECTION_MS);
           console.log("%c WebSocket Status - Opened ", 'background: #444; color: #bada55')
@@ -198,23 +359,24 @@ define(function (require) {
         GEPPETTO.MessageSocket.socket.onclose = function (e) {
           // This connection did not last; it must not hand the budget back
           cancelStableConnectionTimer();
+          GEPPETTO.MessageSocket.awaitingSession = false;
           switch (e.code) {
           case 1000:
+            // Clean close, ours or the server's: nothing to recover
             GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
             GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
-            GEPPETTO.MessageSocket.attempts++;
             break;
-          case 1002:
-            GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
-            GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
-            GEPPETTO.MessageSocket.attempts++;
-            window.location.reload();
-            break; 
           default:
+            /*
+             * Every other close - 1002 protocol error included, which used to
+             * reload the page outright - is treated as a drop to recover from.
+             * The attempt is counted once, in reconnect(); counting here as
+             * well halved the budget.
+             */
             if (GEPPETTO.MessageSocket.lostConnectionId === undefined) {
               GEPPETTO.MessageSocket.lostConnectionId = GEPPETTO.MessageSocket.getClientID();
             }
-            GEPPETTO.MessageSocket.attempts++;
+            requeueInFlight();
             GEPPETTO.MessageSocket.reconnect(e);
           }
         };
@@ -277,69 +439,179 @@ define(function (require) {
        */
       reconnect: function (e) {
         var that = this;
-        if (GEPPETTO.MessageSocket.attempts < GEPPETTO.MessageSocket.reconnectionLimit) {
+        if (reconnectTimer !== null) {
+          /*
+           * A retry is already scheduled; onclose from the dying socket and a
+           * caller both asking is normal, one timer is enough.
+           */
+          return;
+        }
+        if (reconnectStartedAt === null) {
+          reconnectStartedAt = Date.now();
+        }
+        var elapsed = Date.now() - reconnectStartedAt;
+        if (elapsed < GEPPETTO.MessageSocket.reconnectBudgetMs) {
           GEPPETTO.MessageSocket.attempts++;
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.RECONNECTING;
-          console.log(`WebSocket Status - retry in ${GEPPETTO.MessageSocket.autoReconnectInterval}ms`, e);
-          setTimeout(function () {
+          var delay = reconnectDelayMs(GEPPETTO.MessageSocket.attempts);
+          console.log("WebSocket Status - attempt " + GEPPETTO.MessageSocket.attempts + ", retry in " + delay + "ms", e);
+          GEPPETTO.trigger(GEPPETTO.Events.Websocket_reconnecting, {
+            attempt: GEPPETTO.MessageSocket.attempts,
+            delayMs: delay,
+            elapsedMs: elapsed
+          });
+          reconnectTimer = setTimeout(function () {
+            reconnectTimer = null;
             console.log("%c WebSocket Status - reconnecting... ", 'background: #444; color: #bada55');
             GEPPETTO.MessageSocket.connect(that.host);
-          }, this.autoReconnectInterval);
+          }, delay);
         } else {
+          /*
+           * Budget exhausted: the backend has been unreachable for minutes.
+           * No dialog and no reload from here - the application decides what
+           * to show (VFB puts up a persistent notice with a reload button).
+           * Queued commands are failed so their loaders can drain.
+           */
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
           GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
-          // Retry budget exhausted after reconnectionLimit silent attempts.
-          // Let the user see why for a few seconds, then recover on their
-          // behalf instead of leaving them stuck on a dialog they have to
-          // act on themselves.
-          GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, GEPPETTO.Resources.SERVER_CONNECTION_ERROR,
-            GEPPETTO.MessageSocket.giveUpDialogAutoCloseMs, function () {
-              window.location.reload();
-            });
-          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+          failPending('reconnection budget exhausted');
+          reconnectStartedAt = null;
+          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected, { reason: 'budget-exhausted', attempts: GEPPETTO.MessageSocket.attempts });
         }
+      },
+
+      /**
+       * Called once the server session is usable again: either the old one
+       * was resumed (resumed=true) or a new one was established in place
+       * (resumed=false, see resyncSession). Replays queued commands in order.
+       */
+      sessionReady: function (resumed) {
+        cancelResyncTimer();
+        GEPPETTO.MessageSocket.awaitingSession = false;
+        GEPPETTO.MessageSocket.resyncing = false;
+        var queued = pendingQueue;
+        pendingQueue = [];
+        for (var i = 0; i < queued.length; i++) {
+          this.waitForConnection(queued[i].template, connectionInterval);
+        }
+        console.log("%c WebSocket Status - session " + (resumed ? "resumed" : "re-established") + ", replayed " + queued.length + " command(s) ", 'background: #444; color: #bada55');
+        GEPPETTO.trigger(GEPPETTO.Events.Websocket_reconnected, { resumed: resumed, replayed: queued.length });
+      },
+
+      /**
+       * The server could not resume our session (a redeploy, an OOM restart,
+       * or the other replica behind the load balancer). The socket itself is
+       * open and carries a fresh, empty manager, so instead of reloading the
+       * page - throwing away colours, visibility, camera and layout the
+       * client still holds - we load the project again on this server.
+       *
+       * The client model is NOT rebuilt: MessageHandler sees resyncing and
+       * only adopts the new project/experiment ids from project_loaded,
+       * ignoring geppetto_model_loaded (the same vfb.json we already have).
+       * Anything later fetched that the client already holds is a no-op in
+       * ModelFactory.mergeModel. Nothing server-side needs to survive.
+       */
+      resyncSession: function () {
+        if (GEPPETTO.MessageSocket.projectURL == null) {
+          // Never loaded a project from a URL: nothing we can re-establish
+          failPending('no project URL to re-establish the session with');
+          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected, { reason: 'resync-impossible' });
+          return;
+        }
+        GEPPETTO.MessageSocket.awaitingSession = true;
+        GEPPETTO.MessageSocket.resyncing = true;
+        GEPPETTO.trigger(GEPPETTO.Events.Websocket_session_lost);
+        console.log("%c WebSocket Status - session lost on server, re-establishing on this connection ", 'background: #444; color: #bada55');
+        // Bypass the queue: this is the command the queue is waiting on
+        var requestID = this.createRequestID();
+        this.waitForConnection(messageTemplate(requestID, "load_project_from_url", GEPPETTO.MessageSocket.projectURL), connectionInterval);
+        // A server that never answers is treated like one that refused
+        cancelResyncTimer();
+        resyncTimer = setTimeout(function () {
+          resyncTimer = null;
+          if (GEPPETTO.MessageSocket.resyncing) {
+            GEPPETTO.MessageSocket.resyncFailed('no reply to load_project_from_url within ' + RESYNC_TIMEOUT_MS + 'ms');
+          }
+        }, RESYNC_TIMEOUT_MS);
+      },
+
+      /**
+       * Re-establishing the session on the new server did not work. Fail
+       * the queue and let the application decide (VFB reloads from the URL,
+       * which is what every drop used to do unconditionally).
+       */
+      resyncFailed: function (reason) {
+        cancelResyncTimer();
+        GEPPETTO.MessageSocket.awaitingSession = false;
+        GEPPETTO.MessageSocket.resyncing = false;
+        failPending('session re-establish failed: ' + reason);
+        console.error("WebSocket - session re-establish failed: " + reason);
+        GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected, { reason: 'resync-failed', detail: reason });
       },
 
       /**
        * Sends messages to the server
        */
       send: function (command, parameter, callback) {
-        if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.RECONNECTING && command !== "reconnect") {
-          // Reconnection is already retrying silently in the background (see
-          // reconnect() below) - no need to interrupt the user with a dialog
-          // they have to dismiss just because a send happened to land during
-          // that window. The command itself is dropped, same as before.
-          GEPPETTO.trigger('stop_spin_logo');
-          return;
-        }
         var requestID = this.createRequestID();
-
-        // if there's a script running let it know the requestID it's using to send one of it's commands
-        if (GEPPETTO.ScriptRunner.isScriptRunning()) {
-          GEPPETTO.ScriptRunner.waitingForServerResponse(requestID);
-        }
-
-        this.waitForConnection(messageTemplate(requestID, command, parameter), connectionInterval);
 
         // add callback with request id if any
         if (callback != undefined) {
           callbackHandler[requestID] = callback;
         }
 
+        if (command === "load_project_from_url") {
+          // Remembered so a lost server session can be re-established in place
+          GEPPETTO.MessageSocket.projectURL = parameter;
+        }
+
+        var template = messageTemplate(requestID, command, parameter);
+        var handshake = command === "reconnect" || command === "geppetto_version";
+        var sessionBusy = GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.RECONNECTING
+          || (GEPPETTO.MessageSocket.awaitingSession && !handshake);
+        if (sessionBusy) {
+          if (command === "reconnect") {
+            // A resume only makes sense on a freshly opened socket; onopen sends its own
+            delete callbackHandler[requestID];
+            return requestID;
+          }
+          // Hold it until the session is back, then replay in order
+          queuePending(requestID, template);
+          return requestID;
+        }
+
+        // if there's a script running let it know the requestID it's using to send one of it's commands
+        if (GEPPETTO.ScriptRunner.isScriptRunning()) {
+          GEPPETTO.ScriptRunner.waitingForServerResponse(requestID);
+        }
+
+        this.waitForConnection(template, connectionInterval);
+
         return requestID;
       },
 
       waitForConnection: function (messageTemplate, interval) {
         if (this.isReady() === 1) {
+          var sent = JSON.parse(messageTemplate);
+          trackInFlight(sent.requestID, sent.type, messageTemplate);
           GEPPETTO.MessageSocket.socket.send(messageTemplate);
         } else if (this.isReady() > 1){
-          // connection is either closing (2) or already closed (3).
-          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+          /*
+           * Closing (2) or closed (3): onclose is (or is about to be) driving
+           * a reconnect, so hold the message for replay rather than dropping
+           * it and announcing a disconnect the reconnect logic already knows about.
+           */
+          var m = JSON.parse(messageTemplate);
+          if (m.type === "reconnect") {
+            delete callbackHandler[m.requestID];
+            return;
+          }
+          queuePending(m.requestID, messageTemplate);
         } else {
           // must be in connecting (0) state
           var that = this;
           setTimeout(function () {
-            that.waitForConnection(messageTemplate);
+            that.waitForConnection(messageTemplate, interval);
           }, interval);
         }
       },
@@ -476,6 +748,8 @@ define(function (require) {
 
       // run callback if any
       if (parsedServerMessage.requestID != undefined){
+        // Answered: no longer in flight (error replies count as answered too)
+        delete inFlight[parsedServerMessage.requestID];
         if (callbackHandler[parsedServerMessage.requestID] != undefined) {
           /*
            * If the server reports an error for this request, do NOT invoke the

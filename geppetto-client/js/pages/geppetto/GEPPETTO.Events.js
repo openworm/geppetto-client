@@ -65,6 +65,12 @@ export default function (GEPPETTO) {
     Command_toggle_implicit : "command:toggle_implicit",
     Receive_Python_Message: "receive_python_message",
     Websocket_disconnected : "websocket_disconnected",
+    // a retry is scheduled; payload {attempt, delayMs, elapsedMs}
+    Websocket_reconnecting : "websocket_reconnecting",
+    // the server could not resume the old session; a new one is being set up in place
+    Websocket_session_lost : "websocket_session_lost",
+    // the session is usable again; payload {resumed, replayed}
+    Websocket_reconnected : "websocket_reconnected",
     Error_while_exec_python_command: "error_while_exec_python_command",
     Update_camera : "update_camera",
 

@@ -52,6 +52,23 @@ function MessageHandler (GEPPETTO) {
   messageHandler[messageTypes.PROJECT_LOADED] = function (payload) {
     var message = JSON.parse(payload.project_loaded);
     GEPPETTO.MessageSocket.projectId = message.project.id;
+    if (GEPPETTO.MessageSocket.resyncing && window.Project) {
+      /*
+       * Re-establishing a lost server session (MessageSocket.resyncSession):
+       * the server has loaded the same project into a fresh manager and given
+       * it new ids. Adopt those onto the live Project node - every later
+       * request carries them - and leave the rest of the client untouched.
+       * Manager.loadProject would re-initialise the project and drop every
+       * listener, which is exactly the teardown this path exists to avoid.
+       */
+      window.Project.id = message.project.id;
+      var experiments = window.Project.getExperiments();
+      var incoming = message.project.experiments || [];
+      for (var i = 0; i < experiments.length && i < incoming.length; i++) {
+        experiments[i].id = incoming[i].id;
+      }
+      return;
+    }
     GEPPETTO.Manager.loadProject(message.project, message.persisted);
   };
 
@@ -60,6 +77,15 @@ function MessageHandler (GEPPETTO) {
   }
 
   messageHandler[messageTypes.MODEL_LOADED] = function (payload) {
+    if (GEPPETTO.MessageSocket.resyncing) {
+      /*
+       * Session re-establish: this is the base model of the project we
+       * already hold, so nothing to build. Its arrival means the server
+       * session is usable - release the queued commands.
+       */
+      GEPPETTO.MessageSocket.sessionReady(false);
+      return;
+    }
     console.time(GEPPETTO.Resources.PARSING_MODEL);
     GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.PARSING_MODEL);
 
