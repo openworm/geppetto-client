@@ -160,7 +160,9 @@ define(function (require) {
            * while this one loads) must update its OWN result header
            * (verboseLabel below) but not clobber the visible query's footer.
            */
-          if (this.results[i].selected) { this.count = loaded; }
+          if (this.results[i].selected) {
+            this.count = loaded;
+          }
           /*
            * Keep the header count in step with the running total as pages
            * stream in. While more pages are still expected, prefix ">" so the
@@ -180,7 +182,9 @@ define(function (require) {
           break;
         }
       }
-      if (!defer) { this.notifyChange(); }
+      if (!defer) {
+        this.notifyChange();
+      }
     },
 
     deleteResults (results) {
@@ -335,7 +339,9 @@ define(function (require) {
         window.removeEventListener('resize', this._viewportResizeHandler);
         document.removeEventListener('visibilitychange', this._viewportResizeHandler);
       }
-      if (this._viewportResizeTimer) { clearTimeout(this._viewportResizeTimer); }
+      if (this._viewportResizeTimer) {
+        clearTimeout(this._viewportResizeTimer);
+      }
     }
 
     switchView (resultsView, clearQueryItems) {
@@ -509,14 +515,18 @@ define(function (require) {
        * result set is never re-processed just to refresh the scrollbar.
        */
       this._viewportResizeHandler = function () {
-        if (that._viewportResizeTimer) { clearTimeout(that._viewportResizeTimer); }
+        if (that._viewportResizeTimer) {
+          clearTimeout(that._viewportResizeTimer);
+        }
         that._viewportResizeTimer = setTimeout(function () {
           try {
             var h = (window.innerHeight - 280) + 'px';
             var labels = document.querySelectorAll('.result-verbose-label');
             for (var i = 0; i < labels.length; i++) {
               var container = labels[i].parentNode;
-              if (!container) { continue; }
+              if (!container) {
+                continue;
+              }
               var divs = container.getElementsByTagName('div');
               for (var j = 0; j < divs.length; j++) {
                 if (divs[j].style && divs[j].style.overflowY === 'scroll') {
@@ -880,9 +890,11 @@ define(function (require) {
     }
 
     runQuery (opts) {
-      // opts.force runs the query even when count is 0/unknown (auto-run path,
-      // where the count is derived from the results rather than a count step).
-      // Note: bound as onRun -> called with a DOM event, which has no .force.
+      /*
+       * opts.force runs the query even when count is 0/unknown (auto-run path,
+       * where the count is derived from the results rather than a count step).
+       * Note: bound as onRun -> called with a DOM event, which has no .force.
+       */
       var force = !!(opts && opts.force === true);
       this.clearErrorMessage();
       if (this.props.model.items.length > 0) {
@@ -1083,13 +1095,19 @@ define(function (require) {
                  */
                 if (formattedRecords.length >= PAGE_SIZE) {
                   var vfbStatus = function (loaded, done) {
-                    try { if (typeof window !== 'undefined' && typeof window.vfbQueryLoadStatus === 'function') { window.vfbQueryLoadStatus(loaded, done); } } catch (e) {}
+                    try {
+                      if (typeof window !== 'undefined' && typeof window.vfbQueryLoadStatus === 'function') {
+                        window.vfbQueryLoadStatus(loaded, done);
+                      }
+                    } catch (e) {}
                   };
                   var firstRowSig = function (rawJson) {
                     try {
                       var pp = JSON.parse(rawJson);
                       return (pp.results && pp.results[0]) ? JSON.stringify(pp.results[0].values) : null;
-                    } catch (e) { return null; }
+                    } catch (e) {
+                      return null;
+                    }
                   };
                   var formatPage = function (pageJson) {
                     var recs = datasourceConfig.resultsFilters.getRecords(JSON.parse(pageJson));
@@ -1132,11 +1150,15 @@ define(function (require) {
                   var bumpHeader = function () {
                     try {
                       var el = document.querySelector('.result-verbose-label');
-                      if (!el) { return; }
+                      if (!el) {
+                        return;
+                      }
                       for (var r = 0; r < that.props.model.results.length; r++) {
                         if (that.props.model.results[r].id === compoundId) {
                           /* only live-update the header if THIS query is the one on screen */
-                          if (that.props.model.results[r].selected) { el.innerHTML = that.props.model.results[r].verboseLabel; }
+                          if (that.props.model.results[r].selected) {
+                            el.innerHTML = that.props.model.results[r].verboseLabel;
+                          }
                           break;
                         }
                       }
@@ -1144,7 +1166,7 @@ define(function (require) {
                   };
                   var finish = function () {
                     that.props.model.appendResults(compoundId, [], false, true); /* exact count, deferred */
-                    that.props.model.notifyChange();                             /* single final render */
+                    that.props.model.notifyChange(); /* single final render */
                     vfbStatus(loadedSoFar, true);
                   };
                   /*
@@ -1167,9 +1189,15 @@ define(function (require) {
                         vfbStatus(loadedSoFar, true);
                         return;
                       }
-                      if (sig !== null) { prevSig = sig; }
+                      if (sig !== null) {
+                        prevSig = sig;
+                      }
                       var more = [];
-                      try { more = formatPage(pageJson); } catch (e) { more = []; }
+                      try {
+                        more = formatPage(pageJson);
+                      } catch (e) {
+                        more = [];
+                      }
                       var isFull = more.length >= PAGE_SIZE;
                       if (more.length > 0) {
                         that.props.model.appendResults(compoundId, more, true, true); /* append, defer render */
@@ -1179,13 +1207,13 @@ define(function (require) {
                           that.props.model.notifyChange(); /* periodic full render: new data visible */
                           lastRenderAt = loadedSoFar;
                         } else {
-                          bumpHeader();                    /* cheap: keep the count climbing */
+                          bumpHeader(); /* cheap: keep the count climbing */
                         }
                       }
                       if (isFull) {
-                        loadMore(loadedSoFar);   /* full page: next chunk starts where we are */
+                        loadMore(loadedSoFar); /* full page: next chunk starts where we are */
                       } else {
-                        finish();                /* partial or empty page: end of stream */
+                        finish(); /* partial or empty page: end of stream */
                       }
                     }, offset, PAGE_SIZE);
                   };

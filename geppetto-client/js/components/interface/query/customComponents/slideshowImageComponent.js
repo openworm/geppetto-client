@@ -247,9 +247,15 @@ define(function (require) {
             };
             if (Array.isArray(value.elements) && value.elements.length > 1) {
               value.elements = value.elements
-                .map(function (el, i) { return { el: el, i: i, rank: templateRank(elementTemplate(el)) }; })
-                .sort(function (a, b) { return (a.rank - b.rank) || (a.i - b.i); })
-                .map(function (o) { return o.el; });
+                .map(function (el, i) {
+                  return { el: el, i: i, rank: templateRank(elementTemplate(el)) };
+                })
+                .sort(function (a, b) {
+                  return (a.rank - b.rank) || (a.i - b.i);
+                })
+                .map(function (o) {
+                  return o.el;
+                });
             }
           } catch (eSort) {
             /* keep original order on any error */

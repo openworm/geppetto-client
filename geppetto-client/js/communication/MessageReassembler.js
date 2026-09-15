@@ -1,7 +1,7 @@
 /**
  * Handles reassembly of paginated messages sent from the server
  */
-function MessageReassembler() {
+function MessageReassembler () {
   // Storage for message fragments, keyed by messageId
   var messageBuffer = {};
   
@@ -14,14 +14,14 @@ function MessageReassembler() {
    * @param {String} messageData - Raw message data from WebSocket
    * @returns {Object|null} - Processed message or null if still assembling chunks
    */
-  function processMessage(messageData) {
+  function processMessage (messageData) {
     try {
       var parsedMessage = JSON.parse(messageData);
       
       // Check if this is a paginated message
       if (parsedMessage._pagination) {
-        console.debug("Received paginated message: page " + 
-          parsedMessage._pagination.page + "/" + parsedMessage._pagination.totalPages);
+        console.debug("Received paginated message: page "
+          + parsedMessage._pagination.page + "/" + parsedMessage._pagination.totalPages);
         
         var pagination = parsedMessage._pagination;
         var messageId = pagination.messageId;
@@ -71,7 +71,7 @@ function MessageReassembler() {
   /**
    * Reassemble a complete message from its chunks
    */
-  function reassembleMessage(messageId) {
+  function reassembleMessage (messageId) {
     var buffer = messageBuffer[messageId];
     var orderedChunks = [];
     
@@ -94,14 +94,14 @@ function MessageReassembler() {
   /**
    * Clean up buffer after message is reassembled
    */
-  function cleanupMessageBuffer(messageId) {
+  function cleanupMessageBuffer (messageId) {
     delete messageBuffer[messageId];
   }
   
   /**
    * Combine JSON chunks into a single object
    */
-  function combineJsonChunks(jsonChunks) {
+  function combineJsonChunks (jsonChunks) {
     // Simple concatenation for JSON strings
     var jsonStr = "";
     for (var i = 0; i < jsonChunks.length; i++) {
@@ -119,11 +119,11 @@ function MessageReassembler() {
   /**
    * Run periodic cleanup of message buffer
    */
-  function startCleanupTask() {
-    setInterval(function() {
+  function startCleanupTask () {
+    setInterval(function () {
       var now = Date.now();
       
-      Object.keys(messageBuffer).forEach(function(messageId) {
+      Object.keys(messageBuffer).forEach(function (messageId) {
         if (now - messageBuffer[messageId].timestamp > CLEANUP_TIMEOUT) {
           console.warn("Cleaning up stale message fragments for: " + messageId);
           delete messageBuffer[messageId];
@@ -135,35 +135,35 @@ function MessageReassembler() {
   /**
    * Log reassembly status information
    */
-  function logReassemblyStatus() {
+  function logReassemblyStatus () {
     var activeMessages = Object.keys(messageBuffer).length;
     if (activeMessages > 0) {
       console.debug("Message reassembly status: " + activeMessages + " messages being assembled");
       
-      Object.keys(messageBuffer).forEach(function(messageId) {
+      Object.keys(messageBuffer).forEach(function (messageId) {
         var buffer = messageBuffer[messageId];
-        console.debug("Message " + messageId + ": " + 
-                     buffer.receivedPages + "/" + buffer.totalPages + 
-                     " pages received");
+        console.debug("Message " + messageId + ": "
+                     + buffer.receivedPages + "/" + buffer.totalPages
+                     + " pages received");
       });
     }
   }
   
-  // Add a periodic status log (uncomment for debugging)
-  // setInterval(logReassemblyStatus, 5000);
+  /*
+   * Add a periodic status log (uncomment for debugging)
+   * setInterval(logReassemblyStatus, 5000);
+   */
   
   // Start the cleanup task
   startCleanupTask();
   
   // Return public API
-  return {
-    processMessage: processMessage
-  };
+  return { processMessage: processMessage };
 }
 
 // Compatibility with new imports and old require syntax
 if (typeof define !== 'undefined') {
-  define(['jquery'], function() {
+  define(['jquery'], function () {
     return MessageReassembler;
   });
 }

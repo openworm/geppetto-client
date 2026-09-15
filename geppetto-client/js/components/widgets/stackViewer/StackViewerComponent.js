@@ -1346,16 +1346,14 @@ define(function (require) {
               // Check if the parent itself is selected
               if (instances[instance].parent.isSelected()) {
                 isSelected = true;
-              } 
-              // Check if obj property exists and is selected
-              else if (instances[instance].parent.hasOwnProperty(instances[instance].parent.getId() + '_obj')) {
+              } else if (Object.prototype.hasOwnProperty.call(instances[instance].parent, instances[instance].parent.getId() + '_obj')) {
+                // Check if obj property exists and is selected
                 const objProperty = instances[instance].parent[instances[instance].parent.getId() + '_obj'];
                 if (objProperty && typeof objProperty.isSelected === 'function' && objProperty.isSelected()) {
                   isSelected = true;
                 }
-              } 
-              // Check if swc property exists and is selected
-              else if (instances[instance].parent.hasOwnProperty(instances[instance].parent.getId() + '_swc')) {
+              } else if (Object.prototype.hasOwnProperty.call(instances[instance].parent, instances[instance].parent.getId() + '_swc')) {
+                // Check if swc property exists and is selected
                 const swcProperty = instances[instance].parent[instances[instance].parent.getId() + '_swc'];
                 if (swcProperty && typeof swcProperty.isSelected === 'function' && swcProperty.isSelected()) {
                   isSelected = true;

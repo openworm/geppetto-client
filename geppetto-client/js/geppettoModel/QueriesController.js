@@ -32,8 +32,12 @@ define(function (require) {
           var parameters = {};
           parameters["projectId"] = Project.getId();
           parameters["runnableQueries"] = compoundQuery;
-          if (offset !== undefined && offset !== null) { parameters["offset"] = offset; }
-          if (limit !== undefined && limit !== null) { parameters["limit"] = limit; }
+          if (offset !== undefined && offset !== null) {
+            parameters["offset"] = offset;
+          }
+          if (limit !== undefined && limit !== null) {
+            parameters["limit"] = limit;
+          }
 
           var c = callback;
           GEPPETTO.MessageSocket.send("run_query", parameters, function (data){
